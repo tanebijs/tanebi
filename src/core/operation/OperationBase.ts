@@ -1,27 +1,26 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { BotContext } from '@/core';
 import { Mutex } from 'async-mutex';
 
-export type CallResult<T> = {
-    result: T;
-} | {
-    retcode: Exclude<number, 0>;
-    extra: string;
-}
-
 export type Operation<
     Name extends string,
-    Args = undefined,
+    Args extends Array<unknown>,
     Ret = undefined,
 > = {
     name: Name;
     command: string;
-    build: (ctx: BotContext, args: Args) => Buffer | PromiseLike<Buffer>;
+    build: (ctx: BotContext, ...args: Args) => Buffer | PromiseLike<Buffer>;
     parse: (ctx: BotContext, payload: Buffer) => Ret | PromiseLike<Ret>;
-}
+};
+
+type OperationArray = Readonly<Array<Operation<string, any, any>>>;
+type OperationMap<T extends OperationArray> = { [Op in T[number] as Op['name']]: Op };
+type ExtractRestArgs<T> = T extends [BotContext, ...infer B] ? B : never;
 
 export function defineOperation<
     Name extends string,
-    Args = undefined,
+    Args extends unknown[] = [],
     Ret = undefined,
 >(
     name: Name,
@@ -32,9 +31,8 @@ export function defineOperation<
     return { name, command, build, parse };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class OperationCollection<const T extends Readonly<Array<Operation<string, any, any>>>> {
-    private operationMap;
+export class OperationCollection<const T extends OperationArray> {
+    private readonly operationMap: OperationMap<T>;
     private atomicSeq = 4000;
     private mutex = new Mutex();
 
@@ -42,37 +40,31 @@ export class OperationCollection<const T extends Readonly<Array<Operation<string
         public ctx: BotContext,
         public operations: T
     ) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         this.operationMap = Object.fromEntries(
             this.operations.map(action => [action.name, action]));
     }
 
-
-    async call<Op extends T[number]>(
-        name: Op['name'],
-        args: Parameters<Op['build']>[1],
-    ): Promise<CallResult<Awaited<ReturnType<Op['parse']>>>>;
-    async call<Op extends T[number] & Operation<string, undefined, unknown>>(
-        name: Op['name'],
-        args?: Parameters<Op['build']>[1],
-    ): Promise<CallResult<Awaited<ReturnType<Op['parse']>>>>;
-    async call<Op extends T[number]>(
-        name: Op['name'],
-        args: Parameters<Op['build']>[1],
-    ): Promise<CallResult<Awaited<ReturnType<Op['parse']>>>> {
-        const action = this.operationMap[name] as Op;
-        const buf = await action.build(this.ctx, args);
+    async call<const OpName extends keyof OperationMap<T>>(
+        name: OpName,
+        ...args: ExtractRestArgs<Parameters<
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            OperationMap<T>[OpName]['build']>>
+    ): Promise<Awaited<ReturnType<
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        OperationMap<T>[OpName]['parse']>>> {
+        const action = this.operationMap[name] as Operation<string, unknown[]>;
+        const buf = await action.build(this.ctx, ...args);
         const retPacket = await this.ctx.networkLogic.sendSsoPacket(
             action.command, buf, await this.nextSeq());
 
         if ('body' in retPacket) {
-            return {
-                result: action.parse(this.ctx, retPacket.body) as Awaited<ReturnType<Op['parse']>>,
-            };
+            return action.parse(this.ctx, retPacket.body) as any;
         } else {
-            return {
-                retcode: retPacket.retcode,
-                extra: retPacket.extra,
-            };
+            throw new Error(`Action call failed (retcode ${retPacket.retcode}): ${retPacket.extra}`);
         }
     }
 
