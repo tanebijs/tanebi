@@ -54,7 +54,7 @@ export class WtLoginLogic extends LogicBase {
         const requestBody = new SmartBuffer()
             .writeUInt32BE(timestamp())
             .writeUInt8(0x02)
-            .writeUInt16BE(45 + tlv.length)         // (ushort)(43 + tlv.Length + 1)
+            .writeUInt16BE(46 + tlv.length)
             .writeUInt16BE(subCommand)              // _qrCodeCommand
             .writeBuffer(BUF21)
             .writeUInt8(0x03)
@@ -64,6 +64,7 @@ export class WtLoginLogic extends LogicBase {
             .writeUInt32BE(0)                       // trans_emp sequence
             .writeBigUInt64BE(0n)                   // dummy uin
             .writeBuffer(tlv)
+            .writeUInt8(0x03)
             .toBuffer();
 
         return new SmartBuffer()

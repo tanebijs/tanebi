@@ -37,7 +37,7 @@ export function packTlv<const T extends PackedTlvSchema>(
             .writeUInt16BE(body.length)
             .writeBuffer(body);
     }
-    return buffer.writeUInt8(0x03).toBuffer();
+    return buffer.toBuffer();
 }
 
 /**
