@@ -94,3 +94,15 @@ console.log(ctx.keystore.uin, 'trying to login');
 
 const loginResult = await ctx.ops.call('wtLogin');
 console.log(loginResult);
+
+if (loginResult.success) {
+    ctx.keystore.uid = loginResult.uid;
+
+    ctx.keystore.session.d2Key = loginResult.session.d2Key;
+    ctx.keystore.session.tgt = loginResult.session.tgt;
+    ctx.keystore.session.d2 = loginResult.session.d2;
+    ctx.keystore.session.tempPassword = loginResult.session.tempPassword;
+    ctx.keystore.session.sessionDate = loginResult.session.sessionDate;
+
+    ctx.keystore.info = loginResult.info;
+}
