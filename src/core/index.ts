@@ -9,8 +9,9 @@ import { WtLoginLogic } from '@/core/logic/login/WtLoginLogic';
 import { Ecdh } from '@/core/util/crypto/ecdh';
 import { OperationCollection } from '@/core/operation/OperationBase';
 import { KeyExchangeOperation } from '@/core/operation/login/KeyExchangeOperation';
-import { TransEmpOperation } from '@/core/operation/login/TransEmpOperation';
 import { WtLoginOperation } from '@/core/operation/login/WtLoginOperation';
+import { FetchQrCodeOperation } from '@/core/operation/login/FetchQrCodeOperation';
+import { QueryQrCodeResultOperation } from '@/core/operation/login/QueryQrCodeResultOperation';
 
 /**
  * The Bot object.
@@ -26,8 +27,9 @@ export class BotContext {
 
     ops = new OperationCollection(this, [
         KeyExchangeOperation,
-        TransEmpOperation,
         WtLoginOperation,
+        FetchQrCodeOperation,
+        QueryQrCodeResultOperation,
     ]);
 
     constructor(

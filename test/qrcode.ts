@@ -1,7 +1,6 @@
 import { BotContext } from '@/core';
 import { randomBytes } from 'crypto';
 import { UrlSignProvider } from '@/core/common/SignProvider';
-import { TransEmpSubCommand } from '@/core/operation/login/TransEmpOperation';
 
 async function main() {
     const ctx = new BotContext(
@@ -54,7 +53,7 @@ async function main() {
         UrlSignProvider('http://106.54.14.24:8084/api/sign/30366'),
     );
     await ctx.networkLogic.connectToMsfServer();
-    console.log(await ctx.ops.call('transEmp', TransEmpSubCommand.FetchQrCode));
+    console.log(await ctx.ops.call('fetchQrCode'));
 }
 
 main();
