@@ -1,6 +1,7 @@
 import { BotContext } from '@/core';
 import { randomBytes } from 'crypto';
 import { UrlSignProvider } from '@/core/common/SignProvider';
+import { TransEmp12_QrCodeState } from '@/core/packet/login/wtlogin/TransEmp12';
 
 async function main() {
     const ctx = new BotContext(
@@ -53,7 +54,21 @@ async function main() {
         UrlSignProvider('http://106.54.14.24:8084/api/sign/30366'),
     );
     await ctx.networkLogic.connectToMsfServer();
-    console.log(await ctx.ops.call('fetchQrCode'));
+
+    const qrCodeInfo = await ctx.ops.call('fetchQrCode');
+    console.log(qrCodeInfo);
+
+    ctx.keystore.session.qrString = qrCodeInfo.qrSig;
+    ctx.keystore.session.qrSign = qrCodeInfo.signature;
+    ctx.keystore.session.qrUrl = qrCodeInfo.url;
+
+    const qrCodeResultLoop = setInterval(async () => {
+        const qrCodeResult = await ctx.ops.call('queryQrCodeResult');
+        console.log(qrCodeResult);
+        if (qrCodeResult.state === TransEmp12_QrCodeState.Confirmed) {
+            clearInterval(qrCodeResultLoop);
+        }
+    }, 2000);
 }
 
 main();

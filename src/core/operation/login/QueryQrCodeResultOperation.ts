@@ -2,10 +2,9 @@ import { defineOperation } from '@/core/operation/OperationBase';
 import {
     IncomingTransEmp12,
     IncomingTransEmp12_Confirmed, IncomingTransEmp12_Confirmed_TlvPack,
-    OutgoingTransEmp12,
     TransEmp12_QrCodeState,
 } from '@/core/packet/login/wtlogin/TransEmp12';
-import { BUF0 } from '@/core/util/constants';
+import { SmartBuffer } from 'smart-buffer';
 
 export const QueryQrCodeResultSubCommand = 0x12;
 
@@ -14,15 +13,16 @@ export const QueryQrCodeResultOperation = defineOperation(
     'wtlogin.trans_emp',
     (ctx) => ctx.wtLoginLogic.buildWtLoginPacket(
         'wtlogin.trans_emp',
-        ctx.wtLoginLogic.buildTransEmpBody(QueryQrCodeResultSubCommand, OutgoingTransEmp12.encode({
-            field0: 0,
-            appId: ctx.appInfo.AppId,
-            qrSign: ctx.keystore.session.qrSign!,
-            uin: 0n,
-            version: 0,
-            field5: BUF0,
-            field6: 0,
-        }))),
+        ctx.wtLoginLogic.buildTransEmpBody(QueryQrCodeResultSubCommand, new SmartBuffer()
+            .writeUInt32BE(ctx.appInfo.AppId)
+            .writeUInt16BE(ctx.keystore.session.qrSign!.length)
+            .writeBuffer(ctx.keystore.session.qrSign!)
+            .writeBigUInt64BE(BigInt(ctx.keystore.uin))
+            .writeUInt32BE(0)
+            .writeUInt8(0)
+            .writeUInt8(0x03)
+            .toBuffer()
+        )),
     (ctx, payload) => {
         const resolvedWtLogin = ctx.wtLoginLogic.decodeWtLoginPacket(payload);
         if (resolvedWtLogin.commandId !== 2066) {
