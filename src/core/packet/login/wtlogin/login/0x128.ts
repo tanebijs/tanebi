@@ -8,5 +8,5 @@ export const TlvLogin0x128 = Tlv.tagged([
     TlvScalarField('guidFlag', 'uint32'), // 0
     TlvVariableField('os', 'string', 'uint16', false),
     TlvVariableField('guid', 'bytes', 'uint16', false),
-    TlvScalarField('field7', 'uint16'), // 0
+    TlvVariableField('brand', 'string', 'uint16', false),
 ], '0x128');

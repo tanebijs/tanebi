@@ -129,4 +129,25 @@ export class WtLoginLogic extends LogicBase {
             data: packet.readBuffer(),
         };
     }
+
+    async getCorrectUin(): Promise<number> {
+        const queryResult = await fetch(
+            'https://ntlogin.qq.com/qr/getFace',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    appid: this.ctx.appInfo.AppId,
+                    faceUpdateTime: 0,
+                    qrsig: this.ctx.keystore.session.qrString,
+                }),
+            }
+        ).then(res => res.json());
+        if (typeof queryResult.uin === 'number') {
+            return queryResult.uin;
+        }
+        throw new Error('Failed to get correct uin');
+    }
 }
