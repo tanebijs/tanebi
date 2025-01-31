@@ -8,6 +8,16 @@ import { SmartBuffer } from 'smart-buffer';
 
 export const QueryQrCodeResultSubCommand = 0x12;
 
+export type QueryQrCodeResultCallResult = {
+    confirmed: true,
+    tempPassword: Buffer,
+    noPicSig: Buffer,
+    tgtgtKey: Buffer,
+} | {
+    confirmed: false,
+    state: TransEmp12_QrCodeState,
+}
+
 export const QueryQrCodeResultOperation = defineOperation(
     'queryQrCodeResult',
     'wtlogin.trans_emp',
@@ -23,7 +33,7 @@ export const QueryQrCodeResultOperation = defineOperation(
             .writeUInt8(0x03)
             .toBuffer()
         )),
-    (ctx, payload) => {
+    (ctx, payload): QueryQrCodeResultCallResult => {
         const resolvedWtLogin = ctx.wtLoginLogic.decodeWtLoginPacket(payload);
         if (resolvedWtLogin.commandId !== 2066) {
             throw new Error(`Unexpected command id: ${resolvedWtLogin.commandId}`);
@@ -37,13 +47,14 @@ export const QueryQrCodeResultOperation = defineOperation(
             const { tlvPack } = IncomingTransEmp12_Confirmed.decode(transEmp12.remaining);
             const resolvedTlvPack = IncomingTransEmp12_Confirmed_TlvPack.unpack(tlvPack);
             return {
-                state: TransEmp12_QrCodeState.Confirmed,
+                confirmed: true,
                 tempPassword: resolvedTlvPack['0x18']!.tempPassword,
                 noPicSig: resolvedTlvPack['0x19']!.noPicSig,
                 tgtgtKey: resolvedTlvPack['0x1e']!.tgtgtKey,
             };
         } else {
             return {
+                confirmed: false,
                 state: transEmp12.qrCodeState,
             };
         }

@@ -62,13 +62,33 @@ async function main() {
     ctx.keystore.session.qrSign = qrCodeInfo.signature;
     ctx.keystore.session.qrUrl = qrCodeInfo.url;
 
-    const qrCodeResultLoop = setInterval(async () => {
-        const qrCodeResult = await ctx.ops.call('queryQrCodeResult');
-        console.log(qrCodeResult);
-        if (qrCodeResult.state === TransEmp12_QrCodeState.Confirmed) {
-            clearInterval(qrCodeResultLoop);
-        }
-    }, 2000);
+    const qrCodeResult = await new Promise<{
+        tempPassword: Buffer,
+        noPicSig: Buffer,
+        tgtgtKey: Buffer,
+    }>((resolve, reject) => {
+        const qrCodeResultLoop = setInterval(async () => {
+            const res = await ctx.ops.call('queryQrCodeResult');
+            if (res.confirmed) {
+                clearInterval(qrCodeResultLoop);
+                resolve({
+                    tempPassword: res.tempPassword,
+                    noPicSig: res.noPicSig,
+                    tgtgtKey: res.tgtgtKey,
+                });
+            } else {
+                if (res.state === TransEmp12_QrCodeState.CodeExpired || res.state === TransEmp12_QrCodeState.Canceled) {
+                    clearInterval(qrCodeResultLoop);
+                    reject(new Error('Session expired or cancelled'));
+                }
+            }
+        }, 2000);
+    });
+    console.log(qrCodeResult);
+
+    ctx.keystore.session.tempPassword = qrCodeResult.tempPassword;
+    ctx.keystore.session.noPicSig = qrCodeResult.noPicSig;
+    ctx.keystore.stub.tgtgtKey = qrCodeResult.tgtgtKey;
 }
 
 main();
