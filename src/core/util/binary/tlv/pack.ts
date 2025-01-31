@@ -64,7 +64,7 @@ export function unpackTlv<const T extends PackedTlvSchema>(
             continue;
         }
         const normalizedTagStr = schema[findResult].tag;
-        result[normalizedTagStr] = decodeTlv(schema[i].schema, reader.readBuffer(length));
+        result[normalizedTagStr] = decodeTlv(schema[findResult].schema, reader.readBuffer(length));
     }
     return result as Unpacked<T>;
 }
