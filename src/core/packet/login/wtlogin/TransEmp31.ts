@@ -9,7 +9,7 @@ import { TlvQrCode0x066 } from '@/core/packet/login/wtlogin/qrcode/0x066';
 import { TlvQrCode0x0d1 } from '@/core/packet/login/wtlogin/qrcode/0x0d1';
 import { PackedTlv, Tlv, TlvScalarField, TlvVariableField } from '@/core/util/binary/tlv';
 
-export const OutgoingTransEmp31 = Tlv.plain([
+export const TransEmp31 = Tlv.plain([
     TlvScalarField('appId', 'uint32'),
     TlvScalarField('uin', 'uint64'),
     TlvVariableField('tgt', 'bytes', 'none', false),
@@ -18,7 +18,7 @@ export const OutgoingTransEmp31 = Tlv.plain([
     TlvVariableField('tlvPack', 'bytes', 'none', false),
 ]);
 
-export const OutgoingTransEmp31_TlvPack = PackedTlv.fromCollection([
+export const TransEmp31_TlvPack = PackedTlv.fromCollection([
     TlvQrCode0x016,
     TlvQrCode0x01b,
     TlvQrCode0x01d,
@@ -28,13 +28,13 @@ export const OutgoingTransEmp31_TlvPack = PackedTlv.fromCollection([
     TlvQrCode0x0d1,
 ]);
 
-export const IncomingTransEmp31 = Tlv.plain([
+export const TransEmp31Response = Tlv.plain([
     TlvScalarField('dummyByte', 'uint8'),
     TlvVariableField('signature', 'bytes', 'uint16', false),
     TlvVariableField('tlvPack', 'bytes', 'none', false),
 ]);
 
-export const IncomingTransEmp31_TlvPack = PackedTlv.fromCollection([
+export const TransEmp31Response_TlvPack = PackedTlv.fromCollection([
     TlvQrCode0x017,
     TlvQrCode0x01c,
     TlvQrCode0x0d1,

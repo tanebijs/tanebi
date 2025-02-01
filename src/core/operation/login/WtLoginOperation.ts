@@ -1,10 +1,5 @@
 import { defineOperation } from '@/core/operation/OperationBase';
-import {
-    IncomingWtLogin,
-    IncomingWtLogin_TlvPack,
-    OutgoingWtLogin,
-    WtLoginState,
-} from '@/core/packet/login/wtlogin/WtLogin';
+import { Login, LoginResponse, LoginResponse_TlvPack, LoginState } from '@/core/packet/login/wtlogin/Login';
 import { BUF0 } from '@/core/util/constants';
 import { Keystore } from '@/core/common/Keystore';
 import { TlvLogin0x119_DecryptedPack } from '@/core/packet/login/wtlogin/login/0x119';
@@ -28,7 +23,7 @@ export type WtLoginCallResult = {
     info: Keystore['info'],
 } | {
     success: false,
-    state: WtLoginState,
+    state: LoginState,
     tag?: string,
     message?: string,
     raw: Buffer,
@@ -40,7 +35,7 @@ export const WtLoginOperation = defineOperation(
     (ctx) => ctx.wtLoginLogic
         .buildWtLoginPacket('wtlogin.login', new SmartBuffer()
             .writeUInt16BE(0x09) // command
-            .writeBuffer(OutgoingWtLogin.pack({
+            .writeBuffer(Login.pack({
                 '0x106': { tempPassword: ctx.keystore.session.tempPassword! },
                 '0x144': {
                     tgtgtEncrypted: encryptTea(TlvLogin0x114_TlvBody.pack({
@@ -125,9 +120,9 @@ export const WtLoginOperation = defineOperation(
         if (commandId !== 2064) {
             throw new Error(`Unexpected command id: ${commandId}`);
         }
-        const { state, tlvPack: tlvPackEncoded } = IncomingWtLogin.decode(decrypted);
-        const unpacked = IncomingWtLogin_TlvPack.unpack(tlvPackEncoded);
-        if (state === WtLoginState.Success) {
+        const { state, tlvPack: tlvPackEncoded } = LoginResponse.decode(decrypted);
+        const unpacked = LoginResponse_TlvPack.unpack(tlvPackEncoded);
+        if (state === LoginState.Success) {
             const unpacked0x119 = TlvLogin0x119_DecryptedPack.unpack(
                 decryptTea(unpacked['0x119']!.encryptedTlv, ctx.keystore.stub.tgtgtKey));
             return {

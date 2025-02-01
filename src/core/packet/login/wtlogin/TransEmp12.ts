@@ -11,17 +11,17 @@ export enum TransEmp12_QrCodeState {
     Canceled = 54,
 }
 
-export const IncomingTransEmp12 = Tlv.plain([
+export const TransEmp12Response = Tlv.plain([
     TlvScalarField('qrCodeState', 'uint8'),
     TlvVariableField('remaining', 'bytes', 'none', false),
 ]);
 
-export const IncomingTransEmp12_Confirmed = Tlv.plain([
+export const TransEmp12Response_Confirmed = Tlv.plain([
     TlvFixedBytesField('misc', 12),
     TlvVariableField('tlvPack', 'bytes', 'none', false),
 ]);
 
-export const IncomingTransEmp12_Confirmed_TlvPack = PackedTlv.fromCollection([
+export const TransEmp12Response_Confirmed_TlvPack = PackedTlv.fromCollection([
     TlvQrCode0x018,
     TlvQrCode0x019,
     TlvQrCode0x01e,

@@ -1,8 +1,9 @@
 import { defineOperation } from '@/core/operation/OperationBase';
 import {
-    IncomingTransEmp12,
-    IncomingTransEmp12_Confirmed, IncomingTransEmp12_Confirmed_TlvPack,
     TransEmp12_QrCodeState,
+    TransEmp12Response,
+    TransEmp12Response_Confirmed,
+    TransEmp12Response_Confirmed_TlvPack,
 } from '@/core/packet/login/wtlogin/TransEmp12';
 import { SmartBuffer } from 'smart-buffer';
 
@@ -42,10 +43,10 @@ export const QueryQrCodeResultOperation = defineOperation(
         if (resolvedTransEmp.subCommand !== QueryQrCodeResultSubCommand) {
             throw new Error(`Unexpected sub command: ${resolvedTransEmp.subCommand}`);
         }
-        const transEmp12 = IncomingTransEmp12.decode(resolvedTransEmp.data);
+        const transEmp12 = TransEmp12Response.decode(resolvedTransEmp.data);
         if (transEmp12.qrCodeState === TransEmp12_QrCodeState.Confirmed) {
-            const { tlvPack } = IncomingTransEmp12_Confirmed.decode(transEmp12.remaining);
-            const resolvedTlvPack = IncomingTransEmp12_Confirmed_TlvPack.unpack(tlvPack);
+            const { tlvPack } = TransEmp12Response_Confirmed.decode(transEmp12.remaining);
+            const resolvedTlvPack = TransEmp12Response_Confirmed_TlvPack.unpack(tlvPack);
             return {
                 confirmed: true,
                 tempPassword: resolvedTlvPack['0x18']!.tempPassword,

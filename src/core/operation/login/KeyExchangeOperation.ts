@@ -1,8 +1,13 @@
 import { defineOperation } from '@/core/operation/OperationBase';
-import { SsoKeyExchange, SsoKeyExchangePart1, SsoKeyExchangePart2 } from '@/core/packet/login/ecdh/SsoKeyExchange';
+import {
+    SsoKeyExchange,
+    SsoKeyExchangePart1,
+    SsoKeyExchangePart2,
+    SsoKeyExchangeResponse,
+    SsoKeyExchangeResult,
+} from '@/core/packet/login/ecdh/SsoKeyExchange';
 import { aesGcmDecrypt, aesGcmEncrypt } from '@/core/util/crypto/aes';
 import { sha256 } from '@/core/util/crypto/digest';
-import { SsoKeyExchangeResponse, SsoKeyExchangeResult } from '@/core/packet/login/ecdh/SsoKeyExchangeResponse';
 
 const gcmCalc2Key = Buffer.from('e2733bf403149913cbf80c7a95168bd4ca6935ee53cd39764beebe2e007e3aee', 'hex');
 

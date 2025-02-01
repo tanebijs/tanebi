@@ -17,7 +17,7 @@ import { TlvLogin0x521 } from '@/core/packet/login/wtlogin/login/0x521';
 import { TlvLogin0x119 } from '@/core/packet/login/wtlogin/login/0x119';
 import { TlvLogin0x146 } from '@/core/packet/login/wtlogin/login/0x146';
 
-export const OutgoingWtLogin = PackedTlv.fromCollection([
+export const Login = PackedTlv.fromCollection([
     TlvLogin0x106,
     TlvLogin0x144,
     TlvLogin0x116,
@@ -35,19 +35,19 @@ export const OutgoingWtLogin = PackedTlv.fromCollection([
     TlvLogin0x521,
 ]);
 
-export enum WtLoginState {
+export enum LoginState {
     Success = 0,
     Slider = 2,
     SmsRequired = 160,
 }
 
-export const IncomingWtLogin = Tlv.plain([
+export const LoginResponse = Tlv.plain([
     TlvScalarField('command', 'uint16'),
     TlvScalarField('state', 'uint8'),
     TlvVariableField('tlvPack', 'bytes', 'none', false),
 ]);
 
-export const IncomingWtLogin_TlvPack = PackedTlv.fromCollection([
+export const LoginResponse_TlvPack = PackedTlv.fromCollection([
     TlvLogin0x119,
     TlvLogin0x146,
 ]);

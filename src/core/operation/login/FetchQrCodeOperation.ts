@@ -1,8 +1,9 @@
 import { defineOperation } from '@/core/operation/OperationBase';
 import {
-    IncomingTransEmp31, IncomingTransEmp31_TlvPack,
-    OutgoingTransEmp31,
-    OutgoingTransEmp31_TlvPack,
+    TransEmp31,
+    TransEmp31_TlvPack,
+    TransEmp31Response,
+    TransEmp31Response_TlvPack,
 } from '@/core/packet/login/wtlogin/TransEmp31';
 import { TlvQrCode0x0d1_Response, TlvQrCode0x0d1Body } from '@/core/packet/login/wtlogin/qrcode/0x0d1';
 
@@ -14,13 +15,13 @@ export const FetchQrCodeOperation = defineOperation(
     'wtlogin.trans_emp',
     (ctx) => ctx.wtLoginLogic.buildWtLoginPacket(
         'wtlogin.trans_emp',
-        ctx.wtLoginLogic.buildTransEmpBody(FetchQrCodeSubCommand, OutgoingTransEmp31.encode({
+        ctx.wtLoginLogic.buildTransEmpBody(FetchQrCodeSubCommand, TransEmp31.encode({
             appId: ctx.appInfo.AppId,
             uin: BigInt(ctx.keystore.uin),
             tgt: ctx.keystore.session.tgt,
             field4: 0,
             field5: 0,
-            tlvPack: OutgoingTransEmp31_TlvPack.pack({
+            tlvPack: TransEmp31_TlvPack.pack({
                 '0x16': {
                     field0: 0,
                     appId: ctx.appInfo.AppId,
@@ -69,8 +70,8 @@ export const FetchQrCodeOperation = defineOperation(
         if (resolvedTransEmp.subCommand !== FetchQrCodeSubCommand) {
             throw new Error(`Unexpected sub command: ${resolvedTransEmp.subCommand}`);
         }
-        const transEmp31 = IncomingTransEmp31.decode(resolvedTransEmp.data);
-        const tlvPack = IncomingTransEmp31_TlvPack.unpack(transEmp31.tlvPack);
+        const transEmp31 = TransEmp31Response.decode(resolvedTransEmp.data);
+        const tlvPack = TransEmp31Response_TlvPack.unpack(transEmp31.tlvPack);
         const tlvQrCode0xd1Resp = TlvQrCode0x0d1_Response.decode(tlvPack['0xd1']!.body);
         return {
             qrCode: tlvPack['0x17']!.qrCode,

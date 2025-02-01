@@ -21,3 +21,15 @@ export const SsoKeyExchangePart2 = Tlv.plain([
     TlvScalarField('field3', 'uint32'), // 0
     TlvScalarField('timestamp', 'uint32'),
 ]);
+
+export const SsoKeyExchangeResponse = new NapProtoMsg({
+    gcmEncrypted: ProtoField(1, ScalarType.BYTES),
+    body: ProtoField(2, ScalarType.BYTES),
+    publicKey: ProtoField(3, ScalarType.BYTES),
+});
+
+export const SsoKeyExchangeResult = new NapProtoMsg({
+    gcmKey: ProtoField(1, ScalarType.BYTES),
+    sign: ProtoField(2, ScalarType.BYTES),
+    expiration: ProtoField(3, ScalarType.UINT32),
+});

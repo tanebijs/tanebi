@@ -2,7 +2,7 @@ import { LogicBase } from '@/core/logic/LogicBase';
 import { SmartBuffer } from 'smart-buffer';
 import { timestamp } from '@/core/util/format';
 import { decryptTea, encryptTea } from '@/core/util/crypto/tea';
-import { IncomingWtLoginBase } from '@/core/packet/login/wtlogin/WtLoginBase';
+import { WtLoginResponseBase } from '@/core/packet/login/wtlogin/WtLoginBase';
 import { BUF16 } from '@/core/util/constants';
 
 export type WtLoginCommandType = 'wtlogin.login' | 'wtlogin.trans_emp';
@@ -94,7 +94,7 @@ export class WtLoginLogic extends LogicBase {
             flag,
             retryTime,
             encryptedData_0x03,
-        } = IncomingWtLoginBase.decode(
+        } = WtLoginResponseBase.decode(
             data.subarray(1), // Skip leading byte
         );
         const encrypted = encryptedData_0x03;
