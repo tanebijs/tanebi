@@ -13,6 +13,7 @@ import { WtLoginOperation } from '@/core/operation/login/WtLoginOperation';
 import { FetchQrCodeOperation } from '@/core/operation/login/FetchQrCodeOperation';
 import { QueryQrCodeResultOperation } from '@/core/operation/login/QueryQrCodeResultOperation';
 import { BotOnlineOperation } from '@/core/operation/login/BotOnlineOperation';
+import { EventChannel } from '@/core/event/EventBase';
 
 /**
  * The Bot object.
@@ -34,6 +35,9 @@ export class BotContext {
         BotOnlineOperation,
     ]);
 
+    events = new EventChannel(this, [
+    ]);
+
     constructor(
         public appInfo: AppInfo,
         public coreConfig: CoreConfig,
@@ -41,8 +45,5 @@ export class BotContext {
         public keystore: Keystore,
         public signProvider: SignProvider,
     ) {
-    }
-
-    login() {
     }
 }

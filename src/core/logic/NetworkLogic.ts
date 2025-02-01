@@ -103,7 +103,9 @@ export class NetworkLogic extends LogicBase {
                     this.pending.delete(seq);
                 });
             } else {
-                // TODO: handle server-side packet
+                if ('body' in resolved) {
+                    this.ctx.events.parse(resolved.command, resolved.body);
+                }
             }
         } catch {
             // TODO: handle error
