@@ -1,0 +1,43 @@
+import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { RegisterInfo, RegisterInfoResponse } from '@/core/packet/common/RegisterInfo';
+
+export const SsoInfoSync = new NapProtoMsg({
+    syncFlag: ProtoField(1, ScalarType.UINT32),
+    reqRandom: ProtoField(2, ScalarType.UINT32, true),
+    curActiveStatus: ProtoField(4, ScalarType.UINT32, true),
+    groupLastMsgTime: ProtoField(5, ScalarType.UINT64, true),
+    c2cInfoSync: ProtoField(6, () => SsoC2CInfoSync.fields, true),
+    normalConfig: ProtoField(8, () => NormalConfig.fields, true),
+    registerInfo: ProtoField(9, () => RegisterInfo.fields, true),
+    unknownStructure: ProtoField(10, () => UnknownStructure.fields, true),
+    appState: ProtoField(11, () => CurAppState.fields, true),
+});
+
+export const SsoC2CMsgCookie = new NapProtoMsg({
+    c2cLastMsgTime: ProtoField(1, ScalarType.UINT64),
+});
+
+export const SsoC2CInfoSync = new NapProtoMsg({
+    c2cMsgCookie: ProtoField(1, () => SsoC2CMsgCookie.fields, true),
+    c2cLastMsgTime: ProtoField(2, ScalarType.UINT64),
+    lastC2cMsgCookie: ProtoField(3, () => SsoC2CMsgCookie.fields, true),
+});
+
+export const NormalConfig = new NapProtoMsg({
+    intCfg: ProtoField(1, ScalarType.BYTES, true), // map actually; fortunately, we don't need to parse it
+});
+
+export const CurAppState = new NapProtoMsg({
+    isDelayRequest: ProtoField(1, ScalarType.UINT32, true),
+    appStatus: ProtoField(2, ScalarType.UINT32, true),
+    silenceStatus: ProtoField(3, ScalarType.UINT32, true),
+});
+
+export const UnknownStructure = new NapProtoMsg({
+    groupCode: ProtoField(1, ScalarType.UINT32, true),
+    flag2: ProtoField(2, ScalarType.UINT32),
+});
+
+export const SsoInfoSyncResponse = new NapProtoMsg({
+    registerInfoResponse: ProtoField(7, () => RegisterInfoResponse.fields, true),
+});

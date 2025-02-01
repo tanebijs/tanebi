@@ -12,6 +12,7 @@ import { KeyExchangeOperation } from '@/core/operation/login/KeyExchangeOperatio
 import { WtLoginOperation } from '@/core/operation/login/WtLoginOperation';
 import { FetchQrCodeOperation } from '@/core/operation/login/FetchQrCodeOperation';
 import { QueryQrCodeResultOperation } from '@/core/operation/login/QueryQrCodeResultOperation';
+import { BotOnlineOperation } from '@/core/operation/login/BotOnlineOperation';
 
 /**
  * The Bot object.
@@ -30,6 +31,7 @@ export class BotContext {
         WtLoginOperation,
         FetchQrCodeOperation,
         QueryQrCodeResultOperation,
+        BotOnlineOperation,
     ]);
 
     constructor(

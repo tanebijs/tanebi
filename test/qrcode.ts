@@ -106,3 +106,5 @@ if (loginResult.success) {
 
     ctx.keystore.info = loginResult.info;
 }
+
+console.log(await ctx.ops.call('botOnline'));
