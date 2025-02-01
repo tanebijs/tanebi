@@ -2,6 +2,8 @@ import { BotContext } from '@/core';
 import { randomBytes } from 'crypto';
 import { UrlSignProvider } from '@/core/common/SignProvider';
 import { TransEmp12_QrCodeState } from '@/core/packet/login/wtlogin/TransEmp12';
+import path from 'node:path';
+import * as fs from 'node:fs';
 
 const ctx = new BotContext(
     {
@@ -95,16 +97,29 @@ console.log(ctx.keystore.uin, 'trying to login');
 const loginResult = await ctx.ops.call('wtLogin');
 console.log(loginResult);
 
-if (loginResult.success) {
-    ctx.keystore.uid = loginResult.uid;
-
-    ctx.keystore.session.d2Key = loginResult.session.d2Key;
-    ctx.keystore.session.tgt = loginResult.session.tgt;
-    ctx.keystore.session.d2 = loginResult.session.d2;
-    ctx.keystore.session.tempPassword = loginResult.session.tempPassword;
-    ctx.keystore.session.sessionDate = loginResult.session.sessionDate;
-
-    ctx.keystore.info = loginResult.info;
+if (!loginResult.success) {
+    console.log('Login failed');
+    process.exit(1);
 }
+
+ctx.keystore.uid = loginResult.uid;
+
+ctx.keystore.session.d2Key = loginResult.session.d2Key;
+ctx.keystore.session.tgt = loginResult.session.tgt;
+ctx.keystore.session.d2 = loginResult.session.d2;
+ctx.keystore.session.tempPassword = loginResult.session.tempPassword;
+ctx.keystore.session.sessionDate = loginResult.session.sessionDate;
+
+ctx.keystore.info = loginResult.info;
+
+if (!fs.existsSync('temp')) {
+    fs.mkdirSync('temp');
+}
+
+console.log('Login successful, saving session data.');
+fs.writeFileSync(path.join('temp', 'appInfo.json'), JSON.stringify(ctx.appInfo, null, 4));
+fs.writeFileSync(path.join('temp', 'coreConfig.json'), JSON.stringify(ctx.coreConfig, null, 4));
+fs.writeFileSync(path.join('temp', 'deviceInfo.json'), JSON.stringify(ctx.deviceInfo, null, 4));
+fs.writeFileSync(path.join('temp', 'keystore.json'), JSON.stringify(ctx.keystore, null, 4));
 
 console.log(await ctx.ops.call('botOnline'));
