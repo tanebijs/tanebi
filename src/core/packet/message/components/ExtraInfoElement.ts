@@ -1,6 +1,6 @@
 import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
 
-export const ExtraInfo = new NapProtoMsg({
+export const ExtraInfoElement = new NapProtoMsg({
     nick: ProtoField(1, ScalarType.BYTES, true, false),
     groupCard: ProtoField(2, ScalarType.BYTES, true, false),
     level: ProtoField(3, ScalarType.SINT32, false, false),

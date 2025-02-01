@@ -1,6 +1,6 @@
 import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
 
-export const VideoFile = new NapProtoMsg({
+export const VideoFileElement = new NapProtoMsg({
     fileUuid: ProtoField(1, ScalarType.STRING, true, false),
     fileMd5: ProtoField(2, ScalarType.BYTES, true, false),
     fileName: ProtoField(3, ScalarType.STRING, true, false),

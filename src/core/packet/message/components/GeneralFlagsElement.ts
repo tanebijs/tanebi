@@ -1,6 +1,6 @@
 import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
 
-export const GeneralFlags = new NapProtoMsg({
+export const GeneralFlagsElement = new NapProtoMsg({
     bubbleDiyTextId: ProtoField(1, ScalarType.SINT32, false, false),
     groupFlagNew: ProtoField(2, ScalarType.SINT32, false, false),
     uin: ProtoField(3, ScalarType.UINT64, false, false),

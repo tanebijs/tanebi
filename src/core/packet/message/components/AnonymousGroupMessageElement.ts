@@ -1,6 +1,6 @@
 import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
 
-export const AnonymousGroupMessage = new NapProtoMsg({
+export const AnonymousGroupMessageElement = new NapProtoMsg({
     flags: ProtoField(1, ScalarType.SINT32, false, false),
     anonId: ProtoField(2, ScalarType.BYTES, true, false),
     anonNick: ProtoField(3, ScalarType.BYTES, true, false),

@@ -1,7 +1,7 @@
 import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
-import { PbReserve1 } from '@/core/packet/message/components/PbReserve';
+import { PbReserve1 } from '@/core/packet/message/PbReserve';
 
-export const CustomFace = new NapProtoMsg({
+export const CustomFaceElement = new NapProtoMsg({
     guid: ProtoField(1, ScalarType.BYTES, true, false),
     filePath: ProtoField(2, ScalarType.STRING, true, false),
     shortcut: ProtoField(3, ScalarType.STRING, true, false),

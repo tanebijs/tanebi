@@ -1,6 +1,6 @@
 import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
 
-export const Text = new NapProtoMsg({
+export const TextElement = new NapProtoMsg({
     str: ProtoField(1, ScalarType.STRING, true, false),
     link: ProtoField(2, ScalarType.STRING, true, false),
     attr6Buf: ProtoField(3, ScalarType.BYTES, true, false),

@@ -1,7 +1,7 @@
 import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
 import { MessageElement } from '@/core/packet/message/MessageElement';
 
-export const SrcMsg = new NapProtoMsg({
+export const SrcMsgElement = new NapProtoMsg({
     origSeqs: ProtoField(1, ScalarType.UINT32, false, true),
     senderUin: ProtoField(2, ScalarType.UINT64, false, false),
     time: ProtoField(3, ScalarType.SINT32, true, false),

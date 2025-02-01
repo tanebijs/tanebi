@@ -10,6 +10,7 @@ export const PbReserve = new NapProtoMsg({
     url: ProtoField(30, ScalarType.STRING, true, false),
     md5Str: ProtoField(31, ScalarType.STRING, true, false),
 });
+
 export const PbReserve1 = new NapProtoMsg({
     subType: ProtoField(1, ScalarType.SINT32, false, false),
     field3: ProtoField(3, ScalarType.SINT32, false, false),
@@ -19,6 +20,7 @@ export const PbReserve1 = new NapProtoMsg({
     field21: ProtoField(21, () => PbReserve2.fields, true, false),
     field31: ProtoField(31, ScalarType.STRING, true, false),
 });
+
 export const PbReserve2 = new NapProtoMsg({
     field1: ProtoField(1, ScalarType.SINT32, false, false),
     field2: ProtoField(2, ScalarType.STRING, true, false),

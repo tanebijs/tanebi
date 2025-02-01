@@ -1,8 +1,8 @@
 import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
 
-import { PbReserve } from '@/core/packet/message/components/PbReserve';
+import { PbReserve } from '@/core/packet/message/PbReserve';
 
-export const NotOnlineImage = new NapProtoMsg({
+export const NotOnlineImageElement = new NapProtoMsg({
     filePath: ProtoField(1, ScalarType.STRING, true, false),
     fileLen: ProtoField(2, ScalarType.UINT32, false, false),
     downloadPath: ProtoField(3, ScalarType.STRING, true, false),

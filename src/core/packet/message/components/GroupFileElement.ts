@@ -1,6 +1,6 @@
 import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
 
-export const GroupFile = new NapProtoMsg({
+export const GroupFileElement = new NapProtoMsg({
     filename: ProtoField(1, ScalarType.BYTES, true, false),
     fileSize: ProtoField(2, ScalarType.SINT64, false, false),
     fileId: ProtoField(3, ScalarType.BYTES, true, false),

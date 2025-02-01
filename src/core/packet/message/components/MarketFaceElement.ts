@@ -1,6 +1,6 @@
 import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
 
-export const Marketface = new NapProtoMsg({
+export const MarketFaceElement = new NapProtoMsg({
     summary: ProtoField(1, ScalarType.STRING, true, false),
     itemType: ProtoField(2, ScalarType.SINT32, false, false),
     info: ProtoField(3, ScalarType.SINT32, false, false),
