@@ -57,7 +57,8 @@ const ctx = new BotContext(
 await ctx.networkLogic.connectToMsfServer();
 
 const qrCodeInfo = await ctx.ops.call('fetchQrCode');
-console.log(qrCodeInfo);
+fs.writeFileSync(path.join('temp', 'qrCode.png'), qrCodeInfo.qrCode);
+console.log('QR code saved to temp/qrCode.png');
 
 ctx.keystore.session.qrString = qrCodeInfo.qrSig;
 ctx.keystore.session.qrSign = qrCodeInfo.signature;
