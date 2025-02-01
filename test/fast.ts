@@ -3,6 +3,7 @@ import { BotContext } from '@/core';
 import * as fs from 'node:fs';
 import { DeviceInfo } from '@/core/common/DeviceInfo';
 import { UrlSignProvider } from '@/core/common/SignProvider';
+import { Text } from '@/core/packet/message/components/Text';
 
 type BufferSerialized = {
     type: 'Buffer';
@@ -118,10 +119,8 @@ ctx.events.on('messagePush', ({
         body,
     }
 }) => {
-    console.log(
-        `Msg(${fromUin} -> ${toUin}):`,
-        body?.richText?.elements
-            ?.find(e => e.text)
-            ?.text?.str ?? '(non-text message)',
-    );
+    const textOrNot = body?.richText?.elements
+        ?.find(e => e.text)?.text;
+    const message = textOrNot ? Text.decode(textOrNot) : '(non-text message)';
+    console.log(`Msg(${fromUin} -> ${toUin}): ${message}`);
 });
