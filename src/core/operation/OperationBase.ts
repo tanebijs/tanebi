@@ -70,11 +70,10 @@ export class OperationCollection<const T extends OperationArray> {
 
     constructor(
         public ctx: BotContext,
-        public operations: T
+        operations: T
     ) {
         // @ts-ignore
-        this.operationMap = Object.fromEntries(
-            this.operations.map(action => [action.name, action]));
+        this.operationMap = Object.fromEntries(operations.map(action => [action.name, action]));
     }
 
     async call<const OpName extends keyof OperationMap<T>>(
