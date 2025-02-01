@@ -54,9 +54,15 @@ export class NetworkLogic extends LogicBase {
      * @param timeout Timeout in milliseconds
      */
     sendSsoPacket(cmd: string, src: Buffer, seq: number, timeout: number = 5000): Promise<IncomingSsoPacket> {
-        // eslint-disable-next-line no-async-promise-executor
-        return new Promise(async (resolve, reject) => {
-            const packet = await this.ctx.ssoPacketLogic.buildSsoPacket(cmd, src, seq);
+        return new Promise((resolve, reject) => {
+            this.ctx.ssoPacketLogic.buildSsoPacket(cmd, src, seq)
+                .then(packet => this.outgoingDataMutex.runExclusive(() => {
+                    this.socket.write(new SmartBuffer()
+                        .writeUInt32BE(packet.length + 4)
+                        .writeBuffer(packet)
+                        .toBuffer());
+                }));
+
             const timer = setTimeout(() => {
                 this.handlePacketMutex.runExclusive(() => {
                     this.pending.delete(seq);
@@ -72,13 +78,6 @@ export class NetworkLogic extends LogicBase {
                     clearTimeout(timer);
                     resolve(incoming);
                 });
-            });
-
-            this.outgoingDataMutex.runExclusive(() => {
-                this.socket.write(new SmartBuffer()
-                    .writeUInt32BE(packet.length + 4)
-                    .writeBuffer(packet)
-                    .toBuffer());
             });
         });
     }
