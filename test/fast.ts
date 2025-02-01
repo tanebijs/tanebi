@@ -111,3 +111,17 @@ const ctx = new BotContext(
 
 await ctx.networkLogic.connectToMsfServer();
 console.log(await ctx.ops.call('botOnline'));
+
+ctx.events.on('messagePush', ({
+    message: {
+        responseHead: { fromUin, toUin },
+        body,
+    }
+}) => {
+    console.log(
+        `Msg(${fromUin} -> ${toUin}):`,
+        body?.richText?.elements
+            ?.find(e => e.text)
+            ?.text?.str ?? '(non-text message)',
+    );
+});

@@ -14,6 +14,7 @@ import { FetchQrCodeOperation } from '@/core/operation/login/FetchQrCodeOperatio
 import { QueryQrCodeResultOperation } from '@/core/operation/login/QueryQrCodeResultOperation';
 import { BotOnlineOperation } from '@/core/operation/login/BotOnlineOperation';
 import { EventChannel } from '@/core/event/EventBase';
+import { MessagePushEvent } from '@/core/event/message/MessagePushEvent';
 
 /**
  * The Bot object.
@@ -36,6 +37,7 @@ export class BotContext {
     ]);
 
     events = new EventChannel(this, [
+        MessagePushEvent,
     ]);
 
     constructor(

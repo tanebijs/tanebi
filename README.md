@@ -10,6 +10,7 @@ This is _currently_ an experimental project intended to confirm the feasibility 
 - [x] Encryption & Decryption
 - [x] Login by QR Code
 - [x] Login by stored session
-- [ ] Send & receive messages
+- [ ] Send messages
+- [x] Receive text messages
 - [ ] Fetch contact list & group member list
 - [ ] Upload picture
