@@ -83,6 +83,16 @@ export class NetworkLogic extends LogicBase {
         });
     }
 
+    async postSsoPacket(cmd: string, src: Buffer, seq: number) {
+        const packet = await this.ctx.ssoPacketLogic.buildSsoPacket(cmd, src, seq);
+        await this.outgoingDataMutex.runExclusive(() => {
+            this.socket.write(new SmartBuffer()
+                .writeUInt32BE(packet.length + 4)
+                .writeBuffer(packet)
+                .toBuffer());
+        });
+    }
+
     private handlePacket(packet: Buffer) {
         try {
             const resolved = this.ctx.ssoPacketLogic.resolveIncomingSsoPacket(packet);
