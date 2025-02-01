@@ -1,5 +1,5 @@
 import { NapProtoMsg, ProtoField } from '@napneko/nap-proto-core';
-import { MessageElement } from '@/core/packet/message/conponents/MessageElement';
+import { MessageElement } from '@/core/packet/message/MessageElement';
 
 export const RichText = new NapProtoMsg({
     // attribute: ProtoField(1, () => Attribute.fields, true),

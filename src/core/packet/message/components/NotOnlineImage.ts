@@ -1,0 +1,35 @@
+import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+
+import { PbReserve } from '@/core/packet/message/components/PbReserve';
+
+export const NotOnlineImage = new NapProtoMsg({
+    filePath: ProtoField(1, ScalarType.STRING, true, false),
+    fileLen: ProtoField(2, ScalarType.UINT32, false, false),
+    downloadPath: ProtoField(3, ScalarType.STRING, true, false),
+    oldVerSendFile: ProtoField(4, ScalarType.BYTES, true, false),
+    imgType: ProtoField(5, ScalarType.SINT32, false, false),
+    previewsImage: ProtoField(6, ScalarType.BYTES, true, false),
+    picMd5: ProtoField(7, ScalarType.BYTES, true, false),
+    picHeight: ProtoField(8, ScalarType.UINT32, false, false),
+    picWidth: ProtoField(9, ScalarType.UINT32, false, false),
+    resId: ProtoField(10, ScalarType.STRING, true, false),
+    flag: ProtoField(11, ScalarType.BYTES, true, false),
+    thumbUrl: ProtoField(12, ScalarType.STRING, true, false),
+    original: ProtoField(13, ScalarType.SINT32, false, false),
+    bigUrl: ProtoField(14, ScalarType.STRING, true, false),
+    origUrl: ProtoField(15, ScalarType.STRING, true, false),
+    bizType: ProtoField(16, ScalarType.SINT32, false, false),
+    result: ProtoField(17, ScalarType.SINT32, false, false),
+    index: ProtoField(18, ScalarType.SINT32, false, false),
+    opFaceBuf: ProtoField(19, ScalarType.BYTES, true, false),
+    oldPicMd5: ProtoField(20, ScalarType.BOOL, false, false),
+    thumbWidth: ProtoField(21, ScalarType.SINT32, false, false),
+    thumbHeight: ProtoField(22, ScalarType.SINT32, false, false),
+    fileId: ProtoField(23, ScalarType.SINT32, false, false),
+    showLen: ProtoField(24, ScalarType.UINT32, false, false),
+    downloadLen: ProtoField(25, ScalarType.UINT32, false, false),
+    x400Url: ProtoField(26, ScalarType.STRING, true, false),
+    x400Width: ProtoField(27, ScalarType.UINT32, false, false),
+    x400Height: ProtoField(28, ScalarType.UINT32, false, false),
+    pbRes: ProtoField(29, () => PbReserve.fields, true, false),
+});

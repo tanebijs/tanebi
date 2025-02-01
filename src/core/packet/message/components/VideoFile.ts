@@ -1,0 +1,28 @@
+import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+
+export const VideoFile = new NapProtoMsg({
+    fileUuid: ProtoField(1, ScalarType.STRING, true, false),
+    fileMd5: ProtoField(2, ScalarType.BYTES, true, false),
+    fileName: ProtoField(3, ScalarType.STRING, true, false),
+    fileFormat: ProtoField(4, ScalarType.SINT32, false, false),
+    fileTime: ProtoField(5, ScalarType.SINT32, false, false),
+    fileSize: ProtoField(6, ScalarType.SINT32, false, false),
+    thumbWidth: ProtoField(7, ScalarType.SINT32, false, false),
+    thumbHeight: ProtoField(8, ScalarType.SINT32, false, false),
+    thumbFileMd5: ProtoField(9, ScalarType.BYTES, true, false),
+    source: ProtoField(10, ScalarType.BYTES, true, false),
+    thumbFileSize: ProtoField(11, ScalarType.SINT32, false, false),
+    busiType: ProtoField(12, ScalarType.SINT32, false, false),
+    fromChatType: ProtoField(13, ScalarType.SINT32, false, false),
+    toChatType: ProtoField(14, ScalarType.SINT32, false, false),
+    boolSupportProgressive: ProtoField(15, ScalarType.BOOL, false, false),
+    fileWidth: ProtoField(16, ScalarType.SINT32, false, false),
+    fileHeight: ProtoField(17, ScalarType.SINT32, false, false),
+    subBusiType: ProtoField(18, ScalarType.SINT32, false, false),
+    videoAttr: ProtoField(19, ScalarType.SINT32, false, false),
+    bytesThumbFileUrls: ProtoField(20, ScalarType.BYTES, false, true),
+    bytesVideoFileUrls: ProtoField(21, ScalarType.BYTES, false, true),
+    thumbDownloadFlag: ProtoField(22, ScalarType.SINT32, false, false),
+    videoDownloadFlag: ProtoField(23, ScalarType.SINT32, false, false),
+    pbReserve: ProtoField(24, ScalarType.BYTES, true, false),
+});

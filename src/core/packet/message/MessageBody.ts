@@ -1,5 +1,5 @@
 import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
-import { RichText } from '@/core/packet/message/conponents/RichText';
+import { RichText } from '@/core/packet/message/RichText';
 
 export const MessageBody = new NapProtoMsg({
     richText: ProtoField(1, () => RichText.fields, true),
