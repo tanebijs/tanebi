@@ -1,9 +1,5 @@
-import { AppInfo } from '@/core/common/AppInfo';
-
 export interface SignProvider {
     sign(cmd: string, src: Buffer, seq: number): PromiseLike<SignResult | undefined>;
-
-    getAppInfo?(): AppInfo;
 }
 
 export interface SignResult {
