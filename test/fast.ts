@@ -119,8 +119,6 @@ ctx.events.on('messagePush', ({
         body,
     }
 }) => {
-    const textOrNot = body?.richText?.elements
-        ?.find(e => e.text)?.text;
-    const message = textOrNot ? TextElement.decode(textOrNot) : '(non-text message)';
+    const message = body?.richText?.elements?.find(e => e.text)?.text?.str ?? '(non-text message)';
     console.log(`Msg(${fromUin} -> ${toUin}): ${message}`);
 });
