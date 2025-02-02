@@ -14,3 +14,6 @@ This is _currently_ an experimental project intended to confirm the feasibility 
 - [x] Receive text messages
 - [ ] Fetch contact list & group member list
 - [ ] Upload picture
+
+> [!TIP]
+> If you want to contribute to this project, please consider using **Visual Studio Code** instead of JetBrains IDEs to improve type inferring performance and enhance coding experience.
