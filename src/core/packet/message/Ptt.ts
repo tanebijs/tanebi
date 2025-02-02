@@ -1,0 +1,28 @@
+import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+
+export const Ptt = new NapProtoMsg({
+    fileType: ProtoField(1, ScalarType.SINT32, false, false),
+    srcUin: ProtoField(2, ScalarType.SINT64, false, false),
+    fileUuid: ProtoField(3, ScalarType.STRING, true, false),
+    fileMd5: ProtoField(4, ScalarType.BYTES, true, false),
+    fileName: ProtoField(5, ScalarType.STRING, true, false),
+    fileSize: ProtoField(6, ScalarType.SINT32, false, false),
+    reserve: ProtoField(7, ScalarType.BYTES, true, false),
+    fileId: ProtoField(8, ScalarType.SINT32, false, false),
+    serverIp: ProtoField(9, ScalarType.SINT32, false, false),
+    serverPort: ProtoField(10, ScalarType.SINT32, false, false),
+    boolValid: ProtoField(11, ScalarType.BOOL, false, false),
+    signature: ProtoField(12, ScalarType.BYTES, true, false),
+    shortcut: ProtoField(13, ScalarType.BYTES, true, false),
+    fileKey: ProtoField(14, ScalarType.BYTES, true, false),
+    magicPttIndex: ProtoField(15, ScalarType.SINT32, false, false),
+    voiceSwitch: ProtoField(16, ScalarType.SINT32, false, false),
+    pttUrl: ProtoField(17, ScalarType.BYTES, true, false),
+    groupFileKey: ProtoField(18, ScalarType.STRING, true, false),
+    time: ProtoField(19, ScalarType.SINT32, false, false),
+    downPara: ProtoField(20, ScalarType.BYTES, true, false),
+    format: ProtoField(29, ScalarType.SINT32, false, false),
+    pbReserve: ProtoField(30, ScalarType.BYTES, true, false),
+    bytesPttUrls: ProtoField(31, ScalarType.BYTES, false, true),
+    downloadFlag: ProtoField(32, ScalarType.SINT32, false, false),
+});
