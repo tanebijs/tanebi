@@ -1,4 +1,4 @@
-import { Tlv, TlvFixedBytesField, TlvScalarField, TlvVariableField } from '../../util/binary/tlv';
+import { Tlv, TlvFixedBytesField, TlvScalarField, TlvVariableField } from '@/core/util/binary/tlv';
 
 export const OutgoingSsoPacketWrapper = Tlv.plain([
     TlvScalarField('protocol', 'uint32'),

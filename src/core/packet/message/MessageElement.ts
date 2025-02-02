@@ -1,23 +1,23 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
-import { TextElement } from './element/TextElement';
-import { FaceElement } from './element/FaceElement';
-import { OnlineImageElement } from './element/OnlineImageElement';
-import { NotOnlineImageElement } from './element/NotOnlineImageElement';
-import { TransElement } from './element/TransElement';
-import { MarketFaceElement } from './element/MarketFaceElement';
-import { CustomFaceElement } from './element/CustomFaceElement';
-import { ElementFlags2 } from './element/ElementFlags2';
-import { RichMsgElement } from './element/RichMsgElement';
-import { GroupFileElement } from './element/GroupFileElement';
-import { ExtraInfoElement } from './element/ExtraInfoElement';
-import { VideoFileElement } from './element/VideoFileElement';
-import { AnonymousGroupMessageElement } from './element/AnonymousGroupMessageElement';
-import { QQWalletMsgElement } from './element/QQWalletMsgElement';
-import { CustomElement } from './element/CustomElement';
-import { GeneralFlagsElement } from './element/GeneralFlagsElement';
-import { SrcMsgElement } from './element/SrcMsgElement';
-import { LightAppElement } from './element/LightAppElement';
-import { CommonElement } from './element/CommonElement';
+import { NapProtoMsg, ProtoField } from '@napneko/nap-proto-core';
+import { TextElement } from '@/core/packet/message/element/TextElement';
+import { FaceElement } from '@/core/packet/message/element/FaceElement';
+import { OnlineImageElement } from '@/core/packet/message/element/OnlineImageElement';
+import { NotOnlineImageElement } from '@/core/packet/message/element/NotOnlineImageElement';
+import { TransElement } from '@/core/packet/message/element/TransElement';
+import { MarketFaceElement } from '@/core/packet/message/element/MarketFaceElement';
+import { CustomFaceElement } from '@/core/packet/message/element/CustomFaceElement';
+import { ElementFlags2 } from '@/core/packet/message/element/ElementFlags2';
+import { RichMsgElement } from '@/core/packet/message/element/RichMsgElement';
+import { GroupFileElement } from '@/core/packet/message/element/GroupFileElement';
+import { ExtraInfoElement } from '@/core/packet/message/element/ExtraInfoElement';
+import { VideoFileElement } from '@/core/packet/message/element/VideoFileElement';
+import { AnonymousGroupMessageElement } from '@/core/packet/message/element/AnonymousGroupMessageElement';
+import { QQWalletMsgElement } from '@/core/packet/message/element/QQWalletMsgElement';
+import { CustomElement } from '@/core/packet/message/element/CustomElement';
+import { GeneralFlagsElement } from '@/core/packet/message/element/GeneralFlagsElement';
+import { SrcMsgElement } from '@/core/packet/message/element/SrcMsgElement';
+import { LightAppElement } from '@/core/packet/message/element/LightAppElement';
+import { CommonElement } from '@/core/packet/message/element/CommonElement';
 
 export const MessageElement = new NapProtoMsg({
     text: ProtoField(1, () => TextElement.fields, true, false),
