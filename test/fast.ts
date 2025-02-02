@@ -3,7 +3,6 @@ import { BotContext } from '@/core';
 import * as fs from 'node:fs';
 import { DeviceInfo } from '@/core/common/DeviceInfo';
 import { UrlSignProvider } from '@/core/common/SignProvider';
-import { TextElement } from '@/core/packet/message/element/TextElement';
 
 type BufferSerialized = {
     type: 'Buffer';
