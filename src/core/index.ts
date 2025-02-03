@@ -15,6 +15,7 @@ import { QueryQrCodeResultOperation } from '@/core/operation/login/QueryQrCodeRe
 import { BotOnlineOperation } from '@/core/operation/login/BotOnlineOperation';
 import { EventChannel } from '@/core/event/EventBase';
 import { MessagePushEvent } from '@/core/event/message/MessagePushEvent';
+import { NTLoginLogic } from '@/core/logic/login/NTLoginLogic';
 
 /**
  * The Bot object.
@@ -27,6 +28,7 @@ export class BotContext {
     ssoPacketLogic = new SsoPacketLogic(this);
 
     wtLoginLogic = new WtLoginLogic(this);
+    ntLoginLogic = new NTLoginLogic(this);
 
     ops = new OperationCollection(this, [
         KeyExchangeOperation,
