@@ -16,6 +16,7 @@ import { BotOnlineOperation } from '@/core/operation/login/BotOnlineOperation';
 import { EventChannel } from '@/core/event/EventBase';
 import { MessagePushEvent } from '@/core/event/message/MessagePushEvent';
 import { NTLoginLogic } from '@/core/logic/login/NTLoginLogic';
+import { NTEasyLoginOperation } from '@/core/operation/login/NTEasyLoginOperation';
 
 /**
  * The Bot object.
@@ -31,11 +32,12 @@ export class BotContext {
     ntLoginLogic = new NTLoginLogic(this);
 
     ops = new OperationCollection(this, [
-        KeyExchangeOperation,
-        WtLoginOperation,
-        FetchQrCodeOperation,
-        QueryQrCodeResultOperation,
         BotOnlineOperation,
+        FetchQrCodeOperation,
+        KeyExchangeOperation,
+        NTEasyLoginOperation,
+        QueryQrCodeResultOperation,
+        WtLoginOperation,
     ]);
 
     events = new EventChannel(this, [
