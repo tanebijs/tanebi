@@ -6,6 +6,16 @@ export const SsoNTLoginWrapper = new NapProtoMsg({
     type: ProtoField(4, ScalarType.SINT32, false),
 });
 
+export enum NTLoginErrorCode
+{
+    TokenExpired = 140022015,
+    UnusualVerify = 140022011,
+    NewDeviceVerify = 140022010,
+    CaptchaVerify = 140022008,
+    Success = 0,
+    Unknown = 1,
+}
+
 export const SsoNTLoginBase = new NapProtoMsg({
     header: ProtoField(1, () => ({
         uin: ProtoField(1, () => ({

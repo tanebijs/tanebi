@@ -1,4 +1,5 @@
 import { defineOperation } from '@/core/operation/OperationBase';
+import { NTLoginErrorCode } from '@/core/packet/login/ntlogin/SsoNTLoginBase';
 
 export type NTEasyLoginResult = {
     success: true;
@@ -23,13 +24,13 @@ export const NTEasyLoginOperation = defineOperation(
     (ctx, payload): NTEasyLoginResult => {
         const response = ctx.ntLoginLogic.decodeNTLoginPacket(payload);
         if (!response) {
-            return { success: false, errorCode: 1 };
+            return { success: false, errorCode: NTLoginErrorCode.Unknown };
         }
 
         if (response.header?.error && !response.body?.credentials) {
             return {
                 success: false,
-                errorCode: response.header.error.errorCode ?? 1,
+                errorCode: response.header.error.errorCode ?? NTLoginErrorCode.Unknown,
                 unusual: {
                     sign: Buffer.from(response.body!.unusual!.sig!),
                     cookies: response.header.cookie!.cookie!,
