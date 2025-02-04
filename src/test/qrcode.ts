@@ -65,6 +65,6 @@ await bot.qrCodeLogin((url, png) => {
 
 console.log('User', bot.ctx.keystore.uin, 'logged in.');
 
-fs.writeFileSync('temp/deviceInfo.json', JSON.stringify(serializeDeviceInfo(bot.ctx.deviceInfo)));
-fs.writeFileSync('temp/keystore.json', JSON.stringify(serializeKeystore(bot.ctx.keystore)));
+fs.writeFileSync('temp/deviceInfo.json', JSON.stringify(serializeDeviceInfo(bot.ctx.deviceInfo), null, 4));
+fs.writeFileSync('temp/keystore.json', JSON.stringify(serializeKeystore(bot.ctx.keystore), null, 4));
 console.log('Device info and keystore saved to temp.');
