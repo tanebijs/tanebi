@@ -16,10 +16,9 @@
     "isolatedModules": true,
     "outDir": "./lib",
     "declaration": true,
-    "declarationDir": "./lib",
+    "declarationDir": "./lib/types",
     "strict": true,
     "noFallthroughCasesInSwitch": true,
-    "sourceMap": true,
     "paths": {
       "@/*": [
         "./src/*"

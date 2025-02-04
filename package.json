@@ -10,7 +10,7 @@
   "author": "Young",
   "type": "module",
   "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "types": "lib/types/index.d.ts",
   "scripts": {
     "build": "tsc && tsc-alias"
   },
