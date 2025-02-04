@@ -14,5 +14,8 @@ export default [
             'quotes': ['error', 'single'],
             'indent': ['error', 4],
         }
+    },
+    {
+        ignores: ['node_modules', 'lib'],
     }
 ];

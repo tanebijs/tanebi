@@ -14,7 +14,9 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
+    "outDir": "./lib",
+    "declaration": true,
+    "declarationDir": "./lib",
     "strict": true,
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
@@ -25,7 +27,9 @@
     }
   },
   "include": [
-    "src/**/*.ts",
-    "test/**/*.ts"
-  ]
+    "src/**/*.ts"
+  ],
+  "tsc-alias": {
+    "resolveFullPaths": true
+  }
 }
