@@ -2,7 +2,7 @@ import { Keystore } from '@/core/common/Keystore';
 import { BotContext } from '@/core';
 import * as fs from 'node:fs';
 import { DeviceInfo } from '@/core/common/DeviceInfo';
-import { UrlSignProvider } from '@/core/common/SignProvider';
+import { UrlSignProvider } from '@/app/util';
 
 type BufferSerialized = {
     type: 'Buffer';

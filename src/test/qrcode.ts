@@ -1,6 +1,6 @@
 import { Bot } from '@/app';
 import { randomBytes } from 'node:crypto';
-import { UrlSignProvider } from '@/core/common/SignProvider';
+import { UrlSignProvider } from '@/app/util';
 import * as fs from 'node:fs';
 
 const bot = await Bot.create(
