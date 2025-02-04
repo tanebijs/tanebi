@@ -1,11 +1,9 @@
-import { BotContext } from '@/core';
-import { randomBytes } from 'crypto';
+import { Bot } from '@/app';
+import { randomBytes } from 'node:crypto';
 import { UrlSignProvider } from '@/core/common/SignProvider';
-import { TransEmp12_QrCodeState } from '@/core/packet/login/wtlogin/TransEmp12';
-import path from 'node:path';
 import * as fs from 'node:fs';
 
-const ctx = new BotContext(
+const bot = await Bot.create(
     {
         'Os': 'Linux',
         'VendorOs': 'linux',
@@ -54,73 +52,15 @@ const ctx = new BotContext(
     },
     UrlSignProvider('http://106.54.14.24:8084/api/sign/30366'),
 );
-await ctx.networkLogic.connectToMsfServer();
-
-const qrCodeInfo = await ctx.ops.call('fetchQrCode');
-fs.writeFileSync(path.join('temp', 'qrCode.png'), qrCodeInfo.qrCode);
-console.log('QR code saved to temp/qrCode.png');
-
-ctx.keystore.session.qrString = qrCodeInfo.qrSig;
-ctx.keystore.session.qrSign = qrCodeInfo.signature;
-ctx.keystore.session.qrUrl = qrCodeInfo.url;
-
-const qrCodeResult = await new Promise<{
-    tempPassword: Buffer,
-    noPicSig: Buffer,
-    tgtgtKey: Buffer,
-}>((resolve, reject) => {
-    const qrCodeResultLoop = setInterval(async () => {
-        const res = await ctx.ops.call('queryQrCodeResult');
-        if (res.confirmed) {
-            clearInterval(qrCodeResultLoop);
-            resolve({
-                tempPassword: res.tempPassword,
-                noPicSig: res.noPicSig,
-                tgtgtKey: res.tgtgtKey,
-            });
-        } else {
-            if (res.state === TransEmp12_QrCodeState.CodeExpired || res.state === TransEmp12_QrCodeState.Canceled) {
-                clearInterval(qrCodeResultLoop);
-                reject(new Error('Session expired or cancelled'));
-            }
-        }
-    }, 2000);
-});
-console.log(qrCodeResult);
-
-ctx.keystore.session.tempPassword = qrCodeResult.tempPassword;
-ctx.keystore.session.noPicSig = qrCodeResult.noPicSig;
-ctx.keystore.stub.tgtgtKey = qrCodeResult.tgtgtKey;
-
-ctx.keystore.uin = await ctx.wtLoginLogic.getCorrectUin();
-console.log(ctx.keystore.uin, 'trying to login');
-
-const loginResult = await ctx.ops.call('wtLogin');
-console.log(loginResult);
-
-if (!loginResult.success) {
-    console.log('Login failed');
-    process.exit(1);
-}
-
-ctx.keystore.uid = loginResult.uid;
-
-ctx.keystore.session.d2Key = loginResult.session.d2Key;
-ctx.keystore.session.tgt = loginResult.session.tgt;
-ctx.keystore.session.d2 = loginResult.session.d2;
-ctx.keystore.session.tempPassword = loginResult.session.tempPassword;
-ctx.keystore.session.sessionDate = loginResult.session.sessionDate;
-
-ctx.keystore.info = loginResult.info;
 
 if (!fs.existsSync('temp')) {
     fs.mkdirSync('temp');
 }
 
-console.log('Login successful, saving session data.');
-fs.writeFileSync(path.join('temp', 'appInfo.json'), JSON.stringify(ctx.appInfo, null, 4));
-fs.writeFileSync(path.join('temp', 'coreConfig.json'), JSON.stringify(ctx.coreConfig, null, 4));
-fs.writeFileSync(path.join('temp', 'deviceInfo.json'), JSON.stringify(ctx.deviceInfo, null, 4));
-fs.writeFileSync(path.join('temp', 'keystore.json'), JSON.stringify(ctx.keystore, null, 4));
+await bot.qrCodeLogin((url, png) => {
+    fs.writeFileSync('temp/qrcode.png', png);
+    console.log('QR code png saved to temp/qrcode.png');
+    console.log('QR code url:', url);
+});
 
-console.log(await ctx.ops.call('botOnline'));
+console.log('User', bot.ctx.keystore.uin, 'logged in.');
