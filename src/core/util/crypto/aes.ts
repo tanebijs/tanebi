@@ -1,4 +1,4 @@
-import { BinaryLike, createCipheriv, createDecipheriv, randomBytes } from 'crypto';
+import { BinaryLike, createCipheriv, createDecipheriv, randomBytes } from 'node:crypto';
 
 /**
  * Encrypt data using AES-GCM

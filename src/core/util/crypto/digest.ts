@@ -1,4 +1,4 @@
-import { BinaryLike, createHash } from 'crypto';
+import { BinaryLike, createHash } from 'node:crypto';
 
 export const md5 = (data: BinaryLike) => createHash('md5').update(data).digest();
 

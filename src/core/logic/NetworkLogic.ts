@@ -4,7 +4,6 @@ import { BotContext } from '@/core';
 import { Mutex } from 'async-mutex';
 import { LogicBase } from '@/core/logic/LogicBase';
 import { IncomingSsoPacket } from '@/core/logic/SsoPacketLogic';
-import { clearTimeout } from 'node:timers';
 import { SmartBuffer } from 'smart-buffer';
 
 const host = 'msfwifi.3g.qq.com';
