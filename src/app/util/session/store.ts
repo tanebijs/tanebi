@@ -1,6 +1,7 @@
 import { DeviceInfo, Keystore } from '@/common';
 
 export type BufferSerialized = string;
+export type DateSerialized = string;
 
 export interface DeviceInfoSerialized {
     guid: BufferSerialized;
@@ -22,7 +23,7 @@ export interface KeystoreSerialized {
         d2Key: BufferSerialized;
         d2: BufferSerialized;
         tgt: BufferSerialized;
-        sessionDate: Date;
+        sessionDate: DateSerialized;
         qrSign?: BufferSerialized;
         qrString?: string;
         qrUrl?: string;
@@ -54,6 +55,18 @@ function deserializeBuffer(data: BufferSerialized): Buffer;
 function deserializeBuffer(data: BufferSerialized | undefined): Buffer | undefined;
 function deserializeBuffer(data?: BufferSerialized) {
     return data ? Buffer.from(data, 'hex') : undefined;
+}
+
+function serializeDate(data: Date): DateSerialized;
+function serializeDate(data: Date | undefined): DateSerialized | undefined;
+function serializeDate(data?: Date) {
+    return data ? data.toISOString() : undefined;
+}
+
+function deserializeDate(data: DateSerialized): Date;
+function deserializeDate(data: DateSerialized | undefined): Date | undefined;
+function deserializeDate(data?: DateSerialized) {
+    return data ? new Date(data) : undefined;
 }
 
 export function serializeDeviceInfo(data: DeviceInfo): DeviceInfoSerialized {
@@ -89,7 +102,7 @@ export function serializeKeystore(data: Keystore): KeystoreSerialized {
             d2Key: serializeBuffer(data.session.d2Key),
             d2: serializeBuffer(data.session.d2),
             tgt: serializeBuffer(data.session.tgt),
-            sessionDate: data.session.sessionDate,
+            sessionDate: serializeDate(data.session.sessionDate),
             qrSign: serializeBuffer(data.session.qrSign),
             qrString: data.session.qrString,
             qrUrl: data.session.qrUrl,
@@ -125,7 +138,7 @@ export function deserializeKeystore(data: KeystoreSerialized): Keystore {
             d2Key: deserializeBuffer(data.session.d2Key)!,
             d2: deserializeBuffer(data.session.d2)!,
             tgt: deserializeBuffer(data.session.tgt)!,
-            sessionDate: data.session.sessionDate,
+            sessionDate: deserializeDate(data.session.sessionDate),
             qrSign: deserializeBuffer(data.session.qrSign),
             qrString: data.session.qrString,
             qrUrl: data.session.qrUrl,
