@@ -41,20 +41,14 @@ export class Bot {
         this.ctx.keystore.session.qrUrl = qrCodeInfo.url;
         onQrCode(qrCodeInfo.url, qrCodeInfo.qrCode);
 
-        const qrCodeResult = await new Promise<{
-            tempPassword: Buffer,
-            noPicSig: Buffer,
-            tgtgtKey: Buffer,
-        }>((resolve, reject) => {
+        await new Promise((resolve, reject) => {
             const qrCodeResultLoop = setInterval(async () => {
                 const res = await this.ctx.ops.call('queryQrCodeResult');
                 if (res.confirmed) {
                     clearInterval(qrCodeResultLoop);
-                    resolve({
-                        tempPassword: res.tempPassword,
-                        noPicSig: res.noPicSig,
-                        tgtgtKey: res.tgtgtKey,
-                    });
+                    this.ctx.keystore.session.tempPassword = res.tempPassword;
+                    this.ctx.keystore.session.noPicSig = res.noPicSig;
+                    this.ctx.keystore.stub.tgtgtKey = res.tgtgtKey;
                 } else {
                     if (res.state === TransEmp12_QrCodeState.CodeExpired || res.state === TransEmp12_QrCodeState.Canceled) {
                         clearInterval(qrCodeResultLoop);
@@ -63,10 +57,6 @@ export class Bot {
                 }
             }, queryQrCodeResultInterval);
         });
-
-        this.ctx.keystore.session.tempPassword = qrCodeResult.tempPassword;
-        this.ctx.keystore.session.noPicSig = qrCodeResult.noPicSig;
-        this.ctx.keystore.stub.tgtgtKey = qrCodeResult.tgtgtKey;
 
         this.ctx.keystore.uin = await this.ctx.wtLoginLogic.getCorrectUin();
 
