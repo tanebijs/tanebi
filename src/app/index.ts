@@ -1,9 +1,5 @@
+import { AppInfo, CoreConfig, DeviceInfo, Keystore, SignProvider } from '@/common';
 import { BotContext } from '@/core';
-import { AppInfo } from '@/core/common/AppInfo';
-import { CoreConfig } from '@/core/common/CoreConfig';
-import { DeviceInfo } from '@/core/common/DeviceInfo';
-import { Keystore } from '@/core/common/Keystore';
-import { SignProvider } from '@/core/common/SignProvider';
 import { TransEmp12_QrCodeState } from '@/core/packet/login/wtlogin/TransEmp12';
 
 /**

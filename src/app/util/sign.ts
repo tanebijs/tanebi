@@ -1,4 +1,4 @@
-import { SignProvider } from '@/core/common/SignProvider';
+import { SignProvider } from '@/common';
 
 export function UrlSignProvider(signApiUrl: string): SignProvider {
     return {

@@ -1,7 +1,7 @@
 import { defineOperation } from '@/core/operation/OperationBase';
 import { Login, LoginResponse, LoginResponse_TlvPack, LoginState } from '@/core/packet/login/wtlogin/Login';
 import { BUF0 } from '@/core/util/constants';
-import { Keystore } from '@/core/common/Keystore';
+import { Keystore } from '@/common';
 import { TlvLogin0x119_DecryptedPack } from '@/core/packet/login/wtlogin/login/0x119';
 import { decryptTea, encryptTea } from '@/core/util/crypto/tea';
 import { TlvLogin0x543Body } from '@/core/packet/login/wtlogin/login/0x543';

@@ -1,4 +1,4 @@
-import { AppInfo } from '@/core/common/AppInfo';
+import { AppInfo } from '@/common';
 
 export const LinuxAppInfoPreset: AppInfo = {
     'Os': 'Linux',

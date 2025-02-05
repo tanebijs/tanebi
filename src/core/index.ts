@@ -1,9 +1,3 @@
-import { AppInfo } from '@/core/common/AppInfo';
-import { CoreConfig } from '@/core/common/CoreConfig';
-import { DeviceInfo } from '@/core/common/DeviceInfo';
-import { Keystore } from '@/core/common/Keystore';
-import { NetworkLogic } from '@/core/logic/NetworkLogic';
-import { SignProvider } from '@/core/common/SignProvider';
 import { SsoPacketLogic } from '@/core/logic/SsoPacketLogic';
 import { WtLoginLogic } from '@/core/logic/login/WtLoginLogic';
 import { Ecdh } from '@/core/util/crypto/ecdh';
@@ -17,6 +11,8 @@ import { EventChannel } from '@/core/event/EventBase';
 import { MessagePushEvent } from '@/core/event/message/MessagePushEvent';
 import { NTLoginLogic } from '@/core/logic/login/NTLoginLogic';
 import { NTEasyLoginOperation } from '@/core/operation/login/NTEasyLoginOperation';
+import { AppInfo, CoreConfig, DeviceInfo, Keystore, SignProvider } from '@/common';
+import { NetworkLogic } from '@/core/logic/NetworkLogic';
 
 /**
  * The Bot object.

@@ -1,5 +1,4 @@
-import { DeviceInfo } from '@/core/common/DeviceInfo';
-import { Keystore } from '@/core/common/Keystore';
+import { DeviceInfo, Keystore } from '@/common';
 import { randomBytes } from 'node:crypto';
 
 export function newDeviceInfo(): DeviceInfo {
