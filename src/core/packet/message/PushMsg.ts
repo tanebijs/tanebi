@@ -11,6 +11,50 @@ export const PushMsg = new NapProtoMsg({
     generalFlag: ProtoField(9, ScalarType.INT32, true),
 });
 
+export enum PushMsgType {
+    PrivateMessage = 166,
+    GroupMessage = 82,
+    TempMessage = 141,
+
+    Event0x210 = 528, // friend related event
+    Event0x2DC = 732, // group related event
+
+    PrivateRecordMessage = 208,
+    PrivateFileMessage = 529,
+
+    GroupRequestInvitationNotice = 525, // from group member invitation
+    GroupRequestJoinNotice = 84, // directly entered
+    GroupInviteNotice = 87, // the bot self is being invited
+    GroupAdminChangedNotice = 44, // admin change, both on and off
+    GroupMemberIncreaseNotice = 33,
+    GroupMemberDecreaseNotice = 34,
+}
+
+export enum Event0x2DCSubType {
+    GroupMuteNotice = 12,
+    SubType16 = 16,
+    GroupRecallNotice = 17,
+    GroupEssenceNotice = 21,
+    GroupGreyTipNotice = 20,
+}
+
+export enum Event0x2DCSubType16Field13 {
+    GroupMemberSpecialTitleNotice = 6,
+    GroupNameChangeNotice = 12,
+    GroupTodoNotice = 23,
+    GroupReactionNotice = 35,
+}
+
+export enum Event0x210SubType {
+    FriendRequestNotice = 35,
+    GroupMemberEnterNotice = 38,
+    FriendDeleteOrPinChangedNotice = 39,
+    FriendRecallNotice = 138,
+    ServicePinChanged = 199, // e.g: My computer | QQ Wallet | ...
+    FriendPokeNotice = 290,
+    GroupKickNotice = 212,
+}
+
 export const PushMsgBody = new NapProtoMsg({
     responseHead: ProtoField(1, () => ({
         fromUin: ProtoField(1, ScalarType.UINT32),
