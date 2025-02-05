@@ -12,6 +12,10 @@ import { TransEmp12_QrCodeState } from '@/core/packet/login/wtlogin/TransEmp12';
 export class Bot {
     readonly ctx;
 
+    public get uin() {
+        return this.ctx.keystore.uin === 0 ? undefined : this.ctx.keystore.uin;
+    }
+
     loggedIn = false;
 
     private constructor(
