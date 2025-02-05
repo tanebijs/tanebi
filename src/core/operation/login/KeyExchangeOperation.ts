@@ -16,8 +16,8 @@ export const KeyExchangeOperation = defineOperation(
     'trpc.login.ecdh.EcdhService.SsoKeyExchange',
     (ctx) => {
         const part1 = SsoKeyExchangePart1.encode({
-            uin: ctx.keystore.uin.toString(),
-            guid: ctx.deviceInfo.guid,
+            uin: ctx.keystore.uin,
+            guid: ctx.deviceInfo.guid.toString('hex'),
         });
         const gcmCalc1 = aesGcmEncrypt(part1, ctx.ecdh256.shareKey);
 
