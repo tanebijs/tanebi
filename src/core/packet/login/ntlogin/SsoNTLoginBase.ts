@@ -3,7 +3,7 @@ import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
 export const SsoNTLoginWrapper = new NapProtoMsg({
     sign: ProtoField(1, ScalarType.BYTES, true),
     gcmCalc: ProtoField(3, ScalarType.BYTES, true),
-    type: ProtoField(4, ScalarType.SINT32, false),
+    type: ProtoField(4, ScalarType.INT32, false),
 });
 
 export enum NTLoginErrorCode
@@ -24,12 +24,12 @@ export const SsoNTLoginBase = new NapProtoMsg({
         system: ProtoField(2, () => ({
             os: ProtoField(1, ScalarType.STRING, true, false),
             deviceName: ProtoField(2, ScalarType.STRING, true, false),
-            type: ProtoField(3, ScalarType.SINT32, false, false),
+            type: ProtoField(3, ScalarType.INT32, false, false),
             guid: ProtoField(4, ScalarType.BYTES, true, false),
         }), true, false),
         version: ProtoField(3, () => ({
             kernelVersion: ProtoField(1, ScalarType.STRING, true, false),
-            appId: ProtoField(2, ScalarType.SINT32, false, false),
+            appId: ProtoField(2, ScalarType.INT32, false, false),
             packageName: ProtoField(3, ScalarType.STRING, true, false),
         }), true, false),
         error: ProtoField(4, () => ({
