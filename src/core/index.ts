@@ -13,6 +13,7 @@ import { NTLoginLogic } from '@/core/logic/login/NTLoginLogic';
 import { NTEasyLoginOperation } from '@/core/operation/login/NTEasyLoginOperation';
 import { AppInfo, CoreConfig, DeviceInfo, Keystore, SignProvider } from '@/common';
 import { NetworkLogic } from '@/core/logic/NetworkLogic';
+import { SendMessageOperation } from '@/core/operation/message/SendMessageOperation';
 
 /**
  * The Bot object.
@@ -34,6 +35,8 @@ export class BotContext {
         NTEasyLoginOperation,
         QueryQrCodeResultOperation,
         WtLoginOperation,
+        
+        SendMessageOperation,
     ]);
 
     events = new EventChannel(this, [

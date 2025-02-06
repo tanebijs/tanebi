@@ -7,7 +7,7 @@ import { outgoingSegments } from '@/message/outgoing/segment-base';
 
 interface OutgoingMessageBase {
     type: MessageType;
-    segments: (Exclude<Parameters<typeof outgoingSegments.build>[0], undefined>)[]; // TODO: Define a type for this
+    segments: (Exclude<Parameters<typeof outgoingSegments.build>[0], undefined>)[];
     clientSequence: number;
 }
 
@@ -26,7 +26,12 @@ export type OutgoingMessage = OutgoingPrivateMessage | OutgoingGroupMessage;
 
 export function buildPbSendMsg(ctx: BotContext, message: OutgoingMessage): Parameters<typeof PbSendMsg.encode>[0] {
     const result = buildPbSendMsgBase(message);
-    // TODO: Implement the rest of the fields
+    for (const segment of message.segments) {
+        const element = outgoingSegments.build(segment);
+        if (element) {
+            result.body!.richText!.elements!.push(element);
+        }
+    }
     return result;
 }
 

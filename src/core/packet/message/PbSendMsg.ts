@@ -37,7 +37,17 @@ export const PbSendMsg = new NapProtoMsg({
     via: ProtoField(8, ScalarType.UINT32, true, false),
     dataStatist: ProtoField(9, ScalarType.UINT32, true, false),
     control: ProtoField(12, () => ({
-        msgFlag: ProtoField(1, ScalarType.SINT32, false, false),
+        msgFlag: ProtoField(1, ScalarType.INT32, false, false),
     }), true, false),
     multiSendSeq: ProtoField(14, ScalarType.UINT32, false, false),
+});
+
+export const PbSendMsgResponse = new NapProtoMsg({
+    resultCode: ProtoField(1, ScalarType.INT32, false, false),
+    errMsg: ProtoField(2, ScalarType.STRING, true, false),
+    timestamp1: ProtoField(3, ScalarType.UINT32, false, false),
+    field10: ProtoField(10, ScalarType.UINT32, false, false),
+    groupSequence: ProtoField(11, ScalarType.UINT32, true, false),
+    timestamp2: ProtoField(12, ScalarType.UINT32, false, false),
+    privateSequence: ProtoField(14, ScalarType.UINT32, false, false),
 });
