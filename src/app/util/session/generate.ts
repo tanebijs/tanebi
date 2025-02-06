@@ -5,7 +5,8 @@ export function newDeviceInfo(): DeviceInfo {
     return {
         guid: randomBytes(16),
         macAddress: randomBytes(6),
-        deviceName: `LagrangeTS-${randomBytes(3).toString('hex').toUpperCase()}`,
+        // Intentionally preserved 'Lagrange' as the prefix
+        deviceName: `Lagrange-${randomBytes(3).toString('hex').toUpperCase()}`,
         systemKernel: 'Windows 10.0.19042',
         kernelVersion: '10.0.19042.0',
     };
