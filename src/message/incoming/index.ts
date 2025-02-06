@@ -1,11 +1,7 @@
 import { PushMsgBody, PushMsgType } from '@/core/packet/message/PushMsg';
 import { MessageElement } from '@/core/packet/message/MessageElement';
 import { incomingSegments } from '@/message/incoming/segment-base';
-
-export enum MessageType {
-    PrivateMessage = 1,
-    GroupMessage = 2,
-}
+import { MessageType } from '@/message';
 
 interface MessageBase {
     type: MessageType;
