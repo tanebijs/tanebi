@@ -1,11 +1,6 @@
 import { OidbBase } from '@/core/packet/oidb';
-import { MessageProtoFieldType, NapProtoDecodeStructType, NapProtoEncodeStructType, NapProtoMsg, ScalarProtoFieldType, ScalarType } from '@napneko/nap-proto-core';
+import { NapProtoDecodeStructType, NapProtoEncodeStructType, NapProtoMsg, ProtoMessageType } from '@napneko/nap-proto-core';
 
-// Types that are not exported by nap-proto-core
-type ProtoMessageType = {
-    [key: string]: ProtoFieldType;
-};
-type ProtoFieldType = ScalarProtoFieldType<ScalarType, boolean, boolean> | MessageProtoFieldType<() => ProtoMessageType, boolean, boolean>;
 
 export class OidbSvcPacket<const T extends ProtoMessageType> {
     private readonly bodyProto: NapProtoMsg<T>;
