@@ -41,7 +41,7 @@ export class Bot {
         this.ctx.keystore.session.qrUrl = qrCodeInfo.url;
         onQrCode(qrCodeInfo.url, qrCodeInfo.qrCode);
 
-        await new Promise((resolve, reject) => {
+        await new Promise<void>((resolve, reject) => {
             const qrCodeResultLoop = setInterval(async () => {
                 const res = await this.ctx.ops.call('queryQrCodeResult');
                 if (res.confirmed) {
@@ -49,6 +49,7 @@ export class Bot {
                     this.ctx.keystore.session.tempPassword = res.tempPassword;
                     this.ctx.keystore.session.noPicSig = res.noPicSig;
                     this.ctx.keystore.stub.tgtgtKey = res.tgtgtKey;
+                    resolve();
                 } else {
                     if (res.state === TransEmp12_QrCodeState.CodeExpired || res.state === TransEmp12_QrCodeState.Canceled) {
                         clearInterval(qrCodeResultLoop);
