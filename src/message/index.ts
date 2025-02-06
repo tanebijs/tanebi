@@ -1,6 +1,7 @@
 import { PushMsgBody } from '@/core/packet/message/PushMsg';
 import { MessageElement } from '@/core/packet/message/MessageElement';
 import { parseMetadata } from '@/message/metadata';
+import { incomingSegments } from '@/message/incoming/base';
 
 export enum MessageType {
     PrivateMessage = 1,
@@ -13,7 +14,7 @@ interface MessageBase {
     targetUin: number;
     senderUid?: string;
     sequence: number;
-    segments: string[]; // TODO: parse segments
+    segments: (Exclude<ReturnType<typeof incomingSegments.parse>, undefined>)[];
     internalElems?: ReturnType<typeof MessageElement.decode>[];
     msgUid?: bigint;
 }
@@ -34,6 +35,10 @@ export type MessageChain = PrivateMessage | GroupMessage;
 
 export function parsePushMsgBody(pushMsg: ReturnType<typeof PushMsgBody.decode>): MessageChain {
     const result = parseMetadata(pushMsg);
-    // TODO: parse segments
+    if (pushMsg.body?.richText?.elements) {
+        result.segments = pushMsg.body.richText.elements
+            .map((elem) => incomingSegments.parse(elem))
+            .filter((segment): segment is Exclude<typeof segment, undefined> => segment !== undefined);
+    }
     return result;
 }
