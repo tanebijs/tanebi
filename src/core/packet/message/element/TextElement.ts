@@ -8,3 +8,15 @@ export const TextElement = new NapProtoMsg({
     buf: ProtoField(11, ScalarType.BYTES, true, false),
     pbReserve: ProtoField(12, ScalarType.BYTES, true, false),
 });
+
+export enum MentionType {
+    Someone = 1,
+    All = 2,
+}
+
+export const MentionExtra = new NapProtoMsg({
+    type: ProtoField(3, ScalarType.UINT32),
+    uin: ProtoField(4, ScalarType.UINT32, true, false),
+    field5: ProtoField(5, ScalarType.UINT32, true, false),
+    uid: ProtoField(9, ScalarType.STRING),
+});
