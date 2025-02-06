@@ -16,16 +16,16 @@ export enum PushMsgType {
     GroupMessage = 82,
     TempMessage = 141,
 
-    Event0x210 = 528, // friend related event
-    Event0x2DC = 732, // group related event
+    Event0x210 = 528,                   // friend related event
+    Event0x2DC = 732,                   // group related event
 
     PrivateRecordMessage = 208,
     PrivateFileMessage = 529,
 
     GroupRequestInvitationNotice = 525, // from group member invitation
-    GroupRequestJoinNotice = 84, // directly entered
-    GroupInviteNotice = 87, // the bot self is being invited
-    GroupAdminChangedNotice = 44, // admin change, both on and off
+    GroupRequestJoinNotice = 84,        // directly entered
+    GroupInviteNotice = 87,             // the bot self is being invited
+    GroupAdminChangedNotice = 44,       // admin change, both on and off
     GroupMemberIncreaseNotice = 33,
     GroupMemberDecreaseNotice = 34,
 }
@@ -50,7 +50,7 @@ export enum Event0x210SubType {
     GroupMemberEnterNotice = 38,
     FriendDeleteOrPinChangedNotice = 39,
     FriendRecallNotice = 138,
-    ServicePinChanged = 199, // e.g: My computer | QQ Wallet | ...
+    ServicePinChanged = 199,            // e.g: My computer | QQ Wallet | ...
     FriendPokeNotice = 290,
     GroupKickNotice = 212,
 }
