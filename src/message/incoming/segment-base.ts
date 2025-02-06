@@ -1,6 +1,6 @@
 import { MessageElement } from '@/core/packet/message/MessageElement';
-import { MentionSegment } from '@/message/incoming/MentionSegment';
-import { TextSegment } from '@/message/incoming/TextSegment';
+import { MentionSegment } from '@/message/incoming/segment/MentionSegment';
+import { TextSegment } from '@/message/incoming/segment/TextSegment';
 
 export type MessageElementDecoded = ReturnType<typeof MessageElement.decode>;
 export type ElementField = keyof MessageElementDecoded;

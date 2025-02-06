@@ -1,4 +1,4 @@
-import { defineIncoming } from '@/message/incoming/base';
+import { defineIncoming } from '@/message/incoming/segment-base';
 
 export const TextSegment = defineIncoming(
     'text',
