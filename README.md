@@ -1,4 +1,8 @@
-# tanebi
+<div align="center">
+
+![tanebi](https://socialify.git.ci/LagrangeDev/tanebi/image?description=1&font=Bitter&forks=1&issues=1&language=1&logo=https%3A%2F%2Fstatic.live.moe%2Flagrange.jpg&name=1&pattern=Brick+Wall&pulls=1&stargazers=1&theme=Light)
+
+</div>
 
 NTQQ Protocol Implementation with Pure TypeScript, derived from the following projects:
 - [LagrangeDev/Lagrange.Core](https://github.com/LagrangeDev/Lagrange.Core)
