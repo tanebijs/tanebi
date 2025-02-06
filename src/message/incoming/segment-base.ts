@@ -1,6 +1,6 @@
 import { MessageElementDecoded } from '@/message';
-import { MentionSegment } from '@/message/incoming/segment/MentionSegment';
-import { TextSegment } from '@/message/incoming/segment/TextSegment';
+import { mentionParser } from '@/message/incoming/segment/mention';
+import { textParser } from '@/message/incoming/segment/text';
 
 export type ElementField = keyof MessageElementDecoded;
 
@@ -47,6 +47,6 @@ export class IncomingSegmentCollection<
 }
 
 export const incomingSegments = new IncomingSegmentCollection([
-    TextSegment,
-    MentionSegment,
+    textParser,
+    mentionParser,
 ]);

@@ -1,6 +1,6 @@
 import { defineIncoming } from '@/message/incoming/segment-base';
 
-export const TextSegment = defineIncoming(
+export const textParser = defineIncoming(
     'text',
     'text',
     (element) => {

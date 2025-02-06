@@ -1,6 +1,6 @@
 import { defineIncoming } from '@/message/incoming/segment-base';
 
-export const MentionSegment = defineIncoming(
+export const mentionParser = defineIncoming(
     'text',
     'mention',
     (element) => {
