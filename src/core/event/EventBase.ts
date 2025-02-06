@@ -6,7 +6,7 @@ import { BotContext } from '@/core';
 export type Event<Name extends string, Out> = {
     name: Name;
     command: string;
-    parse: (ctx: BotContext, payload: Buffer) => Out | PromiseLike<Out>;
+    parse: (ctx: BotContext, payload: Buffer) => Out;
 }
 
 export function defineEvent<Name extends string, Out>(
@@ -22,7 +22,7 @@ type ExtractEventOutByName<
     T extends EventArray,
     K extends string
 > = {
-    [E in T[number] as E['name']] : Awaited<ReturnType<E['parse']>>
+    [E in T[number] as E['name']] : ReturnType<E['parse']>
 }[K];
 
 export class EventChannel<T extends EventArray> {
@@ -38,29 +38,29 @@ export class EventChannel<T extends EventArray> {
 
     on<K extends T[number]['name']>(
         event: K,
-        listener: (out: Awaited<ExtractEventOutByName<T, K>>) => void
+        listener: (out: ExtractEventOutByName<T, K>) => void
     ): void {
         this.internalEmitter.on(event, listener);
     }
 
     off<K extends T[number]['name']>(
         event: K,
-        listener: (out: Awaited<ExtractEventOutByName<T, K>>) => void
+        listener: (out: ExtractEventOutByName<T, K>) => void
     ): void {
         this.internalEmitter.off(event, listener);
     }
 
     once<K extends T[number]['name']>(
         event: K,
-        listener: (out: Awaited<ExtractEventOutByName<T, K>>) => void
+        listener: (out: ExtractEventOutByName<T, K>) => void
     ): void {
         this.internalEmitter.once(event, listener);
     }
 
-    async parse(command: string, payload: Buffer) {
+    parse(command: string, payload: Buffer) {
         const event = this.events[command];
         if (event) {
-            const parsed = await event.parse(this.ctx, payload);
+            const parsed = event.parse(this.ctx, payload);
             this.internalEmitter.emit(event.name, parsed);
         }
     }

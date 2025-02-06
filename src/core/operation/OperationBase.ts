@@ -11,8 +11,8 @@ export type Operation<
 > = {
     name: Name;
     command: string;
-    build: (ctx: BotContext, ...args: Args) => Buffer | PromiseLike<Buffer>;
-    parse: (ctx: BotContext, payload: Buffer) => Ret | PromiseLike<Ret>;
+    build: (ctx: BotContext, ...args: Args) => Buffer;
+    parse: (ctx: BotContext, payload: Buffer) => Ret;
     postOnly: boolean;
 };
 
@@ -81,16 +81,16 @@ export class OperationCollection<const T extends OperationArray> {
         ...args: ExtractRestArgs<Parameters<
             // @ts-ignore
             OperationMap<T>[OpName]['build']>>
-    ): Promise<Awaited<ReturnType<
+    ): Promise<ReturnType<
         // @ts-ignore
-        OperationMap<T>[OpName]['parse']>>> {
+        OperationMap<T>[OpName]['parse']>> {
         const action = this.operationMap[name] as Operation<string, unknown[]>;
-        const buf = await action.build(this.ctx, ...args);
+        const buf = action.build(this.ctx, ...args);
         if (action.postOnly) {
             await this.ctx.networkLogic.postSsoPacket(action.command, buf, await this.nextSeq());
-            return undefined as Awaited<ReturnType<
-                // @ts-ignore
-                OperationMap<T>[OpName]['parse']>>;
+            return undefined as ReturnType<
+            // @ts-ignore
+            OperationMap<T>[OpName]['parse']>;
         } else {
             const retPacket = await this.ctx.networkLogic.sendSsoPacket(
                 action.command, buf, await this.nextSeq());
