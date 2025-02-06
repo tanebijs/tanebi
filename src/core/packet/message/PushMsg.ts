@@ -67,7 +67,7 @@ export const PushMsgBody = new NapProtoMsg({
             friendName: ProtoField(6, ScalarType.STRING, true)
         }), true),
         groupExt: ProtoField(8, () => ({
-            groupUint: ProtoField(1, ScalarType.UINT32),
+            groupUin: ProtoField(1, ScalarType.UINT32),
             memberName: ProtoField(4, ScalarType.STRING),
             unknown5: ProtoField(5, ScalarType.UINT32),
             groupName: ProtoField(7, ScalarType.STRING),
