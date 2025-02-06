@@ -1,7 +1,5 @@
 import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
 
-import { PbReserve } from '@/core/packet/message/PbReserve';
-
 export const NotOnlineImageElement = new NapProtoMsg({
     filePath: ProtoField(1, ScalarType.STRING, true, false),
     fileLen: ProtoField(2, ScalarType.UINT32, false, false),
@@ -31,5 +29,14 @@ export const NotOnlineImageElement = new NapProtoMsg({
     x400Url: ProtoField(26, ScalarType.STRING, true, false),
     x400Width: ProtoField(27, ScalarType.UINT32, false, false),
     x400Height: ProtoField(28, ScalarType.UINT32, false, false),
-    pbRes: ProtoField(29, () => PbReserve.fields, true, false),
+    pbRes: ProtoField(29, () => ({
+        subType: ProtoField(1, ScalarType.INT32, false, false),
+        field3: ProtoField(3, ScalarType.INT32, false, false),
+        field4: ProtoField(4, ScalarType.INT32, false, false),
+        summary: ProtoField(8, ScalarType.STRING, true, false),
+        field10: ProtoField(10, ScalarType.INT32, false, false),
+        pbRes: ProtoField(20, ScalarType.BYTES, true, false),
+        url: ProtoField(30, ScalarType.STRING, true, false),
+        md5Str: ProtoField(31, ScalarType.STRING, true, false),
+    }), true, false),
 });
