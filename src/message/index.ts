@@ -14,6 +14,7 @@ interface MessageBase {
     targetUin: number;
     senderUid?: string;
     sequence: number;
+    repliedSequence?: number;
     segments: (Exclude<ReturnType<typeof incomingSegments.parse>, undefined>)[];
     internalElems?: ReturnType<typeof MessageElement.decode>[];
     msgUid?: bigint;
@@ -36,9 +37,22 @@ export type MessageChain = PrivateMessage | GroupMessage;
 export function parsePushMsgBody(pushMsg: ReturnType<typeof PushMsgBody.decode>): MessageChain {
     const result = parseMetadata(pushMsg);
     if (pushMsg.body?.richText?.elements) {
-        result.segments = pushMsg.body.richText.elements
-            .map((elem) => incomingSegments.parse(elem))
-            .filter((segment): segment is Exclude<typeof segment, undefined> => segment !== undefined);
+        for (const element of pushMsg.body.richText.elements) {
+            if (!result.repliedSequence && element.srcMsg) {
+                result.repliedSequence = element.srcMsg.origSeqs?.[0] ?? element.srcMsg.pbReserve?.friendSequence;
+                continue;
+            }
+
+            const parsed = incomingSegments.parse(element);
+            if (parsed) {
+                result.segments.push(parsed);
+            }
+        }
+    }
+
+    if (result.repliedSequence && result.type === MessageType.GroupMessage) {
+        result.segments = result.segments.slice(2);
+        // Remove the first two segments [ mention, text ] which are redundant
     }
     return result;
 }
