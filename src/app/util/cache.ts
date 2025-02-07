@@ -33,6 +33,12 @@ export class BotCacheService<K, V extends BotEntity<unknown>>{
     }
 
     acceptData(data: Map<K, ExtractDataBinding<V>>) {
+        for (const key of this.map.keys()) {
+            if (!data.has(key)) {
+                this.map.delete(key);
+            }
+        }
+        
         for (const [key, value] of data.entries()) {
             const entity = this.map.get(key);
             if (entity) {
