@@ -1,5 +1,5 @@
 import { OidbBase } from '@/core/packet/oidb';
-import { NapProtoDecodeStructType, NapProtoEncodeStructType, NapProtoMsg, ProtoMessageType } from '@napneko/nap-proto-core';
+import { NapProtoEncodeStructType, NapProtoMsg, ProtoMessageType } from '@napneko/nap-proto-core';
 
 export class OidbSvcContract<const T extends ProtoMessageType> {
     private readonly bodyProto: NapProtoMsg<T>;
@@ -25,11 +25,19 @@ export class OidbSvcContract<const T extends ProtoMessageType> {
         });
     }
 
-    decode(data: Uint8Array): Omit<typeof OidbBase.decode, 'body'> & { body?: NapProtoDecodeStructType<T> } {
+    tryDecode(data: Uint8Array) {
         const decoded = OidbBase.decode(data);
         return {
             ...decoded,
             body: decoded.body && this.bodyProto.decode(decoded.body),
         };
+    }
+
+    decodeBodyOrThrow(data: Uint8Array) {
+        const decoded = this.tryDecode(data);
+        if (decoded.errorCode !== 0 || !decoded.body) {
+            throw new Error(`Failed to decode OidbSvcTrpcTcp0x${this.command.toString(16)}_${this.subCommand} response (${decoded.errorCode}): ${decoded.errorMsg}`);
+        }
+        return decoded.body;
     }
 }
