@@ -155,6 +155,7 @@ export class Bot {
 
     /**
      * Get all friends
+     * @param forceUpdate Whether to force update the friend list
      */
     async getFriends(forceUpdate = false) {
         return this.friendCache.getAll(forceUpdate);
@@ -162,6 +163,8 @@ export class Bot {
 
     /**
      * Get a friend by Uin
+     * @param uin Uin of the friend
+     * @param forceUpdate Whether to force update the friend info
      */
     async getFriend(uin: number, forceUpdate = false) {
         return this.friendCache.get(uin, forceUpdate);
