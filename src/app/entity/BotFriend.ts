@@ -1,5 +1,5 @@
 import { Bot } from '@/app';
-import { BotContact } from '@/app/entity/BotContact';
+import { BotContact } from '@/app/entity';
 import { MessageType } from '@/message';
 import { OutgoingMessage } from '@/message/outgoing';
 
@@ -18,6 +18,10 @@ export class BotFriend extends BotContact<BotFriendDataBinding> {
 
     constructor(bot: Bot, data: BotFriendDataBinding) {
         super(bot, data);
+    }
+
+    get uid() {
+        return this.data.uid;
     }
 
     get nickname() {
@@ -40,7 +44,7 @@ export class BotFriend extends BotContact<BotFriendDataBinding> {
         return this.data.category;
     }
 
-    override async sendMsg(segments: OutgoingMessage['segments']) {
+    async sendMsg(segments: OutgoingMessage['segments']) {
         return this.bot.ctx.ops.call('sendMessage', {
             type: MessageType.PrivateMessage,
             targetUin: this.data.uin,

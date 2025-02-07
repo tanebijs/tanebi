@@ -1,8 +1,8 @@
 import { Bot } from '@/app';
-import { BotUser } from '@/app/entity';
+import { BotEntity } from '@/app/entity';
 import { OutgoingMessage } from '@/message/outgoing';
 
-export abstract class BotContact<T extends { uin: number, uid: string }> extends BotUser<T> {
+export abstract class BotContact<T extends { uin: number }> extends BotEntity<T> {
     protected constructor(
         public readonly bot: Bot,
         public readonly data: T,
@@ -10,8 +10,8 @@ export abstract class BotContact<T extends { uin: number, uid: string }> extends
         super(bot, data);
     }
 
-    override get uid() { // should return a non-nullable value
-        return this.data.uid;
+    get uin() {
+        return this.data.uin;
     }
 
     // TODO: use stable type instead of OutgoingMessage
