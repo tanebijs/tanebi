@@ -48,7 +48,7 @@ export const FetchGroupMembersResponse = new OidbSvcContract(
                 uin: ProtoField(4, ScalarType.UINT32, false, false),
             })),
             memberName: ProtoField(10, ScalarType.STRING, true, false),
-            specialTitle: ProtoField(17, ScalarType.STRING, true, false),
+            specialTitle: ProtoField(17, ScalarType.BYTES, true, false),
             memberCard: ProtoField(11, () => ({
                 value: ProtoField(2, ScalarType.STRING, true, false),
             }), true, false),
