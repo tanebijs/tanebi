@@ -31,8 +31,16 @@ export class Bot {
         this.friendCache = new BotCacheService<number, BotFriend>(
             this,
             async (bot) => {
-                const friendList = (await bot.ctx.ops.call('fetchFriends')).friends;
-                return new Map(friendList.map(friend => [friend.uin, {
+                // 全家4完了才能想出来这种分页的逻辑
+                // -- quoted from https://github.com/LagrangeDev/Lagrange.Core/blob/master/Lagrange.Core/Internal/Service/System/FetchFriendsService.cs#L61
+                let data = await bot.ctx.ops.call('fetchFriends');
+                let friends = data.friends;
+                while (data.nextUin) {
+                    data = await bot.ctx.ops.call('fetchFriends', data.nextUin);
+                    friends = friends.concat(data.friends);
+                }
+
+                return new Map(friends.map(friend => [friend.uin, {
                     uin: friend.uin,
                     uid: friend.uid!,
                     nickname: friend.nickname,
