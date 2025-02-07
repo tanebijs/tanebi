@@ -15,6 +15,7 @@ import { AppInfo, CoreConfig, DeviceInfo, Keystore, SignProvider } from '@/commo
 import { NetworkLogic } from '@/core/logic/NetworkLogic';
 import { SendMessageOperation } from '@/core/operation/message/SendMessageOperation';
 import { FetchGroupsOperation } from '@/core/operation/group/FetchGroupsOperation';
+import { FetchFriendsOperation } from '@/core/operation/friend/FetchFriendsOperation';
 
 /**
  * The Bot object.
@@ -30,6 +31,8 @@ export class BotContext {
     ntLoginLogic = new NTLoginLogic(this);
 
     ops = new OperationCollection(this, [
+        FetchFriendsOperation,
+
         FetchGroupsOperation,
 
         BotOnlineOperation,
