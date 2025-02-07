@@ -25,8 +25,14 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
         this.groupMemberCache = new BotCacheService<number, BotGroupMember>(
             bot,
             async (bot) => {
-                const data = (await bot.ctx.ops.call('fetchGroupMembers', this.data.uin)).members;
-                return new Map(data.map(member => [member.identity.uin, {
+                let data = await bot.ctx.ops.call('fetchGroupMembers', this.data.uin);
+                let members = data.members;
+                while (data.token) {
+                    data = await bot.ctx.ops.call('fetchGroupMembers', this.data.uin, data.token);
+                    members = members.concat(data.members);
+                }
+
+                return new Map(members.map(member => [member.identity.uin, {
                     uin: member.identity.uin,
                     uid: member.identity.uid!,
                     nickname: member.memberName,
