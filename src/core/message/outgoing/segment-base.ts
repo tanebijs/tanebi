@@ -1,5 +1,5 @@
-import { MessageElementDecoded } from '@/message';
-import { textBuilder } from '@/message/outgoing/segment/text';
+import { MessageElementDecoded } from '@/core/message';
+import { textBuilder } from '@/core/message/outgoing/segment/text';
 
 export interface OutgoingSegmentBuilder<T extends string, S> {
     segmentType: T;

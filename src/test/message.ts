@@ -1,4 +1,4 @@
-import { MessageType } from '@/message';
+import { MessageType } from '@/core/message';
 import bot from './fast';
 
 bot.ctx.events.on('messagePush', (msg) => {

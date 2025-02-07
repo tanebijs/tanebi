@@ -1,7 +1,7 @@
 import { PushMsgBody, PushMsgType } from '@/core/packet/message/PushMsg';
 import { MessageElement } from '@/core/packet/message/MessageElement';
-import { incomingSegments } from '@/message/incoming/segment-base';
-import { MessageType } from '@/message';
+import { incomingSegments } from '@/core/message/incoming/segment-base';
+import { MessageType } from '@/core/message';
 
 interface MessageBase {
     type: MessageType;

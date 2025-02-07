@@ -1,6 +1,6 @@
 import { defineOperation } from '@/core/operation/OperationBase';
 import { PbSendMsg, PbSendMsgResponse } from '@/core/packet/message/PbSendMsg';
-import { buildPbSendMsg, OutgoingMessage } from '@/message/outgoing';
+import { buildPbSendMsg, OutgoingMessage } from '@/core/message/outgoing';
 
 export const SendMessageOperation = defineOperation(
     'sendMessage',

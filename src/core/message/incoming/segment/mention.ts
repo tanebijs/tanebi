@@ -1,4 +1,4 @@
-import { defineIncoming } from '@/message/incoming/segment-base';
+import { defineIncoming } from '@/core/message/incoming/segment-base';
 
 export const mentionParser = defineIncoming(
     'text',

@@ -2,8 +2,8 @@ import { BotContext } from '@/core';
 import { PbSendMsg } from '@/core/packet/message/PbSendMsg';
 import { timestamp } from '@/core/util/format';
 import { randomInt } from '@/core/util/random';
-import { MessageType } from '@/message';
-import { outgoingSegments } from '@/message/outgoing/segment-base';
+import { MessageType } from '@/core/message';
+import { outgoingSegments } from '@/core/message/outgoing/segment-base';
 
 interface OutgoingMessageBase {
     type: MessageType;

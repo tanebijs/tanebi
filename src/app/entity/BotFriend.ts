@@ -1,7 +1,7 @@
 import { Bot } from '@/app';
 import { BotContact } from '@/app/entity';
-import { MessageType } from '@/message';
-import { OutgoingMessage } from '@/message/outgoing';
+import { MessageType } from '@/core/message';
+import { OutgoingMessage } from '@/core/message/outgoing';
 
 interface BotFriendDataBinding {
     uin: number;

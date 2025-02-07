@@ -1,6 +1,6 @@
 import { defineEvent } from '@/core/event/EventBase';
 import { PushMsg, PushMsgType } from '@/core/packet/message/PushMsg';
-import { parsePushMsgBody } from '@/message/incoming';
+import { parsePushMsgBody } from '@/core/message/incoming';
 
 export const MessagePushEvent = defineEvent(
     'messagePush',

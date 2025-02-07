@@ -1,8 +1,8 @@
 import { Bot } from '@/app';
 import { BotContact, BotGroupMember } from '@/app/entity';
 import { BotCacheService } from '@/app/util';
-import { MessageType } from '@/message';
-import { OutgoingMessage } from '@/message/outgoing';
+import { MessageType } from '@/core/message';
+import { OutgoingMessage } from '@/core/message/outgoing';
 
 interface BotGroupDataBinding {
     uin: number;

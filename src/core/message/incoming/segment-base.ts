@@ -1,6 +1,6 @@
-import { MessageElementDecoded } from '@/message';
-import { mentionParser } from '@/message/incoming/segment/mention';
-import { textParser } from '@/message/incoming/segment/text';
+import { MessageElementDecoded } from '@/core/message';
+import { mentionParser } from '@/core/message/incoming/segment/mention';
+import { textParser } from '@/core/message/incoming/segment/text';
 
 export type ElementField = keyof MessageElementDecoded;
 

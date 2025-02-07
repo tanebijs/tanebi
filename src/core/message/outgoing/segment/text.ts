@@ -1,4 +1,4 @@
-import { defineOutgoing } from '@/message/outgoing/segment-base';
+import { defineOutgoing } from '@/core/message/outgoing/segment-base';
 
 export const textBuilder = defineOutgoing(
     'text', 

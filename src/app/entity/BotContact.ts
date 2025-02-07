@@ -1,6 +1,6 @@
 import { Bot } from '@/app';
 import { BotEntity } from '@/app/entity';
-import { OutgoingMessage } from '@/message/outgoing';
+import { OutgoingMessage } from '@/core/message/outgoing';
 
 export abstract class BotContact<T extends { uin: number }> extends BotEntity<T> {
     protected constructor(
