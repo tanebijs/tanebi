@@ -18,7 +18,7 @@ This is _currently_ an experimental project intended to confirm the feasibility 
 - [x] Login by stored session
 - [x] Send messages
 - [x] Receive text messages
-- [ ] Fetch contact list & group member list
+- [x] Fetch contact list & group member list
 - [ ] Upload picture
 
 > [!TIP]
