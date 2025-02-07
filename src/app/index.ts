@@ -1,3 +1,5 @@
+import { BotFriend } from '@/app/entity';
+import { BotCacheService } from '@/app/util';
 import { AppInfo, CoreConfig, DeviceInfo, Keystore, SignProvider } from '@/common';
 import { BotContext } from '@/core';
 import { TransEmp12_QrCodeState } from '@/core/packet/login/wtlogin/TransEmp12';
@@ -13,6 +15,23 @@ export class Bot {
     }
 
     loggedIn = false;
+
+    private readonly friendCache = new BotCacheService<number, BotFriend>(
+        this,
+        async (bot) => {
+            const friendList = (await bot.ctx.ops.call('fetchFriends')).friends;
+            return new Map(friendList.map(friend => [friend.uin, {
+                uin: friend.uin,
+                uid: friend.uid!,
+                nickname: friend.nickname,
+                remark: friend.remark,
+                signature: friend.signature,
+                qid: friend.qid,
+                category: friend.category
+            }]));
+        },
+        (bot, data) => new BotFriend(bot, data),
+    );
 
     private constructor(
         appInfo: AppInfo,
@@ -132,6 +151,20 @@ export class Bot {
         }
 
         this.loggedIn = true;
+    }
+
+    /**
+     * Get all friends
+     */
+    async getFriends(forceUpdate = false) {
+        return this.friendCache.getAll(forceUpdate);
+    }
+
+    /**
+     * Get a friend by Uin
+     */
+    async getFriend(uin: number, forceUpdate = false) {
+        return this.friendCache.get(uin, forceUpdate);
     }
 
     /**
