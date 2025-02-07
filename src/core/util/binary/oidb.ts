@@ -1,8 +1,7 @@
 import { OidbBase } from '@/core/packet/oidb';
 import { NapProtoDecodeStructType, NapProtoEncodeStructType, NapProtoMsg, ProtoMessageType } from '@napneko/nap-proto-core';
 
-
-export class OidbSvcPacket<const T extends ProtoMessageType> {
+export class OidbSvcContract<const T extends ProtoMessageType> {
     private readonly bodyProto: NapProtoMsg<T>;
     
     constructor(
