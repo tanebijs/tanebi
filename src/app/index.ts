@@ -1,4 +1,4 @@
-import { BotFriend } from '@/app/entity';
+import { BotFriend, BotGroup } from '@/app/entity';
 import { BotCacheService } from '@/app/util';
 import { AppInfo, CoreConfig, DeviceInfo, Keystore, SignProvider } from '@/common';
 import { BotContext } from '@/core';
@@ -16,22 +16,8 @@ export class Bot {
 
     loggedIn = false;
 
-    private readonly friendCache = new BotCacheService<number, BotFriend>(
-        this,
-        async (bot) => {
-            const friendList = (await bot.ctx.ops.call('fetchFriends')).friends;
-            return new Map(friendList.map(friend => [friend.uin, {
-                uin: friend.uin,
-                uid: friend.uid!,
-                nickname: friend.nickname,
-                remark: friend.remark,
-                signature: friend.signature,
-                qid: friend.qid,
-                category: friend.category
-            }]));
-        },
-        (bot, data) => new BotFriend(bot, data),
-    );
+    private readonly friendCache;
+    private readonly groupCache;
 
     private constructor(
         appInfo: AppInfo,
@@ -41,6 +27,41 @@ export class Bot {
         signProvider: SignProvider,
     ) {
         this.ctx = new BotContext(appInfo, coreConfig, deviceInfo, keystore, signProvider);
+
+        this.friendCache = new BotCacheService<number, BotFriend>(
+            this,
+            async (bot) => {
+                const friendList = (await bot.ctx.ops.call('fetchFriends')).friends;
+                return new Map(friendList.map(friend => [friend.uin, {
+                    uin: friend.uin,
+                    uid: friend.uid!,
+                    nickname: friend.nickname,
+                    remark: friend.remark,
+                    signature: friend.signature,
+                    qid: friend.qid,
+                    category: friend.category
+                }]));
+            },
+            (bot, data) => new BotFriend(bot, data),
+        );
+
+        this.groupCache = new BotCacheService<number, BotGroup>(
+            this,
+            async (bot) => {
+                const groupList = (await bot.ctx.ops.call('fetchGroups')).groups;
+                return new Map(groupList.map(group => [group.groupUin, {
+                    uin: group.groupUin,
+                    name: group.info!.groupName!,
+                    description: group.info?.description,
+                    question: group.info?.question,
+                    announcement: group.info?.announcement,
+                    createdTime: group.info?.createdTime ?? 0,
+                    maxMemberCount: group.info!.memberMax!,
+                    memberCount: group.info!.memberCount!,
+                }]));
+            },
+            (bot, data) => new BotGroup(bot, data),
+        );
     }
     
     /**
@@ -170,6 +191,23 @@ export class Bot {
         return this.friendCache.get(uin, forceUpdate);
     }
 
+    /**
+     * Get all groups
+     * @param forceUpdate Whether to force update the group list
+     */
+    async getGroups(forceUpdate = false) {
+        return this.groupCache.getAll(forceUpdate);
+    }
+
+    /**
+     * Get a group by Uin
+     * @param uin Uin of the group
+     * @param forceUpdate Whether to force update the group info
+     */
+    async getGroup(uin: number, forceUpdate = false) {
+        return this.groupCache.get(uin, forceUpdate);
+    }
+    
     /**
      * Create a new Bot instance and connect it to Tencent's MSF server
      */
