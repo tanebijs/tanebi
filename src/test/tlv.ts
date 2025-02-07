@@ -1,5 +1,4 @@
-import { TlvFixedBytesField, TlvScalarField, TlvVariableField } from '@/core/util/binary/tlv/serialize';
-import { PackedTlv, Tlv } from '@/core/util/binary/tlv';
+import { Tlv, TlvScalarField, TlvFixedBytesField, TlvVariableField, PackedTlv } from '@/core/util/binary/tlv';
 
 const schema1 = Tlv.tagged([
     TlvScalarField('foo', 'int32'),
