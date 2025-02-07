@@ -26,11 +26,11 @@ export class NTLoginLogic extends LogicBase {
                 },
                 body: Buffer.from(SsoNTEasyLogin.encode({
                     tempPassword: body,
-                    captcha: this.ctx.keystore.session.captcha && {
+                    captcha: this.ctx.keystore.session.captcha ? {
                         ticket: this.ctx.keystore.session.captcha[0],
                         randStr: this.ctx.keystore.session.captcha[1],
                         aid: this.ctx.keystore.session.captcha[2],
-                    },
+                    } : undefined,
                 })),
             }), this.ctx.keystore.session.exchangeKey!),
             type: 1,
@@ -45,7 +45,7 @@ export class NTLoginLogic extends LogicBase {
         const base = SsoNTLoginBase.decode(aesGcmEncrypt(gcmCalc, this.ctx.keystore.session.exchangeKey!));
         return {
             header: base.header,
-            body: base.body && SsoNTLoginResponse.decode(base.body),
+            body: base.body ? SsoNTLoginResponse.decode(base.body) : undefined,
         };
     }
 }

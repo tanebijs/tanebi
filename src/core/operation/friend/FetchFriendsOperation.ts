@@ -37,7 +37,7 @@ export const FetchFriendsOperation = defineOperation(
                     },
                 },
             ],
-            nextUin: nextUin && { uin: nextUin },
+            nextUin: nextUin ? { uin: nextUin } : undefined,
         })),
     (ctx, payload) => {
         const response = FetchFriendsResponse.decodeBodyOrThrow(payload);

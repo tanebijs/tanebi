@@ -29,7 +29,7 @@ export class OidbSvcContract<const T extends ProtoMessageType> {
         const decoded = OidbBase.decode(data);
         return {
             ...decoded,
-            body: decoded.body && this.bodyProto.decode(decoded.body),
+            body: decoded.body ? this.bodyProto.decode(decoded.body) : undefined,
         };
     }
 
