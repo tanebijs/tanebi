@@ -16,6 +16,7 @@ import { NetworkLogic } from '@/core/logic/NetworkLogic';
 import { SendMessageOperation } from '@/core/operation/message/SendMessageOperation';
 import { FetchGroupsOperation } from '@/core/operation/group/FetchGroupsOperation';
 import { FetchFriendsOperation } from '@/core/operation/friend/FetchFriendsOperation';
+import { FetchGroupMembersOperation } from '@/core/operation/group/FetchGroupMembersOperation';
 
 /**
  * The Bot object.
@@ -33,6 +34,7 @@ export class BotContext {
     ops = new OperationCollection(this, [
         FetchFriendsOperation,
 
+        FetchGroupMembersOperation,
         FetchGroupsOperation,
 
         BotOnlineOperation,

@@ -1,3 +1,7 @@
 import bot from './fast';
 
-console.log(JSON.stringify(await bot.ctx.ops.call('fetchGroups'), null, 4));
+const groups = await bot.ctx.ops.call('fetchGroups');
+//console.log(JSON.stringify(groups, null, 4));
+
+const groupMembers = await bot.ctx.ops.call('fetchGroupMembers', groups.groups[0].groupUin);
+console.log(JSON.stringify(groupMembers, null, 4));
