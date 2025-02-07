@@ -9,7 +9,7 @@ const bot = await Bot.create(
     {},
     newDeviceInfo(),
     newKeystore(),
-    UrlSignProvider('http://106.54.14.24:8084/api/sign/30366'),
+    UrlSignProvider(signUrl),
 );
 
 if (!fs.existsSync('temp')) {
