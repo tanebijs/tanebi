@@ -1,10 +1,12 @@
+import { BotContext } from '@/core';
 import { MessageElementDecoded } from '@/core/message';
+import { OutgoingMessage } from '@/core/message/outgoing';
 import { mentionBuilder } from '@/core/message/outgoing/segment/mention';
 import { textBuilder } from '@/core/message/outgoing/segment/text';
 
 export interface OutgoingSegmentBuilder<T extends string, S> {
     segmentType: T;
-    build(segment: S): MessageElementDecoded;
+    build(segment: S, msg: OutgoingMessage, ctx: BotContext): MessageElementDecoded;
 }
 
 export function defineOutgoing<T extends string, S>(
@@ -27,10 +29,10 @@ export class OutgoingSegmentCollection<T extends OutgoingSegmentBuilder<string, 
         );
     }
 
-    build(segment: ConstructInputType<T[number]>): MessageElementDecoded | undefined {
+    build(segment: ConstructInputType<T[number]>, msg: OutgoingMessage, ctx: BotContext): MessageElementDecoded | undefined {
         const builder = this.builderMap[segment.type];
         if (builder) {
-            return builder.build(segment);
+            return builder.build(segment, msg, ctx);
         }
     }
 }
