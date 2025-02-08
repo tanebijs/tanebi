@@ -6,7 +6,7 @@ import { textBuilder } from '@/core/message/outgoing/segment/text';
 
 export interface OutgoingSegmentBuilder<T extends string, S> {
     segmentType: T;
-    build(segment: S, msg: OutgoingMessage, ctx: BotContext): MessageElementDecoded;
+    build(segment: S, msg: OutgoingMessage, ctx: BotContext): MessageElementDecoded | MessageElementDecoded[] | undefined;
 }
 
 export function defineOutgoing<T extends string, S>(
@@ -29,11 +29,17 @@ export class OutgoingSegmentCollection<T extends OutgoingSegmentBuilder<string, 
         );
     }
 
-    build(segment: ConstructInputType<T[number]>, msg: OutgoingMessage, ctx: BotContext): MessageElementDecoded | undefined {
+    build(segment: ConstructInputType<T[number]>, msg: OutgoingMessage, ctx: BotContext): MessageElementDecoded[] {
         const builder = this.builderMap[segment.type];
         if (builder) {
-            return builder.build(segment, msg, ctx);
+            const buildResult = builder.build(segment, msg, ctx);
+            if (Array.isArray(buildResult)) {
+                return buildResult;
+            } else if (buildResult) {
+                return [buildResult];
+            }
         }
+        return [];
     }
 }
 

@@ -28,9 +28,7 @@ export function buildPbSendMsg(ctx: BotContext, message: OutgoingMessage): Param
     const result = buildPbSendMsgBase(message);
     for (const segment of message.segments) {
         const element = outgoingSegments.build(segment, message, ctx);
-        if (element) {
-            result.body!.richText!.elements!.push(element);
-        }
+        result.body!.richText!.elements!.push(...element);
     }
     return result;
 }
