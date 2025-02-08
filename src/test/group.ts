@@ -1,3 +1,4 @@
+import { b } from '@/app/message';
 import bot from './fast';
 
 const groups = await bot.getGroups();
@@ -10,7 +11,8 @@ for (const group of groups) {
         // Be sure that all members in the group are aware of this test / know you well
         // or they will be mad at you
         const sendMsgResult = await group.sendMsg([
-            { type: 'text', content: 'Hello, this is a test message.' },
+            b.text('Hello, this is a test message.'),
+            b.mention((await group.getMember(0))!), // Substitute with your Uin
         ]);
         console.log(`Message sent, sequence: ${sendMsgResult.sequence}, timestamp: ${sendMsgResult.timestamp}`);
 
