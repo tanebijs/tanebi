@@ -13,3 +13,7 @@ export function mention(member: BotGroupMember): OutgoingMessage['segments'][num
         name: '@' + (member.card || member.nickname),
     };
 }
+
+export function mentionAll(): OutgoingMessage['segments'][number] {
+    return { type: 'mention', uin: 0, uid: '', name: '@全体成员' };
+}
