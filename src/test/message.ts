@@ -1,5 +1,5 @@
-import { MessageType } from '@/core/message';
 import bot from './fast';
+import { b } from '@/app/message';
 
 bot.ctx.events.on('messagePush', (msg) => {
     if (msg) {
@@ -8,13 +8,7 @@ bot.ctx.events.on('messagePush', (msg) => {
     }
 });
 
-setTimeout(() => {
-    bot.ctx.ops.call('sendMessage', {
-        type: MessageType.GroupMessage,
-        groupUin: 0, // substitute with your group uin
-        clientSequence: 100000,
-        segments: [
-            { type: 'text', content: 'Hello, world!' },
-        ]
-    }).then(resp => console.log(resp));
-}, 3000);
+const group = await bot.getGroup(0); // Substitute with your group's Uin
+console.log(await group?.sendMsg([
+    b.text('Hello, this is a test message.'),
+]));
