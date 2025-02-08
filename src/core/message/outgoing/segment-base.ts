@@ -1,4 +1,5 @@
 import { MessageElementDecoded } from '@/core/message';
+import { mentionBuilder } from '@/core/message/outgoing/segment/mention';
 import { textBuilder } from '@/core/message/outgoing/segment/text';
 
 export interface OutgoingSegmentBuilder<T extends string, S> {
@@ -36,4 +37,5 @@ export class OutgoingSegmentCollection<T extends OutgoingSegmentBuilder<string, 
 
 export const outgoingSegments = new OutgoingSegmentCollection([
     textBuilder,
+    mentionBuilder,
 ]);

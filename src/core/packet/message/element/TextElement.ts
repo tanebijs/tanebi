@@ -10,8 +10,8 @@ export const TextElement = new NapProtoMsg({
 });
 
 export enum MentionType {
-    Someone = 1,
-    All = 2,
+    Someone = 2,
+    All = 1,
 }
 
 export const MentionExtra = new NapProtoMsg({
