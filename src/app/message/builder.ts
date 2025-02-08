@@ -10,6 +10,6 @@ export function mention(member: BotGroupMember): OutgoingMessage['segments'][num
         type: 'mention',
         uin: member.uin,
         uid: member.uid,
-        name: '@' + member.nickname,
+        name: '@' + (member.card || member.nickname),
     };
 }
