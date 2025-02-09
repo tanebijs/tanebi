@@ -28,9 +28,9 @@ export interface GroupMessage extends MessageBase {
     groupUin: number;
 }
 
-export type MessageChain = PrivateMessage | GroupMessage;
+export type IncomingMessage = PrivateMessage | GroupMessage;
 
-export function parsePushMsgBody(pushMsg: ReturnType<typeof PushMsgBody.decode>): MessageChain {
+export function parsePushMsgBody(pushMsg: ReturnType<typeof PushMsgBody.decode>): IncomingMessage {
     const result = parseMetadata(pushMsg);
     if (pushMsg.body?.richText?.elements) {
         for (const element of pushMsg.body.richText.elements) {
@@ -53,7 +53,7 @@ export function parsePushMsgBody(pushMsg: ReturnType<typeof PushMsgBody.decode>)
     return result;
 }
 
-function parseMetadata(pushMsg: ReturnType<typeof PushMsgBody.decode>): MessageChain {
+function parseMetadata(pushMsg: ReturnType<typeof PushMsgBody.decode>): IncomingMessage {
     if (!pushMsg.responseHead.groupExt) {
         return {
             type: MessageType.PrivateMessage,
