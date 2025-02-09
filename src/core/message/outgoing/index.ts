@@ -11,6 +11,7 @@ interface OutgoingMessageBase {
     type: MessageType;
     segments: OutgoingSegment[];
     clientSequence: number;
+    repliedSequence?: number;
 }
 
 export interface OutgoingPrivateMessage extends OutgoingMessageBase {

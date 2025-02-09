@@ -94,12 +94,13 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
         return this.groupMemberCache.get(uin, forceUpdate);
     }
 
-    override async sendMsg(segments: OutgoingMessage['segments']) {
+    override async sendMsg(segments: OutgoingMessage['segments'], repliedSequence?: number) {
         return this.bot.ctx.ops.call('sendMessage', {
             type: MessageType.GroupMessage,
             groupUin: this.data.uin,
             clientSequence: this.clientSequence++,
             segments,
+            repliedSequence
         });
     }
 }

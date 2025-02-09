@@ -44,13 +44,14 @@ export class BotFriend extends BotContact<BotFriendDataBinding> {
         return this.data.category;
     }
 
-    override async sendMsg(segments: OutgoingMessage['segments']) {
+    override async sendMsg(segments: OutgoingMessage['segments'], repliedSequence?: number) {
         return this.bot.ctx.ops.call('sendMessage', {
             type: MessageType.PrivateMessage,
             targetUin: this.data.uin,
             targetUid: this.data.uid,
             clientSequence: this.clientSequence++,
             segments,
+            repliedSequence,
         });
     }
 }
