@@ -81,6 +81,12 @@ export class NetworkLogic extends LogicBase {
         });
     }
 
+    /**
+     * Send an SSO packet to the server and ignore the response
+     * @param cmd Command
+     * @param src Source buffer, or packet body
+     * @param seq Sequence number
+     */
     async postSsoPacket(cmd: string, src: Buffer, seq: number) {
         const packet = await this.ctx.ssoPacketLogic.buildSsoPacket(cmd, src, seq);
         await this.outgoingDataMutex.runExclusive(() => {
