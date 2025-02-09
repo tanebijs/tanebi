@@ -5,9 +5,11 @@ import { randomInt } from '@/core/util/random';
 import { MessageType } from '@/core/message';
 import { outgoingSegments } from '@/core/message/outgoing/segment-base';
 
+export type OutgoingSegment = Exclude<Parameters<typeof outgoingSegments.build>[0], undefined>;
+
 interface OutgoingMessageBase {
     type: MessageType;
-    segments: (Exclude<Parameters<typeof outgoingSegments.build>[0], undefined>)[];
+    segments: OutgoingSegment[];
     clientSequence: number;
 }
 

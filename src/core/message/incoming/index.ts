@@ -1,7 +1,8 @@
 import { PushMsgBody, PushMsgType } from '@/core/packet/message/PushMsg';
-import { MessageElement } from '@/core/packet/message/MessageElement';
 import { incomingSegments } from '@/core/message/incoming/segment-base';
-import { MessageType } from '@/core/message';
+import { MessageElementDecoded, MessageType } from '@/core/message';
+
+export type IncomingSegment = Exclude<ReturnType<typeof incomingSegments.parse>, undefined>;
 
 interface MessageBase {
     type: MessageType;
@@ -10,8 +11,8 @@ interface MessageBase {
     senderUid?: string;
     sequence: number;
     repliedSequence?: number;
-    segments: (Exclude<ReturnType<typeof incomingSegments.parse>, undefined>)[];
-    internalElems?: ReturnType<typeof MessageElement.decode>[];
+    segments: IncomingSegment[];
+    internalElems?: MessageElementDecoded[];
     msgUid?: bigint;
 }
 
