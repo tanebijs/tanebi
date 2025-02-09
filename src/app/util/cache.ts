@@ -1,10 +1,12 @@
 import { Bot } from '@/app';
 import { BotEntity } from '@/app/entity';
+import { Mutex } from 'async-mutex';
 
 type ExtractDataBinding<V> = V extends BotEntity<infer U> ? U : never;
 
 export class BotCacheService<K, V extends BotEntity<unknown>>{
-    private readonly map = new Map<K, V>();
+    private readonly mutex = new Mutex();
+    private map = new Map<K, V>();
 
     constructor(
         public readonly bot: Bot,
@@ -14,7 +16,7 @@ export class BotCacheService<K, V extends BotEntity<unknown>>{
     }
 
     async get(key: K, forceUpdate = false) {
-        if (!this.map.has(key) || forceUpdate) {
+        if (!this.map.has(key) || forceUpdate) {                                                 
             await this.update();
         }
         return this.map.get(key);
@@ -28,24 +30,24 @@ export class BotCacheService<K, V extends BotEntity<unknown>>{
     }
 
     async update() {
-        const data = await this.updateCache(this.bot);
-        this.acceptData(data);
+        // schedule update
+        await this.mutex.runExclusive(async () => {
+            const data = await this.updateCache(this.bot);
+            this.acceptData(data);
+        });
     }
 
     acceptData(data: Map<K, ExtractDataBinding<V>>) {
-        for (const key of this.map.keys()) {
-            if (!data.has(key)) {
-                this.map.delete(key);
-            }
-        }
-        
+        const map = new Map(this.map);
         for (const [key, value] of data.entries()) {
             const entity = this.map.get(key);
             if (entity) {
                 entity.updateBinding(value);
+                map.set(key, entity);
             } else {
-                this.map.set(key, this.entityFactory(this.bot, value));
+                map.set(key, this.entityFactory(this.bot, value));
             }
         }
+        this.map = map;
     }
 }
