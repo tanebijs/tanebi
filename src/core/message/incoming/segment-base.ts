@@ -1,4 +1,5 @@
 import { MessageElementDecoded } from '@/core/message';
+import { imageCommonParser, imageCustomFaceParser, imageNotOnlineParser } from '@/core/message/incoming/segment/image';
 import { mentionParser } from '@/core/message/incoming/segment/mention';
 import { textParser } from '@/core/message/incoming/segment/text';
 
@@ -49,4 +50,7 @@ export class IncomingSegmentCollection<
 export const incomingSegments = new IncomingSegmentCollection([
     textParser,
     mentionParser,
+    imageCommonParser,
+    imageNotOnlineParser,
+    imageCustomFaceParser,
 ]);
