@@ -23,3 +23,17 @@ This is _currently_ an experimental project intended to confirm the feasibility 
 
 > [!TIP]
 > If you want to contribute to this project, please consider using **Visual Studio Code** instead of JetBrains IDEs to improve type inferring performance and enhance coding experience.
+
+<details>
+
+<summary> "Tanebi" </summary>
+
+> It’s the blazing our sound
+>
+> We all sing out with the same heat
+>
+> We will go with our song
+>
+> Yet still tomorrow is unknown
+
+</details>
