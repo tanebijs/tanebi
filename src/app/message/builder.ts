@@ -1,11 +1,10 @@
-import { BotGroupMember } from '@/app/entity';
-import { OutgoingMessage } from '@/core/message/outgoing';
+import { BotGroupMember, OutgoingSegment } from '@/app/entity';
 
-export function text(content: string): OutgoingMessage['segments'][number] {
+export function text(content: string): OutgoingSegment {
     return { type: 'text', content };
 }
 
-export function mention(member: BotGroupMember): OutgoingMessage['segments'][number] {
+export function mention(member: BotGroupMember): OutgoingSegment {
     return {
         type: 'mention',
         uin: member.uin,
@@ -14,6 +13,6 @@ export function mention(member: BotGroupMember): OutgoingMessage['segments'][num
     };
 }
 
-export function mentionAll(): OutgoingMessage['segments'][number] {
+export function mentionAll(): OutgoingSegment {
     return { type: 'mention', uin: 0, uid: '', name: '@全体成员' };
 }

@@ -2,7 +2,7 @@ import { Bot } from '@/app';
 import { BotContact, BotGroupMember } from '@/app/entity';
 import { BotCacheService } from '@/app/util';
 import { MessageType } from '@/core/message';
-import { OutgoingMessage } from '@/core/message/outgoing';
+import { OutgoingSegment } from '@/core/message/outgoing';
 
 interface BotGroupDataBinding {
     uin: number;
@@ -94,7 +94,7 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
         return this.groupMemberCache.get(uin, forceUpdate);
     }
 
-    override async sendMsg(segments: OutgoingMessage['segments'], repliedSequence?: number) {
+    override async sendMsg(segments: OutgoingSegment[], repliedSequence?: number) {
         return this.bot.ctx.ops.call('sendMessage', {
             type: MessageType.GroupMessage,
             groupUin: this.data.uin,

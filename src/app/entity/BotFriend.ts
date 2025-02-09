@@ -1,7 +1,7 @@
 import { Bot } from '@/app';
 import { BotContact } from '@/app/entity';
 import { MessageType } from '@/core/message';
-import { OutgoingMessage } from '@/core/message/outgoing';
+import { OutgoingSegment } from '@/core/message/outgoing';
 
 interface BotFriendDataBinding {
     uin: number;
@@ -44,7 +44,7 @@ export class BotFriend extends BotContact<BotFriendDataBinding> {
         return this.data.category;
     }
 
-    override async sendMsg(segments: OutgoingMessage['segments'], repliedSequence?: number) {
+    override async sendMsg(segments: OutgoingSegment[], repliedSequence?: number) {
         return this.bot.ctx.ops.call('sendMessage', {
             type: MessageType.PrivateMessage,
             targetUin: this.data.uin,
