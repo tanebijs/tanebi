@@ -1,6 +1,6 @@
 import { Bot } from '@/app';
 import { BotEntity } from '@/app/entity';
-import { OutgoingSegment } from '@/core/message/outgoing';
+import { OutgoingSegment, OutgoingSegmentOf } from '@/core/message/outgoing';
 
 export abstract class BotContact<T extends { uin: number }> extends BotEntity<T> {
     protected constructor(
@@ -18,4 +18,4 @@ export abstract class BotContact<T extends { uin: number }> extends BotEntity<T>
     abstract sendMsg(segments: OutgoingSegment[], repliedSequence?: number): Promise<{ sequence: number, timestamp: number }>;
 }
 
-export type { OutgoingSegment };
+export type { OutgoingSegment, OutgoingSegmentOf };

@@ -3,6 +3,7 @@ import { incomingSegments } from '@/core/message/incoming/segment-base';
 import { MessageElementDecoded, MessageType } from '@/core/message';
 
 export type IncomingSegment = Exclude<ReturnType<typeof incomingSegments.parse>, undefined>;
+export type IncomingSegmentOf<T extends IncomingSegment['type']> = Extract<IncomingSegment, { type: T }>;
 
 interface MessageBase {
     type: MessageType;

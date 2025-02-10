@@ -1,10 +1,10 @@
-import { BotGroupMember, OutgoingSegment } from '@/app/entity';
+import { BotGroupMember, OutgoingSegmentOf } from '@/app/entity';
 
-export function text(content: string): OutgoingSegment {
+export function text(content: string): OutgoingSegmentOf<'text'> {
     return { type: 'text', content };
 }
 
-export function mention(member: BotGroupMember): OutgoingSegment {
+export function mention(member: BotGroupMember): OutgoingSegmentOf<'mention'> {
     return {
         type: 'mention',
         uin: member.uin,
@@ -13,6 +13,6 @@ export function mention(member: BotGroupMember): OutgoingSegment {
     };
 }
 
-export function mentionAll(): OutgoingSegment {
+export function mentionAll(): OutgoingSegmentOf<'mention'> {
     return { type: 'mention', uin: 0, uid: '', name: '@全体成员' };
 }
