@@ -1,7 +1,9 @@
 import { Bot } from '@/app';
 import { BotContact } from '@/app/entity';
+import { DispatchedMessage } from '@/app/message';
 import { MessageType } from '@/core/message';
 import { OutgoingSegment } from '@/core/message/outgoing';
+import EventEmitter from 'node:events';
 
 interface BotFriendDataBinding {
     uin: number;
@@ -15,6 +17,9 @@ interface BotFriendDataBinding {
 
 export class BotFriend extends BotContact<BotFriendDataBinding> {
     private clientSequence = 100000;
+    private messageChannel: EventEmitter<{
+        message: [DispatchedMessage, boolean /* isSelf */, number /* sequence */],
+    }> = new EventEmitter();
 
     constructor(bot: Bot, data: BotFriendDataBinding) {
         super(bot, data);
@@ -53,5 +58,13 @@ export class BotFriend extends BotContact<BotFriendDataBinding> {
             segments,
             repliedSequence,
         });
+    }
+
+    onMessage(listener: (message: DispatchedMessage, isSelf: boolean, sequence: number) => void) {
+        this.messageChannel.on('message', listener);
+    }
+
+    dispatchMessage(message: DispatchedMessage, isSelf: boolean, sequence: number) {
+        this.messageChannel.emit('message', message, isSelf, sequence);
     }
 }

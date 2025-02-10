@@ -1,8 +1,10 @@
 import { Bot } from '@/app';
 import { BotContact, BotGroupMember } from '@/app/entity';
+import { DispatchedMessage } from '@/app/message';
 import { BotCacheService } from '@/app/util';
 import { MessageType } from '@/core/message';
 import { OutgoingSegment } from '@/core/message/outgoing';
+import EventEmitter from 'node:events';
 
 interface BotGroupDataBinding {
     uin: number;
@@ -18,6 +20,9 @@ interface BotGroupDataBinding {
 export class BotGroup extends BotContact<BotGroupDataBinding> {
     private clientSequence = 100000;
     private readonly groupMemberCache;
+    private messageChannel: EventEmitter<{
+        message: [DispatchedMessage, BotGroupMember, number /* sequence */],
+    }> = new EventEmitter();
 
     constructor(bot: Bot, data: BotGroupDataBinding) {
         super(bot, data);
@@ -102,5 +107,13 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
             segments,
             repliedSequence
         });
+    }
+
+    onMessage(listener: (message: DispatchedMessage, sender: BotGroupMember, sequence: number) => void) {
+        this.messageChannel.on('message', listener);
+    }
+
+    dispatchMessage(message: DispatchedMessage, sender: BotGroupMember, sequence: number) {
+        this.messageChannel.emit('message', message, sender, sequence);
     }
 }
