@@ -21,7 +21,7 @@ export enum ImageSubType {
 export const imageCommonParser = defineIncoming(
     'common',
     'image',
-    (element) => {
+    (element): ImageSegment | undefined => {
         if (
             element.serviceType === 48
             && (element.businessType === 20 || element.businessType === 10)
@@ -34,7 +34,7 @@ export const imageCommonParser = defineIncoming(
                     indexNode: msgInfoBody.index,
                     subType: msgInfo.extBizInfo?.pic?.bizType ?? ImageSubType.Picture,
                     summary: msgInfo.extBizInfo?.pic?.textSummary || '[图片]'
-                } satisfies ImageSegment;
+                };
             }
         }
     },
@@ -43,20 +43,20 @@ export const imageCommonParser = defineIncoming(
 export const imageNotOnlineParser = defineIncoming(
     'notOnlineImage',
     'image',
-    (element) => {
+    (element): ImageSegment | undefined => {
         if (element.origUrl) {
             if (element.origUrl.includes('&fileid=')) { // is NT image
                 return {
                     url: `${ntImageUrlBase}${element.origUrl}`,
                     subType: ImageSubType.Picture,
                     summary: element.pbRes?.summary || '[图片]',
-                } satisfies ImageSegment;
+                };
             } else { // is legacy image
                 return {
                     url: `${legacyImageUrlBase}${element.origUrl}`,
                     subType: ImageSubType.Picture,
                     summary: element.pbRes?.summary || '[图片]',
-                } satisfies ImageSegment;
+                };
             }
         }
     }
@@ -65,20 +65,20 @@ export const imageNotOnlineParser = defineIncoming(
 export const imageCustomFaceParser = defineIncoming(
     'customFace',
     'image',
-    (element) => {
+    (element): ImageSegment | undefined => {
         if (element.origUrl) {
             if (element.origUrl.includes('&fileid=')) { // is NT image
                 return {
                     url: `${ntImageUrlBase}${element.origUrl}`,
                     subType: element.pbReserve?.subType ?? parseSubTypeFromOldData(element.oldData),
                     summary: element.pbReserve?.summary || '[动画表情]',
-                } satisfies ImageSegment;
+                };
             } else { // is legacy image
                 return {
                     url: `${legacyImageUrlBase}${element.origUrl}`,
                     subType: element.pbReserve?.subType ?? parseSubTypeFromOldData(element.oldData),
                     summary: element.pbReserve?.summary || '[动画表情]',
-                } satisfies ImageSegment;
+                };
             }
         }
     }
