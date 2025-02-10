@@ -1,4 +1,5 @@
 import { BotFriend, BotGroup } from '@/app/entity';
+import { MessageDispatcher } from '@/app/message';
 import { BotCacheService } from '@/app/util';
 import { AppInfo, CoreConfig, DeviceInfo, Keystore, SignProvider } from '@/common';
 import { BotContext } from '@/core';
@@ -18,6 +19,8 @@ export class Bot {
 
     private readonly friendCache;
     private readonly groupCache;
+
+    private readonly messageDispatcher;
 
     private constructor(
         appInfo: AppInfo,
@@ -70,6 +73,14 @@ export class Bot {
             },
             (bot, data) => new BotGroup(bot, data),
         );
+
+        this.messageDispatcher = new MessageDispatcher(this);
+
+        this.ctx.events.on('messagePush', (data) => {
+            if (data) {
+                this.messageDispatcher.emit(data);
+            }
+        });
     }
     
     /**
