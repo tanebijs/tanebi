@@ -7,6 +7,7 @@ type ExtractDataBinding<V> = V extends BotEntity<infer U> ? U : never;
 export class BotCacheService<K, V extends BotEntity<unknown>>{
     private readonly mutex = new Mutex();
     private map = new Map<K, V>();
+    private updating: boolean = false;
 
     constructor(
         public readonly bot: Bot,
@@ -30,11 +31,21 @@ export class BotCacheService<K, V extends BotEntity<unknown>>{
     }
 
     async update() {
-        // schedule update
-        await this.mutex.runExclusive(async () => {
-            const data = await this.updateCache(this.bot);
-            this.acceptData(data);
-        });
+        if (this.updating) {
+            await this.mutex.runExclusive(() => {});
+        } else {
+            await this.mutex.runExclusive(async () => {
+                this.updating = true;
+                try {
+                    const data = await this.updateCache(this.bot);
+                    this.acceptData(data);
+                } catch {
+                    // TODO: log warning
+                } finally {
+                    this.updating = false;
+                }
+            });
+        }
     }
 
     acceptData(data: Map<K, ExtractDataBinding<V>>) {
