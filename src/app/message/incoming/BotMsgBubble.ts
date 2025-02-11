@@ -1,8 +1,8 @@
 import { BotContact, BotGroup, BotGroupMember } from '@/app/entity';
-import { BotMsgImage } from '@/app/message/incoming';
+import { BotMsgImage, BotMsgType } from '@/app/message/incoming';
 import { IncomingSegment } from '@/core/message/incoming';
 
-export class BotMsgBubble {
+export class BotMsgBubble implements BotMsgType {
     private constructor(public readonly segments: BubbleSegment[]) {}
 
     static async create(data: IncomingSegment[], peer: BotContact) {
@@ -34,6 +34,20 @@ export class BotMsgBubble {
                 )
             ).filter((e) => e !== undefined)
         );
+    }
+
+    toPreviewString() {
+        return this.segments.map((segment) => {
+            if (segment.type === 'text') {
+                return segment.content;
+            } else if (segment.type === 'mention') {
+                return `@${segment.mentioned.card || segment.mentioned.nickname}`;
+            } else if (segment.type === 'mentionAll') {
+                return '@全体成员';
+            } else if (segment.type === 'image') {
+                return '[图片]';
+            }
+        }).join(' ');
     }
 }
 

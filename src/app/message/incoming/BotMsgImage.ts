@@ -15,4 +15,8 @@ export class BotMsgImage {
 
         throw new Error('Unexpected input data');
     }
+
+    toPreviewString() {
+        return '[图片]';
+    }
 }
