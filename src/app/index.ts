@@ -16,6 +16,7 @@ export class Bot {
     }
 
     loggedIn = false;
+    heartbeatIntervalRef?: NodeJS.Timeout;
 
     private readonly friendCache;
     private readonly groupCache;
@@ -191,6 +192,10 @@ export class Bot {
         }
 
         this.loggedIn = true;
+
+        this.heartbeatIntervalRef = setInterval(() => {
+            this.ctx.ops.call('heartbeat');
+        }, 4.5 * 60 * 1000 /* 4.5 minute */);
     }
 
     /**

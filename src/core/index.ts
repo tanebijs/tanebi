@@ -17,6 +17,7 @@ import { SendMessageOperation } from '@/core/operation/message/SendMessageOperat
 import { FetchGroupsOperation } from '@/core/operation/group/FetchGroupsOperation';
 import { FetchFriendsOperation } from '@/core/operation/friend/FetchFriendsOperation';
 import { FetchGroupMembersOperation } from '@/core/operation/group/FetchGroupMembersOperation';
+import { HeartbeatOperation } from '@/core/operation/login/HeartbeatOperation';
 
 /**
  * The Bot object.
@@ -39,6 +40,7 @@ export class BotContext {
 
         BotOnlineOperation,
         FetchQrCodeOperation,
+        HeartbeatOperation,
         KeyExchangeOperation,
         NTEasyLoginOperation,
         QueryQrCodeResultOperation,
