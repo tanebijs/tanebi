@@ -26,6 +26,7 @@ export class MessageDispatcher {
                     type: 'image',
                     content: await BotMsgImage.create(firstSegment),
                 }, incoming, contact);
+                return;
             }
         }
 
