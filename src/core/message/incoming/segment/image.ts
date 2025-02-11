@@ -3,7 +3,7 @@ import { CustomFaceElement } from '@/core/packet/message/element/CustomFaceEleme
 import { IndexNode } from '@/core/packet/oidb/media/IndexNode';
 import { MsgInfo } from '@/core/packet/oidb/media/MsgInfo';
 
-interface ImageSegment {
+export interface ImageSegment {
     indexNode?: ReturnType<typeof IndexNode.decode>,
     url?: string,
     subType: ImageSubType,
