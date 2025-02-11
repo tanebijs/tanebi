@@ -30,10 +30,12 @@ export class MessageDispatcher {
             }
         }
 
-        await this.dispatch({
-            type: 'bubble',
-            content: await BotMsgBubble.create(segments, contact),
-        }, incoming, contact);
+        if (firstSegment.type === 'text' || firstSegment.type === 'mention' || firstSegment.type === 'image') {
+            await this.dispatch({
+                type: 'bubble',
+                content: await BotMsgBubble.create(segments, contact),
+            }, incoming, contact);
+        }
     }
 
     async dispatch(message: DispatchedMessage, raw: IncomingMessage, contact: BotContact) {
