@@ -22,7 +22,7 @@ export const NTV2RichMediaRequest = new NapProtoMsg({
     extension: ProtoField(99, ScalarType.BYTES, true, false),
 });
 
-export function MediaRequestOf<T extends 
+export function NTV2RichMediaRequestOf<T extends 
     Exclude<keyof typeof NTV2RichMediaRequest.fields, 'reqHead' | 'extension'>
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 >(_type: T) {

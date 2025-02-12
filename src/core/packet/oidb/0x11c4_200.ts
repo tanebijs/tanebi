@@ -1,4 +1,4 @@
-import { MediaRequestOf as NTV2RichMediaRequestOf } from '@/core/packet/oidb/media/request/NTV2RichMediaRequest';
+import { NTV2RichMediaRequestOf } from '@/core/packet/oidb/media/request/NTV2RichMediaRequest';
 import { NTV2RichMediaResponseOf } from '@/core/packet/oidb/media/response/NTV2RichMediaResponse';
 import { OidbSvcContract } from '@/core/util/binary/oidb';
 
