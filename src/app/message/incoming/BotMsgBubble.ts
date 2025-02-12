@@ -47,7 +47,7 @@ export class BotMsgBubble implements BotMsgType {
             } else if (segment.type === 'image') {
                 return '[图片]';
             }
-        }).join(' ');
+        }).join('');
     }
 }
 
