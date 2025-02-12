@@ -24,7 +24,7 @@ export class MessageDispatcher {
             if (firstSegment.type === 'image') {
                 await this.dispatch({
                     type: 'image',
-                    content: await BotMsgImage.create(firstSegment),
+                    content: await BotMsgImage.create(firstSegment, incoming, this.bot),
                 }, incoming, contact);
                 return;
             }
@@ -33,7 +33,7 @@ export class MessageDispatcher {
         if (firstSegment.type === 'text' || firstSegment.type === 'mention' || firstSegment.type === 'image') {
             await this.dispatch({
                 type: 'bubble',
-                content: await BotMsgBubble.create(segments, contact),
+                content: await BotMsgBubble.create(segments, contact, incoming, this.bot),
             }, incoming, contact);
         }
     }

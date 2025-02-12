@@ -18,6 +18,7 @@ import { FetchGroupsOperation } from '@/core/operation/group/FetchGroupsOperatio
 import { FetchFriendsOperation } from '@/core/operation/friend/FetchFriendsOperation';
 import { FetchGroupMembersOperation } from '@/core/operation/group/FetchGroupMembersOperation';
 import { HeartbeatOperation } from '@/core/operation/login/HeartbeatOperation';
+import { DownloadGroupImageOperation } from '@/core/operation/message/DownloadGroupImageOperation';
 
 /**
  * The Bot object.
@@ -46,6 +47,7 @@ export class BotContext {
         QueryQrCodeResultOperation,
         WtLoginOperation,
         
+        DownloadGroupImageOperation,
         SendMessageOperation,
     ]);
 

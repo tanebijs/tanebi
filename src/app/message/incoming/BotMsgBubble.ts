@@ -1,11 +1,12 @@
+import { Bot } from '@/app';
 import { BotContact, BotGroup, BotGroupMember } from '@/app/entity';
 import { BotMsgImage, BotMsgType } from '@/app/message/incoming';
-import { IncomingSegment } from '@/core/message/incoming';
+import { IncomingMessage, IncomingSegment } from '@/core/message/incoming';
 
 export class BotMsgBubble implements BotMsgType {
     private constructor(public readonly segments: BubbleSegment[]) {}
 
-    static async create(data: IncomingSegment[], peer: BotContact) {
+    static async create(data: IncomingSegment[], peer: BotContact, msg: IncomingMessage, bot: Bot) {
         return new BotMsgBubble(
             (
                 await Promise.all(
@@ -27,7 +28,7 @@ export class BotMsgBubble implements BotMsgType {
                             }
                             // TODO: warn about mention in private chat
                         } else if (element.type === 'image') {
-                            return { type: 'image', content: await BotMsgImage.create(element) };
+                            return { type: 'image', content: await BotMsgImage.create(element, msg, bot) };
                         }
                         // TODO: warn about unknown type
                     })
