@@ -9,7 +9,7 @@ export const MultiMediaReqHead = new NapProtoMsg({
         sceneType: ProtoField(200, ScalarType.UINT32, false, false),
         c2CExt: ProtoField(201, () => ({
             accountType: ProtoField(1, ScalarType.UINT32, false, false),
-            targetUid: ProtoField(2, ScalarType.STRING, true, false),
+            uid: ProtoField(2, ScalarType.STRING, true, false),
         }), true, false),
         groupExt: ProtoField(202, () => ({
             groupUin: ProtoField(1, ScalarType.UINT32, false, false),
