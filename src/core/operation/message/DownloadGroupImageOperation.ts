@@ -19,15 +19,7 @@ export const DownloadGroupImageOperation = defineOperation(
             },
             client: { agentType: 2 },
         },
-        download: {
-            node,
-            download: {
-                video: {
-                    busiType: 0,
-                    sceneType: 0,
-                },
-            },
-        },
+        download: { node },
     })),
     (ctx, payload) => {
         const response = DownloadGroupImageResponse.decodeBodyOrThrow(payload).download;
