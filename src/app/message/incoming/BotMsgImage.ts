@@ -12,7 +12,7 @@ export class BotMsgImage {
 
         if (data.indexNode) {
             return new BotMsgImage(msg.type === MessageType.PrivateMessage ?
-                '' : // TODO: implement downloadPrivateImage
+                await bot.ctx.ops.call('downloadPrivateImage', msg.senderUid!, data.indexNode) :
                 await bot.ctx.ops.call('downloadGroupImage', msg.groupUin, data.indexNode),
             );
         }
