@@ -11,23 +11,6 @@ NTQQ Protocol Implementation with Pure TypeScript, derived from the following pr
 
 The word "tanebi" is from Japanese and means "tinder" in English or "火种" in Chinese. The name is in respect of previous and contemporary QQ protocol implementation projects. No matter they are alive or not, they are the "tanebi" of today's QQ bot development.
 
-This is _currently_ an experimental project intended to confirm the feasibility of implementing NTQQ protocol with TypeScript, instead of a full-featured project. The following features are planned to be implemented:
-
-- [x] Encryption & Decryption
-- [x] Login by QR Code
-- [x] Login by stored session
-- [x] Send messages
-- [x] Receive text messages
-- [x] Fetch contact list & group member list
-- [ ] Upload picture
-
-> [!TIP]
-> If you want to contribute to this project, please consider using **Visual Studio Code** instead of JetBrains IDEs to improve type inferring performance and enhance coding experience.
-
-<details>
-
-<summary> "Tanebi" </summary>
-
 > It’s the blazing our sound
 >
 > We all sing out with the same heat
@@ -36,4 +19,87 @@ This is _currently_ an experimental project intended to confirm the feasibility 
 >
 > Yet still tomorrow is unknown
 
+## Features
+
+<details>
+<summary> Protocol </summary>
+
+- [x] Windows[^1]
+- [x] macOS[^1]
+- [x] Linux
+
+[^1]: Theoretically. You need to find a sign server yourself.
 </details>
+
+<details>
+<summary> Login </summary>
+
+- [x] QRCode
+- [x] NTEasyLogin
+- [ ] Password[^2]
+
+[^2]: Deprecated and not planned.
+</details>
+
+<details>
+<summary> Message </summary>
+
+- [x] Text
+- [ ] Face
+- [x] Mention (At)
+- [x] Image[^3]
+- [x] Reply[^3]
+- [ ] Record
+- [ ] Video
+- [ ] Market Face
+- [ ] Long Message
+- [ ] Multi Forwarded Message
+- [ ] XML
+- [ ] JSON
+- [ ] Markdown
+
+[^3]: Only receiving
+</details>
+
+<details>
+<summary> Operation </summary>
+
+- [x] Fetch friends
+- [x] Fetch groups
+- [x] Fetch group members
+- [ ] Send poke
+- [ ] Send face reaction
+- [ ] Recall message
+- [ ] Leave group
+- [ ] Set member card
+- [ ] Ban (mute) member
+- [ ] Kick member
+- [ ] Set member to admin
+- [ ] Set special title
+- [ ] Handle friend request
+- [ ] Handle group request
+- [ ] Handle group invitation
+- [ ] Get client key
+- [ ] Get cookies
+</details>
+
+<details>
+<summary> Event </summary>
+
+- [ ] Bot offline
+- [ ] Poke
+- [ ] Face reaction
+- [ ] Message recall
+- [ ] Friend request
+- [ ] Group request
+- [ ] Group member increase
+- [ ] Group member decrease
+- [ ] Group invitation
+- [ ] Group essence message
+- [ ] Group to do
+</details>
+
+## Contribution
+
+> [!TIP]
+> If you want to contribute to this project, please consider using **Visual Studio Code** instead of JetBrains IDEs to improve type inferring performance and enhance coding experience.
