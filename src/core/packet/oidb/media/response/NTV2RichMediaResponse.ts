@@ -21,3 +21,12 @@ export const NTV2RichMediaResponse = new NapProtoMsg({
     downloadSafe: ProtoField(9, () => DownloadSafeResp.fields, true, false),
     extension: ProtoField(99, ScalarType.BYTES, true, false),
 });
+
+export function NTV2RichMediaResponseOf<T extends 
+    Exclude<keyof typeof NTV2RichMediaResponse.fields, 'respHead' | 'extension'>
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+>(_type: T) {
+    return NTV2RichMediaResponse.fields as ({
+        [K in T | 'respHead' | 'extension']: typeof NTV2RichMediaResponse.fields[K];
+    });
+}
