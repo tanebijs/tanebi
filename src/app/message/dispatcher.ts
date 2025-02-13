@@ -3,8 +3,28 @@ import { BotContact, BotFriend, BotGroup } from '@/app/entity';
 import { BotMsgBubble, BotMsgImage } from '@/app/message/incoming';
 import { MessageType } from '@/core/message';
 import { IncomingMessage } from '@/core/message/incoming';
+import { EventEmitter } from 'node:stream';
+
+export type DispatchedMessage = {
+    type: 'bubble',
+    content: BotMsgBubble,
+} | {
+    type: 'image',
+    content: BotMsgImage,
+};
+
+export type GlobalMessage = {
+    contact: BotContact,
+    senderUin: number,
+    sequence: number,
+    repliedSequence?: number,
+} & DispatchedMessage;
 
 export class MessageDispatcher {
+    public readonly global = new EventEmitter<{
+        message: [GlobalMessage];
+    }>();
+
     constructor(public readonly bot: Bot) {}
 
     async emit(incoming: IncomingMessage) {
@@ -39,6 +59,14 @@ export class MessageDispatcher {
     }
 
     async dispatch(message: DispatchedMessage, raw: IncomingMessage, contact: BotContact) {
+        this.global.emit('message', {
+            contact,
+            senderUin: raw.senderUin,
+            sequence: raw.sequence,
+            repliedSequence: raw.repliedSequence,
+            ...message,
+        });
+
         if (contact instanceof BotFriend) {
             contact.dispatchMessage({
                 sequence: raw.sequence,
@@ -76,11 +104,3 @@ export class MessageDispatcher {
         return contact;
     }
 }
-
-export type DispatchedMessage = {
-    type: 'bubble',
-    content: BotMsgBubble,
-} | {
-    type: 'image',
-    content: BotMsgImage,
-};

@@ -22,6 +22,7 @@ export class Bot {
     private readonly groupCache;
 
     private readonly messageDispatcher;
+    readonly globalMsg: MessageDispatcher['global'];
 
     private constructor(
         appInfo: AppInfo,
@@ -76,6 +77,7 @@ export class Bot {
         );
 
         this.messageDispatcher = new MessageDispatcher(this);
+        this.globalMsg = this.messageDispatcher.global;
 
         this.ctx.events.on('messagePush', (data) => {
             if (data) {
