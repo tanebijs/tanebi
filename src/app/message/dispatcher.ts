@@ -3,7 +3,7 @@ import { BotContact, BotFriend, BotGroup } from '@/app/entity';
 import { BotMsgBubble, BotMsgImage } from '@/app/message/incoming';
 import { MessageType } from '@/core/message';
 import { IncomingMessage } from '@/core/message/incoming';
-import { EventEmitter } from 'node:stream';
+import { EventEmitter } from 'node:events';
 
 export type DispatchedMessage = {
     type: 'bubble',
