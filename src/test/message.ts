@@ -7,6 +7,6 @@ console.log(await group?.sendMsg([
     b.text('Hello, this is a test message.'),
 ]));
 
-group?.onMessage((message, sender) => {
-    console.log(`${sender.card || sender.nickname} (${sender.uin}): [${message.type}] ${message.content.toPreviewString()}`);
+group?.onMessage(({ sender, type, content }) => {
+    console.log(`${sender.card || sender.nickname} (${sender.uin}): [${type}] ${content.toPreviewString()}`);
 });

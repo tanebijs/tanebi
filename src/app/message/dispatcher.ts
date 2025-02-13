@@ -40,15 +40,21 @@ export class MessageDispatcher {
 
     async dispatch(message: DispatchedMessage, raw: IncomingMessage, contact: BotContact) {
         if (contact instanceof BotFriend) {
-            contact.dispatchMessage(
-                message,
-                raw.senderUin === this.bot.uin,
-                raw.sequence,
-            );
+            contact.dispatchMessage({
+                sequence: raw.sequence,
+                isSelf: raw.senderUin === this.bot.uin,
+                repliedSequence: raw.repliedSequence,
+                ...message,
+            });
         } else if (contact instanceof BotGroup) {
             const sender = await contact.getMember(raw.senderUin);
             if (sender) {
-                contact.dispatchMessage(message, sender, raw.sequence);
+                contact.dispatchMessage({
+                    sequence: raw.sequence,
+                    sender,
+                    repliedSequence: raw.repliedSequence,
+                    ...message,
+                });
             }
         }
     }

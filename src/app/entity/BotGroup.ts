@@ -17,11 +17,17 @@ interface BotGroupDataBinding {
     memberCount: number;
 }
 
+export type BotGroupMessage = {
+    sequence: number;
+    sender: BotGroupMember;
+    repliedSequence?: number;
+} & DispatchedMessage;
+
 export class BotGroup extends BotContact<BotGroupDataBinding> {
     private clientSequence = 100000;
     private readonly groupMemberCache;
     private messageChannel: EventEmitter<{
-        message: [DispatchedMessage, BotGroupMember, number /* sequence */],
+        message: [BotGroupMessage];
     }> = new EventEmitter();
 
     constructor(bot: Bot, data: BotGroupDataBinding) {
@@ -109,11 +115,11 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
         });
     }
 
-    onMessage(listener: (message: DispatchedMessage, sender: BotGroupMember, sequence: number) => void) {
+    onMessage(listener: (message: BotGroupMessage) => void) {
         this.messageChannel.on('message', listener);
     }
 
-    dispatchMessage(message: DispatchedMessage, sender: BotGroupMember, sequence: number) {
-        this.messageChannel.emit('message', message, sender, sequence);
+    dispatchMessage(message: BotGroupMessage) {
+        this.messageChannel.emit('message', message);
     }
 }

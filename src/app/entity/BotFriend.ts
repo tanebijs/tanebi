@@ -15,10 +15,16 @@ interface BotFriendDataBinding {
     category: number;
 }
 
+export type BotFriendMessage = {
+    sequence: number;
+    isSelf: boolean;
+    repliedSequence?: number;
+} & DispatchedMessage;
+
 export class BotFriend extends BotContact<BotFriendDataBinding> {
     private clientSequence = 100000;
     private messageChannel: EventEmitter<{
-        message: [DispatchedMessage, boolean /* isSelf */, number /* sequence */],
+        message: [BotFriendMessage],
     }> = new EventEmitter();
 
     constructor(bot: Bot, data: BotFriendDataBinding) {
@@ -60,11 +66,11 @@ export class BotFriend extends BotContact<BotFriendDataBinding> {
         });
     }
 
-    onMessage(listener: (message: DispatchedMessage, isSelf: boolean, sequence: number) => void) {
+    onMessage(listener: (message: BotFriendMessage) => void) {
         this.messageChannel.on('message', listener);
     }
 
-    dispatchMessage(message: DispatchedMessage, isSelf: boolean, sequence: number) {
-        this.messageChannel.emit('message', message, isSelf, sequence);
+    dispatchMessage(message: BotFriendMessage) {
+        this.messageChannel.emit('message', message);
     }
 }
