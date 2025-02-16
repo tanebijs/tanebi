@@ -87,12 +87,12 @@ export class OperationCollection<const T extends OperationArray> {
         const action = this.operationMap[name] as Operation<string, unknown[]>;
         const buf = action.build(this.ctx, ...args);
         if (action.postOnly) {
-            await this.ctx.networkLogic.postSsoPacket(action.command, buf, await this.nextSeq());
+            await this.ctx.ssoLogic.postSsoPacket(action.command, buf, await this.nextSeq());
             return undefined as ReturnType<
             // @ts-ignore
             OperationMap<T>[OpName]['parse']>;
         } else {
-            const retPacket = await this.ctx.networkLogic.sendSsoPacket(
+            const retPacket = await this.ctx.ssoLogic.sendSsoPacket(
                 action.command, buf, await this.nextSeq());
 
             if ('body' in retPacket) {

@@ -1,4 +1,3 @@
-import { SsoPacketLogic } from '@/core/logic/SsoPacketLogic';
 import { WtLoginLogic } from '@/core/logic/login/WtLoginLogic';
 import { Ecdh } from '@/core/util/crypto/ecdh';
 import { OperationCollection } from '@/core/operation/OperationBase';
@@ -12,7 +11,7 @@ import { MessagePushEvent } from '@/core/event/message/MessagePushEvent';
 import { NTLoginLogic } from '@/core/logic/login/NTLoginLogic';
 import { NTEasyLoginOperation } from '@/core/operation/login/NTEasyLoginOperation';
 import { AppInfo, CoreConfig, DeviceInfo, Keystore, SignProvider } from '@/common';
-import { NetworkLogic } from '@/core/logic/NetworkLogic';
+import { SsoLogic } from '@/core/logic/network/SsoLogic';
 import { SendMessageOperation } from '@/core/operation/message/SendMessageOperation';
 import { FetchGroupsOperation } from '@/core/operation/group/FetchGroupsOperation';
 import { FetchFriendsOperation } from '@/core/operation/friend/FetchFriendsOperation';
@@ -28,8 +27,7 @@ export class BotContext {
     ecdh192 = new Ecdh('secp192k1', true);
     ecdh256 = new Ecdh('prime256v1', false);
 
-    networkLogic = new NetworkLogic(this);
-    ssoPacketLogic = new SsoPacketLogic(this);
+    ssoLogic = new SsoLogic(this);
 
     wtLoginLogic = new WtLoginLogic(this);
     ntLoginLogic = new NTLoginLogic(this);

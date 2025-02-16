@@ -245,7 +245,7 @@ export class Bot {
         signProvider: SignProvider,
     ) {
         const bot = new Bot(appInfo, coreConfig, deviceInfo, keystore, signProvider);
-        await bot.ctx.networkLogic.connectToMsfServer();
+        await bot.ctx.ssoLogic.connectToMsfServer();
         return bot;
     }
 }
