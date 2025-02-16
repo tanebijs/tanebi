@@ -6,26 +6,22 @@ export const RegisterInfo = new NapProtoMsg({
     currentVersion: ProtoField(3, ScalarType.STRING, true),
     isFirstRegisterProxyOnline: ProtoField(4, ScalarType.INT32, true),
     localeId: ProtoField(5, ScalarType.INT32, true),
-    device: ProtoField(6, () => OnlineDeviceInfo.fields, true),
+    device: ProtoField(6, () => ({
+        user: ProtoField(1, ScalarType.STRING),
+        os: ProtoField(2, ScalarType.STRING),
+        osVer: ProtoField(3, ScalarType.STRING),
+        vendorName: ProtoField(4, ScalarType.STRING, true),
+        osLower: ProtoField(5, ScalarType.STRING),
+    }), true),
     setMute: ProtoField(7, ScalarType.INT32, true),
     registerVendorType: ProtoField(8, ScalarType.INT32, true),
     regType: ProtoField(9, ScalarType.INT32, true),
-    businessInfo: ProtoField(10, () => OnlineBusinessInfo.fields, true),
+    businessInfo: ProtoField(10, () => ({
+        notifySwitch: ProtoField(1, ScalarType.UINT32),
+        bindUinNotifySwitch: ProtoField(2, ScalarType.UINT32),
+    }), true),
     batteryStatus: ProtoField(11, ScalarType.INT32, true),
     field12: ProtoField(12, ScalarType.UINT32, true),
-});
-
-export const OnlineDeviceInfo = new NapProtoMsg({
-    user: ProtoField(1, ScalarType.STRING),
-    os: ProtoField(2, ScalarType.STRING),
-    osVer: ProtoField(3, ScalarType.STRING),
-    vendorName: ProtoField(4, ScalarType.STRING, true),
-    osLower: ProtoField(5, ScalarType.STRING),
-});
-
-export const OnlineBusinessInfo = new NapProtoMsg({
-    notifySwitch: ProtoField(1, ScalarType.UINT32),
-    bindUinNotifySwitch: ProtoField(2, ScalarType.UINT32),
 });
 
 export const RegisterInfoResponse = new NapProtoMsg({
