@@ -8,6 +8,7 @@ NTQQ Protocol Implementation with Pure TypeScript, derived from the following pr
 - [LagrangeDev/Lagrange.Core](https://github.com/LagrangeDev/Lagrange.Core)
 - [takayama-lily/oicq](https://github.com/takayama-lily/oicq)
 - [LagrangeDev/lagrangejs](https://github.com/LagrangeDev/lagrangejs)
+- [NapNeko/NapCatQQ](https://github.com/NapNeko/NapCatQQ)
 
 The word "tanebi" is from Japanese and means "tinder" in English or "火种" in Chinese. The name is in respect of previous and contemporary QQ protocol implementation projects. No matter they are alive or not, they are the "tanebi" of today's QQ bot development.
 
