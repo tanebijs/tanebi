@@ -1,5 +1,5 @@
 import { b } from '@/app/message';
-import bot from './fast';
+import bot from '@/test/login/fast';
 
 const groups = await bot.getGroups();
 

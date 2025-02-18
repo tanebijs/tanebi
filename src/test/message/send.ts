@@ -1,4 +1,4 @@
-import bot from '../fast';
+import bot from '@/test/login/fast';
 import { b } from '@/app/message';
 
 const group = await bot.getGroup(0); // Substitute with your group's Uin
