@@ -18,7 +18,7 @@ import { FetchFriendsOperation } from '@/core/operation/friend/FetchFriendsOpera
 import { FetchGroupMembersOperation } from '@/core/operation/group/FetchGroupMembersOperation';
 import { HeartbeatOperation } from '@/core/operation/login/HeartbeatOperation';
 import { DownloadGroupImageOperation } from '@/core/operation/message/DownloadGroupImageOperation';
-import { DownloadPrivateImageOperation } from '@/core/operation/message/DownloadPrivateMessageOperation';
+import { DownloadPrivateImageOperation } from '@/core/operation/message/DownloadPrivateImageOperation';
 import { FetchHighwayUrlOperation } from '@/core/operation/highway/FetchHighwayUrlOperation';
 
 /**
