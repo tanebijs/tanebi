@@ -1,6 +1,17 @@
 import { BinaryLike, createHash } from 'node:crypto';
 
-export const md5 = (data: BinaryLike) => createHash('md5').update(data).digest();
+export function md5(data: BinaryLike) {
+    return createHash('md5').update(data).digest();
+}
+
+export function md5FromStream(stream: NodeJS.ReadableStream): Promise<Buffer> {
+    return new Promise((resolve, reject) => {
+        const hash = createHash('md5');
+        stream.on('data', (chunk) => hash.update(chunk));
+        stream.on('end', () => resolve(hash.digest()));
+        stream.on('error', reject);
+    });
+}
 
 /**
  * A shortcut for creating a SHA1 hash

@@ -1,5 +1,15 @@
 import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
 
+export enum PicFormat {
+    UNKNOWN = 0,  // regard as jpg
+    PNG = 1001,
+    JPEG = 1000,
+    GIF = 2000,
+    WEBP = 1002,
+    BMP = 1005,
+    TIFF = 1006,
+}
+
 export const FileInfo = new NapProtoMsg({
     fileSize: ProtoField(1, ScalarType.UINT32, false, false),
     fileHash: ProtoField(2, ScalarType.STRING, true, false),

@@ -20,6 +20,7 @@ import { HeartbeatOperation } from '@/core/operation/login/HeartbeatOperation';
 import { DownloadGroupImageOperation } from '@/core/operation/message/DownloadGroupImageOperation';
 import { DownloadPrivateImageOperation } from '@/core/operation/message/DownloadPrivateImageOperation';
 import { FetchHighwayUrlOperation } from '@/core/operation/highway/FetchHighwayUrlOperation';
+import { UploadGroupImageOperation } from '@/core/operation/message/UploadGroupImageOperation';
 
 /**
  * The Bot object.
@@ -40,6 +41,7 @@ export class BotContext {
         FetchGroupsOperation,
 
         FetchHighwayUrlOperation,
+        UploadGroupImageOperation,
 
         BotOnlineOperation,
         FetchQrCodeOperation,
