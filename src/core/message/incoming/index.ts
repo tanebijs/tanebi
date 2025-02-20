@@ -1,6 +1,17 @@
 import { PushMsgBody, PushMsgType } from '@/core/packet/message/PushMsg';
-import { incomingSegments } from '@/core/message/incoming/segment-base';
 import { MessageElementDecoded, MessageType } from '@/core/message';
+import { IncomingSegmentCollection } from '@/core/message/incoming/segment-base';
+import { imageCommonParser, imageNotOnlineParser, imageCustomFaceParser } from '@/core/message/incoming/segment/image';
+import { mentionParser } from '@/core/message/incoming/segment/mention';
+import { textParser } from '@/core/message/incoming/segment/text';
+
+const incomingSegments = new IncomingSegmentCollection([
+    textParser,
+    mentionParser,
+    imageCommonParser,
+    imageNotOnlineParser,
+    imageCustomFaceParser,
+]);
 
 export type IncomingSegment = Exclude<ReturnType<typeof incomingSegments.parse>, undefined>;
 export type IncomingSegmentOf<T extends IncomingSegment['type']> = Extract<IncomingSegment, { type: T }>;

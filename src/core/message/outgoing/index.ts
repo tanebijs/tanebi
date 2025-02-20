@@ -3,7 +3,14 @@ import { PbSendMsg } from '@/core/packet/message/PbSendMsg';
 import { timestamp } from '@/core/util/format';
 import { randomInt } from '@/core/util/random';
 import { MessageType } from '@/core/message';
-import { outgoingSegments } from '@/core/message/outgoing/segment-base';
+import { OutgoingSegmentCollection } from '@/core/message/outgoing/segment-base';
+import { mentionBuilder } from '@/core/message/outgoing/segment/mention';
+import { textBuilder } from '@/core/message/outgoing/segment/text';
+
+const outgoingSegments = new OutgoingSegmentCollection([
+    textBuilder,
+    mentionBuilder,
+]);
 
 export type OutgoingSegment = Exclude<Parameters<typeof outgoingSegments.build>[0], undefined>;
 export type OutgoingSegmentOf<T extends OutgoingSegment['type']> = Extract<OutgoingSegment, { type: T }>;

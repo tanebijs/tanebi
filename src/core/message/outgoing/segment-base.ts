@@ -1,8 +1,6 @@
 import { BotContext } from '@/core';
 import { MessageElementDecoded } from '@/core/message';
 import { OutgoingMessage } from '@/core/message/outgoing';
-import { mentionBuilder } from '@/core/message/outgoing/segment/mention';
-import { textBuilder } from '@/core/message/outgoing/segment/text';
 
 export interface OutgoingSegmentBuilder<T extends string, S> {
     segmentType: T;
@@ -42,8 +40,3 @@ export class OutgoingSegmentCollection<T extends OutgoingSegmentBuilder<string, 
         return [];
     }
 }
-
-export const outgoingSegments = new OutgoingSegmentCollection([
-    textBuilder,
-    mentionBuilder,
-]);
