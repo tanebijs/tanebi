@@ -5,10 +5,10 @@ import { getImageMetadata } from '@/core/util/media/image';
 import { readFileSync } from 'node:fs';
 
 const pngFile = readFileSync('temp/qrcode.png');
-const ukey = await bot.ctx.ops.call(
+const uploadResp = await bot.ctx.ops.call(
     'uploadGroupImage',
     0, // substitute with your group id
     getImageMetadata(pngFile),
     ImageSubType.Picture,
 );
-console.log(ukey);
+console.log(uploadResp);

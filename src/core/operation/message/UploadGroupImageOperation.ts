@@ -73,5 +73,5 @@ export const UploadGroupImageOperation = defineOperation(
             }
         }));
     },
-    (ctx, payload) => UploadGroupImageResponse.decodeBodyOrThrow(payload).upload?.uKey,
+    (ctx, payload) => UploadGroupImageResponse.decodeBodyOrThrow(payload),
 );
