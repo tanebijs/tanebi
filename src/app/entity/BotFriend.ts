@@ -1,8 +1,6 @@
 import { Bot } from '@/app';
 import { BotContact } from '@/app/entity';
-import { DispatchedMessage } from '@/app/message';
-import { MessageType } from '@/core/message';
-import { OutgoingSegment } from '@/core/message/outgoing';
+import { DispatchedMessage, PrivateMessageBuilder } from '@/app/message';
 import EventEmitter from 'node:events';
 
 interface BotFriendDataBinding {
@@ -22,7 +20,7 @@ export type BotFriendMessage = {
 } & DispatchedMessage;
 
 export class BotFriend extends BotContact<BotFriendDataBinding> {
-    private clientSequence = 100000;
+    clientSequence = 100000;
     private messageChannel: EventEmitter<{
         message: [BotFriendMessage],
     }> = new EventEmitter();
@@ -55,15 +53,10 @@ export class BotFriend extends BotContact<BotFriendDataBinding> {
         return this.data.category;
     }
 
-    async sendMsg(segments: OutgoingSegment[], repliedSequence?: number) {
-        return this.bot.ctx.ops.call('sendMessage', {
-            type: MessageType.PrivateMessage,
-            targetUin: this.data.uin,
-            targetUid: this.data.uid,
-            clientSequence: this.clientSequence++,
-            segments,
-            repliedSequence,
-        });
+    async sendMsg(buildMsg: (b: PrivateMessageBuilder) => void | Promise<void>) {
+        const builder = new PrivateMessageBuilder(this);
+        await buildMsg(builder);
+        return this.bot.ctx.ops.call('sendMessage', builder.build());
     }
 
     onMessage(listener: (message: BotFriendMessage) => void) {

@@ -1,12 +1,12 @@
 import { BotGroup, BotGroupMember } from '@/app/entity';
-import { OutgoingMessageBuilder } from '@/app/message/outgoing';
+import { AbstractMessageBuilder } from './AbstractMessageBuilder';
 import { MessageType } from '@/core/message';
 import { ImageSubType } from '@/core/message/incoming/segment/image';
 import { OutgoingGroupMessage } from '@/core/message/outgoing';
 import { ImageBizType } from '@/core/message/outgoing/segment/image';
 import { getImageMetadata } from '@/core/util/media/image';
 
-export class GroupMessageBuilder extends OutgoingMessageBuilder {
+export class GroupMessageBuilder extends AbstractMessageBuilder {
     constructor(private readonly group: BotGroup) {
         super(group);
     }
@@ -38,7 +38,7 @@ export class GroupMessageBuilder extends OutgoingMessageBuilder {
             subType ?? ImageSubType.Picture,
             summary,
         );
-        await this.group.bot.ctx.highwayLogic.uploadGroupImage(data, imageMeta, uploadResp);
+        await this.group.bot.ctx.highwayLogic.uploadImage(data, imageMeta, uploadResp, MessageType.GroupMessage);
         this.segments.push({
             type: 'image',
             msgInfo: uploadResp.upload!.msgInfo!,

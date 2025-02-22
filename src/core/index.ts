@@ -22,6 +22,7 @@ import { DownloadPrivateImageOperation } from '@/core/operation/message/Download
 import { FetchHighwayUrlOperation } from '@/core/operation/highway/FetchHighwayUrlOperation';
 import { UploadGroupImageOperation } from '@/core/operation/message/UploadGroupImageOperation';
 import { HighwayLogic } from '@/core/logic/network/HighwayLogic';
+import { UploadPrivateImageOperation } from '@/core/operation/message/UploadPrivateImageOperation';
 
 /**
  * The Bot object.
@@ -43,7 +44,6 @@ export class BotContext {
         FetchGroupsOperation,
 
         FetchHighwayUrlOperation,
-        UploadGroupImageOperation,
 
         BotOnlineOperation,
         FetchQrCodeOperation,
@@ -56,6 +56,8 @@ export class BotContext {
         DownloadGroupImageOperation,
         DownloadPrivateImageOperation,
         SendMessageOperation,
+        UploadGroupImageOperation,
+        UploadPrivateImageOperation,
     ]);
 
     events = new EventChannel(this, [

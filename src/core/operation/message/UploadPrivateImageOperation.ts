@@ -1,19 +1,19 @@
 import { ImageSubType } from '@/core/message/incoming/segment/image';
 import { defineOperation } from '@/core/operation/OperationBase';
-import { UploadGroupImage, UploadGroupImageResponse } from '@/core/packet/oidb/0x11c4_100';
+import { UploadPrivateImage, UploadPrivateImageResponse } from '@/core/packet/oidb/0x11c5_100';
 import { BUF0 } from '@/core/util/constants';
 import { ImageMetadata } from '@/core/util/media/image';
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 
-const bytesPbReserveTroop = Buffer.from('0800180020004200500062009201009a0100a2010c080012001800200028003a00', 'hex');
+const bytesPbReserveC2C = Buffer.from('0800180020004200500062009201009a0100a2010c080012001800200028003a00', 'hex');
 
-export const UploadGroupImageOperation = defineOperation(
-    'uploadGroupImage',
-    'OidbSvcTrpcTcp.0x11c4_100',
-    (ctx, groupUin: number, img: ImageMetadata, subType: ImageSubType, summary?: string) => {
+export const UploadPrivateImageOperation = defineOperation(
+    'uploadPrivateImage',
+    'OidbSvcTrpcTcp.0x11c5_100',
+    (ctx, uid: string, img: ImageMetadata, subType: ImageSubType, summary?: string) => {
         const md5Str = img.md5.toString('hex');
         const generatedFileName = `${md5Str}.${img.ext}`;
-        return Buffer.from(UploadGroupImage.encode({
+        return Buffer.from(UploadPrivateImage.encode({
             reqHead: {
                 common: {
                     requestId: 1,
@@ -22,8 +22,8 @@ export const UploadGroupImageOperation = defineOperation(
                 scene: {
                     requestType: 2,
                     businessType: 1,
-                    sceneType: 2,
-                    groupExt: { groupUin },
+                    sceneType: 1,
+                    c2CExt: { accountType: 2, uid },
                 },
                 client: {
                     agentType: 2
@@ -54,11 +54,11 @@ export const UploadGroupImageOperation = defineOperation(
                 tryFastUploadCompleted: true,
                 srvSendMsg: false,
                 clientRandomId: crypto.randomBytes(8).readBigUInt64BE() & BigInt('0x7FFFFFFFFFFFFFFF'),
-                compatQMsgSceneType: 2,
+                compatQMsgSceneType: 1,
                 extBizInfo: {
                     pic: {
                         bizType: subType,
-                        bytesPbReserveTroop,
+                        bytesPbReserveC2C,
                         textSummary: summary ?? (subType === ImageSubType.Picture ? '[图片]' : '[动画表情]'),
                     },
                     video: {
@@ -75,5 +75,5 @@ export const UploadGroupImageOperation = defineOperation(
             }
         }));
     },
-    (ctx, payload) => UploadGroupImageResponse.decodeBodyOrThrow(payload),
+    (ctx, payload) => UploadPrivateImageResponse.decodeBodyOrThrow(payload),
 );

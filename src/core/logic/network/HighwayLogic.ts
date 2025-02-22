@@ -1,5 +1,6 @@
 import { BotContext } from '@/core';
 import { LogicBase } from '@/core/logic/LogicBase';
+import { MessageType } from '@/core/message';
 import { NTV2RichMediaHighwayExt } from '@/core/packet/highway/NTV2RichMediaHighwayExt';
 import { ReqDataHighwayHead } from '@/core/packet/highway/ReqDataHighwayHead';
 import { RespDataHighwayHead } from '@/core/packet/highway/RespDataHighwayHead';
@@ -37,10 +38,11 @@ export class HighwayLogic extends LogicBase {
         this.sigSession = sigSession;
     }
 
-    async uploadGroupImage(
+    async uploadImage(
         image: Buffer,
         imageMeta: ImageMetadata,
         uploadResp: NapProtoDecodeStructType<typeof NTV2RichMediaResponse.fields>,
+        messageType: MessageType,
     ) {
         const index = uploadResp.upload?.msgInfo?.msgInfoBody[0].index;
         const extend = NTV2RichMediaHighwayExt.encode({
@@ -55,7 +57,9 @@ export class HighwayLogic extends LogicBase {
                 fileSha1: [imageMeta.sha1]
             }
         });
-        await this.upload(1004, image, imageMeta.md5, extend);
+        await this.upload(
+            messageType === MessageType.PrivateMessage ? 1003 : 1004,
+            image, imageMeta.md5, extend);
     }
 
     private buildDataUpTrans(cmd: number, data: Buffer, md5: Uint8Array, extendInfo: Uint8Array, timeout: number = 1200): HighwayTrans {
