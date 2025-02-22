@@ -53,6 +53,7 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
             groupUin: this.contact.uin,
             clientSequence: this.group.clientSequence++,
             segments: this.segments,
+            repliedSequence: this.repliedSequence,
         };
     }
 }

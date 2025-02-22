@@ -36,6 +36,7 @@ export class PrivateMessageBuilder extends AbstractMessageBuilder {
             targetUid: this.friend.uid,
             clientSequence: this.friend.clientSequence++,
             segments: this.segments,
+            repliedSequence: this.repliedSequence,
         };
     }
 }
