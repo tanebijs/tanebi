@@ -21,6 +21,7 @@ import { DownloadGroupImageOperation } from '@/core/operation/message/DownloadGr
 import { DownloadPrivateImageOperation } from '@/core/operation/message/DownloadPrivateImageOperation';
 import { FetchHighwayUrlOperation } from '@/core/operation/highway/FetchHighwayUrlOperation';
 import { UploadGroupImageOperation } from '@/core/operation/message/UploadGroupImageOperation';
+import { HighwayLogic } from '@/core/logic/network/HighwayLogic';
 
 /**
  * The Bot object.
@@ -29,6 +30,7 @@ export class BotContext {
     ecdh192 = new Ecdh('secp192k1', true);
     ecdh256 = new Ecdh('prime256v1', false);
 
+    highwayLogic = new HighwayLogic(this);
     ssoLogic = new SsoLogic(this);
 
     wtLoginLogic = new WtLoginLogic(this);

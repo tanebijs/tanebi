@@ -246,6 +246,11 @@ export class Bot {
     ) {
         const bot = new Bot(appInfo, coreConfig, deviceInfo, keystore, signProvider);
         await bot.ctx.ssoLogic.connectToMsfServer();
+        await bot.ctx.ops.call('fetchHighwayUrl')
+            .then(data => {
+                const { ip, port } = data.serverInfo[0];
+                bot.ctx.highwayLogic.setHighwayUrl(ip, port, data.sigSession);
+            });
         return bot;
     }
 }
