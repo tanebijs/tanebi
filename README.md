@@ -48,7 +48,7 @@ The word "tanebi" is from Japanese and means "tinder" in English or "火种" in 
 - [x] Text
 - [ ] Face
 - [x] Mention (At)
-- [x] Image[^3]
+- [x] Image
 - [x] Reply[^3]
 - [ ] Record
 - [ ] Video
