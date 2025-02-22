@@ -6,6 +6,10 @@
     "qq",
     "oicq"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LagrangeDev/tanebi.git"
+  },
   "license": "GPL-3.0-or-later",
   "author": "Young",
   "type": "module",
