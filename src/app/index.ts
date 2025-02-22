@@ -254,3 +254,7 @@ export class Bot {
         return bot;
     }
 }
+
+export * from './entity';
+export * from './message';
+export * from './util';
