@@ -1,5 +1,9 @@
 import { AppInfo } from '@/common';
 
+/**
+ * A preset of app information for Linux protocol.
+ * Use this when unable to fetch app information from the sign URL.
+ */
 export const LinuxAppInfoPreset: AppInfo = {
     'Os': 'Linux',
     'VendorOs': 'linux',
@@ -19,6 +23,11 @@ export const LinuxAppInfoPreset: AppInfo = {
     'NTLoginType': 1,
 };
 
+/**
+ * Fetch AppInfo from the given sign URL. This is the recommended way to get AppInfo.
+ * @param signUrl The sign URL to fetch AppInfo from
+ * @returns The AppInfo object
+ */
 export async function fetchAppInfoFromSignUrl(signUrl: string): Promise<AppInfo> {
     return fetch(signUrl.endsWith('/') ? `${signUrl}appinfo` : `${signUrl}/appinfo`)
         .then(res => res.json());

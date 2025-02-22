@@ -103,12 +103,20 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
         return this.groupMemberCache.get(uin, forceUpdate);
     }
 
+    /**
+     * Send a message to this group
+     * @param buildMsg Use this function to add segments to the message
+     * @returns The message sequence number and timestamp
+     */
     async sendMsg(buildMsg: (b: GroupMessageBuilder) => void | Promise<void>) {
         const builder = new GroupMessageBuilder(this);
         await buildMsg(builder);
         return this.bot.ctx.ops.call('sendMessage', builder.build());
     }
 
+    /**
+     * Listen to messages in this group
+     */
     onMessage(listener: (message: BotGroupMessage) => void) {
         this.messageChannel.on('message', listener);
     }

@@ -3,6 +3,9 @@ import { DeviceInfo, Keystore } from '@/common';
 export type BufferSerialized = string;
 export type DateSerialized = string;
 
+/**
+ * Serialized device information
+ */
 export interface DeviceInfoSerialized {
     guid: BufferSerialized;
     macAddress: BufferSerialized;
@@ -11,6 +14,9 @@ export interface DeviceInfoSerialized {
     kernelVersion: string;
 }
 
+/**
+ * Serialized keystore
+ */
 export interface KeystoreSerialized {
     uin: number;
     uid?: string;
@@ -69,6 +75,9 @@ function deserializeDate(data?: DateSerialized) {
     return data ? new Date(data) : undefined;
 }
 
+/**
+ * Serialize device information for storage
+ */
 export function serializeDeviceInfo(data: DeviceInfo): DeviceInfoSerialized {
     return {
         guid: serializeBuffer(data.guid),
@@ -79,6 +88,9 @@ export function serializeDeviceInfo(data: DeviceInfo): DeviceInfoSerialized {
     };
 }
 
+/**
+ * Deserialize device information from plain object
+ */
 export function deserializeDeviceInfo(data: DeviceInfoSerialized): DeviceInfo {
     return {
         guid: deserializeBuffer(data.guid),
@@ -89,6 +101,9 @@ export function deserializeDeviceInfo(data: DeviceInfoSerialized): DeviceInfo {
     };
 }
 
+/**
+ * Serialize keystore for storage
+ */
 export function serializeKeystore(data: Keystore): KeystoreSerialized {
     return {
         uin: data.uin,
@@ -125,6 +140,9 @@ export function serializeKeystore(data: Keystore): KeystoreSerialized {
     };
 }
 
+/**
+ * Deserialize keystore from plain object
+ */
 export function deserializeKeystore(data: KeystoreSerialized): Keystore {
     return {
         uin: data.uin,

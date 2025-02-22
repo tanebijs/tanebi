@@ -11,6 +11,10 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
         super(group);
     }
     
+    /**
+     * Mention a member in the group
+     * @param member The member to mention
+     */
     mention(member: BotGroupMember) {
         this.segments.push({
             type: 'mention', 
@@ -20,6 +24,9 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
         });
     }
 
+    /**
+     * Mention all members in the group
+     */
     mentionAll() {
         this.segments.push({
             type: 'mention',

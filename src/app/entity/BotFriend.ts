@@ -53,12 +53,21 @@ export class BotFriend extends BotContact<BotFriendDataBinding> {
         return this.data.category;
     }
 
+    /**
+     * Send a message to this friend
+     * @param buildMsg Use this function to add segments to the message
+     * @returns The message sequence number and timestamp
+     */
     async sendMsg(buildMsg: (b: PrivateMessageBuilder) => void | Promise<void>) {
         const builder = new PrivateMessageBuilder(this);
         await buildMsg(builder);
         return this.bot.ctx.ops.call('sendMessage', builder.build());
     }
 
+    /**
+     * Subscribe to incoming messages from this friend
+     * @param listener The listener function
+     */
     onMessage(listener: (message: BotFriendMessage) => void) {
         this.messageChannel.on('message', listener);
     }

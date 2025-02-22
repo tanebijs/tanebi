@@ -1,5 +1,10 @@
 import { SignProvider } from '@/common';
 
+/**
+ * Create a sign provider that fetches sign information from the given URL.
+ * @param signApiUrl The URL to fetch sign information from
+ * @returns The sign provider
+ */
 export function UrlSignProvider(signApiUrl: string): SignProvider {
     return {
         async sign(cmd, src, seq) {

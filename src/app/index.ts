@@ -9,6 +9,9 @@ import { TransEmp12_QrCodeState } from '@/core/packet/login/wtlogin/TransEmp12';
  * The Bot object. Create an instance by calling `Bot.create` instead of its constructor.
  */
 export class Bot {
+    /**
+     * The BotContext object. Use this to access low-level APIs.
+     */
     readonly ctx;
 
     public get uin() {
@@ -22,6 +25,10 @@ export class Bot {
     private readonly groupCache;
 
     private readonly messageDispatcher;
+
+    /**
+     * Global message dispatcher. Use this to listen to all incoming messages.
+     */
     readonly globalMsg: MessageDispatcher['global'];
 
     private constructor(
@@ -235,7 +242,7 @@ export class Bot {
     }
     
     /**
-     * Create a new Bot instance and connect it to Tencent's MSF server
+     * Create a new Bot instance and complete necessary initialization
      */
     static async create(
         appInfo: AppInfo,

@@ -1,4 +1,7 @@
 export interface BotMsgType {
+    /**
+     * Get the preview string of the message
+     */
     toPreviewString(): string;
 }
 

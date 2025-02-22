@@ -1,6 +1,10 @@
 import { DeviceInfo, Keystore } from '@/common';
 import { randomBytes } from 'node:crypto';
 
+/**
+ * Generate a new device information with random values
+ * @returns A new device information
+ */
 export function newDeviceInfo(): DeviceInfo {
     return {
         guid: randomBytes(16),
@@ -12,6 +16,10 @@ export function newDeviceInfo(): DeviceInfo {
     };
 }
 
+/**
+ * Generate a new keystore for QR code login
+ * @returns A new keystore
+ */
 export function newKeystore(): Keystore {
     return {
         uin: 0,
