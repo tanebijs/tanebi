@@ -16,7 +16,6 @@
     "isolatedModules": true,
     "outDir": "./lib",
     "declaration": true,
-    "declarationDir": "./lib/types",
     "strict": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
