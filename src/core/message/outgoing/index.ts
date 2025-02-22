@@ -6,10 +6,12 @@ import { MessageType } from '@/core/message';
 import { OutgoingSegmentCollection } from '@/core/message/outgoing/segment-base';
 import { mentionBuilder } from '@/core/message/outgoing/segment/mention';
 import { textBuilder } from '@/core/message/outgoing/segment/text';
+import { imageBuilder } from '@/core/message/outgoing/segment/image';
 
 const outgoingSegments = new OutgoingSegmentCollection([
     textBuilder,
     mentionBuilder,
+    imageBuilder,
 ]);
 
 export type OutgoingSegment = Exclude<Parameters<typeof outgoingSegments.build>[0], undefined>;

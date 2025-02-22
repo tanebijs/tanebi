@@ -13,9 +13,6 @@ export abstract class BotContact<T extends { uin: number } = { uin: number }> ex
     get uin() {
         return this.data.uin;
     }
-
-    // TODO: use stable type instead of OutgoingMessage
-    abstract sendMsg(segments: OutgoingSegment[], repliedSequence?: number): Promise<{ sequence: number, timestamp: number }>;
 }
 
 export type { OutgoingSegment, OutgoingSegmentOf };

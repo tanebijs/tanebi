@@ -1,9 +1,7 @@
 import { Bot } from '@/app';
 import { BotContact, BotGroupMember } from '@/app/entity';
-import { DispatchedMessage } from '@/app/message';
+import { DispatchedMessage, GroupMessageBuilder } from '@/app/message';
 import { BotCacheService } from '@/app/util';
-import { MessageType } from '@/core/message';
-import { OutgoingSegment } from '@/core/message/outgoing';
 import EventEmitter from 'node:events';
 
 interface BotGroupDataBinding {
@@ -24,7 +22,7 @@ export type BotGroupMessage = {
 } & DispatchedMessage;
 
 export class BotGroup extends BotContact<BotGroupDataBinding> {
-    private clientSequence = 100000;
+    clientSequence = 100000;
     private readonly groupMemberCache;
     private messageChannel: EventEmitter<{
         message: [BotGroupMessage];
@@ -105,14 +103,10 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
         return this.groupMemberCache.get(uin, forceUpdate);
     }
 
-    override async sendMsg(segments: OutgoingSegment[], repliedSequence?: number) {
-        return this.bot.ctx.ops.call('sendMessage', {
-            type: MessageType.GroupMessage,
-            groupUin: this.data.uin,
-            clientSequence: this.clientSequence++,
-            segments,
-            repliedSequence
-        });
+    async sendMsg(buildMsg: (b: GroupMessageBuilder) => void | Promise<void>) {
+        const builder = new GroupMessageBuilder(this);
+        await buildMsg(builder);
+        return this.bot.ctx.ops.call('sendMessage', builder.build());
     }
 
     onMessage(listener: (message: BotGroupMessage) => void) {

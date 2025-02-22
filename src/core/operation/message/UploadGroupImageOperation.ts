@@ -5,6 +5,8 @@ import { BUF0 } from '@/core/util/constants';
 import { ImageMetadata } from '@/core/util/media/image';
 import crypto from 'crypto';
 
+const bytesPbReserveTroop = Buffer.from('0800180020004200500062009201009a0100a2010c080012001800200028003a00', 'hex');
+
 export const UploadGroupImageOperation = defineOperation(
     'uploadGroupImage',
     'OidbSvcTrpcTcp.0x11c4_100',
@@ -52,11 +54,11 @@ export const UploadGroupImageOperation = defineOperation(
                 tryFastUploadCompleted: true,
                 srvSendMsg: false,
                 clientRandomId: crypto.randomBytes(8).readBigUInt64BE() & BigInt('0x7FFFFFFFFFFFFFFF'),
-                compatQMsgSceneType: 2,
+                compatQMsgSceneType: 1,
                 extBizInfo: {
                     pic: {
                         bizType: subType,
-                        bytesPbReserveTroop: { subType },
+                        bytesPbReserveTroop,
                         textSummary: summary ?? (subType === ImageSubType.Picture ? '[图片]' : '[动画表情]'),
                     },
                     video: {

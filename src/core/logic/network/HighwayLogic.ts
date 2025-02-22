@@ -3,8 +3,10 @@ import { LogicBase } from '@/core/logic/LogicBase';
 import { NTV2RichMediaHighwayExt } from '@/core/packet/highway/NTV2RichMediaHighwayExt';
 import { ReqDataHighwayHead } from '@/core/packet/highway/ReqDataHighwayHead';
 import { RespDataHighwayHead } from '@/core/packet/highway/RespDataHighwayHead';
+import { IPv4 } from '@/core/packet/oidb/media/IP';
 import { NTV2RichMediaResponse } from '@/core/packet/oidb/media/response/NTV2RichMediaResponse';
 import { md5 } from '@/core/util/crypto/digest';
+import { int32ip2str } from '@/core/util/format';
 import { ImageMetadata } from '@/core/util/media/image';
 import { NapProtoDecodeStructType } from '@napneko/nap-proto-core';
 import assert from 'node:assert';
@@ -13,6 +15,16 @@ import { connect } from 'node:net';
 import { Readable, Transform, TransformCallback } from 'node:stream';
 
 const maxBlockSize = 1024 * 1024;
+
+function oidbIPv4ToHighway(ip: NapProtoDecodeStructType<typeof IPv4.fields>) {
+    return {
+        domain: {
+            isEnable: true,
+            ip: int32ip2str(ip.outIP ?? 0),
+        },
+        port: ip.outPort!
+    };
+}
 
 export class HighwayLogic extends LogicBase {
     highwayHost: string = '';
@@ -35,7 +47,7 @@ export class HighwayLogic extends LogicBase {
             fileUuid: index?.fileUuid,
             uKey: uploadResp.upload?.uKey,
             network: {
-                ipv4S: uploadResp.upload?.ipv4S
+                ipv4S: uploadResp.upload?.ipv4S?.map(oidbIPv4ToHighway),
             },
             msgInfoBody: uploadResp.upload?.msgInfo?.msgInfoBody,
             blockSize: maxBlockSize,
