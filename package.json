@@ -6,7 +6,7 @@
     "qq",
     "oicq"
   ],
-  "license": "GPL",
+  "license": "GPL-3.0-or-later",
   "author": "Young",
   "type": "module",
   "main": "lib/index.js",
