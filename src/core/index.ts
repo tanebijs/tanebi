@@ -23,6 +23,7 @@ import { FetchHighwayUrlOperation } from '@/core/operation/highway/FetchHighwayU
 import { UploadGroupImageOperation } from '@/core/operation/message/UploadGroupImageOperation';
 import { HighwayLogic } from '@/core/logic/network/HighwayLogic';
 import { UploadPrivateImageOperation } from '@/core/operation/message/UploadPrivateImageOperation';
+import EventEmitter from 'node:events';
 
 /**
  * The Bot object.
@@ -63,6 +64,15 @@ export class BotContext {
     events = new EventChannel(this, [
         MessagePushEvent,
     ]);
+
+    eventsDX = new EventEmitter<{
+        groupJoinRequest: [number, string] // groupUin, memberUid
+        groupInvitedJoinRequest: [number, string, string] // groupUin, targetUid, invitorUid
+        groupInvitationRequest: [number, string] // groupUin, invitorUid
+        groupAdminChange: [number, string, boolean] // groupUin, targetUid, isPromote
+        groupMemberIncrease: [number, string, string?] // groupUin, memberUid, operatorUid?
+        groupMemberDecrease: [number, string, string?] // groupUin, memberUid, operatorUid?
+    }>();
 
     constructor(
         public appInfo: AppInfo,

@@ -22,37 +22,37 @@ export enum PushMsgType {
     PrivateRecordMessage = 208,
     PrivateFileMessage = 529,
 
-    GroupRequestInvitationNotice = 525, // from group member invitation
-    GroupRequestJoinNotice = 84,        // directly entered
-    GroupInviteNotice = 87,             // the bot self is being invited
-    GroupAdminChangedNotice = 44,       // admin change, both on and off
-    GroupMemberIncreaseNotice = 33,
-    GroupMemberDecreaseNotice = 34,
+    GroupInvitedJoinRequest = 525,      // from group member invitation
+    GroupJoinRequest = 84,              // directly entered
+    GroupInvitation = 87,               // the bot self is being invited
+    GroupAdminChange = 44,              // admin change, both on and off
+    GroupMemberIncrease = 33,
+    GroupMemberDecrease = 34,
 }
 
 export enum Event0x2DCSubType {
-    GroupMuteNotice = 12,
+    GroupMute = 12,
     SubType16 = 16,
-    GroupRecallNotice = 17,
-    GroupEssenceNotice = 21,
-    GroupGreyTipNotice = 20,
+    GroupRecall = 17,
+    GroupEssence = 21,
+    GroupGreyTip = 20,
 }
 
 export enum Event0x2DCSubType16Field13 {
-    GroupMemberSpecialTitleNotice = 6,
-    GroupNameChangeNotice = 12,
-    GroupTodoNotice = 23,
-    GroupReactionNotice = 35,
+    GroupMemberSpecialTitle = 6,
+    GroupNameChange = 12,
+    GroupTodo = 23,
+    GroupReaction = 35,
 }
 
 export enum Event0x210SubType {
-    FriendRequestNotice = 35,
-    GroupMemberEnterNotice = 38,
-    FriendDeleteOrPinChangedNotice = 39,
-    FriendRecallNotice = 138,
-    ServicePinChanged = 199,            // e.g: My computer | QQ Wallet | ...
-    FriendPokeNotice = 290,
-    GroupKickNotice = 212,
+    FriendRequest = 35,
+    GroupMemberEnter = 38,
+    FriendDeleteOrPinChanged = 39,
+    FriendRecall = 138,
+    ServicePinChange = 199,             // e.g: My computer | QQ Wallet | ...
+    FriendPoke = 290,
+    GroupKick = 212,
 }
 
 export const PushMsgBody = new NapProtoMsg({
