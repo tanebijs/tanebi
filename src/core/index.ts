@@ -66,12 +66,12 @@ export class BotContext {
     ]);
 
     eventsDX = new EventEmitter<{
-        groupJoinRequest: [number, string] // groupUin, memberUid
-        groupInvitedJoinRequest: [number, string, string] // groupUin, targetUid, invitorUid
-        groupInvitationRequest: [number, string] // groupUin, invitorUid
-        groupAdminChange: [number, string, boolean] // groupUin, targetUid, isPromote
-        groupMemberIncrease: [number, string, string?] // groupUin, memberUid, operatorUid?
-        groupMemberDecrease: [number, string, string?] // groupUin, memberUid, operatorUid?
+        groupJoinRequest: [number, string]; // groupUin, memberUid
+        groupInvitedJoinRequest: [number, string, string]; // groupUin, targetUid, invitorUid
+        groupInvitationRequest: [number, string]; // groupUin, invitorUid
+        groupAdminChange: [number, string, boolean]; // groupUin, targetUid, isPromote
+        groupMemberIncrease: [number, string, string?]; // groupUin, memberUid, operatorUid?
+        groupMemberDecrease: [number, string, string?]; // groupUin, memberUid, operatorUid?
     }>();
 
     constructor(
