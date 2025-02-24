@@ -1,6 +1,7 @@
 import { BotFriend, BotGroup } from '@/app/entity';
 import { MessageDispatcher } from '@/app/message';
 import { BotCacheService } from '@/app/util';
+import { BotIdentityService } from '@/app/util/identity';
 import { AppInfo, CoreConfig, DeviceInfo, Keystore, SignProvider } from '@/common';
 import { BotContext } from '@/core';
 import { TransEmp12_QrCodeState } from '@/core/packet/login/wtlogin/TransEmp12';
@@ -24,6 +25,8 @@ export class Bot {
     private readonly friendCache;
     private readonly groupCache;
 
+    readonly identityService;
+
     private readonly messageDispatcher;
 
     /**
@@ -40,6 +43,8 @@ export class Bot {
     ) {
         this.ctx = new BotContext(appInfo, coreConfig, deviceInfo, keystore, signProvider);
 
+        this.identityService = new BotIdentityService(this);
+
         this.friendCache = new BotCacheService<number, BotFriend>(
             this,
             async (bot) => {
@@ -51,6 +56,10 @@ export class Bot {
                     data = await bot.ctx.ops.call('fetchFriends', data.nextUin);
                     friends = friends.concat(data.friends);
                 }
+                friends.forEach(friend => {
+                    this.identityService.uin2uid.set(friend.uin, friend.uid!);
+                    this.identityService.uid2uin.set(friend.uid!, friend.uin);
+                });
 
                 return new Map(friends.map(friend => [friend.uin, {
                     uin: friend.uin,

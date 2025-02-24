@@ -40,6 +40,10 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
                     data = await bot.ctx.ops.call('fetchGroupMembers', this.data.uin, data.token);
                     members = members.concat(data.members);
                 }
+                members.forEach(member => {
+                    bot.identityService.uin2uid.set(member.identity.uin, member.identity.uid!);
+                    bot.identityService.uid2uin.set(member.identity.uid!, member.identity.uin);
+                });
 
                 return new Map(members.map(member => [member.identity.uin, {
                     uin: member.identity.uin,
