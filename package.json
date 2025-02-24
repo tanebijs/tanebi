@@ -16,7 +16,8 @@
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "scripts": {
-    "build": "tsc && tsc-alias"
+    "build": "node scripts/clean.js && tsc && tsc-alias",
+    "prepack": "npm run build"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
