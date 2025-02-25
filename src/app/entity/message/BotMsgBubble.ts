@@ -1,6 +1,6 @@
 import { Bot } from '@/app';
 import { BotContact, BotGroup, BotGroupMember } from '@/app/entity';
-import { BotMsgImage, BotMsgType } from '@/app/message/incoming';
+import { BotMsgImage, BotMsgType } from '.';
 import { IncomingMessage, IncomingSegment } from '@/core/message/incoming';
 
 export class BotMsgBubble implements BotMsgType {

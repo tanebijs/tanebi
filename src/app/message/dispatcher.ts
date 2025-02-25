@@ -1,6 +1,5 @@
 import { Bot } from '@/app';
-import { BotContact, BotFriend, BotGroup } from '@/app/entity';
-import { BotMsgBubble, BotMsgImage } from '@/app/message/incoming';
+import { BotContact, BotFriend, BotGroup, BotMsgBubble, BotMsgImage } from '@/app/entity';
 import { MessageType } from '@/core/message';
 import { IncomingMessage } from '@/core/message/incoming';
 import { EventEmitter } from 'node:events';
