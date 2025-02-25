@@ -24,8 +24,13 @@ export type BotGroupMessage = {
 export class BotGroup extends BotContact<BotGroupDataBinding> {
     clientSequence = 100000;
     private readonly groupMemberCache;
-    private messageChannel: EventEmitter<{
+    eventsDX: EventEmitter<{
         message: [BotGroupMessage];
+        joinRequest: [number]; // requestUin
+        invitedJoinRequest: [number, BotGroupMember]; // invitedUin, invitor
+        adminChange: [BotGroupMember, boolean]; // member, isPromote
+        memberIncrease: [BotGroupMember, BotGroupMember]; // member, operator
+        memberDecrease: [BotGroupMember, BotGroupMember]; // member, operator
     }> = new EventEmitter();
 
     constructor(bot: Bot, data: BotGroupDataBinding) {
@@ -122,10 +127,27 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
      * Listen to messages in this group
      */
     onMessage(listener: (message: BotGroupMessage) => void) {
-        this.messageChannel.on('message', listener);
+        this.eventsDX.on('message', listener);
     }
 
-    dispatchMessage(message: BotGroupMessage) {
-        this.messageChannel.emit('message', message);
+    /**
+     * Listen to join requests in this group
+     */
+    onJoinRequest(listener: (requestUin: number) => void) {
+        this.eventsDX.on('joinRequest', listener);
+    }
+
+    /**
+     * Listen to invited join requests in this group
+     */
+    onInvitedJoinRequest(listener: (invitedUin: number, invitor: BotGroupMember) => void) {
+        this.eventsDX.on('invitedJoinRequest', listener);
+    }
+
+    /**
+     * Listen to admin changes in this group
+     */
+    onAdminChange(listener: (member: BotGroupMember, isPromote: boolean) => void) {
+        this.eventsDX.on('adminChange', listener);
     }
 }

@@ -77,7 +77,7 @@ export class MessageDispatcher {
         } else if (contact instanceof BotGroup) {
             const sender = await contact.getMember(raw.senderUin);
             if (sender) {
-                contact.dispatchMessage({
+                contact.eventsDX.emit('message', {
                     sequence: raw.sequence,
                     sender,
                     repliedSequence: raw.repliedSequence,
