@@ -1,4 +1,5 @@
 import { BotFriend, BotGroup } from '@/app/entity';
+import { BotGroupJoinRequest } from '@/app/entity/request/BotGroupJoinRequest';
 import { MessageDispatcher } from '@/app/message';
 import { BotCacheService } from '@/app/util';
 import { BotIdentityService } from '@/app/util/identity';
@@ -98,6 +99,17 @@ export class Bot {
         this.ctx.events.on('messagePush', (data) => {
             if (data) {
                 this.messageDispatcher.emit(data);
+            }
+        });
+
+        this.ctx.eventsDX.on('groupJoinRequest', async (groupUin, memberUid) => {
+            const request = await BotGroupJoinRequest.create(groupUin, memberUid, this);
+            if (request) {
+                this.getGroup(groupUin).then(group => {
+                    if (group) {
+                        group.eventsDX.emit('joinRequest', request);
+                    }
+                });
             }
         });
     }

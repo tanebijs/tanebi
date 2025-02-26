@@ -24,6 +24,8 @@ import { UploadGroupImageOperation } from '@/core/operation/message/UploadGroupI
 import { HighwayLogic } from '@/core/logic/network/HighwayLogic';
 import { UploadPrivateImageOperation } from '@/core/operation/message/UploadPrivateImageOperation';
 import EventEmitter from 'node:events';
+import { FetchGroupNotifiesOperation } from '@/core/operation/group/FetchGroupNotifiesOperation';
+import { FetchUserInfoOperation } from '@/core/operation/friend/FetchUserInfoOperation';
 
 /**
  * The Bot object.
@@ -40,8 +42,10 @@ export class BotContext {
 
     ops = new OperationCollection(this, [
         FetchFriendsOperation,
+        FetchUserInfoOperation,
 
         FetchGroupMembersOperation,
+        FetchGroupNotifiesOperation,
         FetchGroupsOperation,
 
         FetchHighwayUrlOperation,
