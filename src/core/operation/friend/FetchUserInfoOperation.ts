@@ -4,7 +4,7 @@ import { FetchUserInfoByUid, FetchUserInfoByUin, FetchUserInfoResponse } from '@
 export const FetchUserInfoOperation = defineOperation(
     'fetchUserInfo',
     'OidbSvcTrpcTcp.0xfe1_2',
-    (ctx, uinOrUid: number | string, keys: Array<number> = []) =>
+    (ctx, uinOrUid: number | string, keys: Array<number> = [105]) =>
         typeof uinOrUid === 'string' ?
             Buffer.from(FetchUserInfoByUid.encode({ uid: uinOrUid, keys: keys.map(key => ({ key })) })) :
             Buffer.from(FetchUserInfoByUin.encode({ uin: uinOrUid, keys: keys.map(key => ({ key })) })),

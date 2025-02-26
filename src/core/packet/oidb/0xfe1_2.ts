@@ -9,7 +9,6 @@ export const FetchUserInfoByUid = new OidbSvcContract(
             key: ProtoField(1, ScalarType.UINT32),
         }), false, true),
     },
-    false, true
 );
 
 export const FetchUserInfoByUin = new OidbSvcContract(
@@ -20,6 +19,7 @@ export const FetchUserInfoByUin = new OidbSvcContract(
             key: ProtoField(1, ScalarType.UINT32),
         }), false, true),
     },
+    false, true,
 );
 
 export const FetchUserInfoResponse = new OidbSvcContract(
@@ -29,7 +29,7 @@ export const FetchUserInfoResponse = new OidbSvcContract(
             properties: ProtoField(2, () => ({
                 numberProperties: ProtoField(1, () => ({
                     key: ProtoField(1, ScalarType.UINT32),
-                    value: ProtoField(2, ScalarType.STRING),
+                    value: ProtoField(2, ScalarType.UINT32),
                 }), false, true),
                 bytesProperties: ProtoField(2, () => ({
                     key: ProtoField(1, ScalarType.UINT32),
