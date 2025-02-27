@@ -1,5 +1,6 @@
 import { Bot } from '@/app';
 import { BotContact, BotGroupMember } from '@/app/entity';
+import { BotGroupInvitedJoinRequest } from '@/app/entity/request/BotGroupInvitedJoinRequest';
 import { BotGroupJoinRequest } from '@/app/entity/request/BotGroupJoinRequest';
 import { DispatchedMessage, GroupMessageBuilder } from '@/app/message';
 import { BotCacheService } from '@/app/util';
@@ -28,7 +29,7 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
     eventsDX: EventEmitter<{
         message: [BotGroupMessage];
         joinRequest: [BotGroupJoinRequest];
-        invitedJoinRequest: [number, BotGroupMember]; // invitedUin, invitor
+        invitedJoinRequest: [BotGroupInvitedJoinRequest];
         adminChange: [BotGroupMember, boolean]; // member, isPromote
         memberIncrease: [BotGroupMember, BotGroupMember]; // member, operator
         memberDecrease: [BotGroupMember, BotGroupMember]; // member, operator
@@ -141,7 +142,7 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
     /**
      * Listen to invited join requests in this group
      */
-    onInvitedJoinRequest(listener: (invitedUin: number, invitor: BotGroupMember) => void) {
+    onInvitedJoinRequest(listener: (request: BotGroupInvitedJoinRequest) => void) {
         this.eventsDX.on('invitedJoinRequest', listener);
     }
 

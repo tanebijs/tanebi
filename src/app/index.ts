@@ -1,4 +1,5 @@
 import { BotFriend, BotGroup } from '@/app/entity';
+import { BotGroupInvitedJoinRequest } from '@/app/entity/request/BotGroupInvitedJoinRequest';
 import { BotGroupJoinRequest } from '@/app/entity/request/BotGroupJoinRequest';
 import { MessageDispatcher } from '@/app/message';
 import { BotCacheService } from '@/app/util';
@@ -105,11 +106,14 @@ export class Bot {
         this.ctx.eventsDX.on('groupJoinRequest', async (groupUin, memberUid) => {
             const request = await BotGroupJoinRequest.create(groupUin, memberUid, this);
             if (request) {
-                this.getGroup(groupUin).then(group => {
-                    if (group) {
-                        group.eventsDX.emit('joinRequest', request);
-                    }
-                });
+                (await this.getGroup(groupUin))?.eventsDX.emit('joinRequest', request);
+            }
+        });
+
+        this.ctx.eventsDX.on('groupInvitedJoinRequest', async (groupUin, targetUid, invitorUid) => {
+            const request = await BotGroupInvitedJoinRequest.create(groupUin, targetUid, invitorUid, this);
+            if (request) {
+                (await this.getGroup(groupUin))?.eventsDX.emit('invitedJoinRequest', request);
             }
         });
     }
