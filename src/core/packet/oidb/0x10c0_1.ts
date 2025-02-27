@@ -11,11 +11,11 @@ export const FetchGroupNotifies = new OidbSvcContract(
 
 export enum GroupNotifyType {
     JoinRequest = 1,
-    SelfInvitation = 2,
+    Invitation = 2,
     KickMember = 6,
     KickSelf = 7,
     ExitGroup = 13,
-    GroupInvitation = 22,
+    InvitedJoinRequest = 22,
 }
 
 export enum GroupRequestState {
