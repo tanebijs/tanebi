@@ -9,7 +9,7 @@ import { BotContext } from '@/core';
 import { TransEmp12_QrCodeState } from '@/core/packet/login/wtlogin/TransEmp12';
 
 /**
- * The Bot object. Create an instance by calling `Bot.create` instead of its constructor.
+ * The Bot object. Create an instance by calling `Bot.create`.
  */
 export class Bot {
     /**
@@ -17,24 +17,25 @@ export class Bot {
      */
     readonly ctx;
 
-    public get uin() {
-        return this.ctx.keystore.uin === 0 ? undefined : this.ctx.keystore.uin;
-    }
-
-    loggedIn = false;
-    heartbeatIntervalRef?: NodeJS.Timeout;
-
-    private readonly friendCache;
-    private readonly groupCache;
-
+    /**
+     * The service for identity resolution.
+     */
     readonly identityService;
 
-    private readonly messageDispatcher;
+    /**
+     * Whether the bot is logged in.
+     */
+    loggedIn = false;
 
     /**
      * Global message dispatcher. Use this to listen to all incoming messages.
      */
     readonly globalMsg: MessageDispatcher['global'];
+
+    private readonly friendCache;
+    private readonly groupCache;
+    private readonly messageDispatcher;
+    private heartbeatIntervalRef?: NodeJS.Timeout;
 
     private constructor(
         appInfo: AppInfo,
@@ -116,6 +117,10 @@ export class Bot {
                 (await this.getGroup(groupUin))?.eventsDX.emit('invitedJoinRequest', request);
             }
         });
+    }
+
+    public get uin() {
+        return this.ctx.keystore.uin === 0 ? undefined : this.ctx.keystore.uin;
     }
     
     /**
