@@ -10,23 +10,33 @@ export class BotIdentityService {
         const uid = this.uin2uid.get(uin);
         if (uid) return uid;
         
+        this.bot.log.emit('debug', 'BotIdentityService', `Cache miss, resolving Uin ${uin} to Uid`);
         if (groupUin) {
             await (await this.bot.getGroup(groupUin))?.getMembers(true);
         } else {
             await this.bot.getFriends(true);
         }
-        return this.uin2uid.get(uin);
+        const result = this.uin2uid.get(uin);
+        if (!result) {
+            this.bot.log.emit('warning', 'BotIdentityService', `Failed to resolve Uin ${uin} to Uid`);
+        }
+        return result;
     }
 
     async resolveUin(uid: string, groupUin?: number) {
         const uin = this.uid2uin.get(uid);
         if (uin) return uin;
         
+        this.bot.log.emit('debug', 'BotIdentityService', `Cache miss, resolving Uid ${uid} to Uin`);
         if (groupUin) {
             await (await this.bot.getGroup(groupUin))?.getMembers(true);
         } else {
             await this.bot.getFriends(true);
         }
-        return this.uid2uin.get(uid);
+        const result = this.uid2uin.get(uid);
+        if (!result) {
+            this.bot.log.emit('warning', 'BotIdentityService', `Failed to resolve Uid ${uid} to Uin`);
+        }
+        return result;
     }
 }

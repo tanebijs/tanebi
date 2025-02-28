@@ -25,7 +25,6 @@ export type BotGroupMessage = {
 
 export class BotGroup extends BotContact<BotGroupDataBinding> {
     clientSequence = 100000;
-    private readonly groupMemberCache;
     eventsDX: EventEmitter<{
         message: [BotGroupMessage];
         joinRequest: [BotGroupJoinRequest];
@@ -34,6 +33,9 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
         memberIncrease: [BotGroupMember, BotGroupMember]; // member, operator
         memberDecrease: [BotGroupMember, BotGroupMember]; // member, operator
     }> = new EventEmitter();
+
+    private readonly groupMemberCache;
+    private readonly moduleName = `BotGroup#${this.uin}`;
 
     constructor(bot: Bot, data: BotGroupDataBinding) {
         super(bot, data);
@@ -102,6 +104,7 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
      * @param forceUpdate Whether to force update the cache
      */
     async getMembers(forceUpdate = false) {
+        this.bot.log.emit('debug', this.moduleName, 'Get all members');
         return this.groupMemberCache.getAll(forceUpdate);
     }
 
@@ -111,6 +114,7 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
      * @param forceUpdate Whether to force update the member info
      */
     async getMember(uin: number, forceUpdate = false) {
+        this.bot.log.emit('debug', this.moduleName, `Get member ${uin}`);
         return this.groupMemberCache.get(uin, forceUpdate);
     }
 
@@ -120,6 +124,7 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
      * @returns The message sequence number and timestamp
      */
     async sendMsg(buildMsg: (b: GroupMessageBuilder) => void | Promise<void>) {
+        this.bot.log.emit('debug', this.moduleName, 'Send message');
         const builder = new GroupMessageBuilder(this);
         await buildMsg(builder);
         return this.bot.ctx.ops.call('sendMessage', builder.build());

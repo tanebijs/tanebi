@@ -38,6 +38,7 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
     
     override async image(data: Buffer, subType?: ImageSubType, summary?: string): Promise<void> {
         const imageMeta = getImageMetadata(data);
+        this.group.bot.log.emit('debug', 'GroupMessageBuilder', `Prepare to upload image ${JSON.stringify(imageMeta)}`);
         const uploadResp = await this.group.bot.ctx.ops.call(
             'uploadGroupImage', 
             this.group.uin,

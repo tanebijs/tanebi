@@ -28,6 +28,8 @@ export class BotGroupInvitedJoinRequest {
         if (!invitor) {
             return null;
         }
+        bot.log.emit('info', 'BotGroupInvitedJoinRequest',
+            `Received invited join request: ${memberUin} -> ${groupUin}; invitor: ${invitorUid}`);
         return new BotGroupInvitedJoinRequest(req.sequence, memberUin, targetUid, invitor);
     }
 }

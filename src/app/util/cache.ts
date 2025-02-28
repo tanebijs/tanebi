@@ -17,7 +17,8 @@ export class BotCacheService<K, V extends BotEntity<unknown>>{
     }
 
     async get(key: K, forceUpdate = false) {
-        if (!this.map.has(key) || forceUpdate) {                                                 
+        if (!this.map.has(key) || forceUpdate) {     
+            this.bot.log.emit('debug', 'BotCacheService', 'Cache miss, update requested');                                            
             await this.update();
         }
         return this.map.get(key);
@@ -32,6 +33,7 @@ export class BotCacheService<K, V extends BotEntity<unknown>>{
 
     async update() {
         if (this.updating) {
+            this.bot.log.emit('debug', 'BotCacheService', 'Repeated update request, ignored');
             await this.mutex.runExclusive(() => {});
         } else {
             await this.mutex.runExclusive(async () => {
@@ -40,7 +42,7 @@ export class BotCacheService<K, V extends BotEntity<unknown>>{
                     const data = await this.updateCache(this.bot);
                     this.acceptData(data);
                 } catch {
-                    // TODO: log warning
+                    this.bot.log.emit('warning', 'BotCacheService', 'Failed to update cache for');
                 } finally {
                     this.updating = false;
                 }

@@ -17,6 +17,18 @@ const bot = await Bot.create(
     UrlSignProvider(signUrl),
 );
 
+bot.onDebug((module, message) => {
+    console.log(`[DEBUG] [${module}] ${message}`);
+});
+
+bot.onInfo((module, message) => {
+    console.log(`[INFO]  [${module}] ${message}`);
+});
+
+bot.onWarning((module, message, e) => {
+    console.log(`[WARN]  [${module}] ${message}`, e);
+});
+
 await bot.fastLogin();
 console.log('User', bot.ctx.keystore.uin, 'logged in.');
 

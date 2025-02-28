@@ -13,6 +13,7 @@ export class PrivateMessageBuilder extends AbstractMessageBuilder {
 
     override async image(data: Buffer, subType?: ImageSubType, summary?: string): Promise<void> {
         const imageMeta = getImageMetadata(data);
+        this.friend.bot.log.emit('debug', 'PrivateMessageBuilder', `Prepare to upload image ${JSON.stringify(imageMeta)}`);
         const uploadResp = await this.friend.bot.ctx.ops.call(
             'uploadPrivateImage', 
             this.friend.uid,
