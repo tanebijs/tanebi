@@ -10,7 +10,7 @@ export const SetMemberSpecialTitleOperation = defineOperation(
             body: {
                 targetUid,
                 specialTitle,
-                expireTime: 30,
+                expireTime: -1,
                 specialTitle2: specialTitle,
             }
         })),
