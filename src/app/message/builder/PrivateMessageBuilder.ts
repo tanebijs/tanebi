@@ -1,4 +1,4 @@
-import { BotFriend } from '@/app/entity';
+import { BotFriend, BotFriendMessage } from '@/app/entity';
 import { AbstractMessageBuilder } from './AbstractMessageBuilder';
 import { MessageType } from '@/core/message';
 import { ImageSubType } from '@/core/message/incoming/segment/image';
@@ -7,8 +7,14 @@ import { ImageBizType } from '@/core/message/outgoing/segment/image';
 import { getImageMetadata } from '@/core/util/media/image';
 
 export class PrivateMessageBuilder extends AbstractMessageBuilder {
+    repliedMessage?: BotFriendMessage;
+
     constructor(private readonly friend: BotFriend) {
         super(friend);
+    }
+
+    reply(message: BotFriendMessage) {
+        this.repliedMessage = message;
     }
 
     override async image(data: Buffer, subType?: ImageSubType, summary?: string): Promise<void> {
@@ -37,7 +43,13 @@ export class PrivateMessageBuilder extends AbstractMessageBuilder {
             targetUid: this.friend.uid,
             clientSequence: this.friend.clientSequence++,
             segments: this.segments,
-            repliedSequence: this.repliedSequence,
+            reply: this.repliedMessage ? {
+                sequence: this.repliedMessage.sequence,
+                senderUin: this.friend.uin,
+                senderUid: this.friend.uid,
+                messageUid: this.repliedMessage.messageUid,
+                elements: this.repliedMessage.internalElems,
+            } : undefined,
         };
     }
 }

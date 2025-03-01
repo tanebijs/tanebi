@@ -3,7 +3,7 @@ import { MessageElement } from '@/core/packet/message/MessageElement';
 
 export const SrcMsgElement = new NapProtoMsg({
     origSeqs: ProtoField(1, ScalarType.UINT32, false, true),
-    senderUin: ProtoField(2, ScalarType.UINT64, false, false),
+    senderUin: ProtoField(2, ScalarType.UINT32, false, false),
     time: ProtoField(3, ScalarType.INT32, true, false),
     flag: ProtoField(4, ScalarType.INT32, true, false),
     elems: ProtoField(5, () => MessageElement.fields, false, true),
@@ -16,6 +16,6 @@ export const SrcMsgElement = new NapProtoMsg({
         friendSequence: ProtoField(8, ScalarType.UINT32, true),
     }), true, false),
     sourceMsg: ProtoField(9, ScalarType.BYTES, true, false),
-    toUin: ProtoField(10, ScalarType.UINT64, true, false),
+    toUin: ProtoField(10, ScalarType.UINT32, true, false),
     troopName: ProtoField(11, ScalarType.BYTES, true, false),
 });

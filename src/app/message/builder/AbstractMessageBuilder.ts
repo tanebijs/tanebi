@@ -3,7 +3,6 @@ import { OutgoingMessage } from '@/core/message/outgoing';
 
 export abstract class AbstractMessageBuilder {
     protected segments: OutgoingSegment[] = [];
-    protected repliedSequence?: number;
 
     constructor(readonly contact: BotContact) { }
 
@@ -12,14 +11,6 @@ export abstract class AbstractMessageBuilder {
      */
     text(content: string) {
         this.segments.push({ type: 'text', content });
-    }
-
-    /**
-     * Set this message as a reply to another message
-     * @param sequence The sequence number of the message to reply to
-     */
-    reply(sequence: number) {
-        this.repliedSequence = sequence;
     }
 
     /**

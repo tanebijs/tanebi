@@ -14,6 +14,7 @@ export type DispatchedMessageBody = {
 
 export type DispatchedMessage = DispatchedMessageBody & {
     internalElems: MessageElementDecoded[],
+    messageUid: bigint,
 };
 
 export type GlobalMessage = {
@@ -68,6 +69,7 @@ export class MessageDispatcher {
             sequence: raw.sequence,
             repliedSequence: raw.repliedSequence,
             internalElems: raw.internalElems,
+            messageUid: raw.msgUid ?? 0n,
             ...message,
         });
 
@@ -77,6 +79,7 @@ export class MessageDispatcher {
                 isSelf: raw.senderUin === this.bot.uin,
                 repliedSequence: raw.repliedSequence,
                 internalElems: raw.internalElems,
+                messageUid: raw.msgUid ?? 0n,
                 ...message,
             });
         } else if (contact instanceof BotGroup) {
@@ -87,6 +90,7 @@ export class MessageDispatcher {
                     sender,
                     repliedSequence: raw.repliedSequence,
                     internalElems: raw.internalElems,
+                    messageUid: raw.msgUid ?? 0n,
                     ...message,
                 });
             }

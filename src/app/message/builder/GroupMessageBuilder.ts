@@ -1,4 +1,4 @@
-import { BotGroup, BotGroupMember } from '@/app/entity';
+import { BotGroup, BotGroupMember, BotGroupMessage } from '@/app/entity';
 import { AbstractMessageBuilder } from './AbstractMessageBuilder';
 import { MessageType } from '@/core/message';
 import { ImageSubType } from '@/core/message/incoming/segment/image';
@@ -7,6 +7,8 @@ import { ImageBizType } from '@/core/message/outgoing/segment/image';
 import { getImageMetadata } from '@/core/util/media/image';
 
 export class GroupMessageBuilder extends AbstractMessageBuilder {
+    repliedMessage?: BotGroupMessage;
+
     constructor(private readonly group: BotGroup) {
         super(group);
     }
@@ -35,6 +37,16 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
             name: '@全体成员',
         });
     }
+
+    /**
+     * Reply to a group message
+     */
+    reply(message: BotGroupMessage) {
+        if (message.sender.group.uin !== this.group.uin) {
+            throw new Error('Cannot reply to a message from another group');
+        }
+        this.repliedMessage = message;
+    }
     
     override async image(data: Buffer, subType?: ImageSubType, summary?: string): Promise<void> {
         const imageMeta = getImageMetadata(data);
@@ -61,7 +73,13 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
             groupUin: this.contact.uin,
             clientSequence: this.group.clientSequence++,
             segments: this.segments,
-            repliedSequence: this.repliedSequence,
+            reply: this.repliedMessage ? {
+                sequence: this.repliedMessage.sequence,
+                senderUin: this.repliedMessage.sender.uin,
+                senderUid: this.repliedMessage.sender.uid,
+                messageUid: this.repliedMessage.messageUid,
+                elements: this.repliedMessage.internalElems,
+            } : undefined,
         };
     }
 }

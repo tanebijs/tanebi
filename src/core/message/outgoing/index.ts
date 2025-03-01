@@ -21,7 +21,13 @@ interface OutgoingMessageBase {
     type: MessageType;
     segments: OutgoingSegment[];
     clientSequence: number;
-    repliedSequence?: number;
+    reply?: {
+        sequence: number;
+        senderUin: number;
+        senderUid: string;
+        messageUid: bigint;
+        elements: MessageElementDecoded[];
+    }
 }
 
 export interface OutgoingPrivateMessage extends OutgoingMessageBase {
@@ -39,8 +45,8 @@ export type OutgoingMessage = OutgoingPrivateMessage | OutgoingGroupMessage;
 
 export function buildPbSendMsg(ctx: BotContext, message: OutgoingMessage): Parameters<typeof PbSendMsg.encode>[0] {
     const result = buildPbSendMsgBase(message);
-    if (message.repliedSequence) {
-        result.body!.richText!.elements!.push(buildReply(message, ctx));
+    if (message.reply) {
+        result.body!.richText!.elements!.push(buildReply(message.reply));
     }
     for (const segment of message.segments) {
         const element = outgoingSegments.build(segment, message, ctx);
@@ -68,24 +74,18 @@ function buildPbSendMsgBase(message: OutgoingMessage): Parameters<typeof PbSendM
     };
 }
 
-function buildReply(message: OutgoingMessage, ctx: BotContext): MessageElementDecoded {
+function buildReply(reply: Exclude<OutgoingMessage['reply'], undefined>): MessageElementDecoded {
     return {
         srcMsg: {
-            origSeqs: [message.repliedSequence!],
-            senderUin: 0n,
-            time: 0,
-            elems: [
-                {
-                    text: {
-                        str: 'Ciallo', // TODO: Get the replied message content
-                    }
-                }
-            ],
+            origSeqs: [reply.sequence],
+            senderUin: reply.senderUin,
+            time: timestamp(),
+            elems: reply.elements,
             pbReserve: {
-                messageId: 0n,
-                senderUid: ctx.keystore.uid,
+                messageId: reply.messageUid,
+                senderUid: reply.senderUid,
             },
-            toUin: 0n,
+            toUin: 0,
         }
     };
 }
