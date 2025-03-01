@@ -69,6 +69,13 @@ export class BotFriend extends BotContact<BotFriendDataBinding> {
     }
 
     /**
+     * Send a gray tip poke to this friend
+     */
+    async sendGrayTipPoke() {
+        await this.bot.ctx.ops.call('sendGrayTipPoke', this.uin, undefined, this.uin);
+    }
+
+    /**
      * Subscribe to incoming messages from this friend
      * @param listener The listener function
      */

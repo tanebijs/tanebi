@@ -64,7 +64,18 @@ export class BotGroupMember extends BotEntity<BotGroupMemberDataBinding> {
         return this.data.permission;
     }
 
+    /**
+     * Set the special title of this member.
+     * You must be the owner of the group to do this.
+     */
     async setSpecialTitle(specialTitle: string) {
         await this.bot.ctx.ops.call('setMemberSpecialTitle', this.group.uin, this.uid, specialTitle);
+    }
+
+    /**
+     * Send a gray tip poke to this member.
+     */
+    async sendGrayTipPoke() {
+        await this.bot.ctx.ops.call('sendGrayTipPoke', this.uin, this.group.uin);
     }
 }
