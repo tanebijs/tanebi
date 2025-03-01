@@ -66,7 +66,7 @@ The word "tanebi" is from Japanese and means "tinder" in English or "火种" in 
 - [x] Fetch friends
 - [x] Fetch groups
 - [x] Fetch group members
-- [ ] Send poke
+- [x] Send poke
 - [ ] Send face reaction
 - [ ] Recall message
 - [ ] Leave group
