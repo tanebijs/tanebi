@@ -74,7 +74,7 @@ The word "tanebi" is from Japanese and means "tinder" in English or "火种" in 
 - [ ] Ban (mute) member
 - [ ] Kick member
 - [ ] Set member to admin
-- [ ] Set special title
+- [x] Set special title
 - [ ] Handle friend request
 - [ ] Handle group request
 - [ ] Handle group invitation
