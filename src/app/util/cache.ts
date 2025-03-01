@@ -34,10 +34,10 @@ export class BotCacheService<K, V extends BotEntity<unknown>>{
     async update() {
         if (this.updating) {
             this.bot.log.emit('debug', 'BotCacheService', 'Repeated update request, ignored');
-            await this.mutex.runExclusive(() => {});
+            await this.mutex.waitForUnlock();
         } else {
+            this.updating = true;
             await this.mutex.runExclusive(async () => {
-                this.updating = true;
                 try {
                     const data = await this.updateCache(this.bot);
                     this.acceptData(data);
