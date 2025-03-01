@@ -1,15 +1,19 @@
 import { Bot } from '@/app';
 import { BotContact, BotFriend, BotGroup, BotMsgBubble, BotMsgImage } from '@/app/entity';
-import { MessageType } from '@/core/message';
+import { MessageElementDecoded, MessageType } from '@/core/message';
 import { IncomingMessage } from '@/core/message/incoming';
 import { EventEmitter } from 'node:events';
 
-export type DispatchedMessage = {
+export type DispatchedMessageBody = {
     type: 'bubble',
     content: BotMsgBubble,
 } | {
     type: 'image',
     content: BotMsgImage,
+};
+
+export type DispatchedMessage = DispatchedMessageBody & {
+    internalElems: MessageElementDecoded[],
 };
 
 export type GlobalMessage = {
@@ -57,12 +61,13 @@ export class MessageDispatcher {
         }
     }
 
-    async dispatch(message: DispatchedMessage, raw: IncomingMessage, contact: BotContact) {
+    async dispatch(message: DispatchedMessageBody, raw: IncomingMessage, contact: BotContact) {
         this.global.emit('message', {
             contact,
             senderUin: raw.senderUin,
             sequence: raw.sequence,
             repliedSequence: raw.repliedSequence,
+            internalElems: raw.internalElems,
             ...message,
         });
 
@@ -71,6 +76,7 @@ export class MessageDispatcher {
                 sequence: raw.sequence,
                 isSelf: raw.senderUin === this.bot.uin,
                 repliedSequence: raw.repliedSequence,
+                internalElems: raw.internalElems,
                 ...message,
             });
         } else if (contact instanceof BotGroup) {
@@ -80,6 +86,7 @@ export class MessageDispatcher {
                     sequence: raw.sequence,
                     sender,
                     repliedSequence: raw.repliedSequence,
+                    internalElems: raw.internalElems,
                     ...message,
                 });
             }

@@ -25,7 +25,7 @@ interface MessageBase {
     sequence: number;
     repliedSequence?: number;
     segments: IncomingSegment[];
-    internalElems?: MessageElementDecoded[];
+    internalElems: MessageElementDecoded[];
     msgUid?: bigint;
 }
 
