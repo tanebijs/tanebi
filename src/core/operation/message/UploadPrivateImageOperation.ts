@@ -39,7 +39,7 @@ export const UploadPrivateImageOperation = defineOperation(
                             fileName: generatedFileName,
                             type: {
                                 type: 1,
-                                picFormat: img.format,  //TODO: extend NapCat imgType /cc @MliKiowa
+                                picFormat: img.format,
                                 videoFormat: 0,
                                 voiceFormat: 0,
                             },

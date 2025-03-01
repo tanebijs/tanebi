@@ -59,7 +59,6 @@ export function unpackTlv<const T extends PackedTlvSchema>(
         const findResult = knownTags.indexOf(tagRead);
         const length = reader.readUInt16BE();
         if (findResult === -1) {
-            // TODO: warn about unknown tag
             result[`unknown_0x${tagRead.toString(16)}`] = reader.readBuffer(length);
             continue;
         }

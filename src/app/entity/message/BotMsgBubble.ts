@@ -26,11 +26,10 @@ export class BotMsgBubble implements BotMsgType {
                                         };
                                 }
                             }
-                            // TODO: warn about mention in private chat
+                            bot.log.emit('warning', 'BotMsgBubble.create', 'Failed to resolve mention');
                         } else if (element.type === 'image') {
                             return { type: 'image', content: await BotMsgImage.create(element, msg, bot) };
                         }
-                        // TODO: warn about unknown type
                     })
                 )
             ).filter((e) => e !== undefined)

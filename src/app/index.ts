@@ -244,7 +244,6 @@ export class Bot {
         const easyLoginResult = await this.ctx.ops.call('ntEasyLogin');
         if (!easyLoginResult.success) {
             throw new Error(`Login failed (${easyLoginResult.errorCode})`);
-            // TODO: handle unusual cases
         }
 
         this.ctx.keystore.session.d2Key = easyLoginResult.d2Key;
