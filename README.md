@@ -49,7 +49,7 @@ The word "tanebi" is from Japanese and means "tinder" in English or "火种" in 
 - [ ] Face
 - [x] Mention (At)
 - [x] Image
-- [x] Reply[^4]
+- [x] Reply
 - [ ] Record
 - [ ] Video
 - [ ] Market Face
@@ -58,9 +58,6 @@ The word "tanebi" is from Japanese and means "tinder" in English or "火种" in 
 - [ ] XML
 - [ ] JSON
 - [ ] Markdown
-
-[^3]: Only receiving
-[^4]: Cannot function correctly when sending private replies
 </details>
 
 <details>

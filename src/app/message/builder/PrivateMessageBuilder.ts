@@ -50,6 +50,7 @@ export class PrivateMessageBuilder extends AbstractMessageBuilder {
                 messageUid: this.repliedMessage.messageUid,
                 elements: this.repliedMessage.internalElems,
             } : undefined,
+            repliedClientSequence: this.repliedMessage?.clientSequence,
         };
     }
 }

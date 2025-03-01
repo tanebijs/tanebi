@@ -1,7 +1,7 @@
 import { Bot } from '@/app';
 import { BotContact, BotFriend, BotGroup, BotMsgBubble, BotMsgImage } from '@/app/entity';
 import { MessageElementDecoded, MessageType } from '@/core/message';
-import { IncomingMessage } from '@/core/message/incoming';
+import { IncomingMessage, PrivateMessage } from '@/core/message/incoming';
 import { EventEmitter } from 'node:events';
 
 export type DispatchedMessageBody = {
@@ -76,6 +76,7 @@ export class MessageDispatcher {
         if (contact instanceof BotFriend) {
             contact.dispatchMessage({
                 sequence: raw.sequence,
+                clientSequence: (<PrivateMessage>raw).clientSequence,
                 isSelf: raw.senderUin === this.bot.uin,
                 repliedSequence: raw.repliedSequence,
                 internalElems: raw.internalElems,

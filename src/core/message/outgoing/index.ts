@@ -34,6 +34,7 @@ export interface OutgoingPrivateMessage extends OutgoingMessageBase {
     type: MessageType.PrivateMessage;
     targetUin: number;
     targetUid?: string;
+    repliedClientSequence?: number;
 }
 
 export interface OutgoingGroupMessage extends OutgoingMessageBase {
@@ -46,7 +47,9 @@ export type OutgoingMessage = OutgoingPrivateMessage | OutgoingGroupMessage;
 export function buildPbSendMsg(ctx: BotContext, message: OutgoingMessage): Parameters<typeof PbSendMsg.encode>[0] {
     const result = buildPbSendMsgBase(message);
     if (message.reply) {
-        result.body!.richText!.elements!.push(buildReply(message.reply));
+        result.body!.richText!.elements!.push(message.type === MessageType.PrivateMessage ?
+            buildPrivateReply(message.reply, message.repliedClientSequence!) :
+            buildGroupReply(message.reply));
     }
     for (const segment of message.segments) {
         const element = outgoingSegments.build(segment, message, ctx);
@@ -74,7 +77,24 @@ function buildPbSendMsgBase(message: OutgoingMessage): Parameters<typeof PbSendM
     };
 }
 
-function buildReply(reply: Exclude<OutgoingMessage['reply'], undefined>): MessageElementDecoded {
+function buildPrivateReply(reply: Exclude<OutgoingMessage['reply'], undefined>, seq: number): MessageElementDecoded {
+    return {
+        srcMsg: {
+            origSeqs: [seq],
+            senderUin: reply.senderUin,
+            time: timestamp(),
+            elems: reply.elements,
+            pbReserve: {
+                messageId: reply.messageUid,
+                senderUid: reply.senderUid,
+                friendSequence: reply.sequence,
+            },
+            toUin: 0,
+        }
+    };
+}
+
+function buildGroupReply(reply: Exclude<OutgoingMessage['reply'], undefined>): MessageElementDecoded {
     return {
         srcMsg: {
             origSeqs: [reply.sequence],
