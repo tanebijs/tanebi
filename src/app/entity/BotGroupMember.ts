@@ -63,4 +63,8 @@ export class BotGroupMember extends BotEntity<BotGroupMemberDataBinding> {
     get permission() {
         return this.data.permission;
     }
+
+    async setSpecialTitle(specialTitle: string) {
+        await this.bot.ctx.ops.call('setMemberSpecialTitle', this.group.uin, this.uid, specialTitle);
+    }
 }

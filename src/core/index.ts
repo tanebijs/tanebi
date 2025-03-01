@@ -26,6 +26,7 @@ import { UploadPrivateImageOperation } from '@/core/operation/message/UploadPriv
 import EventEmitter from 'node:events';
 import { FetchGroupNotifiesOperation } from '@/core/operation/group/FetchGroupNotifiesOperation';
 import { FetchUserInfoOperation } from '@/core/operation/friend/FetchUserInfoOperation';
+import { SetMemberSpecialTitleOperation } from '@/core/operation/group/SetMemberSpecialTitleOperation';
 
 /**
  * The Bot object.
@@ -47,6 +48,7 @@ export class BotContext {
         FetchGroupMembersOperation,
         FetchGroupNotifiesOperation,
         FetchGroupsOperation,
+        SetMemberSpecialTitleOperation,
 
         FetchHighwayUrlOperation,
 
