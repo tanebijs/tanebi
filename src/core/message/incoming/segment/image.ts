@@ -7,6 +7,8 @@ import { NapProtoDecodeStructType } from '@napneko/nap-proto-core';
 export interface ImageSegment {
     indexNode?: NapProtoDecodeStructType<typeof IndexNode.fields>,
     url?: string,
+    width: number,
+    height: number,
     subType: ImageSubType,
     summary: string,
 }
@@ -33,6 +35,8 @@ export const imageCommonParser = defineIncoming(
                 const msgInfoBody = msgInfo.msgInfoBody[0];
                 return {
                     indexNode: msgInfoBody.index,
+                    width: msgInfoBody.index?.info?.width ?? 0,
+                    height: msgInfoBody.index?.info?.height ?? 0,
                     subType: msgInfo.extBizInfo?.pic?.bizType ?? ImageSubType.Picture,
                     summary: msgInfo.extBizInfo?.pic?.textSummary || '[图片]'
                 };
@@ -49,13 +53,17 @@ export const imageNotOnlineParser = defineIncoming(
             if (element.origUrl.includes('&fileid=')) { // is NT image
                 return {
                     url: `${ntImageUrlBase}${element.origUrl}`,
-                    subType: ImageSubType.Picture,
+                    width: element.picWidth,
+                    height: element.picHeight,
+                    subType: element.pbRes?.subType ?? ImageSubType.Picture,
                     summary: element.pbRes?.summary || '[图片]',
                 };
             } else { // is legacy image
                 return {
                     url: `${legacyImageUrlBase}${element.origUrl}`,
-                    subType: ImageSubType.Picture,
+                    width: element.picWidth,
+                    height: element.picHeight,
+                    subType: element.pbRes?.subType ?? ImageSubType.Picture,
                     summary: element.pbRes?.summary || '[图片]',
                 };
             }
@@ -71,12 +79,16 @@ export const imageCustomFaceParser = defineIncoming(
             if (element.origUrl.includes('&fileid=')) { // is NT image
                 return {
                     url: `${ntImageUrlBase}${element.origUrl}`,
+                    width: element.width,
+                    height: element.height,
                     subType: element.pbReserve?.subType ?? parseSubTypeFromOldData(element.oldData),
                     summary: element.pbReserve?.summary || '[动画表情]',
                 };
             } else { // is legacy image
                 return {
                     url: `${legacyImageUrlBase}${element.origUrl}`,
+                    width: element.width,
+                    height: element.height,
                     subType: element.pbReserve?.subType ?? parseSubTypeFromOldData(element.oldData),
                     summary: element.pbReserve?.summary || '[动画表情]',
                 };
