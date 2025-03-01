@@ -19,6 +19,7 @@ export { GroupMemberPermission } from '@/core/packet/oidb/0xfe7_3';
 
 export class BotGroupMember extends BotEntity<BotGroupMemberDataBinding> {
     private clientSequence = 100000;
+    private readonly moduleName = `BotGroupMember#${this.uin}@${this.group.uin}`;
 
     constructor(bot: Bot, data: BotGroupMemberDataBinding, readonly group: BotGroup) {
         super(bot, data);
@@ -69,6 +70,7 @@ export class BotGroupMember extends BotEntity<BotGroupMemberDataBinding> {
      * You must be the owner of the group to do this.
      */
     async setSpecialTitle(specialTitle: string) {
+        this.bot.log.emit('debug', this.moduleName, `Set special title to ${specialTitle}`);
         await this.bot.ctx.ops.call('setMemberSpecialTitle', this.group.uin, this.uid, specialTitle);
     }
 
@@ -76,6 +78,7 @@ export class BotGroupMember extends BotEntity<BotGroupMemberDataBinding> {
      * Send a gray tip poke to this member.
      */
     async sendGrayTipPoke() {
+        this.bot.log.emit('debug', this.moduleName, 'Send gray tip poke');
         await this.bot.ctx.ops.call('sendGrayTipPoke', this.uin, this.group.uin);
     }
 }
