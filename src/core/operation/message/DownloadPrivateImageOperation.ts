@@ -1,11 +1,12 @@
 import { defineOperation } from '@/core/operation/OperationBase';
 import { DownloadPrivateImage, DownloadPrivateImageResponse } from '@/core/packet/oidb/0x11c5_200';
 import { IndexNode } from '@/core/packet/oidb/media/IndexNode';
+import { NapProtoDecodeStructType } from '@napneko/nap-proto-core';
 
 export const DownloadPrivateImageOperation = defineOperation(
     'downloadPrivateImage',
     'OidbSvcTrpcTcp.0x11c5_200',
-    (ctx, senderUid: string, node: ReturnType<typeof IndexNode.decode>) => Buffer.from(DownloadPrivateImage.encode({
+    (ctx, senderUid: string, node: NapProtoDecodeStructType<typeof IndexNode.fields>) => Buffer.from(DownloadPrivateImage.encode({
         reqHead: {
             common: {
                 requestId: 1,

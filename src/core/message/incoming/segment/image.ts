@@ -2,9 +2,10 @@ import { defineIncoming } from '@/core/message/incoming/segment-base';
 import { CustomFaceElement } from '@/core/packet/message/element/CustomFaceElement';
 import { IndexNode } from '@/core/packet/oidb/media/IndexNode';
 import { MsgInfo } from '@/core/packet/oidb/media/MsgInfo';
+import { NapProtoDecodeStructType } from '@napneko/nap-proto-core';
 
 export interface ImageSegment {
-    indexNode?: ReturnType<typeof IndexNode.decode>,
+    indexNode?: NapProtoDecodeStructType<typeof IndexNode.fields>,
     url?: string,
     subType: ImageSubType,
     summary: string,
@@ -84,7 +85,7 @@ export const imageCustomFaceParser = defineIncoming(
     }
 );
 
-function parseSubTypeFromOldData(element: ReturnType<typeof CustomFaceElement.decode>['oldData']) {
+function parseSubTypeFromOldData(element: NapProtoDecodeStructType<typeof CustomFaceElement.fields>['oldData']) {
     if (!element || element.length < 5) {
         return ImageSubType.Picture; // May be legacy QQ
     }

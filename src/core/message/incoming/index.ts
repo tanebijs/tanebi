@@ -4,6 +4,7 @@ import { IncomingSegmentCollection } from '@/core/message/incoming/segment-base'
 import { imageCommonParser, imageNotOnlineParser, imageCustomFaceParser } from '@/core/message/incoming/segment/image';
 import { mentionParser } from '@/core/message/incoming/segment/mention';
 import { textParser } from '@/core/message/incoming/segment/text';
+import { NapProtoDecodeStructType } from '@napneko/nap-proto-core';
 
 const incomingSegments = new IncomingSegmentCollection([
     textParser,
@@ -42,7 +43,7 @@ export interface GroupMessage extends MessageBase {
 
 export type IncomingMessage = PrivateMessage | GroupMessage;
 
-export function parsePushMsgBody(pushMsg: ReturnType<typeof PushMsgBody.decode>): IncomingMessage {
+export function parsePushMsgBody(pushMsg: NapProtoDecodeStructType<typeof PushMsgBody.fields>): IncomingMessage {
     const result = parseMetadata(pushMsg);
     if (pushMsg.body?.richText?.elements) {
         for (const element of pushMsg.body.richText.elements) {
@@ -65,7 +66,7 @@ export function parsePushMsgBody(pushMsg: ReturnType<typeof PushMsgBody.decode>)
     return result;
 }
 
-function parseMetadata(pushMsg: ReturnType<typeof PushMsgBody.decode>): IncomingMessage {
+function parseMetadata(pushMsg: NapProtoDecodeStructType<typeof PushMsgBody.fields>): IncomingMessage {
     if (!pushMsg.responseHead.groupExt) {
         return {
             type: MessageType.PrivateMessage,
