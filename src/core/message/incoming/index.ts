@@ -6,6 +6,8 @@ import { mentionParser } from '@/core/message/incoming/segment/mention';
 import { textParser } from '@/core/message/incoming/segment/text';
 import { NapProtoDecodeStructType } from '@napneko/nap-proto-core';
 
+export const rawElems = Symbol('Raw elements');
+
 const incomingSegments = new IncomingSegmentCollection([
     textParser,
     mentionParser,
@@ -25,7 +27,7 @@ interface MessageBase {
     sequence: number;
     repliedSequence?: number;
     segments: IncomingSegment[];
-    internalElems: MessageElementDecoded[];
+    [rawElems]: MessageElementDecoded[];
     msgUid?: bigint;
 }
 
@@ -77,7 +79,7 @@ function parseMetadata(pushMsg: NapProtoDecodeStructType<typeof PushMsgBody.fiel
             targetUid: pushMsg.responseHead.toUid,
             sequence: pushMsg.contentHead.ntMsgSeq ?? 0,
             segments: [],
-            internalElems: pushMsg.body?.richText?.elements ?? [],
+            [rawElems]: pushMsg.body?.richText?.elements ?? [],
             msgUid: pushMsg.contentHead.msgUid,
 
             clientSequence: pushMsg.contentHead.sequence ?? 0,
@@ -94,7 +96,7 @@ function parseMetadata(pushMsg: NapProtoDecodeStructType<typeof PushMsgBody.fiel
             senderUid: pushMsg.responseHead.fromUid,
             sequence: pushMsg.contentHead.sequence ?? 0,
             segments: [],
-            internalElems: pushMsg.body?.richText?.elements ?? [],
+            [rawElems]: pushMsg.body?.richText?.elements ?? [],
             msgUid: pushMsg.contentHead.msgUid,
         };
     }

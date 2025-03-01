@@ -5,6 +5,7 @@ import { ImageSubType } from '@/core/message/incoming/segment/image';
 import { OutgoingGroupMessage } from '@/core/message/outgoing';
 import { ImageBizType } from '@/core/message/outgoing/segment/image';
 import { getImageMetadata } from '@/core/util/media/image';
+import { rawElems } from '@/core/message/incoming';
 
 export class GroupMessageBuilder extends AbstractMessageBuilder {
     repliedMessage?: BotGroupMessage;
@@ -78,7 +79,7 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
                 senderUin: this.repliedMessage.sender.uin,
                 senderUid: this.repliedMessage.sender.uid,
                 messageUid: this.repliedMessage.messageUid,
-                elements: this.repliedMessage.internalElems,
+                elements: this.repliedMessage[rawElems],
             } : undefined,
         };
     }

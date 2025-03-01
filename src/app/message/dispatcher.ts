@@ -1,7 +1,7 @@
 import { Bot } from '@/app';
 import { BotContact, BotFriend, BotGroup, BotMsgBubble, BotMsgImage } from '@/app/entity';
 import { MessageElementDecoded, MessageType } from '@/core/message';
-import { IncomingMessage, PrivateMessage } from '@/core/message/incoming';
+import { IncomingMessage, PrivateMessage, rawElems } from '@/core/message/incoming';
 import { EventEmitter } from 'node:events';
 
 export type DispatchedMessageBody = {
@@ -13,7 +13,7 @@ export type DispatchedMessageBody = {
 };
 
 export type DispatchedMessage = DispatchedMessageBody & {
-    internalElems: MessageElementDecoded[],
+    [rawElems]: MessageElementDecoded[],
     messageUid: bigint,
 };
 
@@ -68,7 +68,7 @@ export class MessageDispatcher {
             senderUin: raw.senderUin,
             sequence: raw.sequence,
             repliedSequence: raw.repliedSequence,
-            internalElems: raw.internalElems,
+            [rawElems]: raw[rawElems],
             messageUid: raw.msgUid ?? 0n,
             ...message,
         });
@@ -79,7 +79,7 @@ export class MessageDispatcher {
                 clientSequence: (<PrivateMessage>raw).clientSequence,
                 isSelf: raw.senderUin === this.bot.uin,
                 repliedSequence: raw.repliedSequence,
-                internalElems: raw.internalElems,
+                [rawElems]: raw[rawElems],
                 messageUid: raw.msgUid ?? 0n,
                 ...message,
             });
@@ -90,7 +90,7 @@ export class MessageDispatcher {
                     sequence: raw.sequence,
                     sender,
                     repliedSequence: raw.repliedSequence,
-                    internalElems: raw.internalElems,
+                    [rawElems]: raw[rawElems],
                     messageUid: raw.msgUid ?? 0n,
                     ...message,
                 });
