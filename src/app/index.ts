@@ -1,4 +1,5 @@
 import { BotFriend, BotGroup } from '@/app/entity';
+import { BotFriendRequest } from '@/app/entity/request/BotFriendRequest';
 import { BotGroupInvitedJoinRequest } from '@/app/entity/request/BotGroupInvitedJoinRequest';
 import { BotGroupJoinRequest } from '@/app/entity/request/BotGroupJoinRequest';
 import { MessageDispatcher } from '@/app/message';
@@ -41,6 +42,7 @@ export class Bot {
     private readonly friendCache;
     private readonly groupCache;
     private readonly messageDispatcher;
+    private readonly eventsDX;
     private heartbeatIntervalRef?: NodeJS.Timeout;
 
     private constructor(
@@ -118,6 +120,15 @@ export class Bot {
             } catch (e) {
                 this.log.emit('warning', 'Bot', 'Failed to handle message', e);
             }
+        });
+        
+        this.eventsDX = new EventEmitter<{
+            friendRequest: [BotFriendRequest];
+        }>();
+
+        this.ctx.eventsDX.on('friendRequest', async (fromUin, fromUid, message, via) => {
+            this.log.emit('debug', 'Bot', `Received friend request from ${fromUid}`);
+            this.eventsDX.emit('friendRequest', new BotFriendRequest(fromUin, fromUid, message, via));
         });
 
         this.ctx.eventsDX.on('groupJoinRequest', async (groupUin, memberUid) => {
@@ -312,6 +323,13 @@ export class Bot {
     async getGroup(uin: number, forceUpdate = false) {
         this.log.emit('debug', 'Bot', `Getting group ${uin}`);
         return this.groupCache.get(uin, forceUpdate);
+    }
+
+    /**
+     * Listen to friend requests
+     */
+    onFriendRequest(listener: (request: BotFriendRequest) => void) {
+        this.eventsDX.on('friendRequest', listener);
     }
 
     /**

@@ -86,10 +86,11 @@ The word "tanebi" is from Japanese and means "tinder" in English or "火种" in 
 <summary> Event </summary>
 
 - [ ] Bot offline
-- [ ] Poke
-- [ ] Face reaction
-- [ ] Message recall
-- [ ] Friend request
+- [ ] Friend poke
+- [ ] Friend message recall
+- [x] Friend request
+- [ ] Group poke
+- [ ] Group message recall
 - [x] Group join request
 - [x] Group invited join request
 - [x] Group member increase
@@ -97,6 +98,7 @@ The word "tanebi" is from Japanese and means "tinder" in English or "火种" in 
 - [x] Group invitation
 - [x] Group admin change
 - [ ] Group essence message
+- [ ] Group face reaction
 - [ ] Group to do
 </details>
 
