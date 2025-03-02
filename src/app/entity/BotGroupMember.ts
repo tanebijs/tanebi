@@ -68,8 +68,14 @@ export class BotGroupMember extends BotEntity<BotGroupMemberDataBinding> {
     /**
      * Set the special title of this member.
      * You must be the owner of the group to do this.
+     * @param specialTitle The special title to set.
+     * The length of the special title must be less than or equal to 18 (in UTF-8 bytes).
+     * One CJK character takes 3 bytes.
      */
     async setSpecialTitle(specialTitle: string) {
+        if (Buffer.from(specialTitle).length > 18) {
+            throw new Error('Special title is too long');
+        }
         this.bot.log.emit('debug', this.moduleName, `Set special title to ${specialTitle}`);
         await this.bot.ctx.ops.call('setMemberSpecialTitle', this.group.uin, this.uid, specialTitle);
     }
