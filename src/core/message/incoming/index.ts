@@ -50,7 +50,8 @@ export function parsePushMsgBody(pushMsg: NapProtoDecodeStructType<typeof PushMs
     if (pushMsg.body?.richText?.elements) {
         for (const element of pushMsg.body.richText.elements) {
             if (!result.repliedSequence && element.srcMsg) {
-                result.repliedSequence = element.srcMsg.origSeqs?.[0] ?? element.srcMsg.pbReserve?.friendSequence;
+                result.repliedSequence = element.srcMsg.pbReserve?.friendSequence // for private message
+                    ?? element.srcMsg.origSeqs?.[0]; // for group message
                 continue;
             }
 
