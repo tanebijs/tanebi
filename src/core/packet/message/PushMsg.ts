@@ -51,7 +51,7 @@ export enum Event0x210SubType {
     FriendDeleteOrPinChanged = 39,
     FriendRecall = 138,
     ServicePinChange = 199,             // e.g: My computer | QQ Wallet | ...
-    FriendPoke = 290,
+    FriendGrayTip = 290,
     GroupKick = 212,
 }
 

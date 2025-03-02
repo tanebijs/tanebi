@@ -1,11 +1,14 @@
 import { defineEvent } from '@/core/event/EventBase';
-import { PushMsg, PushMsgType } from '@/core/packet/message/PushMsg';
+import { Event0x210SubType, PushMsg, PushMsgType } from '@/core/packet/message/PushMsg';
 import { parsePushMsgBody } from '@/core/message/incoming';
 import { GroupJoinRequest } from '@/core/packet/message/notify/GroupJoinRequest';
 import { GroupInvitationRequest } from '@/core/packet/message/notify/GroupInvitedJoinRequest';
 import { GroupAdminChange } from '@/core/packet/message/notify/GroupAdminChange';
 import { GroupInvitation } from '@/core/packet/message/notify/GroupInvitation';
 import { DecreaseType, GroupMemberChange, OperatorInfo } from '@/core/packet/message/notify/GroupMemberChange';
+import { FriendRequest, FriendRequestExtractVia } from '@/core/packet/message/notify/FriendRequest';
+import { GeneralGrayTip } from '@/core/packet/message/notify/GeneralGrayTip';
+import { FriendRecall } from '@/core/packet/message/notify/FriendRecall';
 
 export const MessagePushEvent = defineEvent(
     'messagePush',
@@ -49,6 +52,30 @@ export const MessagePushEvent = defineEvent(
                 content.type === DecreaseType.KickSelf ?
                     OperatorInfo.decode(content.operatorInfo!).body.uid :
                     (content.operatorInfo ? Buffer.from(content.operatorInfo).toString() : undefined));
+        } else if (type === PushMsgType.Event0x210) {
+            const subType = pushMsg.message.contentHead.subType as Event0x210SubType;
+            if (subType === Event0x210SubType.FriendRequest) {
+                const content = FriendRequest.decode(pushMsg.message.body!.msgContent!);
+                ctx.eventsDX.emit('friendRequest',
+                    pushMsg.message.responseHead.fromUin,
+                    content.body.fromUid,
+                    content.body.message,
+                    content.body.via ?? FriendRequestExtractVia.decode(pushMsg.message.body!.msgContent!).body.via);
+            } else if (subType === Event0x210SubType.FriendGrayTip) {
+                const content = GeneralGrayTip.decode(pushMsg.message.body!.msgContent!);
+                const templateParamsMap = new Map(content.templateParams.map((param) => [param.key, param.value]));
+                if (content.bizType === 12) {
+                    ctx.eventsDX.emit('friendPoke',
+                        parseInt(templateParamsMap.get('uin_str1')!),
+                        parseInt(templateParamsMap.get('uin_str2')!),
+                        templateParamsMap.get('action_str') ?? templateParamsMap.get('alt_str1') ?? '',
+                        templateParamsMap.get('action_img_url')!,
+                        templateParamsMap.get('suffix'),);
+                }
+            } else if (subType === Event0x210SubType.FriendRecall) {
+                const content = FriendRecall.decode(pushMsg.message.body!.msgContent!).body;
+                ctx.eventsDX.emit('friendRecall', content.fromUid, content.clientSequence, content.tipInfo.tip);
+            }
         }
     },
 );

@@ -74,6 +74,10 @@ export class BotContext {
     ]);
 
     eventsDX = new EventEmitter<{
+        friendRequest: [number, string, string, string]; // fromUin, fromUid, message, via
+        friendPoke: [number, number, string, string, string?]; // fromUin, toUin, actionStr, actionImgUrl, suffix,
+        friendRecall: [string, number, string] // fromUid, clientSequence, tip
+
         groupJoinRequest: [number, string]; // groupUin, memberUid
         groupInvitedJoinRequest: [number, string, string]; // groupUin, targetUid, invitorUid
         groupInvitationRequest: [number, string]; // groupUin, invitorUid
