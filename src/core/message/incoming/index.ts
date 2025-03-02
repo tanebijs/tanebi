@@ -35,6 +35,7 @@ export interface PrivateMessage extends MessageBase {
     type: MessageType.PrivateMessage;
     targetUid?: string;
     clientSequence: number;
+    random: number;
     isTemporary: boolean;
 }
 
@@ -84,6 +85,7 @@ function parseMetadata(pushMsg: NapProtoDecodeStructType<typeof PushMsgBody.fiel
             msgUid: pushMsg.contentHead.msgUid,
 
             clientSequence: pushMsg.contentHead.sequence ?? 0,
+            random: pushMsg.contentHead.random ?? 0,
             isTemporary: pushMsg.contentHead.type === PushMsgType.TempMessage,
         };
     } else {

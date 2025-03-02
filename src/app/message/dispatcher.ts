@@ -77,6 +77,7 @@ export class MessageDispatcher {
             contact.dispatchMessage({
                 sequence: raw.sequence,
                 clientSequence: (<PrivateMessage>raw).clientSequence,
+                random: (<PrivateMessage>raw).random,
                 isSelf: raw.senderUin === this.bot.uin,
                 repliedSequence: raw.repliedSequence,
                 [rawElems]: raw[rawElems],
