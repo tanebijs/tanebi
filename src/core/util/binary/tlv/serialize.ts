@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+
 export type TlvScalarFieldType =
     | 'uint8'
     | 'uint16'
@@ -117,105 +119,152 @@ export function TlvFixedBytesField<K extends string>(name: K, length: number): T
     return { name, type: 'fixed-bytes', length } as TlvFieldSpec<K, 'fixed-bytes'>;
 }
 
-const serializers: {
-    [K in TlvFieldType]: (value: ParseTlvScalarType<K>, spec: TlvFieldSpec<string, K>) => Buffer;
+const serializedLengthCalculators: {
+    [K in TlvFieldType]: (value: ParseTlvScalarType<K>, spec: TlvFieldSpec<string, K>) => number;
 } = {
-    int8(value) {
-        const buffer = Buffer.alloc(1);
-        buffer.writeInt8(value, 0);
-        return buffer;
+    int8() {
+        return 1;
     },
 
-    uint8(value) {
-        const buffer = Buffer.alloc(1);
-        buffer.writeUInt8(value, 0);
-        return buffer;
+    uint8() {
+        return 1;
     },
 
-    int16(value) {
-        const buffer = Buffer.alloc(2);
-        buffer.writeInt16BE(value, 0);
-        return buffer;
+    int16() {
+        return 2;
     },
 
-    uint16(value) {
-        const buffer = Buffer.alloc(2);
-        buffer.writeUInt16BE(value, 0);
-        return buffer;
+    uint16() {
+        return 2;
     },
 
-    int32(value) {
-        const buffer = Buffer.alloc(4);
-        buffer.writeInt32BE(value, 0);
-        return buffer;
+    int32() {
+        return 4;
     },
 
-    uint32(value) {
-        const buffer = Buffer.alloc(4);
-        buffer.writeUInt32BE(value, 0);
-        return buffer;
+    uint32() {
+        return 4;
     },
 
-    int64(value) {
-        const buffer = Buffer.alloc(8);
-        buffer.writeBigInt64BE(value, 0);
-        return buffer;
+    int64() {
+        return 8;
     },
 
-    uint64(value) {
-        const buffer = Buffer.alloc(8);
-        buffer.writeBigUInt64BE(value, 0);
-        return buffer;
+    uint64() {
+        return 8;
     },
 
-    float(value) {
-        const buffer = Buffer.alloc(4);
-        buffer.writeFloatBE(value, 0);
-        return buffer;
+    float() {
+        return 4;
     },
 
-    double(value) {
-        const buffer = Buffer.alloc(8);
-        buffer.writeDoubleBE(value, 0);
-        return buffer;
+    double() {
+        return 8;
     },
 
     bytes(value, spec) {
         const length = value.length;
         if (spec.lengthPrefix === 'uint8') {
-            const buffer = Buffer.alloc(1 + length);
-            buffer.writeUInt8(spec.lengthIncludesPrefix ? length + 1 : length, 0);
-            value.copy(buffer, 1);
-            return buffer;
+            return length + 1;
         } else if (spec.lengthPrefix === 'uint16') {
-            const buffer = Buffer.alloc(2 + length);
-            buffer.writeUInt16BE(spec.lengthIncludesPrefix ? length + 2 : length, 0);
-            value.copy(buffer, 2);
-            return buffer;
+            return length + 2;
         } else if (spec.lengthPrefix === 'uint32') {
-            const buffer = Buffer.alloc(4 + length);
-            buffer.writeUInt32BE(spec.lengthIncludesPrefix ? length + 4 : length, 0);
-            value.copy(buffer, 4);
-            return buffer;
+            return length + 4;
         } else {
-            return value;
+            return length;
         }
     },
 
     string(value, spec) {
-        return this.bytes(Buffer.from(value, 'utf8'), {
-            name: spec.name,
-            type: 'bytes',
-            lengthPrefix: spec.lengthPrefix,
-            lengthIncludesPrefix: spec.lengthIncludesPrefix,
-        });
+        const byteLength = Buffer.byteLength(value, 'utf8');
+        if (spec.lengthPrefix === 'uint8') {
+            return byteLength + 1;
+        } else if (spec.lengthPrefix === 'uint16') {
+            return byteLength + 2;
+        } else if (spec.lengthPrefix === 'uint32') {
+            return byteLength + 4;
+        } else {
+            return byteLength;
+        }
     },
 
-    'fixed-bytes'(value, spec) {
-        if (value.length !== spec.length) {
-            throw new Error(`Fixed-length field ${spec.name} must have length ${spec.length}`);
+    'fixed-bytes'(_, spec) {
+        return spec.length;
+    },
+};
+
+const serializers: {
+    [K in TlvFieldType]:
+        (value: ParseTlvScalarType<K>, spec: TlvFieldSpec<string, K>, buffer: Buffer, offset: number) =>
+            number; // bytes written
+} = {
+    int8(value, spec, buffer, offset) {
+        return buffer.writeInt8(value, offset);
+    },
+
+    uint8(value, spec, buffer, offset) {
+        return buffer.writeUInt8(value, offset);
+    },
+
+    int16(value, spec, buffer, offset) {
+        return buffer.writeInt16BE(value, offset);
+    },
+
+    uint16(value, spec, buffer, offset) {
+        return buffer.writeUInt16BE(value, offset);
+    },
+
+    int32(value, spec, buffer, offset) {
+        return buffer.writeInt32BE(value, offset);
+    },
+
+    uint32(value, spec, buffer, offset) {
+        return buffer.writeUInt32BE(value, offset);
+    },
+
+    int64(value, spec, buffer, offset) {
+        return buffer.writeBigInt64BE(value, offset);
+    },
+
+    uint64(value, spec, buffer, offset) {
+        return buffer.writeBigUInt64BE(value, offset);
+    },
+
+    float(value, spec, buffer, offset) {
+        return buffer.writeFloatBE(value, offset);
+    },
+
+    double(value, spec, buffer, offset) {
+        return buffer.writeDoubleBE(value, offset);
+    },
+
+    bytes(value, spec, buffer, offset) {
+        const length = value.length;
+        if (spec.lengthPrefix === 'uint8') {
+            offset = buffer.writeUInt8(length + (spec.lengthIncludesPrefix ? 1 : 0), offset);
+        } else if (spec.lengthPrefix === 'uint16') {
+            offset = buffer.writeUInt16BE(length + (spec.lengthIncludesPrefix ? 2 : 0), offset);
+        } else if (spec.lengthPrefix === 'uint32') {
+            offset = buffer.writeUInt32BE(length + (spec.lengthIncludesPrefix ? 4 : 0), offset);
         }
-        return value;
+        return offset + value.copy(buffer, offset);
+    },
+
+    string(value, spec, buffer, offset) {
+        const byteLength = Buffer.byteLength(value, 'utf8');
+        if (spec.lengthPrefix === 'uint8') {
+            offset = buffer.writeUInt8(byteLength + (spec.lengthIncludesPrefix ? 1 : 0), offset);
+        } else if (spec.lengthPrefix === 'uint16') {
+            offset = buffer.writeUInt16BE(byteLength + (spec.lengthIncludesPrefix ? 2 : 0), offset);
+        } else if (spec.lengthPrefix === 'uint32') {
+            offset = buffer.writeUInt32BE(byteLength + (spec.lengthIncludesPrefix ? 4 : 0), offset);
+        }
+        return offset + buffer.write(value, offset);
+    },
+
+    'fixed-bytes'(value, spec, buffer, offset) {
+        value.copy(buffer, offset);
+        return offset + spec.length;
     },
 };
 
@@ -225,16 +274,23 @@ const serializers: {
  * @param data Data to serialize
  */
 export function encodeTlv<const T extends TlvPacketSchema>(schema: T, data: Deserialized<T>): Buffer {
-    return Buffer.concat(schema.map(field => {
-        const name = field.name;
-        // eslint-disable-next-line
+    let length = 0;
+    for (const field of schema) {
         // @ts-ignore
-        const value = data[name];
-        const type = field.type;
-        // eslint-disable-next-line
+        const value = data[field.name];
         // @ts-ignore
-        return serializers[type](value, field as TlvFieldSpec<string, TlvFieldType>);
-    }));
+        const accLength = serializedLengthCalculators[field.type](value, field);
+        length += accLength;
+    }
+    const buffer = Buffer.allocUnsafe(length);
+    let offset = 0;
+    for (const field of schema) {
+        // @ts-ignore
+        const value = data[field.name];
+        // @ts-ignore
+        offset = serializers[field.type](value, field, buffer, offset);
+    }
+    return buffer;
 }
 
 const deserializers: {
@@ -338,7 +394,6 @@ export function decodeTlv<const T extends TlvPacketSchema>(schema: T, buffer: Bu
         const [value, newOffset] = deserializers[field.type](
             buffer,
             offset,
-            // eslint-disable-next-line
             // @ts-ignore
             field,
         );
@@ -347,4 +402,3 @@ export function decodeTlv<const T extends TlvPacketSchema>(schema: T, buffer: Bu
     }
     return data as Deserialized<T>;
 }
-

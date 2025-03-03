@@ -3,7 +3,6 @@ import { BUF0, BUF16 } from '@/core/util/constants';
 import { BotContext } from '@/core';
 import { Mutex } from 'async-mutex';
 import { LogicBase } from '@/core/logic/LogicBase';
-import { SmartBuffer } from 'smart-buffer';
 import { SignResult } from '@/common';
 import { EncryptionType, IncomingSsoPacketWrapper, IncomingSsoPacket, IncomingSsoPacketHeader, CompressionType } from '@/core/packet/common/IncomingSsoPacket';
 import { OutgoingSsoPacket, OutgoingSsoPacketHeader, OutgoingSsoPacketWrapper } from '@/core/packet/common/OutgoingSsoPacket';
@@ -75,10 +74,10 @@ export class SsoLogic extends LogicBase {
         return new Promise((resolve, reject) => {
             this.buildSsoPacket(cmd, src, seq)
                 .then(packet => this.outgoingDataMutex.runExclusive(() => {
-                    this.socket.write(new SmartBuffer()
-                        .writeUInt32BE(packet.length + 4)
-                        .writeBuffer(packet)
-                        .toBuffer());
+                    const length = Buffer.allocUnsafe(4);
+                    length.writeUInt32BE(packet.length + 4);
+                    this.socket.write(length);
+                    this.socket.write(packet);
                 }));
 
             const timer = setTimeout(() => {
@@ -109,10 +108,10 @@ export class SsoLogic extends LogicBase {
     async postSsoPacket(cmd: string, src: Buffer, seq: number) {
         const packet = await this.buildSsoPacket(cmd, src, seq);
         await this.outgoingDataMutex.runExclusive(() => {
-            this.socket.write(new SmartBuffer()
-                .writeUInt32BE(packet.length + 4)
-                .writeBuffer(packet)
-                .toBuffer());
+            const length = Buffer.allocUnsafe(4);
+            length.writeUInt32BE(packet.length + 4);
+            this.socket.write(length);
+            this.socket.write(packet);
         });
     }
 
