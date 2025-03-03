@@ -15,18 +15,16 @@ export enum EncryptionType {
 }
 
 export const IncomingSsoPacket = Tlv.plain([
-    TlvVariableField('header', 'bytes', 'uint32', true),
+    TlvVariableField('header', () => [
+        TlvScalarField('sequence', 'uint32'),
+        TlvScalarField('retcode', 'int32'),
+        TlvVariableField('extra', 'string', 'uint32', true),
+        TlvVariableField('command', 'string', 'uint32', true),
+        TlvVariableField('msgCookie', 'bytes', 'uint32', true),
+        TlvScalarField('compressionType', 'int32'),
+        TlvVariableField('reserveField', 'bytes', 'uint32', true),
+    ], 'uint32', true),
     TlvVariableField('raw', 'bytes', 'uint32', true),
-]);
-
-export const IncomingSsoPacketHeader = Tlv.plain([
-    TlvScalarField('sequence', 'uint32'),
-    TlvScalarField('retcode', 'int32'),
-    TlvVariableField('extra', 'string', 'uint32', true),
-    TlvVariableField('command', 'string', 'uint32', true),
-    TlvVariableField('msgCookie', 'bytes', 'uint32', true),
-    TlvScalarField('compressionType', 'int32'),
-    TlvVariableField('reserveField', 'bytes', 'uint32', true),
 ]);
 
 export enum CompressionType {

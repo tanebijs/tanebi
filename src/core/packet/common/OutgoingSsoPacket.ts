@@ -10,20 +10,18 @@ export const OutgoingSsoPacketWrapper = Tlv.plain([
 ]);
 
 export const OutgoingSsoPacket = Tlv.plain([
-    TlvVariableField('header', 'bytes', 'uint32', true),
+    TlvVariableField('header', () => [
+        TlvScalarField('sequence', 'uint32'),
+        TlvScalarField('subAppId', 'uint32'),
+        TlvScalarField('locale', 'uint32'),
+        TlvFixedBytesField('bytes3', 12), // 020000000000000000000000
+        TlvVariableField('tgt', 'bytes', 'uint32', true),
+        TlvVariableField('command', 'string', 'uint32', true),
+        TlvFixedBytesField('bytes6', 4), // 00000004
+        TlvVariableField('guid', 'string', 'uint32', true),
+        TlvFixedBytesField('bytes8', 4), // 00000004
+        TlvVariableField('version', 'string', 'uint16', true),
+        TlvVariableField('ssoReserveFields', 'bytes', 'uint32', true),
+    ], 'uint32', true),
     TlvVariableField('body', 'bytes', 'uint32', true),
-]);
-
-export const OutgoingSsoPacketHeader = Tlv.plain([
-    TlvScalarField('sequence', 'uint32'),
-    TlvScalarField('subAppId', 'uint32'),
-    TlvScalarField('locale', 'uint32'),
-    TlvFixedBytesField('bytes3', 12), // 020000000000000000000000
-    TlvVariableField('tgt', 'bytes', 'uint32', true),
-    TlvVariableField('command', 'string', 'uint32', true),
-    TlvFixedBytesField('bytes6', 4), // 00000004
-    TlvVariableField('guid', 'string', 'uint32', true),
-    TlvFixedBytesField('bytes8', 4), // 00000004
-    TlvVariableField('version', 'string', 'uint16', true),
-    TlvVariableField('ssoReserveFields', 'bytes', 'uint32', true),
 ]);

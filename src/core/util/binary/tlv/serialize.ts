@@ -11,7 +11,7 @@ export type TlvScalarFieldType =
     | 'int64'
     | 'float'
     | 'double';
-export type TlvVariableFieldType = 'bytes' | 'string';
+export type TlvVariableFieldType = 'bytes' | 'string' | (() => TlvPacketSchema);
 export type TlvFieldType = TlvScalarFieldType | TlvVariableFieldType | 'fixed-bytes';
 
 export type LengthPrefixType = 'none' | 'uint8' | 'uint16' | 'uint32';
@@ -69,14 +69,15 @@ export type TlvFieldSpec<K extends string, T extends TlvFieldType> =
     }
 
 export type TlvPacketSchema = readonly TlvFieldSpec<string, TlvFieldType>[];
-type ParseTlvScalarType<T extends TlvFieldType> =
+type ParseTlvType<T extends TlvFieldType> =
     T extends 'uint8' | 'int8' | 'uint16' | 'int16' | 'uint32' | 'int32' | 'float' | 'double' ? number :
         T extends 'int64' | 'uint64' ? bigint :
             T extends 'fixed-bytes' | 'bytes' ? Buffer :
                 T extends 'string' ? string :
+                    T extends () => (infer S extends TlvPacketSchema) ? Deserialized<S> :
                     never;
 type ExtractName<T> = T extends TlvFieldSpec<infer K, TlvFieldType> ? K : never;
-type ExtractType<T> = T extends TlvFieldSpec<string, infer K> ? ParseTlvScalarType<K> : never;
+type ExtractType<T> = T extends TlvFieldSpec<string, infer K> ? ParseTlvType<K> : never;
 export type Deserialized<T extends TlvPacketSchema> =
     { [S in T[number] as ExtractName<S>]: ExtractType<S> };
 
@@ -120,7 +121,7 @@ export function TlvFixedBytesField<K extends string>(name: K, length: number): T
 }
 
 const serializedLengthCalculators: {
-    [K in TlvFieldType]: (value: ParseTlvScalarType<K>, spec: TlvFieldSpec<string, K>) => number;
+    [K in Exclude<TlvFieldType, object>]: (value: ParseTlvType<K>, spec: TlvFieldSpec<string, K>) => number;
 } = {
     int8() {
         return 1;
@@ -194,8 +195,8 @@ const serializedLengthCalculators: {
 };
 
 const serializers: {
-    [K in TlvFieldType]:
-        (value: ParseTlvScalarType<K>, spec: TlvFieldSpec<string, K>, buffer: Buffer, offset: number) =>
+    [K in Exclude<TlvFieldType, object>]:
+        (value: ParseTlvType<K>, spec: TlvFieldSpec<string, K>, buffer: Buffer, offset: number) =>
             number; // bytes written
 } = {
     int8(value, spec, buffer, offset) {
@@ -268,33 +269,72 @@ const serializers: {
     },
 };
 
+function calculateTlvLength<T extends TlvPacketSchema>(schema: T, data: Deserialized<T>): number {
+    let length = 0;
+    for (const field of schema) {
+        // @ts-ignore
+        const value = data[field.name];
+        if (typeof field.type === 'function') {
+            const accLength = calculateTlvLength(field.type(), value);
+            length += accLength + (
+                field.lengthPrefix === 'uint8' ? 1 :
+                    field.lengthPrefix === 'uint16' ? 2 :
+                        field.lengthPrefix === 'uint32' ? 4 : 0);
+        } else {
+            const accLength = serializedLengthCalculators[field.type](
+                // @ts-ignore
+                value, field);
+            length += accLength;
+        }
+    }
+    return length;
+}
+
+function encodeWithOffset<T extends TlvPacketSchema>(
+    schema: T, data: Deserialized<T>, buffer: Buffer, offset: number): number {
+    for (const field of schema) {
+        // @ts-ignore
+        const value = data[field.name];
+        if (typeof field.type === 'function') {
+            const origOffset = offset;
+            // skip the length field
+            const packetStartOffset = field.lengthPrefix === 'uint8' ? offset + 1 :
+                field.lengthPrefix === 'uint16' ? offset + 2 :
+                    field.lengthPrefix === 'uint32' ? offset + 4 : offset;
+            offset = encodeWithOffset(field.type(), value, buffer, packetStartOffset);
+            // ...then write it back
+            const packetLength = offset - packetStartOffset;
+            if (field.lengthPrefix === 'uint8') {
+                buffer.writeUInt8(packetLength + (field.lengthIncludesPrefix ? 1 : 0), origOffset);
+            } else if (field.lengthPrefix === 'uint16') {
+                buffer.writeUInt16BE(packetLength + (field.lengthIncludesPrefix ? 2 : 0), origOffset);
+            } else if (field.lengthPrefix === 'uint32') {
+                buffer.writeUInt32BE(packetLength + (field.lengthIncludesPrefix ? 4 : 0), origOffset);
+            }
+        } else {
+            offset = serializers[field.type](
+                // @ts-ignore
+                value, field, buffer, offset);
+        }
+    }
+    return offset;
+}
+
 /**
  * Serialize a TLV packet.
  * @param schema TLV schema
  * @param data Data to serialize
  */
 export function encodeTlv<const T extends TlvPacketSchema>(schema: T, data: Deserialized<T>): Buffer {
-    let length = 0;
-    for (const field of schema) {
-        // @ts-ignore
-        const value = data[field.name];
-        // @ts-ignore
-        const accLength = serializedLengthCalculators[field.type](value, field);
-        length += accLength;
-    }
+    const length = calculateTlvLength(schema, data);
     const buffer = Buffer.allocUnsafe(length);
-    let offset = 0;
-    for (const field of schema) {
-        // @ts-ignore
-        const value = data[field.name];
-        // @ts-ignore
-        offset = serializers[field.type](value, field, buffer, offset);
-    }
+    encodeWithOffset(schema, data, buffer, 0);
     return buffer;
 }
 
 const deserializers: {
-    [K in TlvFieldType]: (buffer: Buffer, offset: number, spec: TlvFieldSpec<string, K>) => [ParseTlvScalarType<K>, number];
+    [K in Exclude<TlvFieldType, object>]:
+        (buffer: Buffer, offset: number, spec: TlvFieldSpec<string, K>) => [ParseTlvType<K>, number];
 } = {
     int8(buffer, offset) {
         return [buffer.readInt8(offset), offset + 1];
@@ -391,12 +431,25 @@ export function decodeTlv<const T extends TlvPacketSchema>(schema: T, buffer: Bu
     let offset = 0;
     for (const field of schema) {
         const name = field.name;
-        const [value, newOffset] = deserializers[field.type](
-            buffer,
-            offset,
-            // @ts-ignore
-            field,
-        );
+        let value: unknown;
+        let newOffset: number;
+        if (typeof field.type === 'function') {
+            const [bytes, newOffset2] = deserializers.bytes(buffer, offset, {
+                name,
+                type: 'bytes',
+                lengthPrefix: field.lengthPrefix,
+                lengthIncludesPrefix: field.lengthIncludesPrefix,
+            });
+            value = decodeTlv(field.type(), bytes);
+            newOffset = newOffset2;
+        } else {
+            [value, newOffset] = deserializers[field.type](
+                buffer,
+                offset,
+                // @ts-ignore
+                field,
+            );
+        }
         data[name] = value;
         offset = newOffset;
     }

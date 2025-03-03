@@ -4,8 +4,8 @@ import { BotContext } from '@/core';
 import { Mutex } from 'async-mutex';
 import { LogicBase } from '@/core/logic/LogicBase';
 import { SignResult } from '@/common';
-import { EncryptionType, IncomingSsoPacketWrapper, IncomingSsoPacket, IncomingSsoPacketHeader, CompressionType } from '@/core/packet/common/IncomingSsoPacket';
-import { OutgoingSsoPacket, OutgoingSsoPacketHeader, OutgoingSsoPacketWrapper } from '@/core/packet/common/OutgoingSsoPacket';
+import { EncryptionType, IncomingSsoPacketWrapper, IncomingSsoPacket, CompressionType } from '@/core/packet/common/IncomingSsoPacket';
+import { OutgoingSsoPacket, OutgoingSsoPacketWrapper } from '@/core/packet/common/OutgoingSsoPacket';
 import { SsoReserveFields } from '@/core/packet/common/SsoReserveFields';
 import { encryptTea, decryptTea } from '@/core/util/crypto/tea';
 import { generateTrace } from '@/core/util/format';
@@ -162,7 +162,7 @@ export class SsoLogic extends LogicBase {
             sign = await this.ctx.signProvider.sign(cmd, src, seq);
         }
         const packet = OutgoingSsoPacket.encode({
-            header: OutgoingSsoPacketHeader.encode({
+            header: {
                 sequence: seq,
                 subAppId: this.ctx.appInfo.SubAppId,
                 locale: 2052,
@@ -178,7 +178,7 @@ export class SsoLogic extends LogicBase {
                     secureInfo: sign, // may be empty
                     traceParent: generateTrace(),
                 })),
-            }),
+            },
             body: src,
         });
 
@@ -211,8 +211,7 @@ export class SsoLogic extends LogicBase {
             throw new Error(`Unsupported encryption type: ${wrapped.encryptionType}`);
         }
 
-        const unwrapped = IncomingSsoPacket.decode(decrypted);
-        const header = IncomingSsoPacketHeader.decode(unwrapped.header);
+        const { header, raw } = IncomingSsoPacket.decode(decrypted);
         if (header.retcode !== 0) {
             return {
                 command: header.command,
@@ -224,9 +223,9 @@ export class SsoLogic extends LogicBase {
             let body;
 
             if (header.compressionType === CompressionType.None || header.compressionType === CompressionType.None_2) {
-                body = unwrapped.raw;
+                body = raw;
             } else if (header.compressionType === CompressionType.Zlib) {
-                body = unzipSync(unwrapped.raw);
+                body = unzipSync(raw);
             } else {
                 throw new Error(`Unsupported compression type: ${header.compressionType}`);
             }
@@ -254,8 +253,8 @@ export class SsoLogic extends LogicBase {
                     this.ctx.events.parse(resolved.command, resolved.body);
                 }
             }
-        } catch {
-            // TODO: handle error
+        } catch (e) {
+            console.log('Unexpected error while handling packet:', e);
         }
     }
 
