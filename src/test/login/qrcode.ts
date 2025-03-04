@@ -1,5 +1,5 @@
-import { Bot, ctx } from '@/app';
-import { fetchAppInfoFromSignUrl, newDeviceInfo, newKeystore, serializeDeviceInfo, serializeKeystore, UrlSignProvider } from '@/app/util';
+import { Bot, ctx } from '@/index';
+import { fetchAppInfoFromSignUrl, newDeviceInfo, newKeystore, serializeDeviceInfo, serializeKeystore, UrlSignProvider } from '@/util';
 import * as fs from 'node:fs';
 
 const signUrl = 'http://106.54.14.24:8084/api/sign/30366';

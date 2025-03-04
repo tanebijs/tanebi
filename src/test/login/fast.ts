@@ -1,5 +1,5 @@
-import { Bot } from '@/app';
-import { deserializeDeviceInfo, deserializeKeystore, fetchAppInfoFromSignUrl, UrlSignProvider } from '@/app/util';
+import { Bot } from '@/index';
+import { deserializeDeviceInfo, deserializeKeystore, fetchAppInfoFromSignUrl, UrlSignProvider } from '@/util';
 import * as fs from 'node:fs';
 
 if (!fs.existsSync('temp/deviceInfo.json') || !fs.existsSync('temp/keystore.json')) {

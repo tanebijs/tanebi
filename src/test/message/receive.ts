@@ -1,4 +1,4 @@
-import { BotFriend, BotGroup } from '@/app/entity';
+import { BotFriend, BotGroup } from '@/entity';
 import bot from '@/test/login/fast';
 
 bot.globalMsg.on('message', (msg) => {

@@ -1,4 +1,4 @@
-import { ctx } from '@/app';
+import { ctx } from '@/index';
 import bot from '@/test/login/fast';
 
 bot[ctx].eventsDX.on('friendPoke', (fromUin, toUin, actionStr, suffix, actionImgUrl) => {
