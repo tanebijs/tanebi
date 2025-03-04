@@ -1,8 +1,10 @@
 import { Bot } from '@/app';
 import { BotContact, BotFriend, BotGroup, BotMsgBubble, BotMsgImage } from '@/app/entity';
 import { MessageElementDecoded, MessageType } from '@/core/message';
-import { IncomingMessage, PrivateMessage, rawElems } from '@/core/message/incoming';
+import { IncomingMessage, PrivateMessage } from '@/core/message/incoming';
 import { EventEmitter } from 'node:events';
+
+export const rawElems = Symbol('Raw elements');
 
 export type DispatchedMessageBody = {
     type: 'bubble',
@@ -68,7 +70,7 @@ export class MessageDispatcher {
             senderUin: raw.senderUin,
             sequence: raw.sequence,
             repliedSequence: raw.repliedSequence,
-            [rawElems]: raw[rawElems],
+            [rawElems]: raw.rawElems,
             messageUid: raw.msgUid ?? 0n,
             ...message,
         });
@@ -80,7 +82,7 @@ export class MessageDispatcher {
                 random: (<PrivateMessage>raw).random,
                 isSelf: raw.senderUin === this.bot.uin,
                 repliedSequence: raw.repliedSequence,
-                [rawElems]: raw[rawElems],
+                [rawElems]: raw.rawElems,
                 messageUid: raw.msgUid ?? 0n,
                 ...message,
             });
@@ -91,7 +93,7 @@ export class MessageDispatcher {
                     sequence: raw.sequence,
                     sender,
                     repliedSequence: raw.repliedSequence,
-                    [rawElems]: raw[rawElems],
+                    [rawElems]: raw.rawElems,
                     messageUid: raw.msgUid ?? 0n,
                     ...message,
                 });

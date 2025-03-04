@@ -5,7 +5,7 @@ import { ImageSubType } from '@/core/message/incoming/segment/image';
 import { OutgoingGroupMessage } from '@/core/message/outgoing';
 import { ImageBizType } from '@/core/message/outgoing/segment/image';
 import { getImageMetadata } from '@/core/util/media/image';
-import { rawElems } from '@/core/message/incoming';
+import { rawElems } from '@/app/message';
 
 export class GroupMessageBuilder extends AbstractMessageBuilder {
     repliedMessage?: BotGroupMessage;

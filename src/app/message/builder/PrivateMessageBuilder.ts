@@ -5,7 +5,7 @@ import { ImageSubType } from '@/core/message/incoming/segment/image';
 import { OutgoingPrivateMessage } from '@/core/message/outgoing';
 import { ImageBizType } from '@/core/message/outgoing/segment/image';
 import { getImageMetadata } from '@/core/util/media/image';
-import { rawElems } from '@/core/message/incoming';
+import { rawElems } from '@/app/message';
 
 export class PrivateMessageBuilder extends AbstractMessageBuilder {
     repliedMessage?: BotFriendMessage;
