@@ -28,6 +28,7 @@ import { FetchGroupNotifiesOperation } from '@/core/operation/group/FetchGroupNo
 import { FetchUserInfoOperation } from '@/core/operation/friend/FetchUserInfoOperation';
 import { SetMemberSpecialTitleOperation } from '@/core/operation/group/SetMemberSpecialTitleOperation';
 import { SendGrayTipPokeOperation } from '@/core/operation/message/SendGrayTipPokeOperation';
+import { NotifyLogic } from '@/core/logic/NotifyLogic';
 
 /**
  * The internal context of the bot
@@ -38,9 +39,9 @@ export class BotContext {
 
     highwayLogic = new HighwayLogic(this);
     ssoLogic = new SsoLogic(this);
-
     wtLoginLogic = new WtLoginLogic(this);
     ntLoginLogic = new NTLoginLogic(this);
+    notifyLogic = new NotifyLogic(this);
 
     ops = new OperationCollection(this, [
         FetchFriendsOperation,
