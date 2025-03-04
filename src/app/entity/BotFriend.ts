@@ -26,6 +26,8 @@ export const eventsFDX = Symbol('Friend internal events');
 export class BotFriend extends BotContact<BotFriendDataBinding> {
     private readonly [eventsFDX] = new EventEmitter<{
         message: [BotFriendMessage],
+        poke: [boolean, string, string, string?], // isSelf, actionStr, actionImgUrl, suffix
+        recall: [number, string], // clientSequence, tip
     }>();
     private readonly moduleName = `BotFriend#${this.uin}`;
     private clientSequence = 100000;
@@ -80,9 +82,22 @@ export class BotFriend extends BotContact<BotFriendDataBinding> {
 
     /**
      * Subscribe to incoming messages from this friend
-     * @param listener The listener function
      */
     onMessage(listener: (message: BotFriendMessage) => void) {
         this[eventsFDX].on('message', listener);
+    }
+
+    /**
+     * Subscribe to pokes from this friend
+     */
+    onPoke(listener: (isSelf: boolean, actionStr: string, actionImgUrl: string, suffix?: string) => void) {
+        this[eventsFDX].on('poke', listener);
+    }
+
+    /**
+     * Subscribe to message recalls from this friend
+     */
+    onRecall(listener: (clientSequence: number, tip: string) => void) {
+        this[eventsFDX].on('recall', listener);
     }
 }

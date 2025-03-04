@@ -1,4 +1,4 @@
-import { BotFriend, BotGroup, eventsGDX } from '@/app/entity';
+import { BotFriend, BotGroup, eventsFDX, eventsGDX } from '@/app/entity';
 import { BotFriendRequest } from '@/app/entity/request/BotFriendRequest';
 import { BotGroupInvitedJoinRequest } from '@/app/entity/request/BotGroupInvitedJoinRequest';
 import { BotGroupJoinRequest } from '@/app/entity/request/BotGroupJoinRequest';
@@ -129,6 +129,22 @@ export class Bot {
         this[ctx].eventsDX.on('friendRequest', async (fromUin, fromUid, message, via) => {
             this[log].emit('debug', 'Bot', `Received friend request from ${fromUid}`);
             this.eventsDX.emit('friendRequest', new BotFriendRequest(fromUin, fromUid, message, via));
+        });
+
+        this[ctx].eventsDX.on('friendPoke', async (fromUin, toUin, actionStr, actionImgUrl, suffix) => {
+            const friend = await this.getFriend(fromUin === this.uin ? toUin : fromUin);
+            if (friend) {
+                friend[eventsFDX].emit('poke', fromUin === this.uin, actionStr, actionImgUrl, suffix);
+            }
+        });
+
+        this[ctx].eventsDX.on('friendRecall', async (fromUid, clientSequence, tip) => {
+            const friendUin = await this[identityService].resolveUin(fromUid);
+            if (!friendUin) return;
+            const friend = await this.getFriend(friendUin);
+            if (friend) {
+                friend[eventsFDX].emit('recall', clientSequence, tip);
+            }
         });
 
         this[ctx].eventsDX.on('groupJoinRequest', async (groupUin, memberUid) => {
