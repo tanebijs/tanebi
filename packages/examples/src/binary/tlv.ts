@@ -1,4 +1,4 @@
-import { Tlv, TlvScalarField, TlvFixedBytesField, TlvVariableField, PackedTlv } from '@/internal/util/binary/tlv';
+import { Tlv, TlvScalarField, TlvFixedBytesField, TlvVariableField, PackedTlv } from 'tanebi/lib/internal/util/binary/tlv';
 
 const schema1 = Tlv.tagged([
     TlvScalarField('foo', 'int32'),

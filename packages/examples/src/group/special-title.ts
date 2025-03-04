@@ -1,4 +1,4 @@
-import bot from '@/test/login/fast';
+import bot from '../login/fast';
 
 (await bot.getGroup(0))?.onMessage(msg => {
     if (msg.type === 'bubble' && msg.content.segments[0].type === 'text') {

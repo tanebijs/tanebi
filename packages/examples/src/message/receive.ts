@@ -1,5 +1,5 @@
-import { BotFriend, BotGroup } from '@/entity';
-import bot from '@/test/login/fast';
+import { BotFriend, BotGroup } from 'tanebi';
+import bot from '../login/fast';
 
 bot.globalMsg.on('message', (msg) => {
     if (msg.contact instanceof BotFriend) {

@@ -1,0 +1,16 @@
+{
+  "name": "tanebi-examples",
+  "type": "module",
+  "version": "0.0.1",
+  "description": "Examples of tanebi",
+  "private": true,
+  "scripts": {
+    "build": "tsc && tsc-alias"
+  },
+  "dependencies": {
+    "tanebi": "workspace:*"
+  },
+  "author": "Young",
+  "license": "GPL-3.0-only",
+  "packageManager": "pnpm@10.5.2"
+}

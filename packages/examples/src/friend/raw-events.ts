@@ -1,5 +1,5 @@
-import { ctx } from '@/index';
-import bot from '@/test/login/fast';
+import { ctx } from 'tanebi';
+import bot from '../login/fast';
 
 bot[ctx].eventsDX.on('friendPoke', (fromUin, toUin, actionStr, suffix, actionImgUrl) => {
     console.log(`Friend ${fromUin} poked ${toUin} with ${actionStr} (${suffix}) (${actionImgUrl})`);

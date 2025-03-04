@@ -1,4 +1,4 @@
-import bot from '@/test/login/fast';
+import bot from '../login/fast';
 
 const friend = await bot.getFriend(0); // Substitute with your friend's Uin
 

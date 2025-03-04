@@ -1,6 +1,5 @@
-import { Bot } from '@/index';
-import { deserializeDeviceInfo, deserializeKeystore, fetchAppInfoFromSignUrl, UrlSignProvider } from '@/util';
 import * as fs from 'node:fs';
+import { Bot, deserializeDeviceInfo, deserializeKeystore, fetchAppInfoFromSignUrl, UrlSignProvider } from 'tanebi';
 
 if (!fs.existsSync('temp/deviceInfo.json') || !fs.existsSync('temp/keystore.json')) {
     console.error('Please perform QR code login first.');

@@ -1,4 +1,4 @@
-import bot from '@/test/login/fast';
+import bot from '../login/fast';
 import { readFileSync } from 'fs';
 
 const group = await bot.getGroup(0); // Substitute with your group's Uin

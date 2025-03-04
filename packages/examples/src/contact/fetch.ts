@@ -1,4 +1,4 @@
-import bot from '@/test/login/fast';
+import bot from '../login/fast';
 
 const friends = await bot.getFriends();
 for (const friend of friends) {

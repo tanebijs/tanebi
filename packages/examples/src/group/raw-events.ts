@@ -1,5 +1,5 @@
-import { ctx } from '@/index';
-import bot from '@/test/login/fast';
+import { ctx } from 'tanebi';
+import bot from '../login/fast';
 
 bot[ctx].eventsDX.on('groupAdminChange', (groupUin, targetUid, isPromote) => {
     console.log(`Group ${groupUin} admin ${isPromote ? 'set' : 'unset'}: ${targetUid}`);

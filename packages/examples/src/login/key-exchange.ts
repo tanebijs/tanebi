@@ -1,5 +1,4 @@
-import { Bot, ctx } from '@/index';
-import { fetchAppInfoFromSignUrl, newDeviceInfo, newKeystore, UrlSignProvider } from '@/util';
+import { Bot, ctx, fetchAppInfoFromSignUrl, newDeviceInfo, newKeystore, UrlSignProvider } from 'tanebi';
 
 const signUrl = 'http://106.54.14.24:8084/api/sign/30366';
 
