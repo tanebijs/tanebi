@@ -24,3 +24,11 @@ bot[ctx].eventsDX.on('groupMemberIncrease', (groupUin, memberUid, operatorUid) =
 bot[ctx].eventsDX.on('groupMemberDecrease', (groupUin, memberUid, operatorUid) => {
     console.log(`Group ${groupUin} member decrease: ${memberUid} by ${operatorUid}`);
 });
+
+bot[ctx].eventsDX.on('groupMute', (groupUin, targetUid, operatorUid, duration) => {
+    console.log(`Group ${groupUin} mute: ${targetUid} by ${operatorUid} for ${duration} seconds`);
+});
+
+bot[ctx].eventsDX.on('groupMuteAll', (groupUin, operatorUid, isSet) => {
+    console.log(`Group ${groupUin} mute all: ${isSet ? 'set' : 'unset'} by ${operatorUid}`);
+});
