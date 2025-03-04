@@ -7,7 +7,8 @@ import { GroupInvitation } from '@/internal/packet/message/notify/GroupInvitatio
 import { GroupInvitationRequest } from '@/internal/packet/message/notify/GroupInvitedJoinRequest';
 import { GroupJoinRequest } from '@/internal/packet/message/notify/GroupJoinRequest';
 import { GroupMemberChange, DecreaseType, OperatorInfo } from '@/internal/packet/message/notify/GroupMemberChange';
-import { Event0x210SubType, PushMsg, PushMsgType } from '@/internal/packet/message/PushMsg';
+import { GroupMute } from '@/internal/packet/message/notify/GroupMute';
+import { Event0x210SubType, Event0x2DCSubType, PushMsg, PushMsgType } from '@/internal/packet/message/PushMsg';
 import { NapProtoDecodeStructType } from '@napneko/nap-proto-core';
 
 export class NotifyLogic extends LogicBase {
@@ -32,6 +33,11 @@ export class NotifyLogic extends LogicBase {
                 this.parseFriendGrayTip(pushMsg);
             } else if (subType === Event0x210SubType.FriendRecall) {
                 this.parseFriendRecall(pushMsg);
+            }
+        } else if (type === PushMsgType.Event0x2DC) {
+            const subType = pushMsg.message.contentHead.subType as Event0x2DCSubType;
+            if (subType === Event0x2DCSubType.GroupMute) {
+                this.parseGroupMute(pushMsg);
             }
         }
     }
@@ -101,5 +107,14 @@ export class NotifyLogic extends LogicBase {
     parseFriendRecall(pushMsg: NapProtoDecodeStructType<typeof PushMsg.fields>) {
         const content = FriendRecall.decode(pushMsg.message.body!.msgContent!).body;
         this.ctx.eventsDX.emit('friendRecall', content.fromUid, content.clientSequence, content.tipInfo.tip);
+    }
+
+    parseGroupMute(pushMsg: NapProtoDecodeStructType<typeof PushMsg.fields>) {
+        const content = GroupMute.decode(pushMsg.message.body!.msgContent!);
+        if (content.info.state.targetUid) {
+            this.ctx.eventsDX.emit('groupMute', content.groupUin, content.operatorUid, content.info.state.targetUid, content.info.state.duration);
+        } else {
+            this.ctx.eventsDX.emit('groupMuteAll', content.groupUin, content.operatorUid, content.info.state.duration !== 0);
+        }
     }
 }

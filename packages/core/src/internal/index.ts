@@ -1,3 +1,4 @@
+import EventEmitter from 'node:events';
 import { WtLoginLogic } from '@/internal/logic/login/WtLoginLogic';
 import { Ecdh } from '@/internal/util/crypto/ecdh';
 import { OperationCollection } from '@/internal/operation/OperationBase';
@@ -23,7 +24,6 @@ import { FetchHighwayUrlOperation } from '@/internal/operation/highway/FetchHigh
 import { UploadGroupImageOperation } from '@/internal/operation/message/UploadGroupImageOperation';
 import { HighwayLogic } from '@/internal/logic/network/HighwayLogic';
 import { UploadPrivateImageOperation } from '@/internal/operation/message/UploadPrivateImageOperation';
-import EventEmitter from 'node:events';
 import { FetchGroupNotifiesOperation } from '@/internal/operation/group/FetchGroupNotifiesOperation';
 import { FetchUserInfoOperation } from '@/internal/operation/friend/FetchUserInfoOperation';
 import { SetMemberSpecialTitleOperation } from '@/internal/operation/group/SetMemberSpecialTitleOperation';
@@ -85,6 +85,8 @@ export class BotContext {
         groupAdminChange: [number, string, boolean]; // groupUin, targetUid, isPromote
         groupMemberIncrease: [number, string, string?]; // groupUin, memberUid, operatorUid?
         groupMemberDecrease: [number, string, string?]; // groupUin, memberUid, operatorUid?
+        groupMute: [number, string, string, number]; // groupUin, operatorUid, targetUid, duration
+        groupMuteAll: [number, string, boolean]; // groupUin, operatorUid, isSet
     }>();
 
     constructor(
