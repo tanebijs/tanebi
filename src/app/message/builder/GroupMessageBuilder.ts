@@ -68,11 +68,11 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
         });
     }
 
-    override build(): OutgoingGroupMessage {
+    override build(clientSequence: number): OutgoingGroupMessage {
         return {
             type: MessageType.GroupMessage,
             groupUin: this.contact.uin,
-            clientSequence: this.group.clientSequence++,
+            clientSequence,
             segments: this.segments,
             reply: this.repliedMessage ? {
                 sequence: this.repliedMessage.sequence,

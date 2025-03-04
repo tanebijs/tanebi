@@ -24,7 +24,6 @@ export type BotGroupMessage = {
 } & DispatchedMessage;
 
 export class BotGroup extends BotContact<BotGroupDataBinding> {
-    clientSequence = 100000;
     eventsDX: EventEmitter<{
         message: [BotGroupMessage];
         joinRequest: [BotGroupJoinRequest];
@@ -34,6 +33,7 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
         memberDecrease: [BotGroupMember, BotGroupMember]; // member, operator
     }> = new EventEmitter();
 
+    private clientSequence = 100000;
     private readonly groupMemberCache;
     private readonly moduleName = `BotGroup#${this.uin}`;
 
@@ -127,7 +127,7 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
         this.bot.log.emit('debug', this.moduleName, 'Send message');
         const builder = new GroupMessageBuilder(this);
         await buildMsg(builder);
-        return this.bot.ctx.ops.call('sendMessage', builder.build());
+        return this.bot.ctx.ops.call('sendMessage', builder.build(this.clientSequence++));
     }
 
     /**

@@ -22,5 +22,5 @@ export abstract class AbstractMessageBuilder {
     /**
      * Build the message
      */
-    abstract build(): OutgoingMessage;
+    abstract build(clientSequence: number): OutgoingMessage;
 }

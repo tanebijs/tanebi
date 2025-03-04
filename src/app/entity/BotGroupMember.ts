@@ -18,7 +18,6 @@ interface BotGroupMemberDataBinding {
 export { GroupMemberPermission } from '@/core/packet/oidb/0xfe7_3';
 
 export class BotGroupMember extends BotEntity<BotGroupMemberDataBinding> {
-    private clientSequence = 100000;
     private readonly moduleName = `BotGroupMember#${this.uin}@${this.group.uin}`;
 
     constructor(bot: Bot, data: BotGroupMemberDataBinding, readonly group: BotGroup) {

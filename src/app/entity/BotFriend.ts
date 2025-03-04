@@ -22,8 +22,7 @@ export type BotFriendMessage = {
 } & DispatchedMessage;
 
 export class BotFriend extends BotContact<BotFriendDataBinding> {
-    clientSequence = 100000;
-
+    private clientSequence = 100000;
     private readonly messageChannel: EventEmitter<{
         message: [BotFriendMessage],
     }> = new EventEmitter();
@@ -66,7 +65,7 @@ export class BotFriend extends BotContact<BotFriendDataBinding> {
         this.bot.log.emit('debug', this.moduleName, 'Send message');
         const builder = new PrivateMessageBuilder(this);
         await buildMsg(builder);
-        return this.bot.ctx.ops.call('sendMessage', builder.build());
+        return this.bot.ctx.ops.call('sendMessage', builder.build(this.clientSequence++));
     }
 
     /**

@@ -37,12 +37,12 @@ export class PrivateMessageBuilder extends AbstractMessageBuilder {
         });
     }
 
-    override build(): OutgoingPrivateMessage {
+    override build(clientSequence: number): OutgoingPrivateMessage {
         return {
             type: MessageType.PrivateMessage,
             targetUin: this.contact.uin,
             targetUid: this.friend.uid,
-            clientSequence: this.friend.clientSequence++,
+            clientSequence,
             segments: this.segments,
             reply: this.repliedMessage ? {
                 sequence: this.repliedMessage.sequence,
