@@ -31,8 +31,12 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
         joinRequest: [BotGroupJoinRequest];
         invitedJoinRequest: [BotGroupInvitedJoinRequest];
         adminChange: [BotGroupMember, boolean]; // member, isPromote
-        memberIncrease: [BotGroupMember, BotGroupMember]; // member, operator
-        memberDecrease: [BotGroupMember, BotGroupMember]; // member, operator
+        memberIncrease: [BotGroupMember, BotGroupMember?]; // member, operator
+        memberLeave: [number]; // uin
+        memberKick: [number, BotGroupMember]; // uin, operator
+        mute: [BotGroupMember, BotGroupMember, number]; // member, operator, duration
+        unmute: [BotGroupMember, BotGroupMember]; // member, operator
+        muteAll: [BotGroupMember, boolean]; // operator, isSet
     }> = new EventEmitter();
 
     private clientSequence = 100000;
@@ -158,5 +162,26 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
      */
     onAdminChange(listener: (member: BotGroupMember, isPromote: boolean) => void) {
         this[eventsGDX].on('adminChange', listener);
+    }
+
+    /**
+     * Listen to member increase events in this group
+     */
+    onMemberIncrease(listener: (member: BotGroupMember, operator?: BotGroupMember) => void) {
+        this[eventsGDX].on('memberIncrease', listener);
+    }
+
+    /**
+     * Listen to member leave events in this group
+     */
+    onMemberLeave(listener: (uin: number) => void) {
+        this[eventsGDX].on('memberLeave', listener);
+    }
+
+    /**
+     * Listen to member kick events in this group
+     */
+    onMemberKick(listener: (uin: number, operator: BotGroupMember) => void) {
+        this[eventsGDX].on('memberKick', listener);
     }
 }

@@ -170,6 +170,87 @@ export class Bot {
                 this[log].emit('warning', 'Bot', 'Failed to handle invited join request', e);
             }
         });
+
+        this[ctx].eventsDX.on('groupAdminChange', async (groupUin, targetUid, isPromote) => {
+            const group = await this.getGroup(groupUin);
+            if (group) {
+                const uin = await this[identityService].resolveUin(targetUid);
+                if (!uin) return;
+                const member = await group.getMember(uin);
+                if (member) {
+                    group[eventsGDX].emit('adminChange', member, isPromote);
+                }
+            }
+        });
+
+        this[ctx].eventsDX.on('groupMemberIncrease', async (groupUin, memberUid, operatorUid) => {
+            const group = await this.getGroup(groupUin);
+            if (group) {
+                const uin = await this[identityService].resolveUin(memberUid);
+                if (!uin) return;
+                const member = await group.getMember(uin);
+                if (member) {
+                    if (operatorUid) {
+                        const operatorUin = await this[identityService].resolveUin(operatorUid);
+                        if (!operatorUin) return;
+                        const operator = await group.getMember(operatorUin);
+                        if (operator) {
+                            group[eventsGDX].emit('memberIncrease', member, operator);
+                        }
+                    } else {
+                        group[eventsGDX].emit('memberIncrease', member);
+                    }
+                }
+            }
+        });
+
+        this[ctx].eventsDX.on('groupMemberDecrease', async (groupUin, memberUid, operatorUid) => {
+            const group = await this.getGroup(groupUin);
+            if (group) {
+                const uin = await this[identityService].resolveUin(memberUid);
+                if (!uin) return;
+                if (operatorUid) {
+                    const operatorUin = await this[identityService].resolveUin(operatorUid);
+                    if (!operatorUin) return;
+                    const operator = await group.getMember(operatorUin);
+                    if (operator) {
+                        group[eventsGDX].emit('memberKick', uin, operator);
+                    }
+                } else {
+                    group[eventsGDX].emit('memberLeave', uin);
+                }
+            }
+        });
+
+        this[ctx].eventsDX.on('groupMute', async (groupUin, operatorUid, targetUid, duration) => {
+            const group = await this.getGroup(groupUin);
+            if (group) {
+                const uin = await this[identityService].resolveUin(targetUid);
+                const operatorUin = await this[identityService].resolveUin(operatorUid);
+                if (!uin || !operatorUin) return;
+                const member = await group.getMember(uin);
+                const operator = await group.getMember(operatorUin);
+                if (member && operator) {
+                    if (duration === 0) {
+                        group[eventsGDX].emit('unmute', member, operator);
+                    } else {
+                        group[eventsGDX].emit('mute', member, operator, duration);
+                    }
+                }
+            }
+        });
+
+        this[ctx].eventsDX.on('groupMuteAll', async (groupUin, operatorUid, isSet) => {
+            const group = await this.getGroup(groupUin);
+            if (group) {
+                const operatorUin = await this[identityService].resolveUin(operatorUid);
+                if (!operatorUin) return;
+                const operator = await group.getMember(operatorUin);
+                if (operator) {
+                    group[eventsGDX].emit('muteAll', operator, isSet);
+                }
+            }
+        });
     }
 
     public get uin() {

@@ -79,6 +79,7 @@ Here are the features that have been implemented or planned:
 - [x] Friend request
 - [ ] Group poke
 - [ ] Group message recall
+- [x] Group mute
 - [x] Group join request
 - [x] Group invited join request
 - [x] Group member increase
