@@ -1,4 +1,4 @@
-import { Bot } from '@/app';
+import { Bot, log } from '@/app';
 import { BotContact, BotGroup, BotGroupMember } from '@/app/entity';
 import { BotMsgImage, BotMsgType } from '.';
 import { IncomingMessage, IncomingSegment } from '@/core/message/incoming';
@@ -26,7 +26,7 @@ export class BotMsgBubble implements BotMsgType {
                                         };
                                 }
                             }
-                            bot.log.emit('warning', 'BotMsgBubble.create', 'Failed to resolve mention');
+                            bot[log].emit('warning', 'BotMsgBubble.create', 'Failed to resolve mention');
                         } else if (element.type === 'image') {
                             return { type: 'image', content: await BotMsgImage.create(element, msg, bot) };
                         }

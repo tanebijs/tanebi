@@ -6,6 +6,7 @@ import { OutgoingPrivateMessage } from '@/core/message/outgoing';
 import { ImageBizType } from '@/core/message/outgoing/segment/image';
 import { getImageMetadata } from '@/core/util/media/image';
 import { rawElems } from '@/app/message';
+import { ctx, log } from '@/app';
 
 export class PrivateMessageBuilder extends AbstractMessageBuilder {
     repliedMessage?: BotFriendMessage;
@@ -20,15 +21,15 @@ export class PrivateMessageBuilder extends AbstractMessageBuilder {
 
     override async image(data: Buffer, subType?: ImageSubType, summary?: string): Promise<void> {
         const imageMeta = getImageMetadata(data);
-        this.friend.bot.log.emit('debug', 'PrivateMessageBuilder', `Prepare to upload image ${JSON.stringify(imageMeta)}`);
-        const uploadResp = await this.friend.bot.ctx.ops.call(
+        this.friend.bot[log].emit('debug', 'PrivateMessageBuilder', `Prepare to upload image ${JSON.stringify(imageMeta)}`);
+        const uploadResp = await this.friend.bot[ctx].ops.call(
             'uploadPrivateImage', 
             this.friend.uid,
             imageMeta,
             subType ?? ImageSubType.Picture,
             summary,
         );
-        await this.friend.bot.ctx.highwayLogic.uploadImage(data, imageMeta, uploadResp, MessageType.PrivateMessage);
+        await this.friend.bot[ctx].highwayLogic.uploadImage(data, imageMeta, uploadResp, MessageType.PrivateMessage);
         this.segments.push({
             type: 'image',
             msgInfo: uploadResp.upload!.msgInfo!,

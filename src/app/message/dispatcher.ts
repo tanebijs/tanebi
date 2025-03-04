@@ -1,5 +1,5 @@
 import { Bot } from '@/app';
-import { BotContact, BotFriend, BotGroup, BotMsgBubble, BotMsgImage } from '@/app/entity';
+import { BotContact, BotFriend, BotGroup, BotMsgBubble, BotMsgImage, eventsFDX, eventsGDX } from '@/app/entity';
 import { MessageElementDecoded, MessageType } from '@/core/message';
 import { IncomingMessage, PrivateMessage } from '@/core/message/incoming';
 import { EventEmitter } from 'node:events';
@@ -76,7 +76,7 @@ export class MessageDispatcher {
         });
 
         if (contact instanceof BotFriend) {
-            contact.dispatchMessage({
+            contact[eventsFDX].emit('message',{
                 sequence: raw.sequence,
                 clientSequence: (<PrivateMessage>raw).clientSequence,
                 random: (<PrivateMessage>raw).random,
@@ -89,7 +89,7 @@ export class MessageDispatcher {
         } else if (contact instanceof BotGroup) {
             const sender = await contact.getMember(raw.senderUin);
             if (sender) {
-                contact.eventsDX.emit('message', {
+                contact[eventsGDX].emit('message', {
                     sequence: raw.sequence,
                     sender,
                     repliedSequence: raw.repliedSequence,

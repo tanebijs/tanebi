@@ -18,6 +18,6 @@ const bot = await Bot.create(
 );
 
 await bot.fastLogin();
-console.log('User', bot.ctx.keystore.uin, 'logged in.');
+console.log('User', bot.uin, 'logged in.');
 
 export default bot;

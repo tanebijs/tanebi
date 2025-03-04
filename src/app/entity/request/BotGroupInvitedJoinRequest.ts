@@ -1,4 +1,4 @@
-import { Bot } from '@/app';
+import { Bot, ctx, identityService, log } from '@/app';
 import { BotGroupMember } from '@/app/entity/BotGroupMember';
 import { GroupNotifyType } from '@/core/packet/oidb/0x10c0_1';
 
@@ -11,7 +11,7 @@ export class BotGroupInvitedJoinRequest {
     ) {}
 
     static async create(groupUin: number, targetUid: string, invitorUid: string, bot: Bot) {
-        const latestReqs = await bot.ctx.ops.call('fetchGroupNotifies');
+        const latestReqs = await bot[ctx].ops.call('fetchGroupNotifies');
         const req = latestReqs.find((req) =>
             req.notifyType === GroupNotifyType.InvitedJoinRequest
                     && req.group.groupUin === groupUin
@@ -20,7 +20,7 @@ export class BotGroupInvitedJoinRequest {
         if (!req) {
             return null;
         }
-        const memberUin = await bot.identityService.resolveUin(invitorUid, groupUin);
+        const memberUin = await bot[identityService].resolveUin(invitorUid, groupUin);
         if (!memberUin) {
             return null;
         }
@@ -28,7 +28,7 @@ export class BotGroupInvitedJoinRequest {
         if (!invitor) {
             return null;
         }
-        bot.log.emit('info', 'BotGroupInvitedJoinRequest',
+        bot[log].emit('info', 'BotGroupInvitedJoinRequest',
             `Received invited join request: ${memberUin} -> ${groupUin}; invitor: ${invitorUid}`);
         return new BotGroupInvitedJoinRequest(req.sequence, memberUin, targetUid, invitor);
     }

@@ -30,7 +30,7 @@ import { SetMemberSpecialTitleOperation } from '@/core/operation/group/SetMember
 import { SendGrayTipPokeOperation } from '@/core/operation/message/SendGrayTipPokeOperation';
 
 /**
- * The Bot object.
+ * The internal context of the bot
  */
 export class BotContext {
     ecdh192 = new Ecdh('secp192k1', true);

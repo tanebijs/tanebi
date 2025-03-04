@@ -1,4 +1,4 @@
-import { Bot } from '@/app';
+import { Bot, ctx, log } from '@/app';
 import { BotContact } from '@/app/entity';
 import { DispatchedMessage, PrivateMessageBuilder } from '@/app/message';
 import EventEmitter from 'node:events';
@@ -21,12 +21,14 @@ export type BotFriendMessage = {
     repliedSequence?: number;
 } & DispatchedMessage;
 
+export const eventsFDX = Symbol('Friend internal events');
+
 export class BotFriend extends BotContact<BotFriendDataBinding> {
-    private clientSequence = 100000;
-    private readonly messageChannel: EventEmitter<{
+    private readonly [eventsFDX] = new EventEmitter<{
         message: [BotFriendMessage],
-    }> = new EventEmitter();
+    }>();
     private readonly moduleName = `BotFriend#${this.uin}`;
+    private clientSequence = 100000;
 
     constructor(bot: Bot, data: BotFriendDataBinding) {
         super(bot, data);
@@ -62,18 +64,18 @@ export class BotFriend extends BotContact<BotFriendDataBinding> {
      * @returns The message sequence number and timestamp
      */
     async sendMsg(buildMsg: (b: PrivateMessageBuilder) => void | Promise<void>) {
-        this.bot.log.emit('debug', this.moduleName, 'Send message');
+        this.bot[log].emit('debug', this.moduleName, 'Send message');
         const builder = new PrivateMessageBuilder(this);
         await buildMsg(builder);
-        return this.bot.ctx.ops.call('sendMessage', builder.build(this.clientSequence++));
+        return this.bot[ctx].ops.call('sendMessage', builder.build(this.clientSequence++));
     }
 
     /**
      * Send a gray tip poke to this friend
      */
     async sendGrayTipPoke() {
-        this.bot.log.emit('debug', this.moduleName, 'Send gray tip poke');
-        await this.bot.ctx.ops.call('sendGrayTipPoke', this.uin, undefined, this.uin);
+        this.bot[log].emit('debug', this.moduleName, 'Send gray tip poke');
+        await this.bot[ctx].ops.call('sendGrayTipPoke', this.uin, undefined, this.uin);
     }
 
     /**
@@ -81,10 +83,6 @@ export class BotFriend extends BotContact<BotFriendDataBinding> {
      * @param listener The listener function
      */
     onMessage(listener: (message: BotFriendMessage) => void) {
-        this.messageChannel.on('message', listener);
-    }
-
-    dispatchMessage(message: BotFriendMessage) {
-        this.messageChannel.emit('message', message);
+        this[eventsFDX].on('message', listener);
     }
 }

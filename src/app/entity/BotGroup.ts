@@ -1,4 +1,4 @@
-import { Bot } from '@/app';
+import { Bot, ctx, identityService, log } from '@/app';
 import { BotContact, BotGroupMember } from '@/app/entity';
 import { BotGroupInvitedJoinRequest } from '@/app/entity/request/BotGroupInvitedJoinRequest';
 import { BotGroupJoinRequest } from '@/app/entity/request/BotGroupJoinRequest';
@@ -23,8 +23,10 @@ export type BotGroupMessage = {
     repliedSequence?: number;
 } & DispatchedMessage;
 
+export const eventsGDX = Symbol('Group internal events');
+
 export class BotGroup extends BotContact<BotGroupDataBinding> {
-    eventsDX: EventEmitter<{
+    [eventsGDX]: EventEmitter<{
         message: [BotGroupMessage];
         joinRequest: [BotGroupJoinRequest];
         invitedJoinRequest: [BotGroupInvitedJoinRequest];
@@ -43,15 +45,15 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
         this.groupMemberCache = new BotCacheService<number, BotGroupMember>(
             bot,
             async (bot) => {
-                let data = await bot.ctx.ops.call('fetchGroupMembers', this.data.uin);
+                let data = await bot[ctx].ops.call('fetchGroupMembers', this.data.uin);
                 let members = data.members;
                 while (data.token) {
-                    data = await bot.ctx.ops.call('fetchGroupMembers', this.data.uin, data.token);
+                    data = await bot[ctx].ops.call('fetchGroupMembers', this.data.uin, data.token);
                     members = members.concat(data.members);
                 }
                 members.forEach(member => {
-                    bot.identityService.uin2uid.set(member.identity.uin, member.identity.uid!);
-                    bot.identityService.uid2uin.set(member.identity.uid!, member.identity.uin);
+                    bot[identityService].uin2uid.set(member.identity.uin, member.identity.uid!);
+                    bot[identityService].uid2uin.set(member.identity.uid!, member.identity.uin);
                 });
 
                 return new Map(members.map(member => [member.identity.uin, {
@@ -104,7 +106,7 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
      * @param forceUpdate Whether to force update the cache
      */
     async getMembers(forceUpdate = false) {
-        this.bot.log.emit('debug', this.moduleName, 'Get all members');
+        this.bot[log].emit('debug', this.moduleName, 'Get all members');
         return this.groupMemberCache.getAll(forceUpdate);
     }
 
@@ -114,7 +116,7 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
      * @param forceUpdate Whether to force update the member info
      */
     async getMember(uin: number, forceUpdate = false) {
-        this.bot.log.emit('debug', this.moduleName, `Get member ${uin}`);
+        this.bot[log].emit('debug', this.moduleName, `Get member ${uin}`);
         return this.groupMemberCache.get(uin, forceUpdate);
     }
 
@@ -124,37 +126,37 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
      * @returns The message sequence number and timestamp
      */
     async sendMsg(buildMsg: (b: GroupMessageBuilder) => void | Promise<void>) {
-        this.bot.log.emit('debug', this.moduleName, 'Send message');
+        this.bot[log].emit('debug', this.moduleName, 'Send message');
         const builder = new GroupMessageBuilder(this);
         await buildMsg(builder);
-        return this.bot.ctx.ops.call('sendMessage', builder.build(this.clientSequence++));
+        return this.bot[ctx].ops.call('sendMessage', builder.build(this.clientSequence++));
     }
 
     /**
      * Listen to messages in this group
      */
     onMessage(listener: (message: BotGroupMessage) => void) {
-        this.eventsDX.on('message', listener);
+        this[eventsGDX].on('message', listener);
     }
 
     /**
      * Listen to join requests in this group
      */
     onJoinRequest(listener: (request: BotGroupJoinRequest) => void) {
-        this.eventsDX.on('joinRequest', listener);
+        this[eventsGDX].on('joinRequest', listener);
     }
 
     /**
      * Listen to invited join requests in this group
      */
     onInvitedJoinRequest(listener: (request: BotGroupInvitedJoinRequest) => void) {
-        this.eventsDX.on('invitedJoinRequest', listener);
+        this[eventsGDX].on('invitedJoinRequest', listener);
     }
 
     /**
      * Listen to admin changes in this group
      */
     onAdminChange(listener: (member: BotGroupMember, isPromote: boolean) => void) {
-        this.eventsDX.on('adminChange', listener);
+        this[eventsGDX].on('adminChange', listener);
     }
 }

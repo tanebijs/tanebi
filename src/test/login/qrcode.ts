@@ -1,4 +1,4 @@
-import { Bot } from '@/app';
+import { Bot, ctx } from '@/app';
 import { fetchAppInfoFromSignUrl, newDeviceInfo, newKeystore, serializeDeviceInfo, serializeKeystore, UrlSignProvider } from '@/app/util';
 import * as fs from 'node:fs';
 
@@ -22,8 +22,8 @@ await bot.qrCodeLogin((url, png) => {
     console.log('QR code url:', url);
 });
 
-console.log('User', bot.ctx.keystore.uin, 'logged in.');
+console.log('User', bot.uin, 'logged in.');
 
-fs.writeFileSync('temp/deviceInfo.json', JSON.stringify(serializeDeviceInfo(bot.ctx.deviceInfo), null, 4));
-fs.writeFileSync('temp/keystore.json', JSON.stringify(serializeKeystore(bot.ctx.keystore), null, 4));
+fs.writeFileSync('temp/deviceInfo.json', JSON.stringify(serializeDeviceInfo(bot[ctx].deviceInfo), null, 4));
+fs.writeFileSync('temp/keystore.json', JSON.stringify(serializeKeystore(bot[ctx].keystore), null, 4));
 console.log('Device info and keystore saved to temp.');

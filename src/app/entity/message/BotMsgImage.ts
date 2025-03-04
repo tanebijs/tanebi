@@ -1,4 +1,4 @@
-import { Bot, ImageSubType } from '@/app';
+import { Bot, ctx, ImageSubType } from '@/app';
 import { MessageType } from '@/core/message';
 import { IncomingMessage, IncomingSegmentOf } from '@/core/message/incoming';
 
@@ -25,8 +25,8 @@ export class BotMsgImage {
         if (data.indexNode) {
             return new BotMsgImage(
                 msg.type === MessageType.PrivateMessage ?
-                    await bot.ctx.ops.call('downloadPrivateImage', msg.senderUid!, data.indexNode) :
-                    await bot.ctx.ops.call('downloadGroupImage', msg.groupUin, data.indexNode),
+                    await bot[ctx].ops.call('downloadPrivateImage', msg.senderUid!, data.indexNode) :
+                    await bot[ctx].ops.call('downloadGroupImage', msg.groupUin, data.indexNode),
                 data.width,
                 data.height,
                 data.subType,

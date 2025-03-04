@@ -6,6 +6,7 @@ import { OutgoingGroupMessage } from '@/core/message/outgoing';
 import { ImageBizType } from '@/core/message/outgoing/segment/image';
 import { getImageMetadata } from '@/core/util/media/image';
 import { rawElems } from '@/app/message';
+import { ctx, log } from '@/app';
 
 export class GroupMessageBuilder extends AbstractMessageBuilder {
     repliedMessage?: BotGroupMessage;
@@ -51,15 +52,15 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
     
     override async image(data: Buffer, subType?: ImageSubType, summary?: string): Promise<void> {
         const imageMeta = getImageMetadata(data);
-        this.group.bot.log.emit('debug', 'GroupMessageBuilder', `Prepare to upload image ${JSON.stringify(imageMeta)}`);
-        const uploadResp = await this.group.bot.ctx.ops.call(
+        this.group.bot[log].emit('debug', 'GroupMessageBuilder', `Prepare to upload image ${JSON.stringify(imageMeta)}`);
+        const uploadResp = await this.group.bot[ctx].ops.call(
             'uploadGroupImage', 
             this.group.uin,
             imageMeta,
             subType ?? ImageSubType.Picture,
             summary,
         );
-        await this.group.bot.ctx.highwayLogic.uploadImage(data, imageMeta, uploadResp, MessageType.GroupMessage);
+        await this.group.bot[ctx].highwayLogic.uploadImage(data, imageMeta, uploadResp, MessageType.GroupMessage);
         this.segments.push({
             type: 'image',
             msgInfo: uploadResp.upload!.msgInfo!,

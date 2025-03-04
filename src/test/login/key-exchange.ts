@@ -1,4 +1,4 @@
-import { Bot } from '@/app';
+import { Bot, ctx } from '@/app';
 import { fetchAppInfoFromSignUrl, newDeviceInfo, newKeystore, UrlSignProvider } from '@/app/util';
 
 const signUrl = 'http://106.54.14.24:8084/api/sign/30366';
@@ -13,5 +13,5 @@ const bot = await Bot.create(
 
 await bot.keyExchange();
 
-console.log('Exchanged key:', bot.ctx.keystore.session.exchangeKey?.toString('hex'));
-console.log('Key sign:', bot.ctx.keystore.session.keySign?.toString('hex'));
+console.log('Exchanged key:', bot[ctx].keystore.session.exchangeKey?.toString('hex'));
+console.log('Key sign:', bot[ctx].keystore.session.keySign?.toString('hex'));

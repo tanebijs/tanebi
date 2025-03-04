@@ -1,4 +1,4 @@
-import { Bot } from '@/app';
+import { Bot, ctx, log } from '@/app';
 import { BotEntity, BotGroup } from '@/app/entity';
 import { GroupMemberPermission } from '@/core/packet/oidb/0xfe7_3';
 
@@ -75,15 +75,15 @@ export class BotGroupMember extends BotEntity<BotGroupMemberDataBinding> {
         if (Buffer.from(specialTitle).length > 18) {
             throw new Error('Special title is too long');
         }
-        this.bot.log.emit('debug', this.moduleName, `Set special title to ${specialTitle}`);
-        await this.bot.ctx.ops.call('setMemberSpecialTitle', this.group.uin, this.uid, specialTitle);
+        this.bot[log].emit('debug', this.moduleName, `Set special title to ${specialTitle}`);
+        await this.bot[ctx].ops.call('setMemberSpecialTitle', this.group.uin, this.uid, specialTitle);
     }
 
     /**
      * Send a gray tip poke to this member.
      */
     async sendGrayTipPoke() {
-        this.bot.log.emit('debug', this.moduleName, 'Send gray tip poke');
-        await this.bot.ctx.ops.call('sendGrayTipPoke', this.uin, this.group.uin);
+        this.bot[log].emit('debug', this.moduleName, 'Send gray tip poke');
+        await this.bot[ctx].ops.call('sendGrayTipPoke', this.uin, this.group.uin);
     }
 }
