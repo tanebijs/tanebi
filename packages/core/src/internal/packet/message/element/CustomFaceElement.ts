@@ -41,6 +41,5 @@ export const CustomFaceElement = new NapProtoMsg({
         summary: ProtoField(9, ScalarType.STRING, true, false),
         field10: ProtoField(10, ScalarType.INT32, false, false),
         pbRes: ProtoField(21, ScalarType.BYTES, true, false),
-        field31: ProtoField(31, ScalarType.STRING, true, false),
     }), true, false),
 });
