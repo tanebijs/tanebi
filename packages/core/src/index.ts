@@ -126,24 +126,34 @@ export class Bot {
             }
         });
 
-        this[ctx].eventsDX.on('friendRequest', async (fromUin, fromUid, message, via) => {
+        this[ctx].eventsDX.on('friendRequest', (fromUin, fromUid, message, via) => {
             this[log].emit('debug', 'Bot', `Received friend request from ${fromUid}`);
             this.eventsDX.emit('friendRequest', new BotFriendRequest(fromUin, fromUid, message, via));
         });
 
         this[ctx].eventsDX.on('friendPoke', async (fromUin, toUin, actionStr, actionImgUrl, suffix) => {
-            const friend = await this.getFriend(fromUin === this.uin ? toUin : fromUin);
-            if (friend) {
-                friend[eventsFDX].emit('poke', fromUin === this.uin, actionStr, actionImgUrl, suffix);
+            this[log].emit('debug', 'Bot', `Received poke from ${fromUin} to ${toUin}`);
+            try {
+                const friend = await this.getFriend(fromUin === this.uin ? toUin : fromUin);
+                if (friend) {
+                    friend[eventsFDX].emit('poke', fromUin === this.uin, actionStr, actionImgUrl, suffix);
+                }
+            } catch (e) {
+                this[log].emit('warning', 'Bot', 'Failed to handle friend poke', e);
             }
         });
 
         this[ctx].eventsDX.on('friendRecall', async (fromUid, clientSequence, tip) => {
-            const friendUin = await this[identityService].resolveUin(fromUid);
-            if (!friendUin) return;
-            const friend = await this.getFriend(friendUin);
-            if (friend) {
-                friend[eventsFDX].emit('recall', clientSequence, tip);
+            this[log].emit('debug', 'Bot', `Received recall from ${fromUid}`);
+            try {
+                const friendUin = await this[identityService].resolveUin(fromUid);
+                if (!friendUin) return;
+                const friend = await this.getFriend(friendUin);
+                if (friend) {
+                    friend[eventsFDX].emit('recall', clientSequence, tip);
+                }
+            } catch (e) {
+                this[log].emit('warning', 'Bot', 'Failed to handle friend recall', e);
             }
         });
 
@@ -172,128 +182,173 @@ export class Bot {
         });
 
         this[ctx].eventsDX.on('groupAdminChange', async (groupUin, targetUid, isPromote) => {
-            const group = await this.getGroup(groupUin);
-            if (group) {
-                const uin = await this[identityService].resolveUin(targetUid);
-                if (!uin) return;
-                const member = await group.getMember(uin);
-                if (member) {
-                    group[eventsGDX].emit('adminChange', member, isPromote);
+            this[log].emit('debug', 'Bot', `Received admin change in group ${groupUin} for ${targetUid}`);
+            try {
+                const group = await this.getGroup(groupUin);
+                if (group) {
+                    const uin = await this[identityService].resolveUin(targetUid);
+                    if (!uin) return;
+                    const member = await group.getMember(uin);
+                    if (member) {
+                        group[eventsGDX].emit('adminChange', member, isPromote);
+                    }
                 }
+            } catch (e) {
+                this[log].emit('warning', 'Bot', 'Failed to handle admin change', e);
             }
         });
 
         this[ctx].eventsDX.on('groupMemberIncrease', async (groupUin, memberUid, operatorUid) => {
-            const group = await this.getGroup(groupUin);
-            if (group) {
-                const uin = await this[identityService].resolveUin(memberUid);
-                if (!uin) return;
-                const member = await group.getMember(uin);
-                if (member) {
+            this[log].emit('debug', 'Bot', `Received member increase in group ${groupUin} for ${memberUid}`);
+            try {
+                const group = await this.getGroup(groupUin);
+                if (group) {
+                    const uin = await this[identityService].resolveUin(memberUid);
+                    if (!uin) return;
+                    const member = await group.getMember(uin);
+                    if (member) {
+                        if (operatorUid) {
+                            const operatorUin = await this[identityService].resolveUin(operatorUid);
+                            if (!operatorUin) return;
+                            const operator = await group.getMember(operatorUin);
+                            if (operator) {
+                                group[eventsGDX].emit('memberIncrease', member, operator);
+                            }
+                        } else {
+                            group[eventsGDX].emit('memberIncrease', member);
+                        }
+                    }
+                }
+            } catch (e) {
+                this[log].emit('warning', 'Bot', 'Failed to handle member increase', e);
+            }
+        });
+
+        this[ctx].eventsDX.on('groupMemberDecrease', async (groupUin, memberUid, operatorUid) => {
+            this[log].emit('debug', 'Bot', `Received member decrease in group ${groupUin} for ${memberUid}`);
+            try {
+                const group = await this.getGroup(groupUin);
+                if (group) {
+                    const uin = await this[identityService].resolveUin(memberUid);
+                    if (!uin) return;
                     if (operatorUid) {
                         const operatorUin = await this[identityService].resolveUin(operatorUid);
                         if (!operatorUin) return;
                         const operator = await group.getMember(operatorUin);
                         if (operator) {
-                            group[eventsGDX].emit('memberIncrease', member, operator);
+                            group[eventsGDX].emit('memberKick', uin, operator);
                         }
                     } else {
-                        group[eventsGDX].emit('memberIncrease', member);
+                        group[eventsGDX].emit('memberLeave', uin);
                     }
                 }
-            }
-        });
-
-        this[ctx].eventsDX.on('groupMemberDecrease', async (groupUin, memberUid, operatorUid) => {
-            const group = await this.getGroup(groupUin);
-            if (group) {
-                const uin = await this[identityService].resolveUin(memberUid);
-                if (!uin) return;
-                if (operatorUid) {
-                    const operatorUin = await this[identityService].resolveUin(operatorUid);
-                    if (!operatorUin) return;
-                    const operator = await group.getMember(operatorUin);
-                    if (operator) {
-                        group[eventsGDX].emit('memberKick', uin, operator);
-                    }
-                } else {
-                    group[eventsGDX].emit('memberLeave', uin);
-                }
+            } catch (e) {
+                this[log].emit('warning', 'Bot', 'Failed to handle member decrease', e);
             }
         });
 
         this[ctx].eventsDX.on('groupMute', async (groupUin, operatorUid, targetUid, duration) => {
-            const group = await this.getGroup(groupUin);
-            if (group) {
-                const uin = await this[identityService].resolveUin(targetUid);
-                const operatorUin = await this[identityService].resolveUin(operatorUid);
-                if (!uin || !operatorUin) return;
-                const member = await group.getMember(uin);
-                const operator = await group.getMember(operatorUin);
-                if (member && operator) {
-                    if (duration === 0) {
-                        group[eventsGDX].emit('unmute', member, operator);
-                    } else {
-                        group[eventsGDX].emit('mute', member, operator, duration);
+            this[log].emit('debug', 'Bot', `Received mute in group ${groupUin} for ${targetUid}`);
+            try {
+                const group = await this.getGroup(groupUin);
+                if (group) {
+                    const uin = await this[identityService].resolveUin(targetUid);
+                    const operatorUin = await this[identityService].resolveUin(operatorUid);
+                    if (!uin || !operatorUin) return;
+                    const member = await group.getMember(uin);
+                    const operator = await group.getMember(operatorUin);
+                    if (member && operator) {
+                        if (duration === 0) {
+                            group[eventsGDX].emit('unmute', member, operator);
+                        } else {
+                            group[eventsGDX].emit('mute', member, operator, duration);
+                        }
                     }
                 }
+            } catch (e) {
+                this[log].emit('warning', 'Bot', 'Failed to handle mute', e);
             }
         });
 
         this[ctx].eventsDX.on('groupMuteAll', async (groupUin, operatorUid, isSet) => {
-            const group = await this.getGroup(groupUin);
-            if (group) {
-                const operatorUin = await this[identityService].resolveUin(operatorUid);
-                if (!operatorUin) return;
-                const operator = await group.getMember(operatorUin);
-                if (operator) {
-                    group[eventsGDX].emit('muteAll', operator, isSet);
+            this[log].emit('debug', 'Bot', `Received mute all in group ${groupUin} by ${operatorUid}`);
+            try {
+                const group = await this.getGroup(groupUin);
+                if (group) {
+                    const operatorUin = await this[identityService].resolveUin(operatorUid);
+                    if (!operatorUin) return;
+                    const operator = await group.getMember(operatorUin);
+                    if (operator) {
+                        group[eventsGDX].emit('muteAll', operator, isSet);
+                    }
                 }
+            } catch (e) {
+                this[log].emit('warning', 'Bot', 'Failed to handle mute all', e);
             }
         });
 
         this[ctx].eventsDX.on('groupPoke', async (groupUin, fromUin, toUin, actionStr, actionImgUrl, suffix) => {
-            const group = await this.getGroup(groupUin);
-            if (group) {
-                const sender = await group.getMember(fromUin);
-                const receiver = await group.getMember(toUin);
-                if (sender && receiver) {
-                    group[eventsGDX].emit('poke', sender, receiver, actionStr, actionImgUrl, suffix);
+            this[log].emit('debug', 'Bot', `Received poke in group ${groupUin} from ${fromUin} to ${toUin}`);
+            try {
+                const group = await this.getGroup(groupUin);
+                if (group) {
+                    const sender = await group.getMember(fromUin);
+                    const receiver = await group.getMember(toUin);
+                    if (sender && receiver) {
+                        group[eventsGDX].emit('poke', sender, receiver, actionStr, actionImgUrl, suffix);
+                    }
                 }
+            } catch (e) {
+                this[log].emit('warning', 'Bot', 'Failed to handle group poke', e);
             }
         });
 
         this[ctx].eventsDX.on('groupEssenceMessageChange', async (groupUin, sequence, operatorUin, isAdd) => {
-            const group = await this.getGroup(groupUin);
-            if (group) {
-                const operator = await group.getMember(operatorUin);
-                if (operator) {
-                    group[eventsGDX].emit('essenceMessageChange', sequence, operator, isAdd);
+            this[log].emit('debug', 'Bot', `Received essence message change in group ${groupUin} by ${operatorUin}`);
+            try {
+                const group = await this.getGroup(groupUin);
+                if (group) {
+                    const operator = await group.getMember(operatorUin);
+                    if (operator) {
+                        group[eventsGDX].emit('essenceMessageChange', sequence, operator, isAdd);
+                    }
                 }
+            } catch (e) {
+                this[log].emit('warning', 'Bot', 'Failed to handle essence message change', e);
             }
         });
 
         this[ctx].eventsDX.on('groupRecall', async (groupUin, sequence, tip, operatorUid) => {
-            const group = await this.getGroup(groupUin);
-            if (group) {
-                const operatorUin = await this[identityService].resolveUin(operatorUid);
-                if (!operatorUin) return;
-                const operator = await group.getMember(operatorUin);
-                if (operator) {
-                    group[eventsGDX].emit('recall', sequence, tip, operator);
+            this[log].emit('debug', 'Bot', `Received recall in group ${groupUin} for message ${sequence} by ${operatorUid}`);
+            try {
+                const group = await this.getGroup(groupUin);
+                if (group) {
+                    const operatorUin = await this[identityService].resolveUin(operatorUid);
+                    if (!operatorUin) return;
+                    const operator = await group.getMember(operatorUin);
+                    if (operator) {
+                        group[eventsGDX].emit('recall', sequence, tip, operator);
+                    }
                 }
+            } catch (e) {
+                this[log].emit('warning', 'Bot', 'Failed to handle group recall', e);
             }
         });
 
         this[ctx].eventsDX.on('groupReaction', async (groupUin, sequence, operatorUid, reactionCode, isAdd, count) => {
-            const group = await this.getGroup(groupUin);
-            if (group) {
-                const operatorUin = await this[identityService].resolveUin(operatorUid);
-                if (!operatorUin) return;
-                const operator = await group.getMember(operatorUin);
-                if (operator) {
-                    group[eventsGDX].emit('reaction', sequence, operator, reactionCode, isAdd, count);
+            this[log].emit('debug', 'Bot', `Received reaction in group ${groupUin} for message ${sequence} by ${operatorUid}`);
+            try {
+                const group = await this.getGroup(groupUin);
+                if (group) {
+                    const operatorUin = await this[identityService].resolveUin(operatorUid);
+                    if (!operatorUin) return;
+                    const operator = await group.getMember(operatorUin);
+                    if (operator) {
+                        group[eventsGDX].emit('reaction', sequence, operator, reactionCode, isAdd, count);
+                    }
                 }
+            } catch(e) {
+                this[log].emit('warning', 'Bot', 'Failed to handle group reaction', e);
             }
         });
     }
