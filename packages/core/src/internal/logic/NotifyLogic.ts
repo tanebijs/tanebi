@@ -18,7 +18,7 @@ export class NotifyLogic extends LogicBase {
         if (!pushMsg.message.body?.msgContent) {
             return;
         }
-        
+
         if (type === PushMsgType.GroupJoinRequest) {
             this.parseGroupJoinRequest(pushMsg);
         } else if (type === PushMsgType.GroupInvitedJoinRequest) {
@@ -118,7 +118,7 @@ export class NotifyLogic extends LogicBase {
                 parseInt(templateParamsMap.get('uin_str2')!),
                 templateParamsMap.get('action_str') ?? templateParamsMap.get('alt_str1') ?? '',
                 templateParamsMap.get('action_img_url')!,
-                templateParamsMap.get('suffix'));
+                templateParamsMap.get('suffix_str'));
         }
     }
 
@@ -148,7 +148,7 @@ export class NotifyLogic extends LogicBase {
                 parseInt(templateParamsMap.get('uin_str2')!),
                 templateParamsMap.get('action_str') ?? templateParamsMap.get('alt_str1') ?? '',
                 templateParamsMap.get('action_img_url')!,
-                templateParamsMap.get('suffix'));
+                templateParamsMap.get('suffix_str'));
         }
     }
 
