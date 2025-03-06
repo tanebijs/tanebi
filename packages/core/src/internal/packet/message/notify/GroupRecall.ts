@@ -1,7 +1,7 @@
 import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
 
 export const GroupRecall = new NapProtoMsg({
-    operatorUid: ProtoField(1, ScalarType.STRING, true, false),
+    operatorUid: ProtoField(1, ScalarType.STRING),
     recallMessages: ProtoField(3, () => ({
         sequence: ProtoField(1, ScalarType.UINT32, false, false),
         time: ProtoField(2, ScalarType.UINT32, false, false),

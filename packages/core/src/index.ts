@@ -251,6 +251,51 @@ export class Bot {
                 }
             }
         });
+
+        this[ctx].eventsDX.on('groupPoke', async (groupUin, fromUin, toUin, actionStr, actionImgUrl, suffix) => {
+            const group = await this.getGroup(groupUin);
+            if (group) {
+                const sender = await group.getMember(fromUin);
+                const receiver = await group.getMember(toUin);
+                if (sender && receiver) {
+                    group[eventsGDX].emit('poke', sender, receiver, actionStr, actionImgUrl, suffix);
+                }
+            }
+        });
+
+        this[ctx].eventsDX.on('groupEssenceMessageChange', async (groupUin, sequence, operatorUin, isAdd) => {
+            const group = await this.getGroup(groupUin);
+            if (group) {
+                const operator = await group.getMember(operatorUin);
+                if (operator) {
+                    group[eventsGDX].emit('essenceMessageChange', sequence, operator, isAdd);
+                }
+            }
+        });
+
+        this[ctx].eventsDX.on('groupRecall', async (groupUin, sequence, tip, operatorUid) => {
+            const group = await this.getGroup(groupUin);
+            if (group) {
+                const operatorUin = await this[identityService].resolveUin(operatorUid);
+                if (!operatorUin) return;
+                const operator = await group.getMember(operatorUin);
+                if (operator) {
+                    group[eventsGDX].emit('recall', sequence, tip, operator);
+                }
+            }
+        });
+
+        this[ctx].eventsDX.on('groupReaction', async (groupUin, sequence, operatorUid, reactionCode, isAdd, count) => {
+            const group = await this.getGroup(groupUin);
+            if (group) {
+                const operatorUin = await this[identityService].resolveUin(operatorUid);
+                if (!operatorUin) return;
+                const operator = await group.getMember(operatorUin);
+                if (operator) {
+                    group[eventsGDX].emit('reaction', sequence, operator, reactionCode, isAdd, count);
+                }
+            }
+        });
     }
 
     public get uin() {

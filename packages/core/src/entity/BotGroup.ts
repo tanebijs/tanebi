@@ -37,6 +37,10 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
         mute: [BotGroupMember, BotGroupMember, number]; // member, operator, duration
         unmute: [BotGroupMember, BotGroupMember]; // member, operator
         muteAll: [BotGroupMember, boolean]; // operator, isSet
+        poke: [BotGroupMember, BotGroupMember, string, string, string?]; // sender, receiver, actionStr, actionImgUrl, suffix
+        essenceMessageChange: [number, BotGroupMember, boolean]; // sequence, operator, isAdd
+        recall: [number, string, BotGroupMember]; // clientSequence, tip, operator
+        reaction: [number, BotGroupMember, string, boolean, number]; // sequence, member, reactionCode, isAdd, count
     }> = new EventEmitter();
 
     private clientSequence = 100000;
@@ -183,5 +187,54 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
      */
     onMemberKick(listener: (uin: number, operator: BotGroupMember) => void) {
         this[eventsGDX].on('memberKick', listener);
+    }
+
+    /**
+     * Listen to mute events in this group
+     */
+    onMute(listener: (member: BotGroupMember, operator: BotGroupMember, duration: number) => void) {
+        this[eventsGDX].on('mute', listener);
+    }
+
+    /**
+     * Listen to unmute events in this group
+     */
+    onUnmute(listener: (member: BotGroupMember, operator: BotGroupMember) => void) {
+        this[eventsGDX].on('unmute', listener);
+    }
+
+    /**
+     * Listen to mute all events in this group
+     */
+    onMuteAll(listener: (operator: BotGroupMember, isSet: boolean) => void) {
+        this[eventsGDX].on('muteAll', listener);
+    }
+
+    /**
+     * Listen to poke events in this group
+     */
+    onPoke(listener: (sender: BotGroupMember, receiver: BotGroupMember, actionStr: string, actionImgUrl: string, suffix?: string) => void) {
+        this[eventsGDX].on('poke', listener);
+    }
+
+    /**
+     * Listen to essence message change events in this group
+     */
+    onEssenceMessageChange(listener: (sequence: number, operator: BotGroupMember, isAdd: boolean) => void) {
+        this[eventsGDX].on('essenceMessageChange', listener);
+    }
+
+    /**
+     * Listen to recall events in this group
+     */
+    onRecall(listener: (sequence: number, tip: string, operator: BotGroupMember) => void) {
+        this[eventsGDX].on('recall', listener);
+    }
+
+    /**
+     * Listen to reaction events in this group
+     */
+    onReaction(listener: (sequence: number, member: BotGroupMember, reactionCode: string, isAdd: boolean, count: number) => void) {
+        this[eventsGDX].on('reaction', listener);
     }
 }
