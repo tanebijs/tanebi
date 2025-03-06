@@ -87,6 +87,10 @@ export class BotContext {
         groupMemberDecrease: [number, string, string?]; // groupUin, memberUid, operatorUid?
         groupMute: [number, string, string, number]; // groupUin, operatorUid, targetUid, duration
         groupMuteAll: [number, string, boolean]; // groupUin, operatorUid, isSet
+        groupPoke: [number, number, number, string, string, string?]; // groupUin, fromUin, toUin, actionStr, actionImgUrl, suffix
+        groupEssenceMessageChange: [number, number, number, boolean]; // groupUin, sequence, operatorUin, isAdd
+        groupRecall: [number, number, string, string?]; // groupUin, sequence, tip, operatorUid?
+        groupReaction: [number, number, string, string, boolean, number]; // groupUin, sequence, operatorUid, reactionCode, isAdd, count
     }>();
 
     constructor(

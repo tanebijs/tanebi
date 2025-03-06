@@ -32,3 +32,19 @@ bot[ctx].eventsDX.on('groupMute', (groupUin, targetUid, operatorUid, duration) =
 bot[ctx].eventsDX.on('groupMuteAll', (groupUin, operatorUid, isSet) => {
     console.log(`Group ${groupUin} mute all: ${isSet ? 'set' : 'unset'} by ${operatorUid}`);
 });
+
+bot[ctx].eventsDX.on('groupPoke', (groupUin, fromUin, toUin, actionStr, actionImgUrl, suffix) => {
+    console.log(`Group ${groupUin} poke: ${fromUin} to ${toUin} with ${actionStr} (${suffix}) (${actionImgUrl})`);
+});
+
+bot[ctx].eventsDX.on('groupEssenceMessageChange', (groupUin, sequence, operatorUin, isAdd) => {
+    console.log(`Group ${groupUin} essence message ${isAdd ? 'add' : 'remove'}: ${sequence} by ${operatorUin}`);
+});
+
+bot[ctx].eventsDX.on('groupRecall', (groupUin, sequence, tip, operatorUid) => {
+    console.log(`Group ${groupUin} recall: ${sequence} with ${tip} by ${operatorUid}`);
+});
+
+bot[ctx].eventsDX.on('groupReaction', (groupUin, sequence, operatorUid, reactionCode, isAdd, count) => {
+    console.log(`Group ${groupUin} reaction ${isAdd ? 'add' : 'remove'}: ${sequence} by ${operatorUid} with ${reactionCode} (${count})`);
+});

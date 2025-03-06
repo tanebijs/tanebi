@@ -34,8 +34,8 @@ export enum Event0x2DCSubType {
     GroupMute = 12,
     SubType16 = 16,
     GroupRecall = 17,
-    GroupEssence = 21,
-    GroupGreyTip = 20,
+    GroupEssenceMessageChange = 21,
+    GroupGrayTip = 20,
 }
 
 export enum Event0x2DCSubType16Field13 {
