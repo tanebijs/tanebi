@@ -1,8 +1,9 @@
-import { Bot } from '@/index';
+import { Bot, eventsDX } from '@/index';
 import { BotContact, BotFriend, BotGroup, BotMsgBubble, BotMsgImage, BotMsgLightApp, eventsFDX, eventsGDX } from '@/entity';
 import { MessageType } from '@/internal/message';
 import { IncomingMessage } from '@/internal/message/incoming';
 import { EventEmitter } from 'node:events';
+import { BotGroupInvitationRequest } from '@/entity/request/BotGroupInvitationRequest';
 
 export const rawMessage = Symbol('Raw elements');
 
@@ -66,6 +67,10 @@ export class MessageDispatcher {
             }
 
             if (firstSegment.type === 'lightApp') {
+                if (firstSegment.app === 'com.tencent.qun.invite' && contact instanceof BotFriend) {
+                    this.bot[eventsDX].emit('groupInvitationRequest',
+                        await BotGroupInvitationRequest.create(contact, firstSegment));
+                }
                 return {
                     type: 'lightApp',
                     content: new BotMsgLightApp(firstSegment.app, firstSegment.payload),
@@ -131,5 +136,9 @@ export class MessageDispatcher {
                 this.bot.getGroup(incoming.groupUin, true));
         }
         return contact;
+    }
+
+    private async handleLightApp() {
+
     }
 }

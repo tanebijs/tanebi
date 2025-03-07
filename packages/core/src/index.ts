@@ -9,6 +9,7 @@ import { AppInfo, CoreConfig, DeviceInfo, Keystore, SignProvider } from '@/commo
 import { BotContext } from '@/internal';
 import { TransEmp12_QrCodeState } from '@/internal/packet/login/wtlogin/TransEmp12';
 import { EventEmitter } from 'node:events';
+import { BotGroupInvitationRequest } from '@/entity/request/BotGroupInvitationRequest';
 
 /**
  * Symbol of the bot context
@@ -26,6 +27,11 @@ export const identityService = Symbol('Identity service');
 export const log = Symbol('Internal log');
 
 /**
+ * Symbol of internal events
+ */
+export const eventsDX = Symbol('Internal events');
+
+/**
  * The Bot object. Create an instance by calling `Bot.create`.
  */
 export class Bot {
@@ -39,8 +45,9 @@ export class Bot {
     private readonly friendCache;
     private readonly groupCache;
     private readonly messageDispatcher;
-    private readonly eventsDX = new EventEmitter<{
+    readonly [eventsDX] = new EventEmitter<{
         friendRequest: [BotFriendRequest];
+        groupInvitationRequest: [BotGroupInvitationRequest];
     }>();
 
     /**
@@ -128,7 +135,7 @@ export class Bot {
 
         this[ctx].eventsDX.on('friendRequest', (fromUin, fromUid, message, via) => {
             this[log].emit('debug', 'Bot', `Received friend request from ${fromUid}`);
-            this.eventsDX.emit('friendRequest', new BotFriendRequest(fromUin, fromUid, message, via));
+            this[eventsDX].emit('friendRequest', new BotFriendRequest(fromUin, fromUid, message, via));
         });
 
         this[ctx].eventsDX.on('friendPoke', async (fromUin, toUin, actionStr, actionImgUrl, suffix) => {
@@ -526,7 +533,14 @@ export class Bot {
      * Listen to friend requests
      */
     onFriendRequest(listener: (request: BotFriendRequest) => void) {
-        this.eventsDX.on('friendRequest', listener);
+        this[eventsDX].on('friendRequest', listener);
+    }
+
+    /**
+     * Listen to group invitation requests
+     */
+    onGroupInvitationRequest(listener: (request: BotGroupInvitationRequest) => void) {
+        this[eventsDX].on('groupInvitationRequest', listener);
     }
 
     /**
