@@ -1,8 +1,8 @@
-import { Bot, ctx, ImageSubType } from '@/index';
+import { Bot, BotMsgType, ctx, ImageSubType } from '@/index';
 import { MessageType } from '@/internal/message';
 import { IncomingMessage, IncomingSegmentOf } from '@/internal/message/incoming';
 
-export class BotMsgImage {
+export class BotMsgImage implements BotMsgType {
     private constructor(
         readonly url: string,
         readonly width: number,
