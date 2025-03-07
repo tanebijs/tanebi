@@ -5,6 +5,7 @@ import { imageCommonParser, imageNotOnlineParser, imageCustomFaceParser } from '
 import { mentionParser } from '@/internal/message/incoming/segment/mention';
 import { textParser } from '@/internal/message/incoming/segment/text';
 import { NapProtoDecodeStructType } from '@napneko/nap-proto-core';
+import { lightAppParser } from '@/internal/message/incoming/segment/light-app';
 
 const incomingSegments = new IncomingSegmentCollection([
     textParser,
@@ -12,6 +13,7 @@ const incomingSegments = new IncomingSegmentCollection([
     imageCommonParser,
     imageNotOnlineParser,
     imageCustomFaceParser,
+    lightAppParser,
 ]);
 
 export type IncomingSegment = Exclude<ReturnType<typeof incomingSegments.parse>, undefined>;

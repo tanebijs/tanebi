@@ -1,5 +1,5 @@
 import { Bot } from '@/index';
-import { BotContact, BotFriend, BotGroup, BotMsgBubble, BotMsgImage, eventsFDX, eventsGDX } from '@/entity';
+import { BotContact, BotFriend, BotGroup, BotMsgBubble, BotMsgImage, BotMsgLightApp, eventsFDX, eventsGDX } from '@/entity';
 import { MessageElementDecoded, MessageType } from '@/internal/message';
 import { IncomingMessage, PrivateMessage } from '@/internal/message/incoming';
 import { EventEmitter } from 'node:events';
@@ -12,6 +12,9 @@ export type DispatchedMessageBody = {
 } | {
     type: 'image',
     content: BotMsgImage,
+} | {
+    type: 'lightApp',
+    content: BotMsgLightApp,
 };
 
 export type DispatchedMessage = DispatchedMessageBody & {
@@ -53,6 +56,13 @@ export class MessageDispatcher {
                     content: await BotMsgImage.create(firstSegment, incoming, this.bot),
                 }, incoming, contact);
                 return;
+            }
+
+            if (firstSegment.type === 'lightApp') {
+                await this.dispatch({
+                    type: 'lightApp',
+                    content: new BotMsgLightApp(firstSegment.app, firstSegment.payload),
+                }, incoming, contact);
             }
         }
 

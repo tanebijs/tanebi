@@ -23,6 +23,7 @@
     "@napneko/nap-proto-core": "^0.0.7",
     "async-mutex": "^0.5.0",
     "image-size": "^2.0.0",
-    "smart-buffer": "^4.2.0"
+    "smart-buffer": "^4.2.0",
+    "zod": "^3.24.2"
   }
 }

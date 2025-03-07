@@ -44,8 +44,10 @@ Here are the features that have been implemented or planned:
 - [ ] Long Message
 - [ ] Multi Forwarded Message
 - [ ] XML
-- [ ] JSON
+- [x] Light App[^3]
 - [ ] Markdown
+
+[^3]: Only implemented receiving.
 </details>
 
 <details>

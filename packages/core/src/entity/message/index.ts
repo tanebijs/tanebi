@@ -7,3 +7,4 @@ export interface BotMsgType {
 
 export * from './BotMsgBubble';
 export * from './BotMsgImage';
+export * from './BotMsgLightApp';
