@@ -1,15 +1,11 @@
-import { BotFriend, BotGroup } from 'tanebi';
 import bot from '../login/fast';
 
-bot.globalMsg.on('message', (msg) => {
-    if (msg.contact instanceof BotFriend) {
-        console.log(`${msg.contact.nickname} (${msg.contact.uin}) [seq=${msg.sequence}; replied=${msg.repliedSequence}]`);
-        console.log('>>> ' + msg.content.toPreviewString());
-    } else if (msg.contact instanceof BotGroup) {
-        const group = msg.contact as BotGroup;
-        msg.contact.getMember(msg.senderUin).then((member) => {
-            console.log(`${group.name} (${group.uin}) ::: ${member?.card || member?.nickname} (${msg.senderUin}) [seq=${msg.sequence}; replied=${msg.repliedSequence}]`);
-            console.log('>>> ' + msg.content.toPreviewString());
-        });
-    }
+bot.onPrivateMessage((friend, msg) => {
+    console.log(`${friend.nickname} (${friend.uin}) [seq=${msg.sequence}; replied=${msg.repliedSequence}]`);
+    console.log('>>> ' + msg.content.toPreviewString());
+});
+
+bot.onGroupMessage((group, sender, msg) => {
+    console.log(`${group.name} (${group.uin}) ::: ${sender.card || sender.nickname} (${sender.uin}) [seq=${msg.sequence}; replied=${msg.repliedSequence}]`);
+    console.log('>>> ' + msg.content.toPreviewString());
 });

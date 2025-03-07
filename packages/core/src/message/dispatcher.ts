@@ -1,5 +1,5 @@
 import { Bot, eventsDX } from '@/index';
-import { BotContact, BotFriend, BotGroup, BotMsgBubble, BotMsgImage, BotMsgLightApp, eventsFDX, eventsGDX } from '@/entity';
+import { BotContact, BotFriend, BotFriendMessage, BotGroup, BotGroupMember, BotGroupMessage, BotMsgBubble, BotMsgImage, BotMsgLightApp, eventsFDX, eventsGDX } from '@/entity';
 import { MessageType } from '@/internal/message';
 import { IncomingMessage } from '@/internal/message/incoming';
 import { EventEmitter } from 'node:events';
@@ -23,16 +23,10 @@ export type DispatchedMessage = DispatchedMessageBody & {
     messageUid: bigint,
 };
 
-export type GlobalMessage = {
-    contact: BotContact,
-    senderUin: number,
-    sequence: number,
-    repliedSequence?: number,
-} & DispatchedMessage;
-
 export class MessageDispatcher {
     public readonly global = new EventEmitter<{
-        message: [GlobalMessage];
+        private: [BotFriend, BotFriendMessage];
+        group: [BotGroup, BotGroupMember, BotGroupMessage];
     }>();
 
     constructor(public readonly bot: Bot) {}
@@ -87,36 +81,30 @@ export class MessageDispatcher {
     }
 
     async dispatch(message: DispatchedMessageBody, raw: IncomingMessage, contact: BotContact) {
-        this.global.emit('message', {
-            contact,
-            senderUin: raw.senderUin,
-            sequence: raw.sequence,
-            repliedSequence: raw.repliedSequence,
-            [rawMessage]: raw,
-            messageUid: raw.msgUid ?? 0n,
-            ...message,
-        });
-
         if (contact instanceof BotFriend) {
-            contact[eventsFDX].emit('message',{
+            const friendMessage: BotFriendMessage = {
                 sequence: raw.sequence,
                 isSelf: raw.senderUin === this.bot.uin,
                 repliedSequence: raw.repliedSequence,
                 [rawMessage]: raw,
                 messageUid: raw.msgUid ?? 0n,
                 ...message,
-            });
+            };
+            contact[eventsFDX].emit('message', friendMessage);
+            this.global.emit('private', contact, friendMessage);
         } else if (contact instanceof BotGroup) {
             const sender = await contact.getMember(raw.senderUin);
             if (sender) {
-                contact[eventsGDX].emit('message', {
+                const groupMessage: BotGroupMessage = {
                     sequence: raw.sequence,
                     sender,
                     repliedSequence: raw.repliedSequence,
                     [rawMessage]: raw,
                     messageUid: raw.msgUid ?? 0n,
                     ...message,
-                });
+                };
+                contact[eventsGDX].emit('message', groupMessage);
+                this.global.emit('group', contact, sender, groupMessage);
             }
         }
     }

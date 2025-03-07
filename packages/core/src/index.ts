@@ -1,4 +1,4 @@
-import { BotFriend, BotGroup, eventsFDX, eventsGDX } from '@/entity';
+import { BotFriend, BotFriendMessage, BotGroup, BotGroupMember, BotGroupMessage, eventsFDX, eventsGDX } from '@/entity';
 import { BotFriendRequest } from '@/entity/request/BotFriendRequest';
 import { BotGroupInvitedJoinRequest } from '@/entity/request/BotGroupInvitedJoinRequest';
 import { BotGroupJoinRequest } from '@/entity/request/BotGroupJoinRequest';
@@ -42,23 +42,19 @@ export class Bot {
         info: [string, string]; // module, message
         warning: [string, string, unknown?]; // module, message, error
     }>();
-    private readonly friendCache;
-    private readonly groupCache;
-    private readonly messageDispatcher;
     readonly [eventsDX] = new EventEmitter<{
         friendRequest: [BotFriendRequest];
         groupInvitationRequest: [BotGroupInvitationRequest];
     }>();
+    private readonly friendCache;
+    private readonly groupCache;
+    private readonly messageDispatcher;
+    private readonly globalMsg: MessageDispatcher['global'];
 
     /**
      * Whether the bot is logged in.
      */
     loggedIn = false;
-
-    /**
-     * Global message dispatcher. Use this to listen to all incoming messages.
-     */
-    readonly globalMsg: MessageDispatcher['global'];
 
     private heartbeatIntervalRef?: NodeJS.Timeout;
 
@@ -527,6 +523,20 @@ export class Bot {
     async getGroup(uin: number, forceUpdate = false) {
         this[log].emit('debug', 'Bot', `Getting group ${uin}`);
         return this.groupCache.get(uin, forceUpdate);
+    }
+
+    /**
+     * Listen to private messages
+     */
+    onPrivateMessage(listener: (friend: BotFriend, message: BotFriendMessage) => void) {
+        this.globalMsg.on('private', listener);
+    }
+
+    /**
+     * Listen to group messages
+     */
+    onGroupMessage(listener: (group: BotGroup, sender: BotGroupMember, message: BotGroupMessage) => void) {
+        this.globalMsg.on('group', listener);
     }
 
     /**
