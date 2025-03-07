@@ -1,2 +1,4 @@
-export * from './builder';
-export * from './dispatcher';
+export * from './MessageDispatcher';
+export * from './AbstractMessageBuilder';
+export * from './PrivateMessageBuilder';
+export * from './GroupMessageBuilder';
