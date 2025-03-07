@@ -46,31 +46,38 @@ export class MessageDispatcher {
             return;
         }
 
+        const message = await this.create(incoming, contact);
+        if (!message) {
+            return;
+        }
+        await this.dispatch(message, incoming, contact);
+    }
+
+    async create(incoming: IncomingMessage, contact: BotContact): Promise<DispatchedMessageBody | undefined> {
         const segments = incoming.segments;
         const firstSegment = segments[0];
 
         if (segments.length === 1) {
             if (firstSegment.type === 'image') {
-                await this.dispatch({
+                return {
                     type: 'image',
                     content: await BotMsgImage.create(firstSegment, incoming, this.bot),
-                }, incoming, contact);
-                return;
+                };
             }
 
             if (firstSegment.type === 'lightApp') {
-                await this.dispatch({
+                return {
                     type: 'lightApp',
                     content: new BotMsgLightApp(firstSegment.app, firstSegment.payload),
-                }, incoming, contact);
+                };
             }
         }
 
         if (firstSegment.type === 'text' || firstSegment.type === 'mention' || firstSegment.type === 'image') {
-            await this.dispatch({
+            return {
                 type: 'bubble',
                 content: await BotMsgBubble.create(segments, contact, incoming, this.bot),
-            }, incoming, contact);
+            };
         }
     }
 
