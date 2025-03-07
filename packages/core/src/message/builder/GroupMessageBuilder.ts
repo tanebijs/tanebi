@@ -5,7 +5,7 @@ import { ImageSubType } from '@/internal/message/incoming/segment/image';
 import { OutgoingGroupMessage } from '@/internal/message/outgoing';
 import { ImageBizType } from '@/internal/message/outgoing/segment/image';
 import { getImageMetadata } from '@/internal/util/media/image';
-import { rawElems } from '@/message';
+import { rawMessage } from '@/message';
 import { ctx, log } from '@/index';
 
 export class GroupMessageBuilder extends AbstractMessageBuilder {
@@ -80,7 +80,7 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
                 senderUin: this.repliedMessage.sender.uin,
                 senderUid: this.repliedMessage.sender.uid,
                 messageUid: this.repliedMessage.messageUid,
-                elements: this.repliedMessage[rawElems],
+                elements: this.repliedMessage[rawMessage].rawElems,
             } : undefined,
         };
     }

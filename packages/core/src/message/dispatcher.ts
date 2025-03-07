@@ -1,10 +1,10 @@
 import { Bot } from '@/index';
 import { BotContact, BotFriend, BotGroup, BotMsgBubble, BotMsgImage, BotMsgLightApp, eventsFDX, eventsGDX } from '@/entity';
-import { MessageElementDecoded, MessageType } from '@/internal/message';
-import { IncomingMessage, PrivateMessage } from '@/internal/message/incoming';
+import { MessageType } from '@/internal/message';
+import { IncomingMessage } from '@/internal/message/incoming';
 import { EventEmitter } from 'node:events';
 
-export const rawElems = Symbol('Raw elements');
+export const rawMessage = Symbol('Raw elements');
 
 export type DispatchedMessageBody = {
     type: 'bubble',
@@ -18,7 +18,7 @@ export type DispatchedMessageBody = {
 };
 
 export type DispatchedMessage = DispatchedMessageBody & {
-    [rawElems]: MessageElementDecoded[],
+    [rawMessage]: IncomingMessage,
     messageUid: bigint,
 };
 
@@ -87,7 +87,7 @@ export class MessageDispatcher {
             senderUin: raw.senderUin,
             sequence: raw.sequence,
             repliedSequence: raw.repliedSequence,
-            [rawElems]: raw.rawElems,
+            [rawMessage]: raw,
             messageUid: raw.msgUid ?? 0n,
             ...message,
         });
@@ -95,11 +95,9 @@ export class MessageDispatcher {
         if (contact instanceof BotFriend) {
             contact[eventsFDX].emit('message',{
                 sequence: raw.sequence,
-                clientSequence: (<PrivateMessage>raw).clientSequence,
-                random: (<PrivateMessage>raw).random,
                 isSelf: raw.senderUin === this.bot.uin,
                 repliedSequence: raw.repliedSequence,
-                [rawElems]: raw.rawElems,
+                [rawMessage]: raw,
                 messageUid: raw.msgUid ?? 0n,
                 ...message,
             });
@@ -110,7 +108,7 @@ export class MessageDispatcher {
                     sequence: raw.sequence,
                     sender,
                     repliedSequence: raw.repliedSequence,
-                    [rawElems]: raw.rawElems,
+                    [rawMessage]: raw,
                     messageUid: raw.msgUid ?? 0n,
                     ...message,
                 });

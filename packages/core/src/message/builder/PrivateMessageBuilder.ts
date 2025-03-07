@@ -5,8 +5,9 @@ import { ImageSubType } from '@/internal/message/incoming/segment/image';
 import { OutgoingPrivateMessage } from '@/internal/message/outgoing';
 import { ImageBizType } from '@/internal/message/outgoing/segment/image';
 import { getImageMetadata } from '@/internal/util/media/image';
-import { rawElems } from '@/message';
+import { rawMessage } from '@/message';
 import { ctx, log } from '@/index';
+import { PrivateMessage } from '@/internal/message/incoming';
 
 export class PrivateMessageBuilder extends AbstractMessageBuilder {
     repliedMessage?: BotFriendMessage;
@@ -50,9 +51,9 @@ export class PrivateMessageBuilder extends AbstractMessageBuilder {
                 senderUin: this.friend.uin,
                 senderUid: this.friend.uid,
                 messageUid: this.repliedMessage.messageUid,
-                elements: this.repliedMessage[rawElems],
+                elements: this.repliedMessage[rawMessage].rawElems,
             } : undefined,
-            repliedClientSequence: this.repliedMessage?.clientSequence,
+            repliedClientSequence: (<PrivateMessage | undefined>this.repliedMessage?.[rawMessage])?.clientSequence,
         };
     }
 }
