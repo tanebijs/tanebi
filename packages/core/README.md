@@ -77,8 +77,8 @@ Here are the features that have been implemented or planned:
 - [x] Friend poke
 - [x] Friend message recall
 - [x] Friend request
-- [ ] Group poke
-- [ ] Group message recall
+- [x] Group poke
+- [x] Group message recall
 - [x] Group mute
 - [x] Group join request
 - [x] Group invited join request
@@ -86,8 +86,8 @@ Here are the features that have been implemented or planned:
 - [x] Group member decrease
 - [x] Group invitation
 - [x] Group admin change
-- [ ] Group essence message
-- [ ] Group face reaction
+- [x] Group essence message
+- [x] Group face reaction
 - [ ] Group to do
 </details>
 
