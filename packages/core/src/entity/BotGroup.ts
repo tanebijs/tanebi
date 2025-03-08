@@ -167,6 +167,14 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
     }
 
     /**
+     * Leave this group
+     */
+    async leave() {
+        this.bot[log].emit('debug', this.moduleName, 'Leave group');
+        await this.bot[ctx].ops.call('leaveGroup', this.uin);
+    }
+
+    /**
      * Listen to messages in this group
      */
     onMessage(listener: (message: BotGroupMessage) => void) {

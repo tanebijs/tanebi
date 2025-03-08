@@ -34,6 +34,7 @@ import { AddGroupReactionOperation } from '@/internal/operation/group/AddGroupRe
 import { RemoveGroupReactionOperation } from '@/internal/operation/group/RemoveGroupReactionOperation';
 import { RecallFriendMessageOperation } from '@/internal/operation/friend/RecallFriendMessageOperation';
 import { RecallGroupMessageOperation } from '@/internal/operation/group/RecallGroupMessageOperation';
+import { LeaveGroupOperation } from '@/internal/operation/group/LeaveGroupOperation';
 
 /**
  * The internal context of the bot
@@ -57,6 +58,7 @@ export class BotContext {
         FetchGroupMembersOperation,
         FetchGroupNotifiesOperation,
         FetchGroupsOperation,
+        LeaveGroupOperation,
         RecallGroupMessageOperation,
         RemoveGroupReactionOperation,
         SetMemberCardOperation,

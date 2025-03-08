@@ -59,7 +59,7 @@ Here are the features that have been implemented or planned:
 - [x] Send poke
 - [x] Send face reaction
 - [x] Recall message
-- [ ] Leave group
+- [x] Leave group
 - [x] Set member card
 - [ ] Ban (mute) member
 - [ ] Kick member
