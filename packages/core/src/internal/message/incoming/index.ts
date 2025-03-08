@@ -6,11 +6,13 @@ import { mentionParser } from '@/internal/message/incoming/segment/mention';
 import { textParser } from '@/internal/message/incoming/segment/text';
 import { NapProtoDecodeStructType } from '@napneko/nap-proto-core';
 import { lightAppParser } from '@/internal/message/incoming/segment/light-app';
+import { recordParser } from '@/internal/message/incoming/segment/record';
 
 const incomingSegments = new IncomingSegmentCollection([
     textParser,
     mentionParser,
     imageCommonParser,
+    recordParser,
     imageNotOnlineParser,
     imageCustomFaceParser,
     lightAppParser,

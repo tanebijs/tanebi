@@ -35,6 +35,8 @@ import { RemoveGroupReactionOperation } from '@/internal/operation/group/RemoveG
 import { RecallFriendMessageOperation } from '@/internal/operation/message/RecallFriendMessageOperation';
 import { RecallGroupMessageOperation } from '@/internal/operation/message/RecallGroupMessageOperation';
 import { LeaveGroupOperation } from '@/internal/operation/group/LeaveGroupOperation';
+import { DownloadGroupRecordOperation } from '@/internal/operation/highway/DownloadGroupRecordOperation';
+import { DownloadPrivateRecordOperation } from '@/internal/operation/highway/DownloadPrivateRecordOperation';
 
 /**
  * The internal context of the bot
@@ -63,7 +65,9 @@ export class BotContext {
         SetMemberSpecialTitleOperation,
 
         DownloadGroupImageOperation,
+        DownloadGroupRecordOperation,
         DownloadPrivateImageOperation,
+        DownloadPrivateRecordOperation,
         FetchHighwayUrlOperation,
         UploadGroupImageOperation,
         UploadPrivateImageOperation,

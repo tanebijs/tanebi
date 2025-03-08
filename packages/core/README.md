@@ -38,7 +38,7 @@ Here are the features that have been implemented or planned:
 - [x] Mention (At)
 - [x] Image
 - [x] Reply
-- [ ] Record
+- [x] Record[^3]
 - [ ] Video
 - [ ] Market Face
 - [ ] Long Message

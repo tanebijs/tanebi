@@ -4,6 +4,7 @@ import { MessageType } from '@/internal/message';
 import { IncomingMessage } from '@/internal/message/incoming';
 import { EventEmitter } from 'node:events';
 import { BotGroupInvitationRequest } from '@/entity/request/BotGroupInvitationRequest';
+import { BotMsgRecord } from '@/entity/message/BotMsgRecord';
 
 export const rawMessage = Symbol('Raw elements');
 
@@ -13,6 +14,9 @@ export type DispatchedMessageBody = {
 } | {
     type: 'image',
     content: BotMsgImage,
+} | {
+    type: 'record',
+    content: BotMsgRecord,
 } | {
     type: 'lightApp',
     content: BotMsgLightApp,
@@ -68,6 +72,13 @@ export class MessageDispatcher {
                 return {
                     type: 'lightApp',
                     content: new BotMsgLightApp(firstSegment.app, firstSegment.payload),
+                };
+            }
+
+            if (firstSegment.type === 'record') {
+                return {
+                    type: 'record',
+                    content: await BotMsgRecord.create(firstSegment, incoming, this.bot),
                 };
             }
         }
