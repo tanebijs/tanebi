@@ -11,6 +11,13 @@ export class BotMsgBubble implements BotMsgType {
             data.map<Promise<BubbleSegment | undefined>>(async (element) => {
                 if (element.type === 'text') {
                     return element;
+                } else if (element.type === 'face') {
+                    return {
+                        type: 'face',
+                        faceId: element.faceId,
+                        summary: element.summary ?? '[表情]',
+                        isInLargeCategory: element.isInLargeCategory,
+                    };
                 } else if (element.type === 'mention') {
                     if (peer instanceof BotGroup) {
                         if (element.uin === 0) {
@@ -36,6 +43,8 @@ export class BotMsgBubble implements BotMsgType {
         return this.segments.map((segment) => {
             if (segment.type === 'text') {
                 return segment.content;
+            } else if (segment.type === 'face') {
+                return segment.summary;
             } else if (segment.type === 'mention') {
                 return `@${segment.mentioned.card || segment.mentioned.nickname}`;
             } else if (segment.type === 'mentionAll') {
@@ -49,6 +58,7 @@ export class BotMsgBubble implements BotMsgType {
 
 export type BubbleSegment =
     | { type: 'text'; content: string }
+    | { type: 'face'; faceId: number; summary: string; isInLargeCategory: boolean }
     | { type: 'mention'; mentioned: BotGroupMember }
     | { type: 'mentionAll' }
     | { type: 'image'; content: BotMsgImage };

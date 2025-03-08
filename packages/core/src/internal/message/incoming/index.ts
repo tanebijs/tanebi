@@ -8,10 +8,13 @@ import { NapProtoDecodeStructType } from '@napneko/nap-proto-core';
 import { lightAppParser } from '@/internal/message/incoming/segment/light-app';
 import { recordParser } from '@/internal/message/incoming/segment/record';
 import { videoParser } from '@/internal/message/incoming/segment/video';
+import { faceCommonParser, faceOldFaceParser } from '@/internal/message/incoming/segment/face';
 
 const incomingSegments = new IncomingSegmentCollection([
     textParser,
     mentionParser,
+    faceOldFaceParser,
+    faceCommonParser,
     imageCommonParser,
     recordParser,
     videoParser,
@@ -54,6 +57,9 @@ export function parsePushMsgBody(pushMsg: NapProtoDecodeStructType<typeof PushMs
     const result = parseMetadata(pushMsg);
     if (pushMsg.body?.richText?.elements) {
         for (const element of pushMsg.body.richText.elements) {
+            const previous = result.segments.length === 0 ? undefined :
+                result.segments[result.segments.length - 1];
+
             if (!result.repliedSequence && element.srcMsg) {
                 result.repliedSequence = element.srcMsg.pbReserve?.friendSequence // for private message
                     ?? element.srcMsg.origSeqs?.[0]; // for group message
@@ -62,6 +68,11 @@ export function parsePushMsgBody(pushMsg: NapProtoDecodeStructType<typeof PushMs
 
             const parsed = incomingSegments.parse(element);
             if (parsed) {
+                if (
+                    previous?.type === 'face'
+                    && parsed.type === 'text'
+                    && previous.isInLargeCategory
+                ) continue; // Skip fallback text for large face
                 result.segments.push(parsed);
             }
         }

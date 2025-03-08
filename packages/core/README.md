@@ -34,7 +34,7 @@ Here are the features that have been implemented or planned:
 <summary> Message </summary>
 
 - [x] Text
-- [ ] Face
+- [x] Face[^3]
 - [x] Mention (At)
 - [x] Image
 - [x] Reply

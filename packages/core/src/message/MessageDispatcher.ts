@@ -94,7 +94,12 @@ export class MessageDispatcher {
             }
         }
 
-        if (firstSegment.type === 'text' || firstSegment.type === 'mention' || firstSegment.type === 'image') {
+        if (
+            firstSegment.type === 'text'
+            || firstSegment.type === 'face'
+            || firstSegment.type === 'mention'
+            || firstSegment.type === 'image'
+        ) {
             return {
                 type: 'bubble',
                 content: await BotMsgBubble.create(segments, contact, incoming, this.bot),
