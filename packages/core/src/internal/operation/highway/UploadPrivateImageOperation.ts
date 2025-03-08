@@ -1,7 +1,6 @@
 import { ImageSubType } from '@/internal/message/incoming/segment/image';
 import { defineOperation } from '@/internal/operation/OperationBase';
 import { UploadPrivateImage, UploadPrivateImageResponse } from '@/internal/packet/oidb/media/Action';
-import { BUF0 } from '@/internal/util/constants';
 import { ImageMetadata } from '@/internal/util/media/image';
 import crypto from 'node:crypto';
 
@@ -61,14 +60,6 @@ export const UploadPrivateImageOperation = defineOperation(
                         bytesPbReserveC2C,
                         textSummary: summary ?? (subType === ImageSubType.Picture ? '[图片]' : '[动画表情]'),
                     },
-                    video: {
-                        bytesPbReserve: BUF0,
-                    },
-                    ptt: {
-                        bytesPbReserve: BUF0,
-                        bytesReserve: BUF0,
-                        bytesGeneralFlags: BUF0,
-                    }
                 },
                 clientSeq: 0,
                 noNeedCompatMsg: false,
