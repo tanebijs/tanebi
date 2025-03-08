@@ -140,6 +140,14 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
         return this.bot[ctx].ops.call('sendMessage', builder.build(this.clientSequence++));
     }
 
+    /**
+     * Send a reaction to a message in this group
+     * @param sequence The sequence number of the message
+     * @param code The code of reaction. Refer to the [reaction code list](https://bot.q.qq.com/wiki/develop/api/openapi/emoji/model.html) for more information.
+     * @param type The type of reaction corresponding to the message. Also refer to the reaction code list.
+     * `1` for `ReactionType.Face`; `2` for `ReactionType.Emoji`.
+     * @param isAdd Whether to add the reaction. If false, remove the reaction.
+     */
     async sendReaction(sequence: number, code: string, type: ReactionType, isAdd: boolean) {
         this.bot[log].emit('debug', this.moduleName, `Send reaction ${isAdd ? 'add' : 'remove'} ${code}`);
         if (isAdd) {
