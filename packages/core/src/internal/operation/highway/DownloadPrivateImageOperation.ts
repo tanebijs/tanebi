@@ -1,5 +1,5 @@
 import { defineOperation } from '@/internal/operation/OperationBase';
-import { DownloadPrivateImage, DownloadPrivateImageResponse } from '@/internal/packet/oidb/0x11c5_200';
+import { DownloadPrivateImage, DownloadPrivateImageResponse } from '@/internal/packet/oidb/media/Action';
 import { IndexNode } from '@/internal/packet/oidb/media/IndexNode';
 import { NapProtoDecodeStructType } from '@napneko/nap-proto-core';
 

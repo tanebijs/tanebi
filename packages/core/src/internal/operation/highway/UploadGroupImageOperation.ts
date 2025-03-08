@@ -1,6 +1,6 @@
 import { ImageSubType } from '@/internal/message/incoming/segment/image';
 import { defineOperation } from '@/internal/operation/OperationBase';
-import { UploadGroupImage, UploadGroupImageResponse } from '@/internal/packet/oidb/0x11c4_100';
+import { UploadGroupImage, UploadGroupImageResponse } from '@/internal/packet/oidb/media/Action';
 import { BUF0 } from '@/internal/util/constants';
 import { ImageMetadata } from '@/internal/util/media/image';
 import crypto from 'crypto';
