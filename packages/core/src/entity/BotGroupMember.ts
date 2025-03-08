@@ -77,6 +77,7 @@ export class BotGroupMember extends BotEntity<BotGroupMemberDataBinding> {
         }
         this.bot[log].emit('debug', this.moduleName, `Set special title to ${specialTitle}`);
         await this.bot[ctx].ops.call('setMemberSpecialTitle', this.group.uin, this.uid, specialTitle);
+        this.data.specialTitle = specialTitle;
     }
 
     /**
