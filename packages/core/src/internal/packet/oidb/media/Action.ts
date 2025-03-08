@@ -15,3 +15,6 @@ export const DownloadGroupRecord = new OidbSvcContract(0x126e, 200, NTV2RichMedi
 export const DownloadGroupRecordResponse = new OidbSvcContract(0x126e, 200, NTV2RichMediaResponseOf('download'));
 export const DownloadPrivateRecord = new OidbSvcContract(0x126d, 200, NTV2RichMediaRequestOf('download'), false, true);
 export const DownloadPrivateRecordResponse = new OidbSvcContract(0x126d, 200, NTV2RichMediaResponseOf('download'));
+
+export const DownloadVideo = new OidbSvcContract(0x11e9, 200, NTV2RichMediaRequestOf('download'), false, true);
+export const DownloadVideoResponse = new OidbSvcContract(0x11e9, 200, NTV2RichMediaResponseOf('download'));

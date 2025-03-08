@@ -37,6 +37,7 @@ import { RecallGroupMessageOperation } from '@/internal/operation/message/Recall
 import { LeaveGroupOperation } from '@/internal/operation/group/LeaveGroupOperation';
 import { DownloadGroupRecordOperation } from '@/internal/operation/highway/DownloadGroupRecordOperation';
 import { DownloadPrivateRecordOperation } from '@/internal/operation/highway/DownloadPrivateRecordOperation';
+import { DownloadVideoOperation } from '@/internal/operation/highway/DownloadVideoOperation';
 
 /**
  * The internal context of the bot
@@ -68,6 +69,7 @@ export class BotContext {
         DownloadGroupRecordOperation,
         DownloadPrivateImageOperation,
         DownloadPrivateRecordOperation,
+        DownloadVideoOperation,
         FetchHighwayUrlOperation,
         UploadGroupImageOperation,
         UploadPrivateImageOperation,

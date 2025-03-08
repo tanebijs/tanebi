@@ -5,6 +5,7 @@ import { IncomingMessage } from '@/internal/message/incoming';
 import { EventEmitter } from 'node:events';
 import { BotGroupInvitationRequest } from '@/entity/request/BotGroupInvitationRequest';
 import { BotMsgRecord } from '@/entity/message/BotMsgRecord';
+import { BotMsgVideo } from '@/entity/message/BotMsgVideo';
 
 export const rawMessage = Symbol('Raw elements');
 
@@ -17,6 +18,9 @@ export type DispatchedMessageBody = {
 } | {
     type: 'record',
     content: BotMsgRecord,
+} | {
+    type: 'video',
+    content: BotMsgVideo,
 } | {
     type: 'lightApp',
     content: BotMsgLightApp,
@@ -64,6 +68,20 @@ export class MessageDispatcher {
                 };
             }
 
+            if (firstSegment.type === 'record') {
+                return {
+                    type: 'record',
+                    content: await BotMsgRecord.create(firstSegment, incoming, this.bot),
+                };
+            }
+
+            if (firstSegment.type === 'video') {
+                return {
+                    type: 'video',
+                    content: await BotMsgVideo.create(firstSegment, incoming, this.bot),
+                };
+            }
+
             if (firstSegment.type === 'lightApp') {
                 if (firstSegment.app === 'com.tencent.qun.invite' && contact instanceof BotFriend) {
                     this.bot[eventsDX].emit('groupInvitationRequest',
@@ -72,13 +90,6 @@ export class MessageDispatcher {
                 return {
                     type: 'lightApp',
                     content: new BotMsgLightApp(firstSegment.app, firstSegment.payload),
-                };
-            }
-
-            if (firstSegment.type === 'record') {
-                return {
-                    type: 'record',
-                    content: await BotMsgRecord.create(firstSegment, incoming, this.bot),
                 };
             }
         }

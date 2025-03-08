@@ -39,7 +39,7 @@ Here are the features that have been implemented or planned:
 - [x] Image
 - [x] Reply
 - [x] Record[^3]
-- [ ] Video
+- [x] Video[^3]
 - [ ] Market Face
 - [ ] Long Message
 - [ ] Multi Forwarded Message

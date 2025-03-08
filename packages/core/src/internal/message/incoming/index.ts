@@ -7,12 +7,14 @@ import { textParser } from '@/internal/message/incoming/segment/text';
 import { NapProtoDecodeStructType } from '@napneko/nap-proto-core';
 import { lightAppParser } from '@/internal/message/incoming/segment/light-app';
 import { recordParser } from '@/internal/message/incoming/segment/record';
+import { videoParser } from '@/internal/message/incoming/segment/video';
 
 const incomingSegments = new IncomingSegmentCollection([
     textParser,
     mentionParser,
     imageCommonParser,
     recordParser,
+    videoParser,
     imageNotOnlineParser,
     imageCustomFaceParser,
     lightAppParser,
