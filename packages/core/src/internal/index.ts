@@ -30,6 +30,8 @@ import { SetMemberSpecialTitleOperation } from '@/internal/operation/group/SetMe
 import { SendGrayTipPokeOperation } from '@/internal/operation/message/SendGrayTipPokeOperation';
 import { NotifyLogic } from '@/internal/logic/NotifyLogic';
 import { SetMemberCardOperation } from '@/internal/operation/group/SetMemberCardOperation';
+import { AddGroupReactionOperation } from '@/internal/operation/group/AddGroupReactionOperation';
+import { RemoveGroupReactionOperation } from '@/internal/operation/group/RemoveGroupReactionOperation';
 
 /**
  * The internal context of the bot
@@ -48,9 +50,11 @@ export class BotContext {
         FetchFriendsOperation,
         FetchUserInfoOperation,
 
+        AddGroupReactionOperation,
         FetchGroupMembersOperation,
         FetchGroupNotifiesOperation,
         FetchGroupsOperation,
+        RemoveGroupReactionOperation,
         SetMemberCardOperation,
         SetMemberSpecialTitleOperation,
 

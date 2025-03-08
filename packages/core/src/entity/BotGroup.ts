@@ -1,5 +1,5 @@
 import { Bot, ctx, identityService, log } from '@/index';
-import { BotContact, BotGroupMember } from '@/entity';
+import { BotContact, BotGroupMember, ReactionType } from '@/entity';
 import { BotGroupInvitedJoinRequest } from '@/entity/request/BotGroupInvitedJoinRequest';
 import { BotGroupJoinRequest } from '@/entity/request/BotGroupJoinRequest';
 import { DispatchedMessage, GroupMessageBuilder } from '@/message';
@@ -140,6 +140,15 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
         return this.bot[ctx].ops.call('sendMessage', builder.build(this.clientSequence++));
     }
 
+    async sendReaction(sequence: number, code: string, type: ReactionType, isAdd: boolean) {
+        this.bot[log].emit('debug', this.moduleName, `Send reaction ${isAdd ? 'add' : 'remove'} ${code}`);
+        if (isAdd) {
+            await this.bot[ctx].ops.call('addGroupReaction', this.uin, sequence, code, type);
+        } else {
+            await this.bot[ctx].ops.call('removeGroupReaction', this.uin, sequence, code, type);
+        }
+    }
+
     /**
      * Listen to messages in this group
      */
@@ -238,3 +247,5 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
         this[eventsGDX].on('reaction', listener);
     }
 }
+
+export { ReactionType } from '@/internal/packet/oidb/0x9082_1';
