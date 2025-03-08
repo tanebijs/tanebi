@@ -8,6 +8,7 @@ import { getImageMetadata } from '@/internal/util/media/image';
 import { rawMessage } from '@/message';
 import { ctx, log } from '@/index';
 import { PrivateMessage } from '@/internal/message/incoming';
+import { randomInt } from 'crypto';
 
 export class PrivateMessageBuilder extends AbstractMessageBuilder {
     repliedMessage?: BotFriendMessage;
@@ -45,6 +46,7 @@ export class PrivateMessageBuilder extends AbstractMessageBuilder {
             targetUin: this.contact.uin,
             targetUid: this.friend.uid,
             clientSequence,
+            random: randomInt(0, 0x7fffffff),
             segments: this.segments,
             reply: this.repliedMessage ? {
                 sequence: this.repliedMessage.sequence,

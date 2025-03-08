@@ -7,6 +7,7 @@ import { ImageBizType } from '@/internal/message/outgoing/segment/image';
 import { getImageMetadata } from '@/internal/util/media/image';
 import { rawMessage } from '@/message';
 import { ctx, log } from '@/index';
+import { randomInt } from 'crypto';
 
 export class GroupMessageBuilder extends AbstractMessageBuilder {
     repliedMessage?: BotGroupMessage;
@@ -74,6 +75,7 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
             type: MessageType.GroupMessage,
             groupUin: this.contact.uin,
             clientSequence,
+            random: randomInt(0, 0xffffffff),
             segments: this.segments,
             reply: this.repliedMessage ? {
                 sequence: this.repliedMessage.sequence,

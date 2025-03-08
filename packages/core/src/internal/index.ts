@@ -32,6 +32,7 @@ import { NotifyLogic } from '@/internal/logic/NotifyLogic';
 import { SetMemberCardOperation } from '@/internal/operation/group/SetMemberCardOperation';
 import { AddGroupReactionOperation } from '@/internal/operation/group/AddGroupReactionOperation';
 import { RemoveGroupReactionOperation } from '@/internal/operation/group/RemoveGroupReactionOperation';
+import { RecallFriendMessageOperation } from '@/internal/operation/friend/RecallFriendMessageOperation';
 
 /**
  * The internal context of the bot
@@ -49,6 +50,7 @@ export class BotContext {
     ops = new OperationCollection(this, [
         FetchFriendsOperation,
         FetchUserInfoOperation,
+        RecallFriendMessageOperation,
 
         AddGroupReactionOperation,
         FetchGroupMembersOperation,

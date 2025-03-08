@@ -1,5 +1,5 @@
 import { Bot, ctx, log } from '@/index';
-import { BotContact } from '@/entity';
+import { BotContact, BotPrivateSendMsgRef } from '@/entity';
 import { DispatchedMessage, PrivateMessageBuilder } from '@/message';
 import EventEmitter from 'node:events';
 
@@ -67,7 +67,9 @@ export class BotFriend extends BotContact<BotFriendDataBinding> {
         this.bot[log].emit('debug', this.moduleName, 'Send message');
         const builder = new PrivateMessageBuilder(this);
         await buildMsg(builder);
-        return this.bot[ctx].ops.call('sendMessage', builder.build(this.clientSequence++));
+        const message = builder.build(this.clientSequence++);
+        const sendResult = await this.bot[ctx].ops.call('sendMessage', message);
+        return new BotPrivateSendMsgRef(sendResult.sequence, sendResult.timestamp, message, this);
     }
 
     /**

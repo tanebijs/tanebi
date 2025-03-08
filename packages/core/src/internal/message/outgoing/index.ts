@@ -1,7 +1,6 @@
 import { BotContext } from '@/internal';
 import { PbSendMsg } from '@/internal/packet/message/PbSendMsg';
 import { timestamp } from '@/internal/util/format';
-import { randomInt } from '@/internal/util/random';
 import { MessageElementDecoded, MessageType } from '@/internal/message';
 import { OutgoingSegmentCollection } from '@/internal/message/outgoing/segment-base';
 import { mentionBuilder } from '@/internal/message/outgoing/segment/mention';
@@ -21,6 +20,7 @@ interface OutgoingMessageBase {
     type: MessageType;
     segments: OutgoingSegment[];
     clientSequence: number;
+    random: number;
     reply?: {
         sequence: number;
         senderUin: number;
@@ -72,7 +72,7 @@ function buildPbSendMsgBase(message: OutgoingMessage): Parameters<typeof PbSendM
         contentHead: { type: 1, subType: 0, c2CCmd: 0 },
         body: { richText: { elements: [] } },
         clientSequence: message.clientSequence,
-        random: randomInt(0, 4294967295),
+        random: message.random,
         control: message.type === MessageType.PrivateMessage ? { msgFlag: timestamp() } : undefined,
     };
 }
