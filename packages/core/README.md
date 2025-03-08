@@ -58,7 +58,7 @@ Here are the features that have been implemented or planned:
 - [x] Fetch group members
 - [x] Send poke
 - [x] Send face reaction
-- [ ] Recall message
+- [x] Recall message
 - [ ] Leave group
 - [x] Set member card
 - [ ] Ban (mute) member

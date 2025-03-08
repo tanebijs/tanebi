@@ -141,6 +141,15 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
     }
 
     /**
+     * Recall a message in this group.
+     * To recall others' messages, you must be the owner / an admin of the group.
+     */
+    async recallMsg(sequence: number) {
+        this.bot[log].emit('debug', this.moduleName, `Recall message ${sequence}`);
+        await this.bot[ctx].ops.call('recallGroupMessage', this.uin, sequence);
+    }
+
+    /**
      * Send a reaction to a message in this group
      * @param sequence The sequence number of the message
      * @param code The code of reaction. Refer to the [reaction code list](https://bot.q.qq.com/wiki/develop/api/openapi/emoji/model.html) for more information.

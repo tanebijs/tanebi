@@ -1,5 +1,5 @@
 import { defineOperation } from '@/internal/operation/OperationBase';
-import { SsoC2CRecallMsg } from '@/internal/packet/message/SsoC2CRecallMsg';
+import { SsoC2CRecallMsg } from '@/internal/packet/message/action/SsoC2CRecallMsg';
 
 export const RecallFriendMessageOperation = defineOperation(
     'recallFriendMessage',
