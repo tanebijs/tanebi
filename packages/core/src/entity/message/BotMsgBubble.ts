@@ -7,33 +7,29 @@ export class BotMsgBubble implements BotMsgType {
     private constructor(public readonly segments: BubbleSegment[]) {}
 
     static async create(data: IncomingSegment[], peer: BotContact, msg: IncomingMessage, bot: Bot) {
-        return new BotMsgBubble(
-            (
-                await Promise.all(
-                    data.map<Promise<BubbleSegment | undefined>>(async (element) => {
-                        if (element.type === 'text') {
-                            return element;
-                        } else if (element.type === 'mention') {
-                            if (peer instanceof BotGroup) {
-                                if (element.uin === 0) {
-                                    return { type: 'mentionAll' };
-                                } else {
-                                    const mentioned = await peer.getMember(element.uin);
-                                    if (mentioned)
-                                        return {
-                                            type: 'mention',
-                                            mentioned,
-                                        };
-                                }
-                            }
-                            bot[log].emit('warning', 'BotMsgBubble.create', 'Failed to resolve mention');
-                        } else if (element.type === 'image') {
-                            return { type: 'image', content: await BotMsgImage.create(element, msg, bot) };
+        return new BotMsgBubble((await Promise.all(
+            data.map<Promise<BubbleSegment | undefined>>(async (element) => {
+                if (element.type === 'text') {
+                    return element;
+                } else if (element.type === 'mention') {
+                    if (peer instanceof BotGroup) {
+                        if (element.uin === 0) {
+                            return { type: 'mentionAll' };
+                        } else {
+                            const mentioned = await peer.getMember(element.uin);
+                            if (mentioned)
+                                return {
+                                    type: 'mention',
+                                    mentioned,
+                                };
                         }
-                    })
-                )
-            ).filter((e) => e !== undefined)
-        );
+                    }
+                    bot[log].emit('warning', 'BotMsgBubble.create', 'Failed to resolve mention');
+                } else if (element.type === 'image') {
+                    return { type: 'image', content: await BotMsgImage.create(element, msg, bot) };
+                }
+            })
+        )).filter((e) => e !== undefined));
     }
 
     toPreviewString() {
