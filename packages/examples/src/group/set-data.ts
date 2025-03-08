@@ -7,6 +7,10 @@ import bot from '../login/fast';
             const title = content.slice(6).trim();
             if (title.length !== 0)
                 msg.sender.setSpecialTitle(title);
+        } else if (content.startsWith('/card')) {
+            const card = content.slice(5).trim();
+            if (card.length !== 0)
+                msg.sender.setCard(card);
         }
     }
 });

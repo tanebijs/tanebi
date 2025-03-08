@@ -65,6 +65,16 @@ export class BotGroupMember extends BotEntity<BotGroupMemberDataBinding> {
     }
 
     /**
+     * Set the card of this member.
+     * You must be the owner / an admin of the group to do this.
+     */
+    async setCard(card: string) {
+        this.bot[log].emit('debug', this.moduleName, `Set card to ${card}`);
+        await this.bot[ctx].ops.call('setMemberCard', this.group.uin, this.uid, card);
+        this.data.card = card;
+    }
+
+    /**
      * Set the special title of this member.
      * You must be the owner of the group to do this.
      * @param specialTitle The special title to set.

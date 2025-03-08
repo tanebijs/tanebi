@@ -60,7 +60,7 @@ Here are the features that have been implemented or planned:
 - [ ] Send face reaction
 - [ ] Recall message
 - [ ] Leave group
-- [ ] Set member card
+- [x] Set member card
 - [ ] Ban (mute) member
 - [ ] Kick member
 - [ ] Set member to admin
