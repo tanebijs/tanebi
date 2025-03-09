@@ -38,6 +38,7 @@ import { LeaveGroupOperation } from '@/internal/operation/group/LeaveGroupOperat
 import { DownloadGroupRecordOperation } from '@/internal/operation/highway/DownloadGroupRecordOperation';
 import { DownloadPrivateRecordOperation } from '@/internal/operation/highway/DownloadPrivateRecordOperation';
 import { DownloadVideoOperation } from '@/internal/operation/highway/DownloadVideoOperation';
+import { FetchFaceDetailsOperation } from '@/internal/operation/message/FetchFaceDetailsOperation';
 
 /**
  * The internal context of the bot
@@ -74,6 +75,12 @@ export class BotContext {
         UploadGroupImageOperation,
         UploadPrivateImageOperation,
 
+        FetchFaceDetailsOperation,
+        RecallFriendMessageOperation,
+        RecallGroupMessageOperation,
+        SendGrayTipPokeOperation,
+        SendMessageOperation,
+
         BotOnlineOperation,
         FetchQrCodeOperation,
         HeartbeatOperation,
@@ -81,11 +88,6 @@ export class BotContext {
         NTEasyLoginOperation,
         QueryQrCodeResultOperation,
         WtLoginOperation,
-        
-        SendGrayTipPokeOperation,
-        SendMessageOperation,
-        RecallFriendMessageOperation,
-        RecallGroupMessageOperation,
     ]);
 
     events = new EventChannel(this, [
