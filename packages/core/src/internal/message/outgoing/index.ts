@@ -6,10 +6,12 @@ import { OutgoingSegmentCollection } from '@/internal/message/outgoing/segment-b
 import { mentionBuilder } from '@/internal/message/outgoing/segment/mention';
 import { textBuilder } from '@/internal/message/outgoing/segment/text';
 import { imageBuilder } from '@/internal/message/outgoing/segment/image';
+import { faceBuilder } from '@/internal/message/outgoing/segment/face';
 
 const outgoingSegments = new OutgoingSegmentCollection([
     textBuilder,
     mentionBuilder,
+    faceBuilder,
     imageBuilder,
 ]);
 

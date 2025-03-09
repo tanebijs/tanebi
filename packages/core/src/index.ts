@@ -10,6 +10,8 @@ import { BotContext } from '@/internal';
 import { TransEmp12_QrCodeState } from '@/internal/packet/login/wtlogin/TransEmp12';
 import { EventEmitter } from 'node:events';
 import { BotGroupInvitationRequest } from '@/entity/request/BotGroupInvitationRequest';
+import { NapProtoDecodeStructType } from '@napneko/nap-proto-core';
+import { FaceDetail } from '@/internal/packet/oidb/0x9154_1';
 
 /**
  * Symbol of the bot context
@@ -30,6 +32,11 @@ export const log = Symbol('Internal log');
  * Symbol of internal events
  */
 export const eventsDX = Symbol('Internal events');
+
+/**
+ * Symbol to access face cache
+ */
+export const faceCache = Symbol('Face cache');
 
 /**
  * The Bot object. Create an instance by calling `Bot.create`.
@@ -67,6 +74,7 @@ export class Bot {
         groupReaction:              [BotGroup, number, BotGroupMember, string, boolean, number];
                                     // group, sequence, member, reactionCode, isAdd, count
     }>();
+    readonly [faceCache] = new Map<number, NapProtoDecodeStructType<typeof FaceDetail.fields>>();
     private readonly friendCache;
     private readonly groupCache;
     private readonly messageDispatcher;
@@ -734,6 +742,8 @@ export class Bot {
                 const { ip, port } = data.serverInfo[0];
                 bot[ctx].highwayLogic.setHighwayUrl(ip, port, data.sigSession);
             });
+        await bot[ctx].ops.call('fetchFaceDetails')
+            .then(data => data.forEach(face => bot[faceCache].set(parseInt(face.qSid), face)));
         return bot;
     }
 }

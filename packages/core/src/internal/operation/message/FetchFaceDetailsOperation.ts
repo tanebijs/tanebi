@@ -1,5 +1,8 @@
 import { defineOperation } from '@/internal/operation/OperationBase';
-import { FetchFaceDetails, FetchFaceDetailsResponse } from '@/internal/packet/oidb/0x9154_1';
+import { FaceDetail as aFaceDetail, FetchFaceDetails, FetchFaceDetailsResponse } from '@/internal/packet/oidb/0x9154_1';
+import { NapProtoDecodeStructType } from '@napneko/nap-proto-core';
+
+export type FaceDetail = NapProtoDecodeStructType<typeof aFaceDetail.fields>;
 
 export const FetchFaceDetailsOperation = defineOperation(
     'fetchFaceDetails',
@@ -9,5 +12,12 @@ export const FetchFaceDetailsOperation = defineOperation(
         field2: 7,
         field3: '0',
     })),
-    (ctx, payload) => FetchFaceDetailsResponse.decodeBodyOrThrow(payload),
+    (ctx, payload): FaceDetail[] => {
+        const response = FetchFaceDetailsResponse.decodeBodyOrThrow(payload);
+        return [
+            response.commonFace,
+            response.specialBigFace,
+            response.specialMagicFace,
+        ].flatMap((face) => face!.facePackList.flatMap((facePack) => facePack.faces));
+    },
 );

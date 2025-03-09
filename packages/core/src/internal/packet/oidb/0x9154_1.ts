@@ -20,25 +20,27 @@ export const FetchFaceDetailsResponse = new OidbSvcContract(
 );
 
 export const FacesData = new NapProtoMsg({
-    faceList: ProtoField(1, () => ({
+    facePackList: ProtoField(1, () => ({
         facePackName: ProtoField(1, ScalarType.STRING, true, false),
-        faceDetail: ProtoField(2, () => ({
-            qSid: ProtoField(1, ScalarType.STRING, true, false),
-            qDes: ProtoField(2, ScalarType.STRING, true, false),
-            emCode: ProtoField(3, ScalarType.STRING, true, false),
-            qCid: ProtoField(4, ScalarType.INT32, true, false),
-            aniStickerType: ProtoField(5, ScalarType.INT32, true, false),
-            aniStickerPackId: ProtoField(6, ScalarType.INT32, true, false),
-            aniStickerId: ProtoField(7, ScalarType.INT32, true, false),
-            url: ProtoField(8, () => FaceResourceUrl.fields, true, false),
-            faceNameAlias: ProtoField(9, ScalarType.STRING, false, true),
-            unknown10: ProtoField(10, ScalarType.INT32, true, false),
-            aniStickerWidth: ProtoField(13, ScalarType.INT32, true, false),
-            aniStickerHeight: ProtoField(14, ScalarType.INT32, true, false),
-        }), false, true),
+        faces: ProtoField(2, () => FaceDetail.fields, false, true),
     }), false, true),
     resourceUrl: ProtoField(2, () => FaceResourceUrl.fields, true, false),
 });
+
+export const FaceDetail = new NapProtoMsg({
+    qSid: ProtoField(1, ScalarType.STRING),
+    qDes: ProtoField(2, ScalarType.STRING, true, false),
+    emCode: ProtoField(3, ScalarType.STRING, true, false),
+    qCid: ProtoField(4, ScalarType.INT32, true, false),
+    aniStickerType: ProtoField(5, ScalarType.INT32, true, false),
+    aniStickerPackId: ProtoField(6, ScalarType.INT32, true, false),
+    aniStickerId: ProtoField(7, ScalarType.INT32, true, false),
+    url: ProtoField(8, () => FaceResourceUrl.fields, true, false),
+    faceNameAlias: ProtoField(9, ScalarType.STRING, false, true),
+    unknown10: ProtoField(10, ScalarType.INT32, true, false),
+    aniStickerWidth: ProtoField(13, ScalarType.INT32, true, false),
+    aniStickerHeight: ProtoField(14, ScalarType.INT32, true, false),
+}); 
 
 export const FaceResourceUrl = new NapProtoMsg({
     baseUrl: ProtoField(1, ScalarType.STRING, true, false),
