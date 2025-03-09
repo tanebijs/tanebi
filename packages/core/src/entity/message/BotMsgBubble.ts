@@ -1,4 +1,4 @@
-import { Bot, log } from '@/index';
+import { Bot, faceCache, log } from '@/index';
 import { BotContact, BotGroup, BotGroupMember } from '@/entity';
 import { BotMsgImage, BotMsgType } from '.';
 import { IncomingMessage, IncomingSegment } from '@/internal/message/incoming';
@@ -15,7 +15,7 @@ export class BotMsgBubble implements BotMsgType {
                     return {
                         type: 'face',
                         faceId: element.faceId,
-                        summary: element.summary ?? '[表情]',
+                        summary: element.summary ?? bot[faceCache].get(String(element.faceId))?.qDes ?? '[表情]',
                         isInLargeCategory: element.isInLargeCategory,
                     };
                 } else if (element.type === 'mention') {

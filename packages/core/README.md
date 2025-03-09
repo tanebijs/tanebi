@@ -34,7 +34,7 @@ Here are the features that have been implemented or planned:
 <summary> Message </summary>
 
 - [x] Text
-- [x] Face[^3]
+- [x] Face[^4]
 - [x] Mention (At)
 - [x] Image
 - [x] Reply
@@ -48,6 +48,7 @@ Here are the features that have been implemented or planned:
 - [ ] Markdown
 
 [^3]: Only implemented receiving.
+[^4]: *May* not function properly when sending.
 </details>
 
 <details>
