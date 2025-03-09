@@ -74,7 +74,7 @@ export class Bot {
         groupReaction:              [BotGroup, number, BotGroupMember, string, boolean, number];
                                     // group, sequence, member, reactionCode, isAdd, count
     }>();
-    readonly [faceCache] = new Map<number, NapProtoDecodeStructType<typeof FaceDetail.fields>>();
+    readonly [faceCache] = new Map<string, NapProtoDecodeStructType<typeof FaceDetail.fields>>();
     private readonly friendCache;
     private readonly groupCache;
     private readonly messageDispatcher;
@@ -531,6 +531,13 @@ export class Bot {
             this[ctx].ops.call('heartbeat');
             this[log].emit('debug', 'Bot', 'Heartbeat sent');
         }, 4.5 * 60 * 1000 /* 4.5 minute */);
+
+        if (this[faceCache].size === 0) {
+            const faceDetails = await this[ctx].ops.call('fetchFaceDetails');
+            faceDetails.forEach(face => {
+                this[faceCache].set(face.qSid, face);
+            });
+        }
     }
 
     /**
@@ -742,8 +749,6 @@ export class Bot {
                 const { ip, port } = data.serverInfo[0];
                 bot[ctx].highwayLogic.setHighwayUrl(ip, port, data.sigSession);
             });
-        await bot[ctx].ops.call('fetchFaceDetails')
-            .then(data => data.forEach(face => bot[faceCache].set(parseInt(face.qSid), face)));
         return bot;
     }
 }
