@@ -536,6 +536,12 @@ export class Bot {
     }
 
     private async postOnline() {
+        this[ctx].ssoLogic.socket.once('error', async () => {
+            await this[ctx].ssoLogic.connectToMsfServer();
+            this.loggedIn = false;
+            this.fastLogin();
+        });
+
         const faceDetails = await this[ctx].ops.call('fetchFaceDetails');
         faceDetails.forEach(face => {
             this[faceCache].set(face.qSid, face);
