@@ -3,14 +3,12 @@ import { AbstractMessageBuilder } from './AbstractMessageBuilder';
 import { MessageType } from '@/internal/message';
 import { ImageSubType } from '@/internal/message/incoming/segment/image';
 import { OutgoingPrivateMessage } from '@/internal/message/outgoing';
-import { ImageBizType } from '@/internal/message/outgoing/segment/image';
 import { getImageMetadata } from '@/internal/util/media/image';
 import { rawMessage } from '@/message';
 import { ctx, log } from '@/index';
 import { PrivateMessage } from '@/internal/message/incoming';
 import { randomInt } from 'crypto';
 import { getGeneralMetadata } from '@/internal/util/media/common';
-import { RecordBizType } from '@/internal/message/outgoing/segment/record';
 
 export class PrivateMessageBuilder extends AbstractMessageBuilder {
     repliedMessage?: BotFriendMessage;
@@ -37,7 +35,6 @@ export class PrivateMessageBuilder extends AbstractMessageBuilder {
         this.segments.push({
             type: 'image',
             msgInfo: uploadResp.upload!.msgInfo!,
-            bizType: ImageBizType.Group,
             // compatFace: CustomFaceElement.decode(uploadResp.upload!.compatQMsg!),
         });
     }
@@ -55,7 +52,6 @@ export class PrivateMessageBuilder extends AbstractMessageBuilder {
         this.segments.push({
             type: 'record',
             msgInfo: uploadResp.upload!.msgInfo!,
-            bizType: RecordBizType.Group,
         });
     }
 
