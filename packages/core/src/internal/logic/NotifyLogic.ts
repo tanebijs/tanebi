@@ -155,7 +155,8 @@ export class NotifyLogic extends LogicBase {
     parseGroupEssenceMessageChange(pushMsg: NapProtoDecodeStructType<typeof PushMsg.fields>) {
         const wrapper = GroupGeneral0x2DCBody.decode(
             GroupGeneral0x2DC.decode(Buffer.from(pushMsg.message.body!.msgContent!)).body);
-        const content = wrapper.essenceMessageChange!;
+        const content = wrapper.essenceMessageChange;
+        if (!content) return;
         this.ctx.eventsDX.emit('groupEssenceMessageChange',
             content.groupUin, content.msgSequence, content.operatorUin,
             content.setFlag === GroupEssenceMessageChangeSetFlag.Add);
