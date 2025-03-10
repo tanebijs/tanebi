@@ -8,6 +8,7 @@ import { rawMessage } from '@/message';
 import { ctx, log } from '@/index';
 import { randomInt } from 'crypto';
 import { getGeneralMetadata } from '@/internal/util/media/common';
+import { CustomFaceElement } from '@/internal/packet/message/element/CustomFaceElement';
 
 export class GroupMessageBuilder extends AbstractMessageBuilder {
     repliedMessage?: BotGroupMessage;
@@ -65,7 +66,7 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
         this.segments.push({
             type: 'image',
             msgInfo: uploadResp.upload!.msgInfo!,
-            // compatFace: CustomFaceElement.decode(uploadResp.upload!.compatQMsg!),
+            compatFace: uploadResp.upload?.compatQMsg ? CustomFaceElement.decode(uploadResp.upload.compatQMsg) : undefined,
         });
     }
 

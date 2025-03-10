@@ -9,6 +9,7 @@ import { ctx, log } from '@/index';
 import { PrivateMessage } from '@/internal/message/incoming';
 import { randomInt } from 'crypto';
 import { getGeneralMetadata } from '@/internal/util/media/common';
+import { CustomFaceElement } from '@/internal/packet/message/element/CustomFaceElement';
 
 export class PrivateMessageBuilder extends AbstractMessageBuilder {
     repliedMessage?: BotFriendMessage;
@@ -35,7 +36,7 @@ export class PrivateMessageBuilder extends AbstractMessageBuilder {
         this.segments.push({
             type: 'image',
             msgInfo: uploadResp.upload!.msgInfo!,
-            // compatFace: CustomFaceElement.decode(uploadResp.upload!.compatQMsg!),
+            compatFace: uploadResp.upload?.compatQMsg ? CustomFaceElement.decode(uploadResp.upload.compatQMsg) : undefined,
         });
     }
 
