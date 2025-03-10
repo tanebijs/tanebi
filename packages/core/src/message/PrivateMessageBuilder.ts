@@ -9,6 +9,8 @@ import { rawMessage } from '@/message';
 import { ctx, log } from '@/index';
 import { PrivateMessage } from '@/internal/message/incoming';
 import { randomInt } from 'crypto';
+import { getGeneralMetadata } from '@/internal/util/media/common';
+import { RecordBizType } from '@/internal/message/outgoing/segment/record';
 
 export class PrivateMessageBuilder extends AbstractMessageBuilder {
     repliedMessage?: BotFriendMessage;
@@ -37,6 +39,23 @@ export class PrivateMessageBuilder extends AbstractMessageBuilder {
             msgInfo: uploadResp.upload!.msgInfo!,
             bizType: ImageBizType.Group,
             // compatFace: CustomFaceElement.decode(uploadResp.upload!.compatQMsg!),
+        });
+    }
+
+    override async record(data: Buffer, duration: number): Promise<void> {
+        const recordMeta = getGeneralMetadata(data);
+        this.friend.bot[log].emit('debug', 'PrivateMessageBuilder', `Prepare to upload record ${JSON.stringify(recordMeta)}`);
+        const uploadResp = await this.friend.bot[ctx].ops.call(
+            'uploadPrivateRecord',
+            this.friend.uid,
+            recordMeta,
+            duration,
+        );
+        await this.friend.bot[ctx].highwayLogic.uploadRecord(data, recordMeta, uploadResp);
+        this.segments.push({
+            type: 'record',
+            msgInfo: uploadResp.upload!.msgInfo!,
+            bizType: RecordBizType.Group,
         });
     }
 

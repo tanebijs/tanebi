@@ -1,18 +1,15 @@
 import { PicFormat } from '@/internal/packet/oidb/media/FileInfo';
-import { md5, sha1 } from '@/internal/util/crypto/digest';
+import { getGeneralMetadata, MediaGeneralMetadata } from '@/internal/util/media/common';
 import imageSize from 'image-size';
 import { imageType } from 'image-size/dist/types';
 
 export type SupportedPicFormat = 'png' | 'jpg' | 'gif' | 'webp' | 'bmp' | 'tiff';
 
-export interface ImageMetadata {
-    size: number;
+export interface ImageMetadata extends MediaGeneralMetadata {
     width: number;
     height: number;
     ext: SupportedPicFormat;
     format: PicFormat;
-    md5: Buffer;
-    sha1: Buffer;
 }
 
 export function getImageMetadata(img: Uint8Array): ImageMetadata {
@@ -22,13 +19,11 @@ export function getImageMetadata(img: Uint8Array): ImageMetadata {
     }
     const ext = size.type as imageType;
     return {
-        size: img.length,
         width: size.width,
         height: size.height,
         ext: ext as SupportedPicFormat,
         format: picExtToFormat(ext),
-        md5: md5(img),
-        sha1: sha1(img),
+        ...getGeneralMetadata(img),
     };
 }
 

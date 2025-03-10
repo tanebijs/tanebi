@@ -8,6 +8,8 @@ import { getImageMetadata } from '@/internal/util/media/image';
 import { rawMessage } from '@/message';
 import { ctx, log } from '@/index';
 import { randomInt } from 'crypto';
+import { getGeneralMetadata } from '@/internal/util/media/common';
+import { RecordBizType } from '@/internal/message/outgoing/segment/record';
 
 export class GroupMessageBuilder extends AbstractMessageBuilder {
     repliedMessage?: BotGroupMessage;
@@ -67,6 +69,23 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
             msgInfo: uploadResp.upload!.msgInfo!,
             bizType: ImageBizType.Group,
             // compatFace: CustomFaceElement.decode(uploadResp.upload!.compatQMsg!),
+        });
+    }
+
+    override async record(data: Buffer, duration: number): Promise<void> {
+        const recordMeta = getGeneralMetadata(data);
+        this.group.bot[log].emit('debug', 'GroupMessageBuilder', `Prepare to upload record ${JSON.stringify(recordMeta)}`);
+        const uploadResp = await this.group.bot[ctx].ops.call(
+            'uploadGroupRecord',
+            this.group.uin,
+            recordMeta,
+            duration,
+        );
+        await this.group.bot[ctx].highwayLogic.uploadRecord(data, recordMeta, uploadResp);
+        this.segments.push({
+            type: 'record',
+            msgInfo: uploadResp.upload!.msgInfo!,
+            bizType: RecordBizType.Group,
         });
     }
 

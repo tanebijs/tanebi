@@ -64,9 +64,13 @@ export abstract class AbstractMessageBuilder {
 
     /**
      * Append an image segment to the message
-     * @param data The image data
      */
     abstract image(data: Uint8Array): Promise<void>;
+
+    /**
+     * Append a record segment to the message
+     */
+    abstract record(data: Uint8Array, duration: number): Promise<void>;
 
     /**
      * Build the message

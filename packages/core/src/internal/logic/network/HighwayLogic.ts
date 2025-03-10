@@ -8,6 +8,7 @@ import { IPv4 } from '@/internal/packet/oidb/media/IP';
 import { NTV2RichMediaResponse } from '@/internal/packet/oidb/media/response/NTV2RichMediaResponse';
 import { md5 } from '@/internal/util/crypto/digest';
 import { int32ip2str } from '@/internal/util/format';
+import { MediaGeneralMetadata } from '@/internal/util/media/common';
 import { ImageMetadata } from '@/internal/util/media/image';
 import { NapProtoDecodeStructType } from '@napneko/nap-proto-core';
 import assert from 'node:assert';
@@ -44,8 +45,27 @@ export class HighwayLogic extends LogicBase {
         uploadResp: NapProtoDecodeStructType<typeof NTV2RichMediaResponse.fields>,
         messageType: MessageType,
     ) {
+        await this.upload(
+            messageType === MessageType.PrivateMessage ? 1003 : 1004,
+            image, imageMeta.md5,
+            this.buildExtendInfo(uploadResp, imageMeta.sha1)
+        );
+    }
+
+    async uploadRecord(
+        record: Buffer,
+        recordMeta: MediaGeneralMetadata,
+        uploadResp: NapProtoDecodeStructType<typeof NTV2RichMediaResponse.fields>,
+    ) {
+        await this.upload(
+            1008, record, recordMeta.md5,
+            this.buildExtendInfo(uploadResp, recordMeta.sha1)
+        );
+    }
+
+    private buildExtendInfo(uploadResp: NapProtoDecodeStructType<typeof NTV2RichMediaResponse.fields>, sha1: Buffer) {
         const index = uploadResp.upload?.msgInfo?.msgInfoBody[0].index;
-        const extend = NTV2RichMediaHighwayExt.encode({
+        return NTV2RichMediaHighwayExt.encode({
             fileUuid: index?.fileUuid,
             uKey: uploadResp.upload?.uKey,
             network: {
@@ -54,12 +74,9 @@ export class HighwayLogic extends LogicBase {
             msgInfoBody: uploadResp.upload?.msgInfo?.msgInfoBody,
             blockSize: maxBlockSize,
             hash: {
-                fileSha1: [imageMeta.sha1]
+                fileSha1: [sha1]
             }
         });
-        await this.upload(
-            messageType === MessageType.PrivateMessage ? 1003 : 1004,
-            image, imageMeta.md5, extend);
     }
 
     private buildDataUpTrans(cmd: number, data: Buffer, md5: Uint8Array, extendInfo: Uint8Array, timeout: number = 1200): HighwayTrans {
