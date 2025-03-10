@@ -1,11 +1,11 @@
-import { OutgoingSegment, BotContact } from '@/entity';
-import { faceCache, log } from '@/index';
+import { OutgoingSegment } from '@/entity';
+import { Bot, faceCache, log } from '@/index';
 import { OutgoingMessage } from '@/internal/message/outgoing';
 
 export abstract class AbstractMessageBuilder {
     protected segments: OutgoingSegment[] = [];
 
-    constructor(readonly contact: BotContact) { }
+    protected constructor(protected readonly bot: Bot) { }
 
     /**
      * Append a text segment to the message
@@ -22,9 +22,9 @@ export abstract class AbstractMessageBuilder {
     face(faceId: number | string) {
         const stringFaceId = typeof faceId === 'string' ? faceId : String(faceId);
         const numberFaceId = typeof faceId === 'number' ? faceId : parseInt(faceId);
-        const detail = this.contact.bot[faceCache].get(stringFaceId);
+        const detail = this.bot[faceCache].get(stringFaceId);
         if (!detail) {
-            this.contact.bot[log].emit('warning', 'AbstractMessageBuilder.face', `Unknown face ID: ${faceId}`);
+            this.bot[log].emit('warning', 'AbstractMessageBuilder.face', `Unknown face ID: ${faceId}`);
             return;
         }
         if (detail.aniStickerPackId) { // Is large face

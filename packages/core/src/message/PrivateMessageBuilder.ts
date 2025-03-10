@@ -15,7 +15,7 @@ export class PrivateMessageBuilder extends AbstractMessageBuilder {
     repliedMessage?: BotFriendMessage;
 
     constructor(private readonly friend: BotFriend) {
-        super(friend);
+        super(friend.bot);
     }
 
     reply(message: BotFriendMessage) {
@@ -59,7 +59,7 @@ export class PrivateMessageBuilder extends AbstractMessageBuilder {
     override build(clientSequence: number): OutgoingPrivateMessage {
         return {
             type: MessageType.PrivateMessage,
-            targetUin: this.contact.uin,
+            targetUin: this.friend.uin,
             targetUid: this.friend.uid,
             clientSequence,
             random: randomInt(0, 0x7fffffff),

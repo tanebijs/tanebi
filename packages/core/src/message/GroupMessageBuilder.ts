@@ -14,7 +14,7 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
     repliedMessage?: BotGroupMessage;
 
     constructor(private readonly group: BotGroup) {
-        super(group);
+        super(group.bot);
     }
     
     /**
@@ -89,7 +89,7 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
     override build(clientSequence: number): OutgoingGroupMessage {
         return {
             type: MessageType.GroupMessage,
-            groupUin: this.contact.uin,
+            groupUin: this.group.uin,
             clientSequence,
             random: randomInt(0, 0xffffffff),
             segments: this.segments,
