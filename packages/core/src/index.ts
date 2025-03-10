@@ -531,13 +531,19 @@ export class Bot {
             this[ctx].ops.call('heartbeat');
             this[log].emit('debug', 'Bot', 'Heartbeat sent');
         }, 4.5 * 60 * 1000 /* 4.5 minute */);
+        
+        await this.postOnline();
+    }
 
-        if (this[faceCache].size === 0) {
-            const faceDetails = await this[ctx].ops.call('fetchFaceDetails');
-            faceDetails.forEach(face => {
-                this[faceCache].set(face.qSid, face);
-            });
-        }
+    private async postOnline() {
+        const faceDetails = await this[ctx].ops.call('fetchFaceDetails');
+        faceDetails.forEach(face => {
+            this[faceCache].set(face.qSid, face);
+        });
+
+        const highwayData = await this[ctx].ops.call('fetchHighwayUrl');
+        const { ip, port } = highwayData.serverInfo[0];
+        this[ctx].highwayLogic.setHighwayUrl(ip, port, highwayData.sigSession);
     }
 
     /**
@@ -744,11 +750,6 @@ export class Bot {
     ) {
         const bot = new Bot(appInfo, coreConfig, deviceInfo, keystore, signProvider);
         await bot[ctx].ssoLogic.connectToMsfServer();
-        await bot[ctx].ops.call('fetchHighwayUrl')
-            .then(data => {
-                const { ip, port } = data.serverInfo[0];
-                bot[ctx].highwayLogic.setHighwayUrl(ip, port, data.sigSession);
-            });
         return bot;
     }
 }
