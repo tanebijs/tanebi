@@ -65,7 +65,7 @@ export class BotFriend extends BotContact<BotFriendDataBinding> {
      */
     async sendMsg(buildMsg: (b: PrivateMessageBuilder) => void | Promise<void>) {
         this.bot[log].emit('debug', this.moduleName, 'Send message');
-        const builder = new PrivateMessageBuilder(this);
+        const builder = new PrivateMessageBuilder(this.uin, this.uid, this.bot);
         await buildMsg(builder);
         const message = builder.build(this.clientSequence++);
         const sendResult = await this.bot[ctx].ops.call('sendMessage', message);

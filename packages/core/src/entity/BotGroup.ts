@@ -133,7 +133,7 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
      */
     async sendMsg(buildMsg: (b: GroupMessageBuilder) => void | Promise<void>) {
         this.bot[log].emit('debug', this.moduleName, 'Send message');
-        const builder = new GroupMessageBuilder(this);
+        const builder = new GroupMessageBuilder(this.uin, this.bot);
         await buildMsg(builder);
         return this.bot[ctx].ops.call('sendMessage', builder.build(this.clientSequence++));
     }

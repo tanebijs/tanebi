@@ -1,11 +1,11 @@
-import { BotGroup, BotGroupMember, BotGroupMessage } from '@/entity';
+import { BotGroupMember, BotGroupMessage } from '@/entity';
 import { AbstractMessageBuilder } from './AbstractMessageBuilder';
 import { MessageType } from '@/internal/message';
 import { ImageSubType } from '@/internal/message/incoming/segment/image';
 import { OutgoingGroupMessage } from '@/internal/message/outgoing';
 import { getImageMetadata } from '@/internal/util/media/image';
 import { rawMessage } from '@/message';
-import { ctx, log } from '@/index';
+import { Bot, ctx, log } from '@/index';
 import { randomInt } from 'crypto';
 import { getGeneralMetadata } from '@/internal/util/media/common';
 import { CustomFaceElement } from '@/internal/packet/message/element/CustomFaceElement';
@@ -13,8 +13,8 @@ import { CustomFaceElement } from '@/internal/packet/message/element/CustomFaceE
 export class GroupMessageBuilder extends AbstractMessageBuilder {
     repliedMessage?: BotGroupMessage;
 
-    constructor(private readonly group: BotGroup) {
-        super(group.bot);
+    constructor(private readonly groupUin: number, bot: Bot) {
+        super(bot);
     }
     
     /**
@@ -46,7 +46,7 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
      * Reply to a group message
      */
     reply(message: BotGroupMessage) {
-        if (message.sender.group.uin !== this.group.uin) {
+        if (message.sender.group.uin !== this.groupUin) {
             throw new Error('Cannot reply to a message from another group');
         }
         this.repliedMessage = message;
@@ -54,15 +54,15 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
     
     override async image(data: Buffer, subType?: ImageSubType, summary?: string): Promise<void> {
         const imageMeta = getImageMetadata(data);
-        this.group.bot[log].emit('debug', 'GroupMessageBuilder', `Prepare to upload image ${JSON.stringify(imageMeta)}`);
-        const uploadResp = await this.group.bot[ctx].ops.call(
+        this.bot[log].emit('debug', 'GroupMessageBuilder', `Prepare to upload image ${JSON.stringify(imageMeta)}`);
+        const uploadResp = await this.bot[ctx].ops.call(
             'uploadGroupImage', 
-            this.group.uin,
+            this.groupUin,
             imageMeta,
             subType ?? ImageSubType.Picture,
             summary,
         );
-        await this.group.bot[ctx].highwayLogic.uploadImage(data, imageMeta, uploadResp, MessageType.GroupMessage);
+        await this.bot[ctx].highwayLogic.uploadImage(data, imageMeta, uploadResp, MessageType.GroupMessage);
         this.segments.push({
             type: 'image',
             msgInfo: uploadResp.upload!.msgInfo!,
@@ -72,14 +72,14 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
 
     override async record(data: Buffer, duration: number): Promise<void> {
         const recordMeta = getGeneralMetadata(data);
-        this.group.bot[log].emit('debug', 'GroupMessageBuilder', `Prepare to upload record ${JSON.stringify(recordMeta)}`);
-        const uploadResp = await this.group.bot[ctx].ops.call(
+        this.bot[log].emit('debug', 'GroupMessageBuilder', `Prepare to upload record ${JSON.stringify(recordMeta)}`);
+        const uploadResp = await this.bot[ctx].ops.call(
             'uploadGroupRecord',
-            this.group.uin,
+            this.groupUin,
             recordMeta,
             duration,
         );
-        await this.group.bot[ctx].highwayLogic.uploadRecord(data, recordMeta, uploadResp);
+        await this.bot[ctx].highwayLogic.uploadRecord(data, recordMeta, uploadResp);
         this.segments.push({
             type: 'record',
             msgInfo: uploadResp.upload!.msgInfo!,
@@ -89,7 +89,7 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
     override build(clientSequence: number): OutgoingGroupMessage {
         return {
             type: MessageType.GroupMessage,
-            groupUin: this.group.uin,
+            groupUin: this.groupUin,
             clientSequence,
             random: randomInt(0, 0xffffffff),
             segments: this.segments,
