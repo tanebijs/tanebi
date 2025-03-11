@@ -9,6 +9,7 @@ import { lightAppParser } from '@/internal/message/incoming/segment/light-app';
 import { recordParser } from '@/internal/message/incoming/segment/record';
 import { videoParser } from '@/internal/message/incoming/segment/video';
 import { faceCommonParser, faceOldFaceParser } from '@/internal/message/incoming/segment/face';
+import { forwardParser } from '@/internal/message/incoming/segment/forward';
 
 const incomingSegments = new IncomingSegmentCollection([
     textParser,
@@ -18,6 +19,7 @@ const incomingSegments = new IncomingSegmentCollection([
     imageCommonParser,
     recordParser,
     videoParser,
+    forwardParser,
     imageNotOnlineParser,
     imageCustomFaceParser,
     lightAppParser,
@@ -31,6 +33,7 @@ interface MessageBase {
     senderUin: number;
     targetUin: number;
     senderUid?: string;
+    senderName: string;
     sequence: number;
     repliedSequence?: number;
     segments: IncomingSegment[];
@@ -94,6 +97,7 @@ function parseMetadata(pushMsg: NapProtoDecodeStructType<typeof PushMsgBody.fiel
             targetUin: pushMsg.responseHead.toUin,
             senderUid: pushMsg.responseHead.fromUid,
             targetUid: pushMsg.responseHead.toUid,
+            senderName: pushMsg.responseHead.friendExt?.friendName ?? '',
             sequence: pushMsg.contentHead.ntMsgSeq ?? 0,
             segments: [],
             rawElems: pushMsg.body?.richText?.elements ?? [],
@@ -112,6 +116,7 @@ function parseMetadata(pushMsg: NapProtoDecodeStructType<typeof PushMsgBody.fiel
             senderUin: pushMsg.responseHead.fromUin,
             targetUin: pushMsg.responseHead.toUin,
             senderUid: pushMsg.responseHead.fromUid,
+            senderName: pushMsg.responseHead.groupExt.memberName,
             sequence: pushMsg.contentHead.sequence ?? 0,
             segments: [],
             rawElems: pushMsg.body?.richText?.elements ?? [],

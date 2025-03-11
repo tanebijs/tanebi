@@ -41,6 +41,7 @@ import { DownloadVideoOperation } from '@/internal/operation/highway/DownloadVid
 import { FetchFaceDetailsOperation } from '@/internal/operation/message/FetchFaceDetailsOperation';
 import { UploadGroupRecordOperation } from '@/internal/operation/highway/UploadGroupRecordOperation';
 import { UploadPrivateRecordOperation } from '@/internal/operation/highway/UploadPrivateRecordOperation';
+import { DownloadLongMessageOperation } from '@/internal/operation/message/DownloadLongMessageOperation';
 
 /**
  * The internal context of the bot
@@ -79,6 +80,7 @@ export class BotContext {
         UploadPrivateImageOperation,
         UploadPrivateRecordOperation,
 
+        DownloadLongMessageOperation,
         FetchFaceDetailsOperation,
         RecallFriendMessageOperation,
         RecallGroupMessageOperation,

@@ -6,6 +6,7 @@ import { EventEmitter } from 'node:events';
 import { BotGroupInvitationRequest } from '@/entity/request/BotGroupInvitationRequest';
 import { BotMsgRecord } from '@/entity/message/BotMsgRecord';
 import { BotMsgVideo } from '@/entity/message/BotMsgVideo';
+import { BotMsgForwardPack } from '@/entity/message/BotMsgForwardPack';
 
 export const rawMessage = Symbol('Raw elements');
 
@@ -21,6 +22,9 @@ export type DispatchedMessageBody = {
 } | {
     type: 'video',
     content: BotMsgVideo,
+} | {
+    type: 'forward',
+    content: BotMsgForwardPack,
 } | {
     type: 'lightApp',
     content: BotMsgLightApp,
@@ -79,6 +83,13 @@ export class MessageDispatcher {
                 return {
                     type: 'video',
                     content: await BotMsgVideo.create(firstSegment, incoming, this.bot),
+                };
+            }
+
+            if (firstSegment.type === 'forward') {
+                return {
+                    type: 'forward',
+                    content: new BotMsgForwardPack(incoming.senderUid!, firstSegment, this.bot),
                 };
             }
 
