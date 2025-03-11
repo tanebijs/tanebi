@@ -56,8 +56,8 @@ export abstract class AbstractMessageBuilder {
             type: 'face',
             smallExtraFaceInfo: {
                 faceId: numberFaceId,
-                text1: '[666]',
-                text2: '[666]',
+                text1: detail.qDes,
+                text2: detail.qDes,
             }
         });
     }
