@@ -6,5 +6,9 @@ export interface BotMsgType {
 }
 
 export * from './BotMsgBubble';
+export * from './BotMsgForwardBubble';
+export * from './BotMsgForwardPack';
 export * from './BotMsgImage';
 export * from './BotMsgLightApp';
+export * from './BotMsgRecord';
+export * from './BotMsgVideo';

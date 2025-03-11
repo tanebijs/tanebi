@@ -1,4 +1,4 @@
-import { BotFriend } from '@/entity/BotFriend';
+import { BotFriend } from '@/entity';
 import { IncomingSegmentOf } from '@/internal/message/incoming';
 import { URL } from 'node:url';
 import { z } from 'zod';

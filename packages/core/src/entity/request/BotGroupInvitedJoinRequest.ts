@@ -1,5 +1,5 @@
 import { Bot, ctx, identityService, log } from '@/index';
-import { BotGroupMember } from '@/entity/BotGroupMember';
+import { BotGroupMember } from '@/entity';
 import { GroupNotifyType } from '@/internal/packet/oidb/0x10c0_1';
 
 export class BotGroupInvitedJoinRequest {

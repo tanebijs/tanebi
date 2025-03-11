@@ -1,7 +1,4 @@
-import { BotFriend, BotFriendMessage, BotGroup, BotGroupMember, BotGroupMessage, eventsFDX, eventsGDX } from '@/entity';
-import { BotFriendRequest } from '@/entity/request/BotFriendRequest';
-import { BotGroupInvitedJoinRequest } from '@/entity/request/BotGroupInvitedJoinRequest';
-import { BotGroupJoinRequest } from '@/entity/request/BotGroupJoinRequest';
+import { BotFriend, BotFriendMessage, BotFriendRequest, BotGroup, BotGroupInvitationRequest, BotGroupInvitedJoinRequest, BotGroupJoinRequest, BotGroupMember, BotGroupMessage, eventsFDX, eventsGDX } from '@/entity';
 import { MessageDispatcher } from '@/message';
 import { BotCacheService } from '@/util';
 import { BotIdentityService } from '@/util/identity';
@@ -9,7 +6,6 @@ import { AppInfo, CoreConfig, DeviceInfo, Keystore, SignProvider } from '@/commo
 import { BotContext } from '@/internal';
 import { TransEmp12_QrCodeState } from '@/internal/packet/login/wtlogin/TransEmp12';
 import { EventEmitter } from 'node:events';
-import { BotGroupInvitationRequest } from '@/entity/request/BotGroupInvitationRequest';
 import { NapProtoDecodeStructType } from '@napneko/nap-proto-core';
 import { FaceDetail } from '@/internal/packet/oidb/0x9154_1';
 

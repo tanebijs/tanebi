@@ -1,4 +1,4 @@
-import { BotMsgType } from '@/entity/message';
+import { BotMsgType } from '.';
 import { Bot, ctx } from '@/index';
 import { MessageType } from '@/internal/message';
 import { IncomingMessage, IncomingSegmentOf } from '@/internal/message/incoming';

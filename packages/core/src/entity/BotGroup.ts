@@ -1,7 +1,5 @@
 import { Bot, ctx, identityService, log } from '@/index';
-import { BotContact, BotGroupMember, ReactionType } from '@/entity';
-import { BotGroupInvitedJoinRequest } from '@/entity/request/BotGroupInvitedJoinRequest';
-import { BotGroupJoinRequest } from '@/entity/request/BotGroupJoinRequest';
+import { BotContact, BotGroupInvitedJoinRequest, BotGroupJoinRequest, BotGroupMember, ReactionType } from '@/entity';
 import { DispatchedMessage, GroupMessageBuilder } from '@/message';
 import { BotCacheService } from '@/util';
 import EventEmitter from 'node:events';

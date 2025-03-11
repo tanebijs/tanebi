@@ -37,6 +37,32 @@ export class BotMsgImage implements BotMsgType {
         throw new Error('Unexpected input data');
     }
 
+    static async createForward(data: IncomingSegmentOf<'image'>, messageType: MessageType, bot: Bot) {
+        if (data.url) {
+            return new BotMsgImage(
+                data.url,
+                data.width,
+                data.height,
+                data.subType,
+                data.summary,
+            );
+        }
+
+        if (data.indexNode) {
+            return new BotMsgImage(
+                messageType === MessageType.PrivateMessage ?
+                    await bot[ctx].ops.call('downloadPrivateImage', 'u_B-xbHgFtPzMTjvfvZNVuqw', data.indexNode) :
+                    await bot[ctx].ops.call('downloadGroupImage', 0, data.indexNode),
+                data.width,
+                data.height,
+                data.subType,
+                data.summary,
+            );
+        }
+
+        throw new Error('Unexpected input data');
+    }
+
     toPreviewString() {
         return this.summary;
     }

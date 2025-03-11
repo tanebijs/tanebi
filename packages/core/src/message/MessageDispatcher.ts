@@ -1,12 +1,8 @@
 import { Bot, eventsDX } from '@/index';
-import { BotContact, BotFriend, BotFriendMessage, BotGroup, BotGroupMember, BotGroupMessage, BotMsgBubble, BotMsgImage, BotMsgLightApp, eventsFDX, eventsGDX } from '@/entity';
+import { BotContact, BotFriend, BotFriendMessage, BotGroup, BotGroupInvitationRequest, BotGroupMember, BotGroupMessage, BotMsgBubble, BotMsgForwardPack, BotMsgImage, BotMsgLightApp, BotMsgRecord, BotMsgVideo, eventsFDX, eventsGDX } from '@/entity';
 import { MessageType } from '@/internal/message';
 import { IncomingMessage } from '@/internal/message/incoming';
 import { EventEmitter } from 'node:events';
-import { BotGroupInvitationRequest } from '@/entity/request/BotGroupInvitationRequest';
-import { BotMsgRecord } from '@/entity/message/BotMsgRecord';
-import { BotMsgVideo } from '@/entity/message/BotMsgVideo';
-import { BotMsgForwardPack } from '@/entity/message/BotMsgForwardPack';
 
 export const rawMessage = Symbol('Raw elements');
 
@@ -89,7 +85,7 @@ export class MessageDispatcher {
             if (firstSegment.type === 'forward') {
                 return {
                     type: 'forward',
-                    content: new BotMsgForwardPack(incoming.senderUid!, firstSegment, this.bot),
+                    content: new BotMsgForwardPack(incoming.type, incoming.senderUid!, firstSegment, this.bot),
                 };
             }
 
