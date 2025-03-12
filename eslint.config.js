@@ -16,6 +16,6 @@ export default [
         }
     },
     {
-        ignores: ['node_modules', '**/lib', '**/out'],
+        ignores: ['node_modules', '**/lib', '**/out', '**/dist'],
     }
 ];
