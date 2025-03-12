@@ -50,14 +50,20 @@ export type OutgoingMessage = OutgoingPrivateMessage | OutgoingGroupMessage;
 
 export function buildPbSendMsg(ctx: BotContext, message: OutgoingMessage): Parameters<typeof PbSendMsg.encode>[0] {
     const result = buildPbSendMsgBase(message);
+    result.body!.richText!.elements!.push(...buildElements(message, ctx));
+    return result;
+}
+
+export function buildElements(message: OutgoingMessage, ctx: BotContext): MessageElementDecoded[] {
+    const result: MessageElementDecoded[] = [];
     if (message.reply) {
-        result.body!.richText!.elements!.push(message.type === MessageType.PrivateMessage ?
+        result.push(message.type === MessageType.PrivateMessage ?
             buildPrivateReply(message.reply, message.repliedClientSequence!) :
             buildGroupReply(message.reply));
     }
     for (const segment of message.segments) {
         const element = outgoingSegments.build(segment, message, ctx);
-        result.body!.richText!.elements!.push(...element);
+        result.push(...element);
     }
     return result;
 }
