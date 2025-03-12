@@ -398,8 +398,12 @@ export class Bot {
         });
     }
 
-    public get uin() {
+    get uin() {
         return this[ctx].keystore.uin === 0 ? undefined : this[ctx].keystore.uin;
+    }
+
+    get uid() {
+        return this[ctx].keystore.uid!;
     }
     
     /**
