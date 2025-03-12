@@ -3,6 +3,7 @@ import { BotContact, BotGroupInvitedJoinRequest, BotGroupJoinRequest, BotGroupMe
 import { DispatchedMessage, GroupMessageBuilder } from '@/message';
 import { BotCacheService } from '@/util';
 import EventEmitter from 'node:events';
+import { OutgoingGroupMessage } from '@/internal/message/outgoing';
 
 interface BotGroupDataBinding {
     uin: number;
@@ -20,6 +21,12 @@ export type BotGroupMessage = {
     sender: BotGroupMember;
     repliedSequence?: number;
 } & DispatchedMessage;
+
+export type BotGroupSendMsgRef = {
+    sequence: number;
+    timestamp: number;
+    recall: () => Promise<void>;
+} & OutgoingGroupMessage;
 
 export const eventsGDX = Symbol('Group internal events');
 
@@ -131,11 +138,19 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
      * @param buildMsg Use this function to add segments to the message
      * @returns The message sequence number and timestamp
      */
-    async sendMsg(buildMsg: (b: GroupMessageBuilder) => void | Promise<void>) {
+    async sendMsg(buildMsg: (b: GroupMessageBuilder) => void | Promise<void>): Promise<BotGroupSendMsgRef> {
         this.bot[log].emit('debug', this.moduleName, 'Send message');
         const builder = new GroupMessageBuilder(this.uin, this.bot);
         await buildMsg(builder);
-        return this.bot[ctx].ops.call('sendMessage', builder.build(this.clientSequence++));
+        const message = builder.build(this.clientSequence++);
+        const sendResult = await this.bot[ctx].ops.call('sendMessage', builder.build(this.clientSequence++));
+        return {
+            ...sendResult,
+            ...message,
+            recall: async () => {
+                await this.bot[ctx].ops.call('recallGroupMessage', this.uin, sendResult.sequence);
+            }
+        };
     }
 
     /**

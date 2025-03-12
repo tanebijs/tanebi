@@ -1,7 +1,8 @@
 import { Bot, ctx, log } from '@/index';
-import { BotContact, BotPrivateSendMsgRef } from '@/entity';
+import { BotContact } from '@/entity';
 import { DispatchedMessage, PrivateMessageBuilder } from '@/message';
 import EventEmitter from 'node:events';
+import { OutgoingPrivateMessage } from '@/internal/message/outgoing';
 
 interface BotFriendDataBinding {
     uin: number;
@@ -18,6 +19,12 @@ export type BotFriendMessage = {
     isSelf: boolean;
     repliedSequence?: number;
 } & DispatchedMessage;
+
+export type BotFriendSendMsgRef = {
+    sequence: number;
+    timestamp: number;
+    recall: () => Promise<void>;
+} & OutgoingPrivateMessage;
 
 export const eventsFDX = Symbol('Friend internal events');
 
@@ -63,13 +70,20 @@ export class BotFriend extends BotContact<BotFriendDataBinding> {
      * @param buildMsg Use this function to add segments to the message
      * @returns The message sequence number and timestamp
      */
-    async sendMsg(buildMsg: (b: PrivateMessageBuilder) => void | Promise<void>) {
+    async sendMsg(buildMsg: (b: PrivateMessageBuilder) => void | Promise<void>): Promise<BotFriendSendMsgRef> {
         this.bot[log].emit('debug', this.moduleName, 'Send message');
         const builder = new PrivateMessageBuilder(this.uin, this.uid, this.bot);
         await buildMsg(builder);
         const message = builder.build(this.clientSequence++);
         const sendResult = await this.bot[ctx].ops.call('sendMessage', message);
-        return new BotPrivateSendMsgRef(sendResult.sequence, sendResult.timestamp, message, this);
+        return {
+            ...sendResult,
+            ...message,
+            recall: async () => {
+                await this.bot[ctx].ops.call('recallFriendMessage',
+                    this.uid, message.clientSequence, message.random, sendResult.timestamp, sendResult.sequence);
+            }
+        };
     }
 
     /**
