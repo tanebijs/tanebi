@@ -34,7 +34,6 @@ export class BotFriend extends BotContact<BotFriendDataBinding> {
         poke: [boolean, string, string, string?], // isSelf, actionStr, actionImgUrl, suffix
         recall: [number, string], // clientSequence, tip
     }>();
-    private readonly moduleName = `BotFriend#${this.uin}`;
     private clientSequence = 100000;
 
     constructor(bot: Bot, data: BotFriendDataBinding) {
@@ -63,6 +62,10 @@ export class BotFriend extends BotContact<BotFriendDataBinding> {
 
     get category() {
         return this.data.category;
+    }
+
+    get moduleName() {
+        return `BotFriend#${this.uin}`;
     }
 
     /**

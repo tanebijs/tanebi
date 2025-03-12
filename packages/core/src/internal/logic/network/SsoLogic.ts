@@ -30,7 +30,7 @@ const port = 8080;
 export class SsoLogic extends LogicBase {
     connected = false;
     socket = new Socket();
-    private buf = BUF0;
+    private buf: Buffer<ArrayBufferLike> = BUF0;
     private pending = new Map<number, (incoming: IncomingSsoPacket) => unknown>();
 
     private outgoingDataMutex = new Mutex();

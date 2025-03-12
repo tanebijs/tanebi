@@ -51,14 +51,10 @@ export interface KeystoreSerialized {
     };
 }
 
-function serializeBuffer(data: Buffer): BufferSerialized;
-function serializeBuffer(data: Buffer | undefined): BufferSerialized | undefined;
 function serializeBuffer(data?: Buffer) {
     return data ? data.toString('hex') : undefined;
 }
 
-function deserializeBuffer(data: BufferSerialized): Buffer;
-function deserializeBuffer(data: BufferSerialized | undefined): Buffer | undefined;
 function deserializeBuffer(data?: BufferSerialized) {
     return data ? Buffer.from(data, 'hex') : undefined;
 }
@@ -80,8 +76,8 @@ function deserializeDate(data?: DateSerialized) {
  */
 export function serializeDeviceInfo(data: DeviceInfo): DeviceInfoSerialized {
     return {
-        guid: serializeBuffer(data.guid),
-        macAddress: serializeBuffer(data.macAddress),
+        guid: serializeBuffer(data.guid)!,
+        macAddress: serializeBuffer(data.macAddress)!,
         deviceName: data.deviceName,
         systemKernel: data.systemKernel,
         kernelVersion: data.kernelVersion,
@@ -93,8 +89,8 @@ export function serializeDeviceInfo(data: DeviceInfo): DeviceInfoSerialized {
  */
 export function deserializeDeviceInfo(data: DeviceInfoSerialized): DeviceInfo {
     return {
-        guid: deserializeBuffer(data.guid),
-        macAddress: deserializeBuffer(data.macAddress),
+        guid: deserializeBuffer(data.guid)!,
+        macAddress: deserializeBuffer(data.macAddress)!,
         deviceName: data.deviceName,
         systemKernel: data.systemKernel,
         kernelVersion: data.kernelVersion,
@@ -110,13 +106,13 @@ export function serializeKeystore(data: Keystore): KeystoreSerialized {
         uid: data.uid,
         passwordMd5: data.passwordMd5,
         stub: {
-            randomKey: serializeBuffer(data.stub.randomKey),
-            tgtgtKey: serializeBuffer(data.stub.tgtgtKey),
+            randomKey: serializeBuffer(data.stub.randomKey)!,
+            tgtgtKey: serializeBuffer(data.stub.tgtgtKey)!,
         },
         session: {
-            d2Key: serializeBuffer(data.session.d2Key),
-            d2: serializeBuffer(data.session.d2),
-            tgt: serializeBuffer(data.session.tgt),
+            d2Key: serializeBuffer(data.session.d2Key)!,
+            d2: serializeBuffer(data.session.d2)!,
+            tgt: serializeBuffer(data.session.tgt)!,
             sessionDate: serializeDate(data.session.sessionDate),
             qrSign: serializeBuffer(data.session.qrSign),
             qrString: data.session.qrString,
@@ -149,8 +145,8 @@ export function deserializeKeystore(data: KeystoreSerialized): Keystore {
         uid: data.uid,
         passwordMd5: data.passwordMd5,
         stub: {
-            randomKey: deserializeBuffer(data.stub.randomKey),
-            tgtgtKey: deserializeBuffer(data.stub.tgtgtKey),
+            randomKey: deserializeBuffer(data.stub.randomKey)!,
+            tgtgtKey: deserializeBuffer(data.stub.tgtgtKey)!,
         },
         session: {
             d2Key: deserializeBuffer(data.session.d2Key)!,

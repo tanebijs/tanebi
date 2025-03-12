@@ -18,8 +18,6 @@ interface BotGroupMemberDataBinding {
 export { GroupMemberPermission } from '@/internal/packet/oidb/0xfe7_3';
 
 export class BotGroupMember extends BotEntity<BotGroupMemberDataBinding> {
-    private readonly moduleName = `BotGroupMember#${this.uin}@${this.group.uin}`;
-
     constructor(bot: Bot, data: BotGroupMemberDataBinding, readonly group: BotGroup) {
         super(bot, data);
     }
@@ -62,6 +60,10 @@ export class BotGroupMember extends BotEntity<BotGroupMemberDataBinding> {
 
     get permission() {
         return this.data.permission;
+    }
+
+    get moduleName() {
+        return `BotGroupMember#${this.uin}@${this.group.uin}>`;
     }
 
     /**

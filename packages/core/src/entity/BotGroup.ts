@@ -50,7 +50,6 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
 
     private clientSequence = 100000;
     private readonly groupMemberCache;
-    private readonly moduleName = `BotGroup#${this.uin}`;
 
     constructor(bot: Bot, data: BotGroupDataBinding) {
         super(bot, data);
@@ -112,6 +111,10 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
 
     get memberCount() {
         return this.data.memberCount;
+    }
+
+    get moduleName() {
+        return `BotGroup#${this.uin}`;
     }
 
     /**
