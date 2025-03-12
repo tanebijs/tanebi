@@ -4,7 +4,7 @@ import { MessageType } from '@/internal/message';
 import { ImageSubType } from '@/internal/message/incoming/segment/image';
 import { OutgoingGroupMessage } from '@/internal/message/outgoing';
 import { getImageMetadata } from '@/internal/util/media/image';
-import { rawMessage } from '@/message';
+import { ForwardedMessagePacker, rawMessage } from '@/message';
 import { Bot, ctx, log } from '@/index';
 import { randomInt } from 'crypto';
 import { getGeneralMetadata } from '@/internal/util/media/common';
@@ -84,6 +84,12 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
             type: 'record',
             msgInfo: uploadResp.upload!.msgInfo!,
         });
+    }
+
+    override async forward(packMsg: (p: ForwardedMessagePacker) => void | Promise<void>): Promise<void> {
+        const packer = new ForwardedMessagePacker(this.bot, this.groupUin);
+        await packMsg(packer);
+        this.segments.push(await packer.pack());
     }
 
     override build(clientSequence: number): OutgoingGroupMessage {

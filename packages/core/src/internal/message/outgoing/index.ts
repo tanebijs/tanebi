@@ -7,6 +7,7 @@ import { textBuilder } from '@/internal/message/outgoing/segment/text';
 import { imageBuilder } from '@/internal/message/outgoing/segment/image';
 import { faceBuilder } from '@/internal/message/outgoing/segment/face';
 import { recordBuilder } from '@/internal/message/outgoing/segment/record';
+import { forwardBuilder } from '@/internal/message/outgoing/segment/forward';
 
 const outgoingSegments = new OutgoingSegmentCollection([
     textBuilder,
@@ -14,12 +15,13 @@ const outgoingSegments = new OutgoingSegmentCollection([
     faceBuilder,
     imageBuilder,
     recordBuilder,
+    forwardBuilder,
 ]);
 
 export type OutgoingSegment = Exclude<Parameters<typeof outgoingSegments.build>[0], undefined>;
 export type OutgoingSegmentOf<T extends OutgoingSegment['type']> = Extract<OutgoingSegment, { type: T }>;
 
-interface OutgoingMessageBase {
+export interface OutgoingMessageBase {
     type: MessageType;
     segments: OutgoingSegment[];
     clientSequence: number;

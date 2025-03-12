@@ -42,6 +42,7 @@ import { FetchFaceDetailsOperation } from '@/internal/operation/message/FetchFac
 import { UploadGroupRecordOperation } from '@/internal/operation/highway/UploadGroupRecordOperation';
 import { UploadPrivateRecordOperation } from '@/internal/operation/highway/UploadPrivateRecordOperation';
 import { DownloadLongMessageOperation } from '@/internal/operation/message/DownloadLongMessageOperation';
+import { UploadLongMessageOperation } from '@/internal/operation/message/UploadLongMessageOperation';
 
 /**
  * The internal context of the bot
@@ -86,6 +87,7 @@ export class BotContext {
         RecallGroupMessageOperation,
         SendGrayTipPokeOperation,
         SendMessageOperation,
+        UploadLongMessageOperation,
 
         BotOnlineOperation,
         FetchQrCodeOperation,

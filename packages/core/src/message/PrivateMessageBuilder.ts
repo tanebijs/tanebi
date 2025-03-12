@@ -4,7 +4,7 @@ import { MessageType } from '@/internal/message';
 import { ImageSubType } from '@/internal/message/incoming/segment/image';
 import { OutgoingPrivateMessage } from '@/internal/message/outgoing';
 import { getImageMetadata } from '@/internal/util/media/image';
-import { rawMessage } from '@/message';
+import { ForwardedMessagePacker, rawMessage } from '@/message';
 import { Bot, ctx, log } from '@/index';
 import { PrivateMessage } from '@/internal/message/incoming';
 import { randomInt } from 'crypto';
@@ -15,8 +15,8 @@ export class PrivateMessageBuilder extends AbstractMessageBuilder {
     repliedMessage?: BotFriendMessage;
 
     constructor(
-        private readonly friendUin: number,
-        private readonly friendUid: string,
+        protected readonly friendUin: number,
+        protected readonly friendUid: string,
         bot: Bot,
     ) {
         super(bot);
@@ -58,6 +58,12 @@ export class PrivateMessageBuilder extends AbstractMessageBuilder {
             type: 'record',
             msgInfo: uploadResp.upload!.msgInfo!,
         });
+    }
+
+    override async forward(packMsg: (p: ForwardedMessagePacker) => void | Promise<void>): Promise<void> {
+        const packer = new ForwardedMessagePacker(this.bot);
+        await packMsg(packer);
+        this.segments.push(await packer.pack());
     }
 
     override build(clientSequence: number): OutgoingPrivateMessage {

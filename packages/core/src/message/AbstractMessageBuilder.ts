@@ -1,5 +1,5 @@
 import { OutgoingSegment } from '@/entity';
-import { Bot, faceCache, log } from '@/index';
+import { Bot, faceCache, ForwardedMessagePacker, log } from '@/index';
 import { OutgoingMessage } from '@/internal/message/outgoing';
 
 export abstract class AbstractMessageBuilder {
@@ -71,6 +71,11 @@ export abstract class AbstractMessageBuilder {
      * Append a record segment to the message
      */
     abstract record(data: Uint8Array, duration: number): Promise<void>;
+
+    /**
+     * Append a forward segment to the message
+     */
+    abstract forward(packMsg: (p: ForwardedMessagePacker) => void | Promise<void>): Promise<void>;
 
     /**
      * Build the message

@@ -41,7 +41,7 @@ Here are the features that have been implemented or planned:
 - [x] Record
 - [x] Video[^3]
 - [ ] Market Face
-- [x] Multi Forwarded Message[^3]
+- [x] Multi Forwarded Message
 - [ ] XML
 - [x] Light App[^3]
 - [ ] Markdown
