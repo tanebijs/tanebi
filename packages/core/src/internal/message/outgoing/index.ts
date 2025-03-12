@@ -1,4 +1,3 @@
-import { BotContext } from '@/internal';
 import { PbSendMsg } from '@/internal/packet/message/PbSendMsg';
 import { timestamp } from '@/internal/util/format';
 import { MessageElementDecoded, MessageType } from '@/internal/message';
@@ -48,13 +47,13 @@ export interface OutgoingGroupMessage extends OutgoingMessageBase {
 
 export type OutgoingMessage = OutgoingPrivateMessage | OutgoingGroupMessage;
 
-export function buildPbSendMsg(ctx: BotContext, message: OutgoingMessage): Parameters<typeof PbSendMsg.encode>[0] {
+export function buildPbSendMsg(message: OutgoingMessage): Parameters<typeof PbSendMsg.encode>[0] {
     const result = buildPbSendMsgBase(message);
-    result.body!.richText!.elements!.push(...buildElements(message, ctx));
+    result.body!.richText!.elements!.push(...buildElements(message));
     return result;
 }
 
-export function buildElements(message: OutgoingMessage, ctx: BotContext): MessageElementDecoded[] {
+export function buildElements(message: OutgoingMessage): MessageElementDecoded[] {
     const result: MessageElementDecoded[] = [];
     if (message.reply) {
         result.push(message.type === MessageType.PrivateMessage ?
@@ -62,7 +61,7 @@ export function buildElements(message: OutgoingMessage, ctx: BotContext): Messag
             buildGroupReply(message.reply));
     }
     for (const segment of message.segments) {
-        const element = outgoingSegments.build(segment, message, ctx);
+        const element = outgoingSegments.build(segment, message);
         result.push(...element);
     }
     return result;
