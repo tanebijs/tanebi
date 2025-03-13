@@ -92,7 +92,7 @@ export class MessageDispatcher {
             if (firstSegment.type === 'lightApp') {
                 if (firstSegment.app === 'com.tencent.qun.invite' && contact instanceof BotFriend) {
                     this.bot[eventsDX].emit('groupInvitationRequest',
-                        await BotGroupInvitationRequest.create(contact, firstSegment));
+                        await BotGroupInvitationRequest.create(contact, firstSegment, this.bot));
                 }
                 return {
                     type: 'lightApp',

@@ -67,7 +67,7 @@ Here are the features that have been implemented or planned:
 - [x] Set special title
 - [x] Handle friend request
 - [x] Handle group request
-- [ ] Handle group invitation
+- [x] Handle group invitation
 - [ ] Get client key
 - [ ] Get cookies
 [^5]: Unmuting all members is currently unavailable. This is a **bug** and I'm working on it.
