@@ -67,6 +67,16 @@ export class BotGroupMember extends BotEntity<BotGroupMemberDataBinding> {
     }
 
     /**
+     * Set or unset the admin permission of this member.
+     */
+    async setAdmin(isAdmin: boolean) {
+        this.bot[log].emit('debug', this.moduleName, `Set admin to ${isAdmin}`);
+        await this.bot[ctx].ops.call('setMemberAdmin', this.group.uin, this.uid, isAdmin);
+        this.data.permission = isAdmin ?
+            GroupMemberPermission.Admin : GroupMemberPermission.Member;
+    }
+
+    /**
      * Set the card of this member.
      * You must be the owner / an admin of the group to do this.
      */
@@ -116,5 +126,15 @@ export class BotGroupMember extends BotEntity<BotGroupMemberDataBinding> {
     async sendGrayTipPoke() {
         this.bot[log].emit('debug', this.moduleName, 'Send gray tip poke');
         await this.bot[ctx].ops.call('sendGrayTipPoke', this.uin, this.group.uin);
+    }
+
+    /**
+     * Kick this member from the group.
+     * You must be the owner / an admin of the group to do this.
+     */
+    async kick(acceptSubsequentRequests: boolean = true, reason: string = '') {
+        this.bot[log].emit('debug', this.moduleName, 'Kick');
+        await this.bot[ctx].ops.call('kickMember',
+            this.group.uin, this.uid, acceptSubsequentRequests, reason);
     }
 }

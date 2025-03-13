@@ -46,6 +46,8 @@ import { UploadLongMessageOperation } from '@/internal/operation/message/UploadL
 import { MuteMemberOperation } from '@/internal/operation/group/MuteMemberOperation';
 import { MuteAllMembersOperation } from '@/internal/operation/group/MuteAllMembersOperation';
 import { HandleFriendRequestOperation } from '@/internal/operation/friend/HandleFriendRequestOperation';
+import { KickMemberOperation } from '@/internal/operation/group/KickMemberOperation';
+import { SetMemberAdminOperation } from '@/internal/operation/group/SetMemberAdminOperation';
 
 /**
  * The internal context of the bot
@@ -69,10 +71,12 @@ export class BotContext {
         FetchGroupMembersOperation,
         FetchGroupNotifiesOperation,
         FetchGroupsOperation,
+        KickMemberOperation,
         LeaveGroupOperation,
         MuteAllMembersOperation,
         MuteMemberOperation,
         RemoveGroupReactionOperation,
+        SetMemberAdminOperation,
         SetMemberCardOperation,
         SetMemberSpecialTitleOperation,
 

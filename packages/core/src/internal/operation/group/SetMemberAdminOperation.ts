@@ -1,0 +1,13 @@
+import { defineOperation } from '@/internal/operation/OperationBase';
+import { SetMemberAdmin } from '@/internal/packet/oidb/0x1096_1';
+
+export const SetMemberAdminOperation = defineOperation(
+    'setMemberAdmin',
+    'OidbSvcTrpcTcp.0x1096_1',
+    (ctx, groupUin: number, memberUid: string, isSet: boolean) =>
+        Buffer.from(SetMemberAdmin.encode({
+            groupUin,
+            memberUid,
+            isSet,
+        })),
+);

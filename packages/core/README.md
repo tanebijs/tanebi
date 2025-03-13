@@ -62,8 +62,8 @@ Here are the features that have been implemented or planned:
 - [x] Leave group
 - [x] Set member card
 - [x] Ban (mute) member[^5]
-- [ ] Kick member
-- [ ] Set member to admin
+- [x] Kick member
+- [x] Set member to admin
 - [x] Set special title
 - [x] Handle friend request
 - [ ] Handle group request
