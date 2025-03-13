@@ -91,7 +91,7 @@ Here are the features that have been implemented or planned:
 - [x] Group admin change
 - [x] Group essence message
 - [x] Group face reaction
-- [ ] Group to do
+- [ ] Group TODO
 </details>
 
 ## Contribution
