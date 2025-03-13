@@ -1,6 +1,6 @@
 <div align="center">
 
-![tanebi](https://socialify.git.ci/LagrangeDev/tanebi/image?description=1&font=Bitter&forks=1&issues=1&language=1&logo=https%3A%2F%2Fstatic.live.moe%2Flagrange.jpg&name=1&pattern=Brick+Wall&pulls=1&stargazers=1&theme=Light)
+![tanebi](https://socialify.git.ci/tanebijs/tanebi/image?description=1&font=Bitter&forks=1&issues=1&language=1&name=1&owner=1&pulls=1&stargazers=1&theme=Light)
 
 [GitHub Homepage](https://github.com/LagrangeDev/tanebi)
 
