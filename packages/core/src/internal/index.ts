@@ -43,6 +43,8 @@ import { UploadGroupRecordOperation } from '@/internal/operation/highway/UploadG
 import { UploadPrivateRecordOperation } from '@/internal/operation/highway/UploadPrivateRecordOperation';
 import { DownloadLongMessageOperation } from '@/internal/operation/message/DownloadLongMessageOperation';
 import { UploadLongMessageOperation } from '@/internal/operation/message/UploadLongMessageOperation';
+import { MuteMemberOperation } from '@/internal/operation/group/MuteMemberOperation';
+import { MuteAllMembersOperation } from '@/internal/operation/group/MuteAllMembersOperation';
 
 /**
  * The internal context of the bot
@@ -66,6 +68,8 @@ export class BotContext {
         FetchGroupNotifiesOperation,
         FetchGroupsOperation,
         LeaveGroupOperation,
+        MuteAllMembersOperation,
+        MuteMemberOperation,
         RemoveGroupReactionOperation,
         SetMemberCardOperation,
         SetMemberSpecialTitleOperation,

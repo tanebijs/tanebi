@@ -1,6 +1,7 @@
 import bot from '../login/fast';
 
-(await bot.getGroup(0))?.onMessage(msg => {
+const grp = await bot.getGroup(1018894638);
+grp?.onMessage(msg => {
     if (msg.type === 'bubble' && msg.content.segments[0].type === 'text') {
         const content = msg.content.segments[0].content;
         if (content.startsWith('/title')) {
@@ -11,6 +12,12 @@ import bot from '../login/fast';
             const card = content.slice(5).trim();
             if (card.length !== 0)
                 msg.sender.setCard(card);
+        } else if (content.startsWith('/mute')) {
+            msg.sender.mute(60);
+            setTimeout(() => msg.sender.unmute(), 5000);
+        } else if (content.startsWith('/m-all')) {
+            grp?.setMuteAll(true);
+            setTimeout(() => grp?.setMuteAll(false), 5000);
         }
     }
 });

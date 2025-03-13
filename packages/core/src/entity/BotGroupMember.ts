@@ -77,6 +77,24 @@ export class BotGroupMember extends BotEntity<BotGroupMemberDataBinding> {
     }
 
     /**
+     * Mute this member for a certain duration.
+     * You must be the owner / an admin of the group to do this.
+     */
+    async mute(duration: number) {
+        this.bot[log].emit('debug', this.moduleName, `Mute for ${duration} seconds`);
+        await this.bot[ctx].ops.call('muteMember', this.group.uin, this.uid, duration);
+    }
+
+    /**
+     * Unmute this member.
+     * You must be the owner / an admin of the group to do this.
+     */
+    async unmute() {
+        this.bot[log].emit('debug', this.moduleName, 'Unmute');
+        await this.bot[ctx].ops.call('muteMember', this.group.uin, this.uid, 0);
+    }
+
+    /**
      * Set the special title of this member.
      * You must be the owner of the group to do this.
      * @param specialTitle The special title to set.

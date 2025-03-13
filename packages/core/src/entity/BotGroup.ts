@@ -166,6 +166,16 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
     }
 
     /**
+     * Set the name of this group.
+     * You must be the owner / an admin of the group to do this.
+     * Also note that the owner and admins are not influenced by this.
+     */
+    async setMuteAll(isSet: boolean) {
+        this.bot[log].emit('debug', this.moduleName, `${isSet ? 'Set' : 'Unset'} mute all`);
+        await this.bot[ctx].ops.call('muteAllMembers', this.uin, isSet ? 1 : 0);
+    }
+
+    /**
      * Send a reaction to a message in this group
      * @param sequence The sequence number of the message
      * @param code The code of reaction. Refer to the [reaction code list](https://bot.q.qq.com/wiki/develop/api/openapi/emoji/model.html) for more information.
