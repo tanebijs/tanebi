@@ -19,10 +19,12 @@ export const HandleGroupRequestGeneral = new NapProtoMsg({
 
 export const HandleGroupRequest = new OidbSvcContract(
     0x10c8, 1,
-    HandleGroupRequestGeneral.fields
+    HandleGroupRequestGeneral.fields,
+    false, true,
 );
 
 export const HandleGroupFilteredRequest = new OidbSvcContract(
     0x10c8, 2,
-    HandleGroupRequestGeneral.fields
+    HandleGroupRequestGeneral.fields,
+    false, true,
 );
