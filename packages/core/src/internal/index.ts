@@ -45,6 +45,7 @@ import { DownloadLongMessageOperation } from '@/internal/operation/message/Downl
 import { UploadLongMessageOperation } from '@/internal/operation/message/UploadLongMessageOperation';
 import { MuteMemberOperation } from '@/internal/operation/group/MuteMemberOperation';
 import { MuteAllMembersOperation } from '@/internal/operation/group/MuteAllMembersOperation';
+import { HandleFriendRequestOperation } from '@/internal/operation/friend/HandleFriendRequestOperation';
 
 /**
  * The internal context of the bot
@@ -62,6 +63,7 @@ export class BotContext {
     ops = new OperationCollection(this, [
         FetchFriendsOperation,
         FetchUserInfoOperation,
+        HandleFriendRequestOperation,
 
         AddGroupReactionOperation,
         FetchGroupMembersOperation,

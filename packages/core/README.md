@@ -65,7 +65,7 @@ Here are the features that have been implemented or planned:
 - [ ] Kick member
 - [ ] Set member to admin
 - [x] Set special title
-- [ ] Handle friend request
+- [x] Handle friend request
 - [ ] Handle group request
 - [ ] Handle group invitation
 - [ ] Get client key
