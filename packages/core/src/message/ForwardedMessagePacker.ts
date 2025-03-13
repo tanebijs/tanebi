@@ -10,9 +10,10 @@ export class ForwardedMessagePacker {
 
     /**
      * Add a fake message to the packer.
-     * @param uin 
-     * @param nick 
-     * @param buildMsg 
+     * @param uin The uin that is supposed to "send" the message.
+     * The constructed fake message will have an avatar of the specified uin.
+     * @param nick The nickname of the sender.
+     * @param buildMsg A callback that builds the message.
      */
     async fake(uin: number, nick: string, buildMsg: (b: ForwardedMessageBuilder) => void | Promise<void>) {
         const builder = new ForwardedMessageBuilder(uin, nick, this.bot);
