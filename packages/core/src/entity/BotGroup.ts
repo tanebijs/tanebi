@@ -299,4 +299,4 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
     }
 }
 
-export { ReactionType } from '@/internal/packet/oidb/0x9082_1';
+export { ReactionType } from '@/internal/packet/oidb/0x9082';

@@ -1,6 +1,5 @@
 import { defineOperation } from '@/internal/operation/OperationBase';
-import { ReactionType } from '@/internal/packet/oidb/0x9082_1';
-import { RemoveGroupReaction } from '@/internal/packet/oidb/0x9082_2';
+import { ReactionType, RemoveGroupReaction } from '@/internal/packet/oidb/0x9082';
 
 export const RemoveGroupReactionOperation = defineOperation(
     'removeGroupReaction',
