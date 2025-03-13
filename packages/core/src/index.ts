@@ -760,6 +760,7 @@ export class Bot {
     }
 }
 
+export * from './common';
 export * from './entity';
 export * from './message';
 export * from './util';
