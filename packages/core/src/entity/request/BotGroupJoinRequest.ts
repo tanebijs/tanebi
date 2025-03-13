@@ -1,15 +1,28 @@
 import { Bot, ctx, identityService, log } from '@/index';
 import { GroupNotifyType } from '@/internal/packet/oidb/0x10c0';
+import { GroupRequestOperation } from '.';
 
 export class BotGroupJoinRequest {
     private constructor(
         private readonly bot: Bot,
+        readonly groupUin: number,
         readonly sequence: bigint,
         readonly requestUin: number,
         readonly requestUid: string,
         readonly comment: string,
         readonly isFiltered: boolean,
     ) {}
+
+    async handle(operation: GroupRequestOperation, message?: string) {
+        await this.bot[ctx].ops.call(
+            this.isFiltered ? 'handleGroupRequest' : 'handleGroupFilteredRequest',
+            this.groupUin,
+            this.sequence,
+            GroupNotifyType.JoinRequest,
+            operation,
+            message ?? ''
+        );
+    }
 
     static async create(groupUin: number, requestUid: string, bot: Bot) {
         const latestReqs = await bot[ctx].ops.call('fetchGroupNotifies');
@@ -35,6 +48,6 @@ export class BotGroupJoinRequest {
         bot[log].emit('info', 'BotGroupJoinRequest',
             `Received join request: ${uinFetch.body.uin} -> ${groupUin}; comment: ${req.comment}`);
         return new BotGroupJoinRequest(
-            bot, req.sequence, uinFetch.body.uin, requestUid, req.comment, isFiltered);
+            bot, groupUin, req.sequence, uinFetch.body.uin, requestUid, req.comment, isFiltered);
     }
 }

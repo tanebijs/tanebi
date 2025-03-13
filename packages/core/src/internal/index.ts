@@ -49,6 +49,8 @@ import { HandleFriendRequestOperation } from '@/internal/operation/friend/Handle
 import { KickMemberOperation } from '@/internal/operation/group/KickMemberOperation';
 import { SetMemberAdminOperation } from '@/internal/operation/group/SetMemberAdminOperation';
 import { FetchGroupFilteredNotifiesOperation } from '@/internal/operation/group/FetchGroupFilteredNotifies';
+import { HandleGroupFilteredRequestOperation } from '@/internal/operation/group/HandleGroupFilteredRequestOperation';
+import { HandleGroupRequestOperation } from '@/internal/operation/group/HandleGroupRequestOperation';
 
 /**
  * The internal context of the bot
@@ -73,6 +75,8 @@ export class BotContext {
         FetchGroupMembersOperation,
         FetchGroupNotifiesOperation,
         FetchGroupsOperation,
+        HandleGroupFilteredRequestOperation,
+        HandleGroupRequestOperation,
         KickMemberOperation,
         LeaveGroupOperation,
         MuteAllMembersOperation,
