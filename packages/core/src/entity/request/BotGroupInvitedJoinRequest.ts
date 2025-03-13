@@ -10,11 +10,12 @@ export class BotGroupInvitedJoinRequest {
         readonly targetUin: number,
         readonly targetUid: string,
         readonly invitor: BotGroupMember,
+        readonly isFiltered: boolean,
     ) {}
 
     async handle(operation: GroupRequestOperation, message?: string) {
         await this.bot[ctx].ops.call(
-            'handleGroupRequest',
+            this.isFiltered ? 'handleGroupRequest' : 'handleGroupFilteredRequest',
             this.groupUin,
             this.sequence,
             GroupNotifyType.InvitedJoinRequest,
@@ -25,13 +26,23 @@ export class BotGroupInvitedJoinRequest {
 
     static async create(groupUin: number, targetUid: string, invitorUid: string, bot: Bot) {
         const latestReqs = await bot[ctx].ops.call('fetchGroupNotifies');
-        const req = latestReqs.find((req) =>
+        let req = latestReqs.find((req) =>
             req.notifyType === GroupNotifyType.InvitedJoinRequest
                     && req.group.groupUin === groupUin
                     && req.target.uid === targetUid
                     && req.invitor?.uid === invitorUid);
+        let isFiltered = false;
         if (!req) {
-            return null;
+            const latestFilteredReqs = await bot[ctx].ops.call('fetchGroupFilteredNotifies');
+            req = latestFilteredReqs.find((req) =>
+                req.notifyType === GroupNotifyType.InvitedJoinRequest
+                        && req.group.groupUin === groupUin
+                        && req.target.uid === targetUid
+                        && req.invitor?.uid === invitorUid);
+            isFiltered = true;
+            if (!req) {
+                return null;
+            }
         }
         const memberUin = await bot[identityService].resolveUin(invitorUid, groupUin);
         if (!memberUin) {
@@ -43,6 +54,7 @@ export class BotGroupInvitedJoinRequest {
         }
         bot[log].emit('info', 'BotGroupInvitedJoinRequest',
             `Received invited join request: ${memberUin} -> ${groupUin}; invitor: ${invitorUid}`);
-        return new BotGroupInvitedJoinRequest(bot, groupUin, req.sequence, memberUin, targetUid, invitor);
+        return new BotGroupInvitedJoinRequest(
+            bot, groupUin, req.sequence, memberUin, targetUid, invitor, isFiltered);
     }
 }
