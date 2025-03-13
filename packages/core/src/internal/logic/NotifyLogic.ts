@@ -102,6 +102,9 @@ export class NotifyLogic extends LogicBase {
 
     parseFriendRequest(pushMsg: NapProtoDecodeStructType<typeof PushMsg.fields>) {
         const content = FriendRequest.decode(pushMsg.message.body!.msgContent!);
+        if (!content.body) {
+            return;
+        }
         this.ctx.eventsDX.emit('friendRequest',
             pushMsg.message.responseHead.fromUin,
             content.body.fromUid,
