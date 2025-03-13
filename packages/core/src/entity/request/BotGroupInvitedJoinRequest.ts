@@ -1,9 +1,10 @@
 import { Bot, ctx, identityService, log } from '@/index';
 import { BotGroupMember } from '@/entity';
-import { GroupNotifyType } from '@/internal/packet/oidb/0x10c0_1';
+import { GroupNotifyType } from '@/internal/packet/oidb/0x10c0';
 
 export class BotGroupInvitedJoinRequest {
     private constructor(
+        private readonly bot: Bot,
         readonly sequence: bigint,
         readonly targetUin: number,
         readonly targetUid: string,
@@ -30,6 +31,6 @@ export class BotGroupInvitedJoinRequest {
         }
         bot[log].emit('info', 'BotGroupInvitedJoinRequest',
             `Received invited join request: ${memberUin} -> ${groupUin}; invitor: ${invitorUid}`);
-        return new BotGroupInvitedJoinRequest(req.sequence, memberUin, targetUid, invitor);
+        return new BotGroupInvitedJoinRequest(bot, req.sequence, memberUin, targetUid, invitor);
     }
 }
