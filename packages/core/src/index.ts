@@ -553,6 +553,20 @@ export class Bot {
     }
 
     /**
+     * Dispose the bot instance.
+     * You cannot use the bot instance again after disposing. Create a new instance instead.
+     */
+    async dispose() {
+        if (this.heartbeatIntervalRef) {
+            clearInterval(this.heartbeatIntervalRef);
+        }
+
+        this.loggedIn = false;
+        this[ctx].ssoLogic.socket.destroy();
+        this[log].emit('info', 'Bot', `User ${this.uin} is now offline`);
+    }
+
+    /**
      * Get all friends
      * @param forceUpdate Whether to force update the friend list
      */
