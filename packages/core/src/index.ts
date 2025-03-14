@@ -81,6 +81,7 @@ export class Bot {
      */
     loggedIn = false;
 
+    private qrCodeQueryIntervalRef?: NodeJS.Timeout;
     private heartbeatIntervalRef?: NodeJS.Timeout;
 
     private constructor(
@@ -426,20 +427,25 @@ export class Bot {
         onQrCode(qrCodeInfo.url, qrCodeInfo.qrCode);
 
         await new Promise<void>((resolve, reject) => {
-            const qrCodeResultLoop = setInterval(async () => {
-                const res = await this[ctx].ops.call('queryQrCodeResult');
-                this[log].emit('debug', 'Bot', `Query QR code result: ${res.confirmed ? 'confirmed' : res.state}`);
-                if (res.confirmed) {
-                    clearInterval(qrCodeResultLoop);
-                    this[ctx].keystore.session.tempPassword = res.tempPassword;
-                    this[ctx].keystore.session.noPicSig = res.noPicSig;
-                    this[ctx].keystore.stub.tgtgtKey = res.tgtgtKey;
-                    resolve();
-                } else {
-                    if (res.state === TransEmp12_QrCodeState.CodeExpired || res.state === TransEmp12_QrCodeState.Canceled) {
-                        clearInterval(qrCodeResultLoop);
-                        reject(new Error('Session expired or cancelled'));
+            this.qrCodeQueryIntervalRef = setInterval(async () => {
+                try {
+                    const res = await this[ctx].ops.call('queryQrCodeResult');
+                    this[log].emit('debug', 'Bot', `Query QR code result: ${res.confirmed ? 'confirmed' : res.state}`);
+                    if (res.confirmed) {
+                        clearInterval(this.qrCodeQueryIntervalRef);
+                        this[ctx].keystore.session.tempPassword = res.tempPassword;
+                        this[ctx].keystore.session.noPicSig = res.noPicSig;
+                        this[ctx].keystore.stub.tgtgtKey = res.tgtgtKey;
+                        resolve();
+                    } else {
+                        if (res.state === TransEmp12_QrCodeState.CodeExpired || res.state === TransEmp12_QrCodeState.Canceled) {
+                            clearInterval(this.qrCodeQueryIntervalRef);
+                            reject(new Error('Session expired or cancelled'));
+                        }
                     }
+                } catch (e) {
+                    clearInterval(this.qrCodeQueryIntervalRef);
+                    reject(e);
                 }
             }, queryQrCodeResultInterval);
         });
@@ -557,6 +563,9 @@ export class Bot {
      * You cannot use the bot instance again after disposing. Create a new instance instead.
      */
     async dispose() {
+        if (this.qrCodeQueryIntervalRef) {
+            clearInterval(this.qrCodeQueryIntervalRef);
+        }
         if (this.heartbeatIntervalRef) {
             clearInterval(this.heartbeatIntervalRef);
         }
