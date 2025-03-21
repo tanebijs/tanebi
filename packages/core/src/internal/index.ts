@@ -52,6 +52,8 @@ import { FetchGroupFilteredNotifiesOperation } from '@/internal/operation/group/
 import { HandleGroupFilteredRequestOperation } from '@/internal/operation/group/HandleGroupFilteredRequestOperation';
 import { HandleGroupRequestOperation } from '@/internal/operation/group/HandleGroupRequestOperation';
 
+export const internalLog = Symbol('Log');
+
 /**
  * The internal context of the bot
  */
@@ -64,6 +66,12 @@ export class BotContext {
     wtLoginLogic = new WtLoginLogic(this);
     ntLoginLogic = new NTLoginLogic(this);
     notifyLogic = new NotifyLogic(this);
+
+    readonly [internalLog] = new EventEmitter<{
+        debug: [string, string]; // module, message
+        info: [string, string]; // module, message
+        warning: [string, string, unknown?]; // module, message, error
+    }>();
 
     ops = new OperationCollection(this, [
         FetchFriendsOperation,

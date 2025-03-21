@@ -1,6 +1,6 @@
 import { Socket } from 'node:net';
 import { BUF0, BUF16 } from '@/internal/util/constants';
-import { BotContext } from '@/internal';
+import { BotContext, internalLog } from '@/internal';
 import { Mutex } from 'async-mutex';
 import { LogicBase } from '@/internal/logic/LogicBase';
 import { SignResult } from '@/common';
@@ -84,7 +84,7 @@ export class SsoLogic extends LogicBase {
                 this.handlePacketMutex.runExclusive(() => {
                     this.pending.delete(seq);
                 });
-                reject(new Error(`Timeout for SSO packet seq=${seq}`));
+                reject(new Error(`Send packet timeout (cmd=${cmd} seq=${seq})`));
             }, timeout);
 
             this.handlePacketMutex.runExclusive(() => {
@@ -239,9 +239,9 @@ export class SsoLogic extends LogicBase {
     }
 
     private handlePacket(packet: Buffer) {
+        const resolved = this.resolveIncomingSsoPacket(packet);
+        const seq = resolved.sequence;
         try {
-            const resolved = this.resolveIncomingSsoPacket(packet);
-            const seq = resolved.sequence;
             if (this.pending.has(seq)) {
                 this.handlePacketMutex.runExclusive(() => {
                     const callback = this.pending.get(seq)!;
@@ -254,7 +254,12 @@ export class SsoLogic extends LogicBase {
                 }
             }
         } catch (e) {
-            console.log('Unexpected error while handling packet:', e);
+            this.ctx[internalLog].emit(
+                'warning',
+                'SsoLogic',
+                `Unexpected error while handling packet (cmd=${resolved.command}, seq=${seq})`,
+                e
+            );
         }
     }
 
@@ -266,7 +271,16 @@ export class SsoLogic extends LogicBase {
                 if (this.buf.length >= len) {
                     const packet = this.buf.subarray(4, len);
                     this.buf = this.buf.subarray(len);
-                    this.handlePacket(packet);
+                    try {
+                        this.handlePacket(packet);
+                    } catch (e) {
+                        this.ctx[internalLog].emit(
+                            'warning',
+                            'SsoLogic',
+                            'Unexpected error while handling packet',
+                            e
+                        );
+                    }
                 } else {
                     break;
                 }

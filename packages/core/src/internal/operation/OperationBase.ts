@@ -92,13 +92,14 @@ export class OperationCollection<const T extends OperationArray> {
             // @ts-ignore
             OperationMap<T>[OpName]['parse']>;
         } else {
-            const retPacket = await this.ctx.ssoLogic.sendSsoPacket(
-                action.command, buf, await this.nextSeq());
+            const seq = await this.nextSeq();
+            const retPacket = await this.ctx.ssoLogic
+                .sendSsoPacket(action.command, buf, seq);
 
             if ('body' in retPacket) {
                 return action.parse(this.ctx, retPacket.body) as any;
             } else {
-                throw new Error(`Action call failed (retcode ${retPacket.retcode}): ${retPacket.extra}`);
+                throw new Error(`Action call failed (cmd=${action.command} seq=${seq} retcode=${retPacket.retcode}): ${retPacket.extra}`);
             }
         }
     }
