@@ -533,9 +533,13 @@ export class Bot {
         this.loggedIn = true;
         this[log].emit('info', 'Bot', `User ${this.uin} is now online`);
 
-        this.heartbeatIntervalRef = setInterval(() => {
-            this[ctx].ops.call('heartbeat');
-            this[log].emit('debug', 'Bot', 'Heartbeat sent');
+        this.heartbeatIntervalRef = setInterval(async () => {
+            try {
+                await this[ctx].ops.call('heartbeat');
+                this[log].emit('debug', 'Bot', 'Heartbeat sent');
+            } catch(e) {
+                this[log].emit('warning', 'Bot', 'Failed to send heartbeat', e);
+            }
         }, 4.5 * 60 * 1000 /* 4.5 minute */);
         
         await this.postOnline();
@@ -548,14 +552,22 @@ export class Bot {
             this.fastLogin();
         });
 
-        const faceDetails = await this[ctx].ops.call('fetchFaceDetails');
-        faceDetails.forEach(face => {
-            this[faceCache].set(face.qSid, face);
-        });
+        try {
+            const faceDetails = await this[ctx].ops.call('fetchFaceDetails');
+            faceDetails.forEach(face => {
+                this[faceCache].set(face.qSid, face);
+            });
+        } catch (e) {
+            this[log].emit('warning', 'Bot', 'Failed to fetch face details', e);
+        }
 
-        const highwayData = await this[ctx].ops.call('fetchHighwayUrl');
-        const { ip, port } = highwayData.serverInfo[0];
-        this[ctx].highwayLogic.setHighwayUrl(ip, port, highwayData.sigSession);
+        try {
+            const highwayData = await this[ctx].ops.call('fetchHighwayUrl');
+            const { ip, port } = highwayData.serverInfo[0];
+            this[ctx].highwayLogic.setHighwayUrl(ip, port, highwayData.sigSession);
+        } catch (e) {
+            this[log].emit('warning', 'Bot', 'Failed to fetch highway URL', e);
+        }
     }
 
     /**
