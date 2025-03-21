@@ -546,10 +546,18 @@ export class Bot {
     }
 
     private async postOnline() {
-        this[ctx].ssoLogic.socket.once('error', async () => {
+        this[ctx].ssoLogic.socket.once('error', async (e) => {
+            this[log].emit('warning', 'Bot', 'An error occurred in connection', e);
             await this[ctx].ssoLogic.connectToMsfServer();
             this.loggedIn = false;
-            this.fastLogin();
+            while (!this.loggedIn) {
+                await new Promise(resolve => setTimeout(resolve, 5000));
+                try {
+                    await this.fastLogin();
+                } catch (e) {
+                    this[log].emit('warning', 'Bot', 'Failed to re-login', e);
+                }
+            }
         });
 
         try {
