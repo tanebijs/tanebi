@@ -46,6 +46,8 @@ export class Bot {
         warning: [string, string, unknown?]; // module, message, error
     }>();
     readonly [eventsDX] = new EventEmitter<{
+        keystoreChange:             [Keystore];
+
         friendRequest:              [BotFriendRequest];
         groupInvitationRequest:     [BotGroupInvitationRequest];
 
@@ -468,6 +470,8 @@ export class Bot {
 
         this[ctx].keystore.info = loginResult.info;
 
+        this[eventsDX].emit('keystoreChange', this[ctx].keystore);
+
         this[log].emit('debug', 'Bot', `Keystore: ${JSON.stringify(this[ctx].keystore)}`);
         this[log].emit('info', 'Bot', `Credentials for user ${this.uin} successfully retrieved`);
         this[log].emit('info', 'Bot',
@@ -514,6 +518,8 @@ export class Bot {
         this[ctx].keystore.session.d2 = easyLoginResult.d2;
         this[ctx].keystore.session.tempPassword = easyLoginResult.tempPassword;
         this[ctx].keystore.session.sessionDate = easyLoginResult.sessionDate;
+
+        this[eventsDX].emit('keystoreChange', this[ctx].keystore);
         
         this[log].emit('debug', 'Bot', `Keystore: ${JSON.stringify(this[ctx].keystore)}`);
         this[log].emit('info', 'Bot', `Credentials for user ${this.uin} successfully retrieved`);
@@ -645,6 +651,13 @@ export class Bot {
      */
     onGroupMessage(listener: (group: BotGroup, sender: BotGroupMember, message: BotGroupMessage) => void) {
         this.globalMsg.on('group', listener);
+    }
+
+    /**
+     * Listen to keystore change
+     */
+    onKeystoreChange(listener: (keystore: Keystore) => void) {
+        this[eventsDX].on('keystoreChange', listener);
     }
 
     /**
