@@ -1,6 +1,6 @@
 import { Socket } from 'node:net';
 import { BUF0, BUF16 } from '@/internal/util/constants';
-import { BotContext, internalLog } from '@/internal';
+import { BotContext } from '@/internal';
 import { Mutex } from 'async-mutex';
 import { LogicBase } from '@/internal/logic/LogicBase';
 import { SignResult } from '@/common';
@@ -254,7 +254,7 @@ export class SsoLogic extends LogicBase {
                 }
             }
         } catch (e) {
-            this.ctx[internalLog].emit(
+            this.ctx.log.emit(
                 'warning',
                 'SsoLogic',
                 `Unexpected error while handling packet (cmd=${resolved.command}, seq=${seq})`,
@@ -274,7 +274,7 @@ export class SsoLogic extends LogicBase {
                     try {
                         this.handlePacket(packet);
                     } catch (e) {
-                        this.ctx[internalLog].emit(
+                        this.ctx.log.emit(
                             'warning',
                             'SsoLogic',
                             'Unexpected error while handling packet',

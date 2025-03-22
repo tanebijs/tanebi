@@ -157,6 +157,13 @@ export class Bot {
             }
         });
 
+        this[ctx].log.on('debug', (module, message) =>
+            this[log].emit('debug', `${module}@Internal`, message));
+        this[ctx].log.on('info', (module, message) =>
+            this[log].emit('info', `${module}@Internal`, message));
+        this[ctx].log.on('warning', (module, message, e) =>
+            this[log].emit('warning', `${module}@Internal`, message, e));
+
         this[ctx].eventsDX.on('friendRequest', (fromUin, fromUid, message, via) => {
             this[log].emit('debug', 'Bot', `Received friend request from ${fromUid}`);
             this[eventsDX].emit('friendRequest', new BotFriendRequest(this, fromUin, fromUid, message, via));
