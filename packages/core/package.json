@@ -6,6 +6,9 @@
     "qq",
     "oicq"
   ],
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tanebijs/tanebi.git"
