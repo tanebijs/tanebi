@@ -1,0 +1,28 @@
+{
+  "name": "@tanebijs/app",
+  "version": "0.0.0",
+  "description": "Standalone QQ bot application with OneBot 11 support",
+  "keywords": [
+    "qq",
+    "oicq"
+  ],
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tanebijs/tanebi.git"
+  },
+  "license": "GPL-3.0-or-later",
+  "author": "Young",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsup",
+    "prepack": "npm run build"
+  },
+  "packageManager": "pnpm@10.6.2",
+  "dependencies": {
+    "tanebi": "workspace:*"
+  }
+}
