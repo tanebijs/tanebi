@@ -23,6 +23,7 @@
   },
   "packageManager": "pnpm@10.6.2",
   "dependencies": {
-    "tanebi": "workspace:*"
+    "tanebi": "workspace:*",
+    "zod": "^3.24.2"
   }
 }
