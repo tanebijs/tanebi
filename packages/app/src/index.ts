@@ -1,7 +1,7 @@
 import { Bot, deserializeDeviceInfo, deserializeKeystore, DeviceInfo, fetchAppInfoFromSignUrl, Keystore, newDeviceInfo, newKeystore, serializeDeviceInfo, serializeKeystore, UrlSignProvider } from 'tanebi';
 import fs from 'node:fs';
 import path from 'node:path';
-import { zConfig } from '@/common/config';
+import { exampleConfig, zConfig } from '@/common/config';
 
 class OneBotApp {
     private constructor(readonly bot: Bot) {}
@@ -17,6 +17,13 @@ class OneBotApp {
         const deviceInfoPath = path.join(baseDir, 'deviceInfo.json');
         const keystorePath = path.join(baseDir, 'keystore.json');
         const qrCodePath = path.join(baseDir, 'qrcode.png');
+
+        if (!fs.existsSync(configPath)) {
+            fs.writeFileSync(configPath, JSON.stringify(exampleConfig, null, 4));
+            console.info(`Example config file created at ${configPath}.`);
+            console.info('Please edit the config file and press any key to continue.');
+            await new Promise((resolve) => process.stdin.once('data', resolve));
+        }
 
         const config = zConfig.parse(JSON.parse(fs.readFileSync(configPath, 'utf-8')));
 

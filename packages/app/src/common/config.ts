@@ -60,3 +60,18 @@ export type HttpServerAdapterConfig = z.infer<typeof zHttpServerAdapterConfig>;
 export type HttpClientAdapterConfig = z.infer<typeof zHttpClientAdapterConfig>;
 export type WebSocketServerAdapterConfig = z.infer<typeof zWebSocketServerAdapterConfig>;
 export type WebSocketClientAdapterConfig = z.infer<typeof zWebSocketClientAdapterConfig>;
+
+export const exampleConfig: Config = {
+    logLevel: 'info',
+    signApiUrl: 'https://sign.lagrangecore.org/api/sign/30366',
+    botUin: 0,
+    reportSelfMessage: false,
+    messageReportType: 'array',
+    adapters: [
+        {
+            type: 'httpServer',
+            host: '0.0.0.0',
+            port: 3100,
+        },
+    ],
+};
