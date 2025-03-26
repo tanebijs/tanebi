@@ -13,7 +13,4 @@
     "strict": true,
     "noFallthroughCasesInSwitch": true,
   },
-  "tsc-alias": {
-    "resolveFullPaths": true
-  }
 }
