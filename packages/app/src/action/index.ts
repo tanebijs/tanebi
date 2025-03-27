@@ -57,7 +57,7 @@ export class ActionCollection {
                     parsedPayload.error.issues.map((issue) => issue.message).join('; ')
                 );
             }
-            return await action.handler(this.ctx, parsedPayload);
+            return await action.handler(this.ctx, parsedPayload.data);
         } catch (e) {
             return Failed(500, 'Internal error', e instanceof Error ? e.message : String(e));
         }
