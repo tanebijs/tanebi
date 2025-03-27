@@ -8,7 +8,7 @@
 
 This is the core library of the project. It provides the basic functions of the QQ protocol, such as login, message sending, and so on.
 
-Here are the features that have been implemented or planned:
+## Features
 
 <details>
 <summary> Protocol </summary>
