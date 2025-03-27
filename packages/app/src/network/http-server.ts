@@ -1,9 +1,9 @@
+import express, { Express } from 'express';
+import http from 'node:http';
 import { Failed } from '@/action';
 import { HttpServerAdapterConfig } from '@/common/config';
 import { OneBotApp } from '@/index';
 import { OneBotNetworkAdapter } from '@/network';
-import express, { Express } from 'express';
-import http from 'node:http';
 
 export class OneBotHttpServerAdapter extends OneBotNetworkAdapter<HttpServerAdapterConfig> {
     readonly expressApp: Express;
@@ -69,7 +69,7 @@ export class OneBotHttpServerAdapter extends OneBotNetworkAdapter<HttpServerAdap
 
     override stop() {
         return new Promise<void>((resolve, reject) => {
-            this.httpServer.close((err) => err ? reject(err) : resolve());
+            this.httpServer.close((err) => (err ? reject(err) : resolve()));
         });
     }
 

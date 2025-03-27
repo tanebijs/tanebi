@@ -1,4 +1,16 @@
-import { Bot, deserializeDeviceInfo, deserializeKeystore, DeviceInfo, fetchAppInfoFromSignUrl, Keystore, newDeviceInfo, newKeystore, serializeDeviceInfo, serializeKeystore, UrlSignProvider } from 'tanebi';
+import {
+    Bot,
+    deserializeDeviceInfo,
+    deserializeKeystore,
+    DeviceInfo,
+    fetchAppInfoFromSignUrl,
+    Keystore,
+    newDeviceInfo,
+    newKeystore,
+    serializeDeviceInfo,
+    serializeKeystore,
+    UrlSignProvider,
+} from 'tanebi';
 import { generate, QRErrorCorrectLevel } from 'ts-qrcode-terminal';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -87,7 +99,7 @@ export class OneBotApp {
         bot.onKeystoreChange((keystore) => {
             fs.writeFileSync(keystorePath, JSON.stringify(serializeKeystore(keystore)));
         });
-        
+
         return new OneBotApp(baseDir, isFirstRun, bot, config);
     }
 }

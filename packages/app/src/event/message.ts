@@ -9,7 +9,7 @@ export abstract class OneBotMessageEvent extends OneBotEvent {
         readonly user_id: number,
         readonly message: string, // TODO: Message type
         readonly raw_message: string,
-        readonly font: number,
+        readonly font: number
     ) {
         super(app, 'message');
     }
@@ -29,7 +29,7 @@ export class OneBotPrivateMessageEvent extends OneBotMessageEvent {
             nickname: string;
             sex: string;
             age: number;
-        },
+        }
     ) {
         super(app, 'private', message_id, user_id, message, raw_message, font);
     }
