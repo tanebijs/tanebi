@@ -1,13 +1,46 @@
 import { Bot, deserializeDeviceInfo, deserializeKeystore, DeviceInfo, fetchAppInfoFromSignUrl, Keystore, newDeviceInfo, newKeystore, serializeDeviceInfo, serializeKeystore, UrlSignProvider } from 'tanebi';
+import { generate, QRErrorCorrectLevel } from 'ts-qrcode-terminal';
 import fs from 'node:fs';
 import path from 'node:path';
 import { Config, exampleConfig, zConfig } from '@/common/config';
 import { ActionCollection } from '@/action';
+import { OneBotNetworkAdapter } from '@/network';
+import { OneBotHttpServerAdapter } from '@/network/http-server';
 
 export class OneBotApp {
-    private readonly actions = new ActionCollection(this, []);
+    readonly actions = new ActionCollection(this, []);
+    readonly adapters: OneBotNetworkAdapter<unknown>[];
 
-    private constructor(readonly bot: Bot, readonly config: Config) {}
+    private constructor(
+        readonly baseDir: string,
+        readonly isFirstRun: boolean,
+        readonly bot: Bot,
+        readonly config: Config
+    ) {
+        this.adapters = config.adapters.map((adapterConfig) => {
+            if (adapterConfig.type === 'httpServer') {
+                return new OneBotHttpServerAdapter(this, adapterConfig);
+            }
+            throw new Error(`Unsupported adapter type: ${adapterConfig.type}`);
+        });
+    }
+
+    async start() {
+        await Promise.all(this.adapters.map((adapter) => adapter.start()));
+        if (this.isFirstRun) {
+            const qrCodePath = path.join('data', 'qrCode.png');
+            await this.bot.qrCodeLogin((url, png) => {
+                fs.writeFileSync(qrCodePath, png);
+                console.info('Please scan the QR code below to login:');
+                generate(url, { small: true, qrErrorCorrectLevel: QRErrorCorrectLevel.L });
+                console.info(`QR code image saved to ${qrCodePath}.`);
+                console.info('Or you can generate a QR code with the following URL:');
+                console.info(url);
+            });
+        } else {
+            await this.bot.fastLogin();
+        }
+    }
 
     static async create(baseDir: string) {
         let bot: Bot;
@@ -19,7 +52,6 @@ export class OneBotApp {
         const configPath = path.join(baseDir, 'config.json');
         const deviceInfoPath = path.join(baseDir, 'deviceInfo.json');
         const keystorePath = path.join(baseDir, 'keystore.json');
-        const qrCodePath = path.join(baseDir, 'qrcode.png');
 
         if (!fs.existsSync(configPath)) {
             fs.writeFileSync(configPath, JSON.stringify(exampleConfig, null, 4));
@@ -42,28 +74,27 @@ export class OneBotApp {
         }
 
         let keystore: Keystore;
+        let isFirstRun = false;
         if (!fs.existsSync(keystorePath)) {
             keystore = newKeystore();
             bot = await Bot.create(appInfo, {}, deviceInfo, keystore, signProvider);
-            bot.onKeystoreChange((keystore) => {
-                fs.writeFileSync(keystorePath, JSON.stringify(serializeKeystore(keystore)));
-            });
-            await bot.qrCodeLogin((url, png) => {
-                fs.writeFileSync(qrCodePath, png);
-                console.info(`QR code image saved to ${qrCodePath}.`);
-                console.info('Or you can generate a QR code with the following URL:');
-                console.info(url);
-            });
+            isFirstRun = true;
         } else {
             keystore = deserializeKeystore(JSON.parse(fs.readFileSync(keystorePath, 'utf-8')));
             bot = await Bot.create(appInfo, {}, deviceInfo, keystore, signProvider);
-            bot.onKeystoreChange((keystore) => {
-                fs.writeFileSync(keystorePath, JSON.stringify(serializeKeystore(keystore)));
-            });
-            await bot.fastLogin();
         }
-        return new OneBotApp(bot, config);
+
+        bot.onKeystoreChange((keystore) => {
+            fs.writeFileSync(keystorePath, JSON.stringify(serializeKeystore(keystore)));
+        });
+        
+        return new OneBotApp(baseDir, isFirstRun, bot, config);
     }
 }
 
-OneBotApp.create('data');
+async function main() {
+    const app = await OneBotApp.create('data');
+    await app.start();
+}
+
+main();
