@@ -1,10 +1,13 @@
 import { Bot, deserializeDeviceInfo, deserializeKeystore, DeviceInfo, fetchAppInfoFromSignUrl, Keystore, newDeviceInfo, newKeystore, serializeDeviceInfo, serializeKeystore, UrlSignProvider } from 'tanebi';
 import fs from 'node:fs';
 import path from 'node:path';
-import { exampleConfig, zConfig } from '@/common/config';
+import { Config, exampleConfig, zConfig } from '@/common/config';
+import { ActionCollection } from '@/action';
 
-class OneBotApp {
-    private constructor(readonly bot: Bot) {}
+export class OneBotApp {
+    private readonly actions = new ActionCollection(this, []);
+
+    private constructor(readonly bot: Bot, readonly config: Config) {}
 
     static async create(baseDir: string) {
         let bot: Bot;
@@ -59,7 +62,7 @@ class OneBotApp {
             });
             await bot.fastLogin();
         }
-        return new OneBotApp(bot);
+        return new OneBotApp(bot, config);
     }
 }
 
