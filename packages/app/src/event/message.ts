@@ -1,17 +1,26 @@
 import { OneBotEvent } from '@/event';
 import { OneBotApp } from '@/index';
+import { encodeCQCode } from '@/message/cqcode';
+import { OneBotRecvSegment } from '@/message/segment';
 
 export abstract class OneBotMessageEvent extends OneBotEvent {
+    readonly message: OneBotRecvSegment[] | string;
+
     constructor(
         app: OneBotApp,
         readonly message_type: 'private' | 'group',
         readonly message_id: number,
         readonly user_id: number,
-        readonly message: string, // TODO: Message type
         readonly raw_message: string,
-        readonly font: number
+        readonly font: number,
+        segments: OneBotRecvSegment[],
     ) {
         super(app, 'message');
+        if (app.config.messageReportType === 'array') {
+            this.message = segments;
+        } else {
+            this.message = segments.map(encodeCQCode).join('');
+        }
     }
 }
 
@@ -20,9 +29,9 @@ export class OneBotPrivateMessageEvent extends OneBotMessageEvent {
         app: OneBotApp,
         message_id: number,
         user_id: number,
-        message: string,
         raw_message: string,
         font: number,
+        segments: OneBotRecvSegment[],
         readonly sub_type: 'friend' | 'group' | 'other',
         readonly sender: {
             user_id: number;
@@ -31,7 +40,7 @@ export class OneBotPrivateMessageEvent extends OneBotMessageEvent {
             age: number;
         }
     ) {
-        super(app, 'private', message_id, user_id, message, raw_message, font);
+        super(app, 'private', message_id, user_id, raw_message, font, segments);
     }
 }
 
@@ -40,9 +49,9 @@ export class OneBotGroupMessageEvent extends OneBotMessageEvent {
         app: OneBotApp,
         message_id: number,
         user_id: number,
-        message: string,
         raw_message: string,
         font: number,
+        segments: OneBotRecvSegment[],
         readonly sub_type: 'normal' | 'notice',
         readonly group_id: number,
         readonly sender: {
@@ -57,6 +66,6 @@ export class OneBotGroupMessageEvent extends OneBotMessageEvent {
             title: string;
         }
     ) {
-        super(app, 'group', message_id, user_id, message, raw_message, font);
+        super(app, 'group', message_id, user_id, raw_message, font, segments);
     }
 }
