@@ -75,6 +75,9 @@ export class OneBotApp {
 
         const config = zConfig.parse(JSON.parse(fs.readFileSync(configPath, 'utf-8')));
         const userDataDir = path.join(baseDir, '' + config.botUin);
+        if (!fs.existsSync(userDataDir)) {
+            fs.mkdirSync(userDataDir);
+        }
 
         //#region Bot Initialization
         const deviceInfoPath = path.join(userDataDir, 'deviceInfo.json');
