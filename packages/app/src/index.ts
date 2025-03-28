@@ -43,12 +43,12 @@ export class OneBotApp {
     async start() {
         await Promise.all(this.adapters.map((adapter) => adapter.start()));
         if (this.isFirstRun) {
-            const qrCodePath = path.join('data', 'qrCode.png');
+            const qrCodePath = path.join(this.baseDir, 'qrCode.png');
             await this.bot.qrCodeLogin((url, png) => {
                 fs.writeFileSync(qrCodePath, png);
                 console.info('Please scan the QR code below to login:');
                 generate(url, { small: true, qrErrorCorrectLevel: QRErrorCorrectLevel.L });
-                console.info(`QR code image saved to ${qrCodePath}.`);
+                console.info(`QR code image saved to ${path.resolve(qrCodePath)}.`);
                 console.info('Or you can generate a QR code with the following URL:');
                 console.info(url);
             });
