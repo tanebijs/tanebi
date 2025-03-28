@@ -20,21 +20,63 @@ import { Config, exampleConfig, zConfig } from '@/common/config';
 import { ActionCollection } from '@/action';
 import { OneBotNetworkAdapter } from '@/network';
 import { OneBotHttpServerAdapter } from '@/network/http-server';
+import winston, { format, transports } from 'winston';
+import chalk from 'chalk';
 
 export class OneBotApp {
+    readonly logger;
     readonly actions = new ActionCollection(this, []);
     readonly adapters: OneBotNetworkAdapter<unknown>[];
 
     private constructor(
-        readonly baseDir: string,
+        readonly userDataDir: string,
         readonly isFirstRun: boolean,
         readonly bot: Bot,
         readonly db: ReturnType<typeof drizzle>,
         readonly config: Config
     ) {
-        this.adapters = config.adapters.map((adapterConfig) => {
+        const logDir = path.join(userDataDir, 'logs');
+        if (!fs.existsSync(logDir)) {
+            fs.mkdirSync(logDir);
+        }
+        this.logger = winston.createLogger({
+            transports: [
+                new transports.File({
+                    filename: path.join(logDir, `${new Date().toISOString().replaceAll(':', '')}.log`),
+                    level: 'debug',
+                    maxsize: 5 * 1024 * 1024, // 5MB
+                    maxFiles: 5,
+                    format: format.combine(
+                        format.timestamp(),
+                        format.printf(
+                            ({ timestamp, level, message, ...meta }) =>
+                                `${timestamp} [${level}] [${meta.module ?? 'Bot'}] ${message}`
+                        )
+                    ),
+                }),
+                new transports.Console({
+                    level: config.logLevel,
+                    format: format.combine(
+                        format.timestamp(),
+                        format.colorize(),
+                        format.printf(
+                            ({ timestamp, level, message, ...meta }) =>
+                                `${timestamp} ${level} ${chalk.magentaBright(meta.module ?? 'bot')} ${message}`
+                        )
+                    ),
+                }),
+            ],
+        });
+
+        this.bot.onDebug((module, message) => this.logger.debug(`${message}`, { module }));
+        this.bot.onInfo((module, message) => this.logger.info(`${message}`, { module }));
+        this.bot.onWarning((module, message, error) =>
+            this.logger.warn(`${message} caused by ${error instanceof Error ? error.stack : error}`, { module })
+        );
+
+        this.adapters = config.adapters.map((adapterConfig, index) => {
             if (adapterConfig.type === 'httpServer') {
-                return new OneBotHttpServerAdapter(this, adapterConfig);
+                return new OneBotHttpServerAdapter(this, adapterConfig, '' + index);
             }
             throw new Error(`Unsupported adapter type: ${adapterConfig.type}`);
         });
@@ -43,14 +85,14 @@ export class OneBotApp {
     async start() {
         await Promise.all(this.adapters.map((adapter) => adapter.start()));
         if (this.isFirstRun) {
-            const qrCodePath = path.join(this.baseDir, 'qrCode.png');
+            const qrCodePath = path.join(this.userDataDir, 'qrCode.png');
             await this.bot.qrCodeLogin((url, png) => {
                 fs.writeFileSync(qrCodePath, png);
-                console.info('Please scan the QR code below to login:');
+                this.logger.info('Please scan the QR code below to login:');
                 generate(url, { small: true, qrErrorCorrectLevel: QRErrorCorrectLevel.L });
-                console.info(`QR code image saved to ${path.resolve(qrCodePath)}.`);
-                console.info('Or you can generate a QR code with the following URL:');
-                console.info(url);
+                this.logger.info(`QR code image saved to ${path.resolve(qrCodePath)}.`);
+                this.logger.info('Or you can generate a QR code with the following URL:');
+                this.logger.info(url);
             });
         } else {
             await this.bot.fastLogin();
@@ -116,7 +158,7 @@ export class OneBotApp {
         await migrate(db, { migrationsFolder: path.resolve(import.meta.dirname, '..', 'drizzle') });
         //#endregion
 
-        return new OneBotApp(baseDir, isFirstRun, bot, db, config);
+        return new OneBotApp(userDataDir, isFirstRun, bot, db, config);
     }
 }
 

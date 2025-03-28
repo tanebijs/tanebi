@@ -9,8 +9,8 @@ export class OneBotHttpServerAdapter extends OneBotNetworkAdapter<HttpServerAdap
     readonly expressApp: Express;
     readonly httpServer: http.Server;
 
-    constructor(app: OneBotApp, config: HttpServerAdapterConfig) {
-        super(app, config);
+    constructor(app: OneBotApp, config: HttpServerAdapterConfig, id: string) {
+        super(app, config, 'HttpServer', id);
         this.expressApp = express();
         this.expressApp.use(express.json());
 
@@ -38,11 +38,13 @@ export class OneBotHttpServerAdapter extends OneBotNetworkAdapter<HttpServerAdap
                 }
 
                 if (!inputToken) {
+                    this.logger.warn(`${req.ip} -> ${req.path} (Unauthorized)`);
                     res.status(401).json(Failed(401, 'Access token is missing'));
                     return;
                 }
 
                 if (inputToken !== config.accessToken) {
+                    this.logger.warn(`${req.ip} -> ${req.path} (Forbidden)`);
                     res.status(403).json(Failed(403, 'Wrong access token'));
                     return;
                 }
@@ -55,6 +57,7 @@ export class OneBotHttpServerAdapter extends OneBotNetworkAdapter<HttpServerAdap
             const endpoint = req.params.endpoint;
             const payload = req.body;
             const response = await this.app.actions.handleAction(endpoint, payload);
+            this.logger.info(`${req.ip} -> ${req.path} (${response.retcode === 404 ? 'Not Found' : response.retcode})`);
             res.status(response.retcode >= 400 && response.retcode < 500 ? response.retcode : 200).json(response);
         });
 

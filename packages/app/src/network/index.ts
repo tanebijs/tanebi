@@ -2,7 +2,16 @@ import { OneBotEvent } from '@/event';
 import { OneBotApp } from '@/index';
 
 export abstract class OneBotNetworkAdapter<T> {
-    constructor(readonly app: OneBotApp, readonly adapterConfig: T) {}
+    readonly logger;
+
+    constructor(
+        readonly app: OneBotApp,
+        readonly adapterConfig: T,
+        readonly type: string,
+        readonly id: string
+    ) {
+        this.logger = app.logger.child({ module: `${type}#${id}` });
+    }
 
     abstract start(): void | Promise<void>;
 
