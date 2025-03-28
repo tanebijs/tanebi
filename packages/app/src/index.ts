@@ -12,6 +12,8 @@ import {
     UrlSignProvider,
 } from 'tanebi';
 import { generate, QRErrorCorrectLevel } from 'ts-qrcode-terminal';
+import { drizzle } from 'drizzle-orm/libsql';
+import { migrate } from 'drizzle-orm/libsql/migrator';
 import fs from 'node:fs';
 import path from 'node:path';
 import { Config, exampleConfig, zConfig } from '@/common/config';
@@ -27,6 +29,7 @@ export class OneBotApp {
         readonly baseDir: string,
         readonly isFirstRun: boolean,
         readonly bot: Bot,
+        readonly db: ReturnType<typeof drizzle>,
         readonly config: Config
     ) {
         this.adapters = config.adapters.map((adapterConfig) => {
@@ -62,8 +65,6 @@ export class OneBotApp {
         }
 
         const configPath = path.join(baseDir, 'config.json');
-        const deviceInfoPath = path.join(baseDir, 'deviceInfo.json');
-        const keystorePath = path.join(baseDir, 'keystore.json');
 
         if (!fs.existsSync(configPath)) {
             fs.writeFileSync(configPath, JSON.stringify(exampleConfig, null, 4));
@@ -73,6 +74,11 @@ export class OneBotApp {
         }
 
         const config = zConfig.parse(JSON.parse(fs.readFileSync(configPath, 'utf-8')));
+        const userDataDir = path.join(baseDir, '' + config.botUin);
+
+        //#region Bot Initialization
+        const deviceInfoPath = path.join(userDataDir, 'deviceInfo.json');
+        const keystorePath = path.join(userDataDir, 'keystore.json');
 
         const appInfo = await fetchAppInfoFromSignUrl(config.signApiUrl);
         const signProvider = UrlSignProvider(config.signApiUrl);
@@ -99,8 +105,15 @@ export class OneBotApp {
         bot.onKeystoreChange((keystore) => {
             fs.writeFileSync(keystorePath, JSON.stringify(serializeKeystore(keystore)));
         });
+        //#endregion
 
-        return new OneBotApp(baseDir, isFirstRun, bot, config);
+        //#region Database Initialization
+        const dbPath = path.join(userDataDir, 'data.db');
+        const db = drizzle('file:' + dbPath);
+        await migrate(db, { migrationsFolder: path.resolve(import.meta.dirname, '..', 'drizzle') });
+        //#endregion
+
+        return new OneBotApp(baseDir, isFirstRun, bot, db, config);
     }
 }
 
