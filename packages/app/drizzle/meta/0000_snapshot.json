@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "a87ae7c6-cad0-4d75-bf3e-f368c24cc6ce",
+  "id": "7e01d6db-8584-40d3-8eb5-4f008b3649f9",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "message": {
@@ -21,8 +21,8 @@
           "notNull": true,
           "autoincrement": false
         },
-        "direction": {
-          "name": "direction",
+        "storeType": {
+          "name": "storeType",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
@@ -56,11 +56,18 @@
           "notNull": false,
           "autoincrement": false
         },
-        "body": {
-          "name": "body",
-          "type": "text",
+        "isCompressed": {
+          "name": "isCompressed",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
+          "autoincrement": false
+        },
+        "body": {
+          "name": "body",
+          "type": "blob",
+          "primaryKey": false,
+          "notNull": true,
           "autoincrement": false
         }
       },

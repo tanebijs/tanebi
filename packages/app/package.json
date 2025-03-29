@@ -19,12 +19,14 @@
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
+    "gen-drizzle": "drizzle-kit generate",
     "build": "tsup",
     "prepack": "npm run build"
   },
   "packageManager": "pnpm@10.6.2",
   "dependencies": {
     "@libsql/client": "^0.15.1",
+    "@napneko/nap-proto-core": "^0.0.7",
     "chalk": "^5.4.1",
     "drizzle-orm": "^0.41.0",
     "express": "^5.0.1",

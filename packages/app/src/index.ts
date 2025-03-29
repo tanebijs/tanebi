@@ -1,12 +1,14 @@
 import {
+    blob,
     Bot,
     deserializeDeviceInfo,
     deserializeKeystore,
     DeviceInfo,
     fetchAppInfoFromSignUrl,
-    Keystore,
+    Keystore, MessageType,
     newDeviceInfo,
     newKeystore,
+    rawMessage,
     serializeDeviceInfo,
     serializeKeystore,
     UrlSignProvider,
@@ -18,10 +20,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { Config, exampleConfig, zConfig } from '@/common/config';
 import { ActionCollection } from '@/action';
+import { message as messageTable } from '@/db/schema';
 import { OneBotNetworkAdapter } from '@/network';
 import { OneBotHttpServerAdapter } from '@/network/http-server';
 import winston, { format, transports } from 'winston';
 import chalk from 'chalk';
+import { MessageStoreType } from '@/db/types';
 
 export class OneBotApp {
     readonly logger;
@@ -75,6 +79,7 @@ export class OneBotApp {
             this.logger.warn(`${message} caused by ${error instanceof Error ? error.stack : error}`, { module })
         );
 
+        this.installMessageHandler();
         this.installLogger();
 
         this.adapters = config.adapters.map((adapterConfig, index) => {
@@ -82,6 +87,45 @@ export class OneBotApp {
                 return new OneBotHttpServerAdapter(this, adapterConfig, '' + index);
             }
             throw new Error(`Unsupported adapter type: ${adapterConfig.type}`);
+        });
+    }
+
+    installMessageHandler() {
+        this.bot.onPrivateMessage(async (friend, message) => {
+            if (message.isSelf && !this.config.reportSelfMessage) {
+                return;
+            }
+            try {
+                await this.db.insert(messageTable).values({
+                    createdAt: Math.round(Date.now() / 1000),
+                    storeType: MessageStoreType.PushMsgBody,
+                    type: MessageType.PrivateMessage,
+                    peerUin: friend.uin,
+                    sequence: message.sequence,
+                    clientSequence: message[rawMessage].clientSequence,
+                    body: Buffer.from(message[rawMessage][blob]),
+                });
+            } catch (e) {
+                this.logger.error(`Failed to save message: ${e}`, { module: 'Database' });
+            }
+        });
+
+        this.bot.onGroupMessage(async (group, sender, message) => {
+            if (sender.uin === this.bot.uin && !this.config.reportSelfMessage) {
+                return;
+            }
+            try {
+                await this.db.insert(messageTable).values({
+                    createdAt: Math.round(Date.now() / 1000),
+                    storeType: MessageStoreType.PushMsgBody,
+                    type: MessageType.GroupMessage,
+                    peerUin: group.uin,
+                    sequence: message.sequence,
+                    body: Buffer.from(message[rawMessage][blob]),
+                });
+            } catch (e) {
+                this.logger.error(`Failed to save message: ${e}`, { module: 'Database' });
+            }
         });
     }
 
