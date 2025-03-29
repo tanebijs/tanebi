@@ -60,7 +60,7 @@ export class OneBotApp {
                     ),
                 }),
                 new transports.Console({
-                    level: config.logLevel,
+                    level: config.logLevel === 'trace' ? 'debug' : config.logLevel,
                     format: format.combine(
                         format.timestamp({ format: 'hh:mm:ss' }),
                         format.colorize(),
@@ -73,7 +73,9 @@ export class OneBotApp {
             ],
         });
 
-        this.bot.onDebug((module, message) => this.logger.debug(`${message}`, { module }));
+        if (config.logLevel === 'trace') {
+            this.bot.onTrace((module, message) => this.logger.debug(`${message}`, { module }));
+        }
         this.bot.onInfo((module, message) => this.logger.info(`${message}`, { module }));
         this.bot.onWarning((module, message, error) =>
             this.logger.warn(`${message} caused by ${error instanceof Error ? error.stack : error}`, { module })
