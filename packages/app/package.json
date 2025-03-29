@@ -23,6 +23,9 @@
     "build": "tsup",
     "prepack": "npm run build"
   },
+  "bin": {
+    "tanebi": "node dist/index.js"
+  },
   "packageManager": "pnpm@10.6.2",
   "dependencies": {
     "@libsql/client": "^0.15.1",
