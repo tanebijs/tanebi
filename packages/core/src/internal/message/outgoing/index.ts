@@ -8,6 +8,8 @@ import { imageBuilder } from '@/internal/message/outgoing/segment/image';
 import { faceBuilder } from '@/internal/message/outgoing/segment/face';
 import { recordBuilder } from '@/internal/message/outgoing/segment/record';
 import { forwardBuilder } from '@/internal/message/outgoing/segment/forward';
+import { NapProtoEncodeStructType } from '@napneko/nap-proto-core';
+import { MessageElement } from '@/internal/packet/message/MessageElement';
 
 const outgoingSegments = new OutgoingSegmentCollection([
     textBuilder,
@@ -31,7 +33,7 @@ export interface OutgoingMessageBase {
         senderUin: number;
         senderUid: string;
         messageUid: bigint;
-        elements: MessageElementDecoded[];
+        elements: Uint8Array[];
     }
 }
 
@@ -49,9 +51,10 @@ export interface OutgoingGroupMessage extends OutgoingMessageBase {
 
 export type OutgoingMessage = OutgoingPrivateMessage | OutgoingGroupMessage;
 
-export function buildPbSendMsg(message: OutgoingMessage): Parameters<typeof PbSendMsg.encode>[0] {
+export function buildPbSendMsg(message: OutgoingMessage): NapProtoEncodeStructType<typeof PbSendMsg.fields> {
     const result = buildPbSendMsgBase(message);
-    result.body!.richText!.elements!.push(...buildElements(message));
+    result.body!.richText!.elements!.push(
+        ...buildElements(message).map((element) => MessageElement.encode(element)));
     return result;
 }
 

@@ -1,4 +1,5 @@
 import { buildElements, OutgoingPrivateMessage } from '@/internal/message/outgoing';
+import { MessageElement } from '@/internal/packet/message/MessageElement';
 import { PushMsgBody } from '@/internal/packet/message/PushMsg';
 import { timestamp } from '@/internal/util/format';
 import { NapProtoEncodeStructType } from '@napneko/nap-proto-core';
@@ -32,6 +33,6 @@ export function buildForwarded(msg: OutgoingForwardedMessage):NapProtoEncodeStru
                 avatar: avatarUrl,
             }
         },
-        body: { richText: { elements: buildElements(msg, ) } }
+        body: { richText: { elements: buildElements(msg).map((element) => MessageElement.encode(element)) } }
     };
 }

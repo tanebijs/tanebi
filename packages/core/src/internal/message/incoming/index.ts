@@ -1,5 +1,5 @@
 import { PushMsgBody, PushMsgType } from '@/internal/packet/message/PushMsg';
-import { MessageElementDecoded, MessageType } from '@/internal/message';
+import { MessageType } from '@/internal/message';
 import { IncomingSegmentCollection } from '@/internal/message/incoming/segment-base';
 import { imageCommonParser, imageNotOnlineParser, imageCustomFaceParser } from '@/internal/message/incoming/segment/image';
 import { mentionParser } from '@/internal/message/incoming/segment/mention';
@@ -10,6 +10,7 @@ import { recordParser } from '@/internal/message/incoming/segment/record';
 import { videoParser } from '@/internal/message/incoming/segment/video';
 import { faceCommonParser, faceOldFaceParser } from '@/internal/message/incoming/segment/face';
 import { forwardParser } from '@/internal/message/incoming/segment/forward';
+import { MessageElement } from '@/internal/packet/message/MessageElement';
 
 const incomingSegments = new IncomingSegmentCollection([
     textParser,
@@ -37,7 +38,7 @@ interface MessageBase {
     sequence: number;
     repliedSequence?: number;
     segments: IncomingSegment[];
-    rawElems: MessageElementDecoded[];
+    rawElems: Uint8Array[];
     msgUid?: bigint;
 }
 
@@ -59,7 +60,8 @@ export type IncomingMessage = PrivateMessage | GroupMessage;
 export function parsePushMsgBody(pushMsg: NapProtoDecodeStructType<typeof PushMsgBody.fields>): IncomingMessage {
     const result = parseMetadata(pushMsg);
     if (pushMsg.body?.richText?.elements) {
-        for (const element of pushMsg.body.richText.elements) {
+        const elementsDecoded = pushMsg.body.richText.elements.map((element) => MessageElement.decode(element));
+        for (const element of elementsDecoded) {
             const previous = result.segments.length === 0 ? undefined :
                 result.segments[result.segments.length - 1];
 
