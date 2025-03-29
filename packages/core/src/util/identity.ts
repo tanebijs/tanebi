@@ -10,7 +10,7 @@ export class BotIdentityService {
         const uid = this.uin2uid.get(uin);
         if (uid) return uid;
         
-        this.bot[log].emit('debug', 'BotIdentityService', `Cache miss, resolving Uin ${uin} to Uid`);
+        this.bot[log].emit('trace', 'BotIdentityService', `Cache miss, resolving Uin ${uin} to Uid`);
         if (groupUin) {
             await (await this.bot.getGroup(groupUin))?.getMembers(true);
         } else {
@@ -27,7 +27,7 @@ export class BotIdentityService {
         const uin = this.uid2uin.get(uid);
         if (uin) return uin;
         
-        this.bot[log].emit('debug', 'BotIdentityService', `Cache miss, resolving Uid ${uid} to Uin`);
+        this.bot[log].emit('trace', 'BotIdentityService', `Cache miss, resolving Uid ${uid} to Uin`);
         if (groupUin) {
             await (await this.bot.getGroup(groupUin))?.getMembers(true);
         } else {

@@ -66,7 +66,7 @@ export class BotContext {
     notifyLogic = new NotifyLogic(this);
 
     readonly log = new EventEmitter<{
-        debug: [string, string]; // module, message
+        trace: [string, string]; // module, message
         info: [string, string]; // module, message
         warning: [string, string, unknown?]; // module, message, error
     }>();

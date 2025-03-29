@@ -80,7 +80,7 @@ export class BotFriend extends BotContact<BotFriendDataBinding> {
      * @returns The message sequence number and timestamp
      */
     async sendMsg(buildMsg: (b: PrivateMessageBuilder) => void | Promise<void>): Promise<BotFriendSendMsgRef> {
-        this.bot[log].emit('debug', this.moduleName, 'Send message');
+        this.bot[log].emit('trace', this.moduleName, 'Send message');
         const builder = new PrivateMessageBuilder(this.uin, this.uid, this.bot);
         await buildMsg(builder);
         const message = builder.build(this.clientSequence++);
@@ -99,7 +99,7 @@ export class BotFriend extends BotContact<BotFriendDataBinding> {
      * Send a gray tip poke to this friend
      */
     async sendGrayTipPoke() {
-        this.bot[log].emit('debug', this.moduleName, 'Send gray tip poke');
+        this.bot[log].emit('trace', this.moduleName, 'Send gray tip poke');
         await this.bot[ctx].ops.call('sendGrayTipPoke', this.uin, undefined, this.uin);
     }
 

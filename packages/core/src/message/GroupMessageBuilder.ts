@@ -55,7 +55,7 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
     
     override async image(data: Buffer, subType?: ImageSubType, summary?: string): Promise<void> {
         const imageMeta = getImageMetadata(data);
-        this.bot[log].emit('debug', 'GroupMessageBuilder', `Prepare to upload image ${JSON.stringify(imageMeta)}`);
+        this.bot[log].emit('trace', 'GroupMessageBuilder', `Prepare to upload image ${JSON.stringify(imageMeta)}`);
         const uploadResp = await this.bot[ctx].ops.call(
             'uploadGroupImage', 
             this.groupUin,
@@ -73,7 +73,7 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
 
     override async record(data: Buffer, duration: number): Promise<void> {
         const recordMeta = getGeneralMetadata(data);
-        this.bot[log].emit('debug', 'GroupMessageBuilder', `Prepare to upload record ${JSON.stringify(recordMeta)}`);
+        this.bot[log].emit('trace', 'GroupMessageBuilder', `Prepare to upload record ${JSON.stringify(recordMeta)}`);
         const uploadResp = await this.bot[ctx].ops.call(
             'uploadGroupRecord',
             this.groupUin,

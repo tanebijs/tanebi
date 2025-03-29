@@ -13,7 +13,7 @@ export class ForwardedMessageBuilder extends AbstractMessageBuilder {
 
     override async image(data: Buffer, subType?: ImageSubType, summary?: string): Promise<void> {
         const imageMeta = getImageMetadata(data);
-        this.bot[log].emit('debug', 'PrivateMessageBuilder', `Prepare to upload image ${JSON.stringify(imageMeta)}`);
+        this.bot[log].emit('trace', 'PrivateMessageBuilder', `Prepare to upload image ${JSON.stringify(imageMeta)}`);
         const uploadResp = await this.bot[ctx].ops.call(
             'uploadPrivateImage', 
             this.bot.uid,

@@ -128,7 +128,7 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
      * @param forceUpdate Whether to force update the cache
      */
     async getMembers(forceUpdate = false) {
-        this.bot[log].emit('debug', this.moduleName, 'Get all members');
+        this.bot[log].emit('trace', this.moduleName, 'Get all members');
         return this.groupMemberCache.getAll(forceUpdate);
     }
 
@@ -138,7 +138,7 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
      * @param forceUpdate Whether to force update the member info
      */
     async getMember(uin: number, forceUpdate = false) {
-        this.bot[log].emit('debug', this.moduleName, `Get member ${uin}`);
+        this.bot[log].emit('trace', this.moduleName, `Get member ${uin}`);
         return this.groupMemberCache.get(uin, forceUpdate);
     }
 
@@ -148,7 +148,7 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
      * @returns The message sequence number and timestamp
      */
     async sendMsg(buildMsg: (b: GroupMessageBuilder) => void | Promise<void>): Promise<BotGroupSendMsgRef> {
-        this.bot[log].emit('debug', this.moduleName, 'Send message');
+        this.bot[log].emit('trace', this.moduleName, 'Send message');
         const builder = new GroupMessageBuilder(this.uin, this.bot);
         await buildMsg(builder);
         const message = builder.build(this.clientSequence++);
@@ -167,7 +167,7 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
      * To recall others' messages, you must be the owner / an admin of the group.
      */
     async recallMsg(sequence: number) {
-        this.bot[log].emit('debug', this.moduleName, `Recall message ${sequence}`);
+        this.bot[log].emit('trace', this.moduleName, `Recall message ${sequence}`);
         await this.bot[ctx].ops.call('recallGroupMessage', this.uin, sequence);
     }
 
@@ -177,7 +177,7 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
      * Also note that the owner and admins are not influenced by this.
      */
     async setMuteAll(isSet: boolean) {
-        this.bot[log].emit('debug', this.moduleName, `${isSet ? 'Set' : 'Unset'} mute all`);
+        this.bot[log].emit('trace', this.moduleName, `${isSet ? 'Set' : 'Unset'} mute all`);
         await this.bot[ctx].ops.call('muteAllMembers', this.uin, isSet ? 1 : 0);
     }
 
@@ -190,7 +190,7 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
      * @param isAdd Whether to add the reaction. If false, remove the reaction.
      */
     async sendReaction(sequence: number, code: string, type: ReactionType, isAdd: boolean) {
-        this.bot[log].emit('debug', this.moduleName, `Send reaction ${isAdd ? 'add' : 'remove'} ${code}`);
+        this.bot[log].emit('trace', this.moduleName, `Send reaction ${isAdd ? 'add' : 'remove'} ${code}`);
         if (isAdd) {
             await this.bot[ctx].ops.call('addGroupReaction', this.uin, sequence, code, type);
         } else {
@@ -202,7 +202,7 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
      * Leave this group
      */
     async leave() {
-        this.bot[log].emit('debug', this.moduleName, 'Leave group');
+        this.bot[log].emit('trace', this.moduleName, 'Leave group');
         await this.bot[ctx].ops.call('leaveGroup', this.uin);
     }
 

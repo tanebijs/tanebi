@@ -41,7 +41,7 @@ export class Bot {
     readonly [ctx]: BotContext;
     readonly [identityService]: BotIdentityService;
     readonly [log] = new EventEmitter<{
-        debug: [string, string]; // module, message
+        trace: [string, string]; // module, message
         info: [string, string]; // module, message
         warning: [string, string, unknown?]; // module, message, error
     }>();
@@ -157,20 +157,20 @@ export class Bot {
             }
         });
 
-        this[ctx].log.on('debug', (module, message) =>
-            this[log].emit('debug', `${module}@Internal`, message));
+        this[ctx].log.on('trace', (module, message) =>
+            this[log].emit('trace', `${module}@Internal`, message));
         this[ctx].log.on('info', (module, message) =>
             this[log].emit('info', `${module}@Internal`, message));
         this[ctx].log.on('warning', (module, message, e) =>
             this[log].emit('warning', `${module}@Internal`, message, e));
 
         this[ctx].eventsDX.on('friendRequest', (fromUin, fromUid, message, via) => {
-            this[log].emit('debug', 'Bot', `Received friend request from ${fromUid}`);
+            this[log].emit('trace', 'Bot', `Received friend request from ${fromUid}`);
             this[eventsDX].emit('friendRequest', new BotFriendRequest(this, fromUin, fromUid, message, via));
         });
 
         this[ctx].eventsDX.on('friendPoke', async (fromUin, toUin, actionStr, actionImgUrl, suffix) => {
-            this[log].emit('debug', 'Bot', `Received poke from ${fromUin} to ${toUin}`);
+            this[log].emit('trace', 'Bot', `Received poke from ${fromUin} to ${toUin}`);
             try {
                 const friend = await this.getFriend(fromUin === this.uin ? toUin : fromUin);
                 if (friend) {
@@ -183,7 +183,7 @@ export class Bot {
         });
 
         this[ctx].eventsDX.on('friendRecall', async (fromUid, clientSequence, tip) => {
-            this[log].emit('debug', 'Bot', `Received recall from ${fromUid}`);
+            this[log].emit('trace', 'Bot', `Received recall from ${fromUid}`);
             try {
                 const friendUin = await this[identityService].resolveUin(fromUid);
                 if (!friendUin) return;
@@ -198,7 +198,7 @@ export class Bot {
         });
 
         this[ctx].eventsDX.on('groupJoinRequest', async (groupUin, memberUid) => {
-            this[log].emit('debug', 'Bot', `Received join request from ${memberUid} in group ${groupUin}`);
+            this[log].emit('trace', 'Bot', `Received join request from ${memberUid} in group ${groupUin}`);
             try {
                 const request = await BotGroupJoinRequest.create(groupUin, memberUid, this);
                 const group = await this.getGroup(groupUin);
@@ -212,7 +212,7 @@ export class Bot {
         });
 
         this[ctx].eventsDX.on('groupInvitedJoinRequest', async (groupUin, targetUid, invitorUid) => {
-            this[log].emit('debug', 'Bot', `Received invited join request from ${invitorUid} to ${targetUid} in group ${groupUin}`);
+            this[log].emit('trace', 'Bot', `Received invited join request from ${invitorUid} to ${targetUid} in group ${groupUin}`);
             try {
                 const request = await BotGroupInvitedJoinRequest.create(groupUin, targetUid, invitorUid, this);
                 const group = await this.getGroup(groupUin);
@@ -226,7 +226,7 @@ export class Bot {
         });
 
         this[ctx].eventsDX.on('groupAdminChange', async (groupUin, targetUid, isPromote) => {
-            this[log].emit('debug', 'Bot', `Received admin change in group ${groupUin} for ${targetUid}`);
+            this[log].emit('trace', 'Bot', `Received admin change in group ${groupUin} for ${targetUid}`);
             try {
                 const group = await this.getGroup(groupUin);
                 if (group) {
@@ -244,7 +244,7 @@ export class Bot {
         });
 
         this[ctx].eventsDX.on('groupMemberIncrease', async (groupUin, memberUid, operatorUid) => {
-            this[log].emit('debug', 'Bot', `Received member increase in group ${groupUin} for ${memberUid}`);
+            this[log].emit('trace', 'Bot', `Received member increase in group ${groupUin} for ${memberUid}`);
             try {
                 const group = await this.getGroup(groupUin);
                 if (group) {
@@ -271,7 +271,7 @@ export class Bot {
         });
 
         this[ctx].eventsDX.on('groupMemberDecrease', async (groupUin, memberUid, operatorUid) => {
-            this[log].emit('debug', 'Bot', `Received member decrease in group ${groupUin} for ${memberUid}`);
+            this[log].emit('trace', 'Bot', `Received member decrease in group ${groupUin} for ${memberUid}`);
             try {
                 const group = await this.getGroup(groupUin);
                 if (group) {
@@ -296,7 +296,7 @@ export class Bot {
         });
 
         this[ctx].eventsDX.on('groupMute', async (groupUin, operatorUid, targetUid, duration) => {
-            this[log].emit('debug', 'Bot', `Received mute in group ${groupUin} for ${targetUid}`);
+            this[log].emit('trace', 'Bot', `Received mute in group ${groupUin} for ${targetUid}`);
             try {
                 const group = await this.getGroup(groupUin);
                 if (group) {
@@ -321,7 +321,7 @@ export class Bot {
         });
 
         this[ctx].eventsDX.on('groupMuteAll', async (groupUin, operatorUid, isSet) => {
-            this[log].emit('debug', 'Bot', `Received mute all in group ${groupUin} by ${operatorUid}`);
+            this[log].emit('trace', 'Bot', `Received mute all in group ${groupUin} by ${operatorUid}`);
             try {
                 const group = await this.getGroup(groupUin);
                 if (group) {
@@ -339,7 +339,7 @@ export class Bot {
         });
 
         this[ctx].eventsDX.on('groupPoke', async (groupUin, fromUin, toUin, actionStr, actionImgUrl, suffix) => {
-            this[log].emit('debug', 'Bot', `Received poke in group ${groupUin} from ${fromUin} to ${toUin}`);
+            this[log].emit('trace', 'Bot', `Received poke in group ${groupUin} from ${fromUin} to ${toUin}`);
             try {
                 const group = await this.getGroup(groupUin);
                 if (group) {
@@ -356,7 +356,7 @@ export class Bot {
         });
 
         this[ctx].eventsDX.on('groupEssenceMessageChange', async (groupUin, sequence, operatorUin, isAdd) => {
-            this[log].emit('debug', 'Bot', `Received essence message change in group ${groupUin} by ${operatorUin}`);
+            this[log].emit('trace', 'Bot', `Received essence message change in group ${groupUin} by ${operatorUin}`);
             try {
                 const group = await this.getGroup(groupUin);
                 if (group) {
@@ -372,7 +372,7 @@ export class Bot {
         });
 
         this[ctx].eventsDX.on('groupRecall', async (groupUin, sequence, tip, operatorUid) => {
-            this[log].emit('debug', 'Bot', `Received recall in group ${groupUin} for message ${sequence} by ${operatorUid}`);
+            this[log].emit('trace', 'Bot', `Received recall in group ${groupUin} for message ${sequence} by ${operatorUid}`);
             try {
                 const group = await this.getGroup(groupUin);
                 if (group) {
@@ -390,7 +390,7 @@ export class Bot {
         });
 
         this[ctx].eventsDX.on('groupReaction', async (groupUin, sequence, operatorUid, reactionCode, isAdd, count) => {
-            this[log].emit('debug', 'Bot', `Received reaction in group ${groupUin} for message ${sequence} by ${operatorUid}`);
+            this[log].emit('trace', 'Bot', `Received reaction in group ${groupUin} for message ${sequence} by ${operatorUid}`);
             try {
                 const group = await this.getGroup(groupUin);
                 if (group) {
@@ -428,7 +428,7 @@ export class Bot {
         queryQrCodeResultInterval = Math.max(queryQrCodeResultInterval, 2000);
 
         const qrCodeInfo = await this[ctx].ops.call('fetchQrCode');
-        this[log].emit('debug', 'Bot', `QR code info: ${JSON.stringify(qrCodeInfo)}`);
+        this[log].emit('trace', 'Bot', `QR code info: ${JSON.stringify(qrCodeInfo)}`);
 
         this[ctx].keystore.session.qrSign = qrCodeInfo.signature;
         this[ctx].keystore.session.qrString = qrCodeInfo.qrSig;
@@ -439,7 +439,7 @@ export class Bot {
             this.qrCodeQueryIntervalRef = setInterval(async () => {
                 try {
                     const res = await this[ctx].ops.call('queryQrCodeResult');
-                    this[log].emit('debug', 'Bot', `Query QR code result: ${res.confirmed ? 'confirmed' : res.state}`);
+                    this[log].emit('trace', 'Bot', `Query QR code result: ${res.confirmed ? 'confirmed' : res.state}`);
                     if (res.confirmed) {
                         clearInterval(this.qrCodeQueryIntervalRef);
                         this[ctx].keystore.session.tempPassword = res.tempPassword;
@@ -479,7 +479,7 @@ export class Bot {
 
         this[eventsDX].emit('keystoreChange', this[ctx].keystore);
 
-        this[log].emit('debug', 'Bot', `Keystore: ${JSON.stringify(this[ctx].keystore)}`);
+        this[log].emit('trace', 'Bot', `Keystore: ${JSON.stringify(this[ctx].keystore)}`);
         this[log].emit('info', 'Bot', `Credentials for user ${this.uin} successfully retrieved`);
         this[log].emit('info', 'Bot',
             `Name: ${this[ctx].keystore.info.name}; Gender: ${this[ctx].keystore.info.gender}; Age: ${this[ctx].keystore.info.age}`);
@@ -528,7 +528,7 @@ export class Bot {
 
         this[eventsDX].emit('keystoreChange', this[ctx].keystore);
         
-        this[log].emit('debug', 'Bot', `Keystore: ${JSON.stringify(this[ctx].keystore)}`);
+        this[log].emit('trace', 'Bot', `Keystore: ${JSON.stringify(this[ctx].keystore)}`);
         this[log].emit('info', 'Bot', `Credentials for user ${this.uin} successfully retrieved`);
 
         await this.botOnline();
@@ -549,7 +549,7 @@ export class Bot {
         this.heartbeatIntervalRef = setInterval(async () => {
             try {
                 await this[ctx].ops.call('heartbeat');
-                this[log].emit('debug', 'Bot', 'Heartbeat sent');
+                this[log].emit('trace', 'Bot', 'Heartbeat sent');
             } catch(e) {
                 this[log].emit('warning', 'Bot', 'Failed to send heartbeat', e);
             }
@@ -613,7 +613,7 @@ export class Bot {
      * @param forceUpdate Whether to force update the friend list
      */
     async getFriends(forceUpdate = false) {
-        this[log].emit('debug', 'Bot', 'Getting friends');
+        this[log].emit('trace', 'Bot', 'Getting friends');
         return this.friendCache.getAll(forceUpdate);
     }
 
@@ -623,7 +623,7 @@ export class Bot {
      * @param forceUpdate Whether to force update the friend info
      */
     async getFriend(uin: number, forceUpdate = false) {
-        this[log].emit('debug', 'Bot', `Getting friend ${uin}`);
+        this[log].emit('trace', 'Bot', `Getting friend ${uin}`);
         return this.friendCache.get(uin, forceUpdate);
     }
 
@@ -632,7 +632,7 @@ export class Bot {
      * @param forceUpdate Whether to force update the group list
      */
     async getGroups(forceUpdate = false) {
-        this[log].emit('debug', 'Bot', 'Getting groups');
+        this[log].emit('trace', 'Bot', 'Getting groups');
         return this.groupCache.getAll(forceUpdate);
     }
 
@@ -642,7 +642,7 @@ export class Bot {
      * @param forceUpdate Whether to force update the group info
      */
     async getGroup(uin: number, forceUpdate = false) {
-        this[log].emit('debug', 'Bot', `Getting group ${uin}`);
+        this[log].emit('trace', 'Bot', `Getting group ${uin}`);
         return this.groupCache.get(uin, forceUpdate);
     }
 
@@ -787,10 +787,18 @@ export class Bot {
     }
 
     /**
-     * Listen to debug logs
+     * Listen to trace logs
+     */
+    onTrace(listener: (module: string, message: string) => void) {
+        this[log].on('trace', listener);
+    }
+
+    /**
+     * @deprecated Use `onTrace` instead
+     * Listen to trace logs; this is preserved for backward compatibility
      */
     onDebug(listener: (module: string, message: string) => void) {
-        this[log].on('debug', listener);
+        this[log].on('trace', listener);
     }
 
     /**
