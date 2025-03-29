@@ -117,6 +117,10 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
         return `BotGroup#${this.uin}`;
     }
 
+    toString() {
+        return `${this.name} (${this.uin})`;
+    }
+
     /**
      * Get all members in this group
      * @param forceUpdate Whether to force update the cache

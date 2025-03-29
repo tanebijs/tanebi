@@ -13,6 +13,10 @@ export class BotFriendRequest {
         readonly via: string,
     ) {}
 
+    toString() {
+        return `(${this.fromUin}) with message "${this.message}" via "${this.via}"`;
+    }
+
     async handle(isAccept: boolean) {
         await this.bot[ctx].ops.call('handleFriendRequest', isAccept, this.fromUid);
     }

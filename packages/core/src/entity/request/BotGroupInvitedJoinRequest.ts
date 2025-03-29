@@ -13,6 +13,10 @@ export class BotGroupInvitedJoinRequest {
         readonly isFiltered: boolean,
     ) {}
 
+    toString() {
+        return `${this.invitor} invited (${this.targetUin}) to join group (${this.groupUin})`;
+    }
+
     async handle(operation: GroupRequestOperation, message?: string) {
         await this.bot[ctx].ops.call(
             this.isFiltered ? 'handleGroupRequest' : 'handleGroupFilteredRequest',

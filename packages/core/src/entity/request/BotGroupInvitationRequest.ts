@@ -21,6 +21,10 @@ export class BotGroupInvitationRequest {
         readonly groupUin: number,
     ) {}
 
+    toString() {
+        return `${this.invitor} invited you to join group (${this.groupUin})`;
+    }
+
     async handle(isAccept: boolean, message?: string) {
         await this.bot[ctx].ops.call(
             'handleGroupRequest',

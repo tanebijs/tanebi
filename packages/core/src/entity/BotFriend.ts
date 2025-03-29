@@ -68,6 +68,10 @@ export class BotFriend extends BotContact<BotFriendDataBinding> {
         return `BotFriend#${this.uin}`;
     }
 
+    toString() {
+        return `${this.remark || this.nickname} (${this.uin})`;
+    }
+
     /**
      * Send a message to this friend
      * @param buildMsg Use this function to add segments to the message
