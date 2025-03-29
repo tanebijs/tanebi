@@ -61,7 +61,7 @@ export class OneBotApp {
                         format.colorize(),
                         format.printf(
                             ({ timestamp, level, message, ...meta }) =>
-                                `${timestamp} ${level} ${chalk.magentaBright(meta.module ?? 'bot')} ${message}`
+                                `${timestamp} ${level} ${chalk.magentaBright(meta.module ?? 'Bot')} ${message}`
                         )
                     ),
                 }),
@@ -74,12 +74,118 @@ export class OneBotApp {
             this.logger.warn(`${message} caused by ${error instanceof Error ? error.stack : error}`, { module })
         );
 
+        this.installLogger();
+
         this.adapters = config.adapters.map((adapterConfig, index) => {
             if (adapterConfig.type === 'httpServer') {
                 return new OneBotHttpServerAdapter(this, adapterConfig, '' + index);
             }
             throw new Error(`Unsupported adapter type: ${adapterConfig.type}`);
         });
+    }
+
+    installLogger() {
+        this.bot.onPrivateMessage((friend, message) =>
+            this.logger.info(`${message.isSelf ? '->' : '<-'} [${friend}] ${message.content.toPreviewString()}`, {
+                module: 'Message',
+            })
+        );
+
+        this.bot.onGroupMessage((group, sender, message) =>
+            this.logger.info(
+                `${
+                    sender.uin === this.bot.uin ? '->' : '<-'
+                } [${group}] [${sender}] ${message.content.toPreviewString()}`,
+                { module: 'Message' }
+            )
+        );
+
+        this.bot.onFriendPoke((friend, isSelf, actionStr, _, suffix) =>
+            this.logger.info(
+                isSelf
+                    ? `你${actionStr || '戳了戳'} ${friend} ${suffix}`
+                    : `${friend} ${actionStr || '戳了戳'}你${suffix}`,
+                { module: 'FriendPoke' }
+            )
+        );
+
+        this.bot.onFriendRecall((friend, seq, tip) =>
+            this.logger.info(`${friend} [${seq}] ${tip}`, {
+                module: 'FriendRecall',
+            })
+        );
+
+        this.bot.onFriendRequest((req) => this.logger.info(req.toString(), { module: 'FriendRequest' }));
+
+        this.bot.onGroupAdminChange((group, member, isPromote) =>
+            this.logger.info(`[${group}] ${member} ${isPromote ? 'promoted to' : 'demoted from'} admin`, {
+                module: 'GroupAdminChange',
+            })
+        );
+
+        this.bot.onGroupEssenceMessageChange((group, sequence, operator, isAdd) => {
+            this.logger.info(
+                `[${group}] (sequence=${sequence} ${isAdd ? 'added to' : 'removed from'} essence) by ${operator}`,
+                { module: 'GroupEssenceMessageChange' }
+            );
+        });
+
+        this.bot.onGroupInvitationRequest((req) =>
+            this.logger.info(req.toString(), { module: 'GroupInvitationRequest' })
+        );
+
+        this.bot.onGroupInvitedJoinRequest((_, req) =>
+            this.logger.info(req.toString(), { module: 'GroupInvitedJoinRequest' })
+        );
+
+        this.bot.onGroupJoinRequest((_, req) => this.logger.info(req.toString(), { module: 'GroupJoinRequest' }));
+
+        this.bot.onGroupMemberIncrease((group, member, operator) =>
+            this.logger.info(
+                `[${group}] ${member} joined` +
+                    (operator ? ` by ${operator.card || operator.nickname} (${operator.uin})` : ''),
+                { module: 'GroupMemberIncrease' }
+            )
+        );
+
+        this.bot.onGroupMemberLeave((group, memberUin) =>
+            this.logger.info(`[${group}] (${memberUin}) left`, { module: 'GroupMemberLeave' })
+        );
+
+        this.bot.onGroupMemberKick((group, memberUin, operator) =>
+            this.logger.info(`[${group}] (${memberUin}) was kicked by ${operator}`, { module: 'GroupMemberKick' })
+        );
+
+        this.bot.onGroupMute((group, member, operator, duration) =>
+            this.logger.info(`[${group}] ${member} was muted by ${operator} for ${duration} seconds`, {
+                module: 'GroupMute',
+            })
+        );
+
+        this.bot.onGroupUnmute((group, member, operator) =>
+            this.logger.info(`[${group}] ${member} was unmuted by ${operator}`, { module: 'GroupUnmute' })
+        );
+
+        this.bot.onGroupMuteAll((group, operator, isSet) =>
+            this.logger.info(`${group} ${isSet ? 'muted' : 'unmuted'} by ${operator}`, { module: 'GroupMuteAll' })
+        );
+
+        this.bot.onGroupReaction((group, seq, operator, code, isAdd) =>
+            this.logger.info(`[${group}] ${operator} ${isAdd ? 'added' : 'removed'} reaction ${code} to msg [${seq}]`, {
+                module: 'GroupReaction',
+            })
+        );
+
+        this.bot.onGroupRecall((group, seq, tip, operator) =>
+            this.logger.info(`[${group}] [${seq}] ${operator} ${tip}`, { module: 'GroupRecall' })
+        );
+
+        this.bot.onGroupPoke((group, sender, receiver, actionStr, _, suffix) =>
+            this.logger.info(
+                `[${group}] ${sender} ${actionStr || '戳了戳'} ${receiver} ${suffix}`,
+                { module: 'GroupPoke' }
+            )
+        );
     }
 
     async start() {
