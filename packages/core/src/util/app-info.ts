@@ -29,6 +29,6 @@ export const LinuxAppInfoPreset: AppInfo = {
  * @returns The AppInfo object
  */
 export async function fetchAppInfoFromSignUrl(signUrl: string): Promise<AppInfo> {
-    return fetch(signUrl.endsWith('/') ? `${signUrl}appinfo` : `${signUrl}/appinfo`)
-        .then(res => res.json());
+    return await (fetch(signUrl.endsWith('/') ? `${signUrl}appinfo` : `${signUrl}/appinfo`)
+        .then(res => res.json())) as AppInfo;
 }

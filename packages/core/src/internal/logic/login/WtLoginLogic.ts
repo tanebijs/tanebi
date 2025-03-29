@@ -4,11 +4,16 @@ import { timestamp } from '@/internal/util/format';
 import { decryptTea, encryptTea } from '@/internal/util/crypto/tea';
 import { WtLoginResponseBase } from '@/internal/packet/login/wtlogin/WtLoginBase';
 import { BUF16 } from '@/internal/util/constants';
+import { z } from 'zod';
 
 export type WtLoginCommandType = 'wtlogin.login' | 'wtlogin.trans_emp';
 
 const BUF3 = Buffer.alloc(3);
 const BUF21 = Buffer.alloc(21);
+
+const zQueryResult = z.object({
+    uin: z.number(),
+});
 
 export class WtLoginLogic extends LogicBase {
     // Verified
@@ -131,23 +136,24 @@ export class WtLoginLogic extends LogicBase {
     }
 
     async getCorrectUin(): Promise<number> {
-        const queryResult = await fetch(
-            'https://ntlogin.qq.com/qr/getFace',
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    appid: this.ctx.appInfo.AppId,
-                    faceUpdateTime: 0,
-                    qrsig: this.ctx.keystore.session.qrString,
-                }),
-            }
-        ).then(res => res.json());
-        if (typeof queryResult.uin === 'number') {
+        try {
+            const queryResult = zQueryResult.parse(await fetch(
+                'https://ntlogin.qq.com/qr/getFace',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        appid: this.ctx.appInfo.AppId,
+                        faceUpdateTime: 0,
+                        qrsig: this.ctx.keystore.session.qrString,
+                    }),
+                }
+            ).then(res => res.json()));
             return queryResult.uin;
+        } catch {
+            throw new Error('Failed to get correct uin');
         }
-        throw new Error('Failed to get correct uin');
     }
 }

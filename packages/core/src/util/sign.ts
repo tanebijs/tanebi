@@ -1,4 +1,13 @@
 import { SignProvider } from '@/common';
+import { z } from 'zod';
+
+const zUrlSignResult = z.object({
+    value: z.object({
+        sign: z.string(),
+        token: z.string(),
+        extra: z.string(),
+    }),
+});
 
 /**
  * Create a sign provider that fetches sign information from the given URL.
@@ -20,7 +29,7 @@ export function UrlSignProvider(signApiUrl: string): SignProvider {
                 }),
             });
             const json = await res.json();
-            const signBody = json.value;
+            const signBody = zUrlSignResult.parse(json).value;
             return ({
                 sign: Buffer.from(signBody.sign, 'hex'),
                 token: Buffer.from(signBody.token, 'hex'),
