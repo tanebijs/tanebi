@@ -14,21 +14,22 @@ import {
     UrlSignProvider,
 } from 'tanebi';
 import { generate, QRErrorCorrectLevel } from 'ts-qrcode-terminal';
-import { drizzle } from 'drizzle-orm/libsql';
-import { migrate } from 'drizzle-orm/libsql/migrator';
 import fs from 'node:fs';
 import path from 'node:path';
 import { Config, exampleConfig, zConfig } from '@/common/config';
 import { ActionCollection } from '@/action';
-import { message as messageTable } from '@/db/schema';
 import { OneBotNetworkAdapter } from '@/network';
 import { OneBotHttpServerAdapter } from '@/network/http-server';
 import winston, { format, transports } from 'winston';
 import chalk from 'chalk';
-import { MessageStoreType } from '@/db/types';
+import { MessageStoreType } from '@/storage/types';
+import { AbstractStorage } from '@/storage';
+import { DatabaseStorage } from '@/storage/database';
 
 export class OneBotApp {
-    readonly logger;
+    readonly projectDir = path.resolve(import.meta.dirname, '..');
+    readonly logger: winston.Logger;
+    readonly storage: AbstractStorage<unknown>;
     readonly actions = new ActionCollection(this, []);
     readonly adapters: OneBotNetworkAdapter<unknown>[];
 
@@ -36,7 +37,6 @@ export class OneBotApp {
         readonly userDataDir: string,
         readonly isFirstRun: boolean,
         readonly bot: Bot,
-        readonly db: ReturnType<typeof drizzle>,
         readonly config: Config
     ) {
         const logDir = path.join(userDataDir, 'logs');
@@ -79,6 +79,12 @@ export class OneBotApp {
             this.logger.warn(`${message} caused by ${error instanceof Error ? error.stack : error}`, { module })
         );
 
+        if (this.config.storage.location === 'database') {
+            this.storage = new DatabaseStorage(this, this.config.storage);
+        } else {
+            throw new Error(`Unsupported storage location: ${this.config.storage.location}`);
+        }
+
         this.installMessageHandler();
         this.installLogger();
 
@@ -96,7 +102,7 @@ export class OneBotApp {
                 return;
             }
             try {
-                await this.db.insert(messageTable).values({
+                await this.storage.insert({
                     createdAt: Math.round(Date.now() / 1000),
                     storeType: MessageStoreType.PushMsgBody,
                     type: MessageType.PrivateMessage,
@@ -115,12 +121,13 @@ export class OneBotApp {
                 return;
             }
             try {
-                await this.db.insert(messageTable).values({
+                await this.storage.insert({
                     createdAt: Math.round(Date.now() / 1000),
                     storeType: MessageStoreType.PushMsgBody,
                     type: MessageType.GroupMessage,
                     peerUin: group.uin,
                     sequence: message.sequence,
+                    clientSequence: null,
                     body: Buffer.from(message[rawMessage][blob]),
                 });
             } catch (e) {
@@ -234,6 +241,7 @@ export class OneBotApp {
     }
 
     async start() {
+        await this.storage.init();
         await Promise.all(this.adapters.map((adapter) => adapter.start()));
         if (this.isFirstRun) {
             const qrCodePath = path.join(this.userDataDir, 'qrCode.png');
@@ -303,13 +311,7 @@ export class OneBotApp {
         });
         //#endregion
 
-        //#region Database Initialization
-        const dbPath = path.join(userDataDir, 'data.db');
-        const db = drizzle('file:' + dbPath);
-        await migrate(db, { migrationsFolder: path.resolve(import.meta.dirname, '..', 'drizzle') });
-        //#endregion
-
-        return new OneBotApp(userDataDir, isFirstRun, bot, db, config);
+        return new OneBotApp(userDataDir, isFirstRun, bot, config);
     }
 }
 

@@ -1,5 +1,16 @@
 import { z } from 'zod';
 
+const zDatabaseStorageConfig = z.object({
+    location: z.literal('database'),
+    compressMessage: z.boolean().default(true),
+});
+
+const zMemoryStorageConfig = z.object({
+    location: z.literal('memory'),
+    maxCount: z.number().int().positive().default(1000),
+    maxLifetime: z.number().int().positive().default(3600),
+});
+
 const zServerLikeConfig = z.object({
     host: z.string().ip(),
     port: z.number().int().positive().max(65535),
@@ -47,6 +58,10 @@ export const zConfig = z.object({
     botUin: z.number().int(),
     reportSelfMessage: z.boolean(),
     messageReportType: z.enum(['array', 'string']),
+    storage: z.union([
+        zDatabaseStorageConfig,
+        zMemoryStorageConfig,
+    ]),
     adapters: z.array(z.union([
         zHttpServerAdapterConfig,
         zHttpClientAdapterConfig,
@@ -56,6 +71,10 @@ export const zConfig = z.object({
 });
 
 export type Config = z.infer<typeof zConfig>;
+
+export type DatabaseStorageConfig = z.infer<typeof zDatabaseStorageConfig>;
+export type MemoryStorageConfig = z.infer<typeof zMemoryStorageConfig>;
+
 export type HttpServerAdapterConfig = z.infer<typeof zHttpServerAdapterConfig>;
 export type HttpClientAdapterConfig = z.infer<typeof zHttpClientAdapterConfig>;
 export type WebSocketServerAdapterConfig = z.infer<typeof zWebSocketServerAdapterConfig>;
@@ -67,6 +86,10 @@ export const exampleConfig: Config = {
     botUin: 0,
     reportSelfMessage: false,
     messageReportType: 'array',
+    storage: {
+        location: 'database',
+        compressMessage: true,
+    },
     adapters: [
         {
             type: 'httpServer',
