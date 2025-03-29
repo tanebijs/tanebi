@@ -58,7 +58,7 @@ export class OneBotApp {
                 new transports.Console({
                     level: config.logLevel,
                     format: format.combine(
-                        format.timestamp(),
+                        format.timestamp({ format: 'hh:mm:ss' }),
                         format.colorize(),
                         format.printf(
                             ({ timestamp, level, message, ...meta }) =>
