@@ -1,5 +1,5 @@
 import { defineEvent } from '@/internal/event/EventBase';
-import { PushMsg, PushMsgType } from '@/internal/packet/message/PushMsg';
+import { PushMsg, PushMsgBody, PushMsgType } from '@/internal/packet/message/PushMsg';
 import { parsePushMsgBody } from '@/internal/message/incoming';
 
 export const MessagePushEvent = defineEvent(
@@ -7,7 +7,8 @@ export const MessagePushEvent = defineEvent(
     'trpc.msg.olpush.OlPushService.MsgPush',
     (ctx, payload) => {
         const pushMsg = PushMsg.decode(payload);
-        const type = pushMsg.message.contentHead.type as PushMsgType;
+        const pushMsgBody = PushMsgBody.decode(pushMsg.message);
+        const type = pushMsgBody.contentHead.type as PushMsgType;
 
         if (type === PushMsgType.PrivateMessage
             || type === PushMsgType.GroupMessage
@@ -17,7 +18,7 @@ export const MessagePushEvent = defineEvent(
         } else if (type === PushMsgType.PrivateFileMessage) {
             // TODO: parse private file
         } else {
-            ctx.notifyLogic.parseMessagePush(pushMsg, type);
+            ctx.notifyLogic.parsePushMsgBodyToNotify(pushMsgBody, type);
         }
     },
 );

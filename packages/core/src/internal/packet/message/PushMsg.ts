@@ -4,7 +4,7 @@ import { MessageContentHead } from '@/internal/packet/message/MessageContentHead
 import { MessageBody } from '@/internal/packet/message/MessageBody';
 
 export const PushMsg = new NapProtoMsg({
-    message: ProtoField(1, () => PushMsgBody.fields),
+    message: ProtoField(1, ScalarType.BYTES),
     status: ProtoField(3, ScalarType.INT32, true),
     ntEvent: ProtoField(4, () => NTSysEvent.fields, true),
     pingFlag: ProtoField(5, ScalarType.INT32, true),

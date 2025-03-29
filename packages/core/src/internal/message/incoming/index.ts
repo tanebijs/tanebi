@@ -29,6 +29,7 @@ const incomingSegments = new IncomingSegmentCollection([
 export type IncomingSegment = Exclude<ReturnType<typeof incomingSegments.parse>, undefined>;
 export type IncomingSegmentOf<T extends IncomingSegment['type']> = Extract<IncomingSegment, { type: T }>;
 
+export const blob = Symbol('Raw PushMsgBody');
 export const rawElems = Symbol('Raw elements');
 export const msgUid = Symbol('Message UID');
 
@@ -41,6 +42,7 @@ interface MessageBase {
     sequence: number;
     repliedSequence?: number;
     segments: IncomingSegment[];
+    [blob]: Uint8Array;
     [rawElems]: Uint8Array[];
     [msgUid]: bigint;
 }
@@ -60,10 +62,11 @@ export interface GroupMessage extends MessageBase {
 
 export type IncomingMessage = PrivateMessage | GroupMessage;
 
-export function parsePushMsgBody(pushMsg: NapProtoDecodeStructType<typeof PushMsgBody.fields>): IncomingMessage {
-    const result = parseMetadata(pushMsg);
-    if (pushMsg.body?.richText?.elements) {
-        const elementsDecoded = pushMsg.body.richText.elements.map((element) => MessageElement.decode(element));
+export function parsePushMsgBody(raw: Uint8Array): IncomingMessage {
+    const pushMsgBody = PushMsgBody.decode(raw);
+    const result = parseMetadata(pushMsgBody, raw);
+    if (pushMsgBody.body?.richText?.elements) {
+        const elementsDecoded = pushMsgBody.body.richText.elements.map((element) => MessageElement.decode(element));
         for (const element of elementsDecoded) {
             const previous = result.segments.length === 0 ? undefined :
                 result.segments[result.segments.length - 1];
@@ -93,7 +96,7 @@ export function parsePushMsgBody(pushMsg: NapProtoDecodeStructType<typeof PushMs
     return result;
 }
 
-function parseMetadata(pushMsg: NapProtoDecodeStructType<typeof PushMsgBody.fields>): IncomingMessage {
+function parseMetadata(pushMsg: NapProtoDecodeStructType<typeof PushMsgBody.fields>, raw: Uint8Array): IncomingMessage {
     if (!pushMsg.responseHead.groupExt) {
         return {
             type: MessageType.PrivateMessage,
@@ -105,6 +108,7 @@ function parseMetadata(pushMsg: NapProtoDecodeStructType<typeof PushMsgBody.fiel
             senderName: pushMsg.responseHead.friendExt?.friendName ?? '',
             sequence: pushMsg.contentHead.ntMsgSeq ?? 0,
             segments: [],
+            [blob]: raw,
             [rawElems]: pushMsg.body?.richText?.elements ?? [],
             [msgUid]: pushMsg.contentHead.msgUid!,
 
@@ -124,6 +128,7 @@ function parseMetadata(pushMsg: NapProtoDecodeStructType<typeof PushMsgBody.fiel
             senderName: pushMsg.responseHead.groupExt.memberName,
             sequence: pushMsg.contentHead.sequence ?? 0,
             segments: [],
+            [blob]: raw,
             [rawElems]: pushMsg.body?.richText?.elements ?? [],
             [msgUid]: pushMsg.contentHead.msgUid!,
         };
