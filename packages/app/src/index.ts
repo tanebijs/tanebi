@@ -51,7 +51,8 @@ export class OneBotApp {
                         format.printf(
                             ({ timestamp, level, message, ...meta }) =>
                                 `${timestamp} [${level}] [${meta.module ?? 'Bot'}] ${message}`
-                        )
+                        ),
+                        format.uncolorize()
                     ),
                 }),
                 new transports.Console({
@@ -86,7 +87,7 @@ export class OneBotApp {
 
     installLogger() {
         this.bot.onPrivateMessage((friend, message) =>
-            this.logger.info(`${message.isSelf ? '->' : '<-'} [${friend}] ${message.content.toPreviewString()}`, {
+            this.logger.info(`${message.isSelf ? '->' : '<-'} [${chalk.yellow(friend)}] ${message.content.toPreviewString()}`, {
                 module: 'Message',
             })
         );
@@ -95,7 +96,7 @@ export class OneBotApp {
             this.logger.info(
                 `${
                     sender.uin === this.bot.uin ? '->' : '<-'
-                } [${group}] [${sender}] ${message.content.toPreviewString()}`,
+                } [${chalk.blueBright(group)}] [${chalk.green(sender)}] ${message.content.toPreviewString()}`,
                 { module: 'Message' }
             )
         );
