@@ -1,9 +1,10 @@
 import { Bot, ctx, identityService, log } from '@/index';
 import { BotContact, BotGroupInvitedJoinRequest, BotGroupJoinRequest, BotGroupMember, ReactionType } from '@/entity';
-import { DispatchedMessage, GroupMessageBuilder } from '@/message';
+import { DispatchedMessage, GroupMessageBuilder, type rawMessage } from '@/message';
 import { BotCacheService } from '@/util';
 import EventEmitter from 'node:events';
 import { OutgoingGroupMessage } from '@/internal/message/outgoing';
+import { GroupMessage } from '@/internal/message/incoming';
 
 interface BotGroupDataBinding {
     uin: number;
@@ -20,6 +21,7 @@ export type BotGroupMessage = {
     sequence: number;
     sender: BotGroupMember;
     repliedSequence?: number;
+    [rawMessage]: GroupMessage;
 } & DispatchedMessage;
 
 export type BotGroupSendMsgRef = {

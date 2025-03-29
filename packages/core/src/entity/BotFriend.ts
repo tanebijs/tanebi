@@ -1,8 +1,9 @@
 import { Bot, ctx, log } from '@/index';
 import { BotContact } from '@/entity';
-import { DispatchedMessage, PrivateMessageBuilder } from '@/message';
+import { DispatchedMessage, PrivateMessageBuilder, type rawMessage } from '@/message';
 import EventEmitter from 'node:events';
 import { OutgoingPrivateMessage } from '@/internal/message/outgoing';
+import { PrivateMessage } from '@/internal/message/incoming';
 
 interface BotFriendDataBinding {
     uin: number;
@@ -18,6 +19,7 @@ export type BotFriendMessage = {
     sequence: number;
     isSelf: boolean;
     repliedSequence?: number;
+    [rawMessage]: PrivateMessage;
 } & DispatchedMessage;
 
 export type BotFriendSendMsgRef = {
