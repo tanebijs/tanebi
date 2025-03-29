@@ -185,4 +185,5 @@ export class MessageDispatcher {
     private async handleLightApp() {}
 }
 
+export { MessageType };
 export { rawElems, msgUid, blob };
