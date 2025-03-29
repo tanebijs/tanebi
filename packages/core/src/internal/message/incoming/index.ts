@@ -29,6 +29,9 @@ const incomingSegments = new IncomingSegmentCollection([
 export type IncomingSegment = Exclude<ReturnType<typeof incomingSegments.parse>, undefined>;
 export type IncomingSegmentOf<T extends IncomingSegment['type']> = Extract<IncomingSegment, { type: T }>;
 
+export const rawElems = Symbol('Raw elements');
+export const msgUid = Symbol('Message UID');
+
 interface MessageBase {
     type: MessageType;
     senderUin: number;
@@ -38,8 +41,8 @@ interface MessageBase {
     sequence: number;
     repliedSequence?: number;
     segments: IncomingSegment[];
-    rawElems: Uint8Array[];
-    msgUid?: bigint;
+    [rawElems]: Uint8Array[];
+    [msgUid]: bigint;
 }
 
 export interface PrivateMessage extends MessageBase {
@@ -102,8 +105,8 @@ function parseMetadata(pushMsg: NapProtoDecodeStructType<typeof PushMsgBody.fiel
             senderName: pushMsg.responseHead.friendExt?.friendName ?? '',
             sequence: pushMsg.contentHead.ntMsgSeq ?? 0,
             segments: [],
-            rawElems: pushMsg.body?.richText?.elements ?? [],
-            msgUid: pushMsg.contentHead.msgUid,
+            [rawElems]: pushMsg.body?.richText?.elements ?? [],
+            [msgUid]: pushMsg.contentHead.msgUid!,
 
             clientSequence: pushMsg.contentHead.sequence ?? 0,
             random: pushMsg.contentHead.random ?? 0,
@@ -121,8 +124,8 @@ function parseMetadata(pushMsg: NapProtoDecodeStructType<typeof PushMsgBody.fiel
             senderName: pushMsg.responseHead.groupExt.memberName,
             sequence: pushMsg.contentHead.sequence ?? 0,
             segments: [],
-            rawElems: pushMsg.body?.richText?.elements ?? [],
-            msgUid: pushMsg.contentHead.msgUid,
+            [rawElems]: pushMsg.body?.richText?.elements ?? [],
+            [msgUid]: pushMsg.contentHead.msgUid!,
         };
     }
 }

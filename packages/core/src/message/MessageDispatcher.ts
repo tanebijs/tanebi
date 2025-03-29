@@ -1,10 +1,10 @@
 import { Bot, eventsDX } from '@/index';
 import { BotContact, BotFriend, BotFriendMessage, BotGroup, BotGroupInvitationRequest, BotGroupMember, BotGroupMessage, BotMsgBubble, BotMsgForwardPack, BotMsgImage, BotMsgLightApp, BotMsgRecord, BotMsgVideo, eventsFDX, eventsGDX } from '@/entity';
 import { MessageType } from '@/internal/message';
-import { GroupMessage, IncomingMessage, PrivateMessage } from '@/internal/message/incoming';
+import { GroupMessage, IncomingMessage, msgUid, PrivateMessage, rawElems } from '@/internal/message/incoming';
 import { EventEmitter } from 'node:events';
 
-export const rawMessage = Symbol('Raw elements');
+export const rawMessage = Symbol('Raw message');
 
 export type DispatchedMessageBody = {
     type: 'bubble',
@@ -120,7 +120,7 @@ export class MessageDispatcher {
                 isSelf: raw.senderUin === this.bot.uin,
                 repliedSequence: raw.repliedSequence,
                 [rawMessage]: raw as PrivateMessage,
-                messageUid: raw.msgUid ?? 0n,
+                messageUid: raw[msgUid],
                 ...message,
             };
             contact[eventsFDX].emit('message', friendMessage);
@@ -133,7 +133,7 @@ export class MessageDispatcher {
                     sender,
                     repliedSequence: raw.repliedSequence,
                     [rawMessage]: raw as GroupMessage,
-                    messageUid: raw.msgUid ?? 0n,
+                    messageUid: raw[msgUid],
                     ...message,
                 };
                 contact[eventsGDX].emit('message', groupMessage);
@@ -163,3 +163,5 @@ export class MessageDispatcher {
 
     }
 }
+
+export { rawElems, msgUid };

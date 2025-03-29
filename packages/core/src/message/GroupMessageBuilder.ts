@@ -9,6 +9,7 @@ import { Bot, ctx, log } from '@/index';
 import { randomInt } from 'crypto';
 import { getGeneralMetadata } from '@/internal/util/media/common';
 import { CustomFaceElement } from '@/internal/packet/message/element/CustomFaceElement';
+import { rawElems } from '@/internal/message/incoming';
 
 export class GroupMessageBuilder extends AbstractMessageBuilder {
     repliedMessage?: BotGroupMessage;
@@ -104,7 +105,7 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
                 senderUin: this.repliedMessage.sender.uin,
                 senderUid: this.repliedMessage.sender.uid,
                 messageUid: this.repliedMessage.messageUid,
-                elements: this.repliedMessage[rawMessage].rawElems,
+                elements: this.repliedMessage[rawMessage][rawElems],
             } : undefined,
         };
     }

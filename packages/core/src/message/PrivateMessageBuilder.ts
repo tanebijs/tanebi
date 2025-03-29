@@ -6,7 +6,7 @@ import { OutgoingPrivateMessage } from '@/internal/message/outgoing';
 import { getImageMetadata } from '@/internal/util/media/image';
 import { ForwardedMessagePacker, rawMessage } from '@/message';
 import { Bot, ctx, log } from '@/index';
-import { PrivateMessage } from '@/internal/message/incoming';
+import { PrivateMessage, rawElems } from '@/internal/message/incoming';
 import { randomInt } from 'crypto';
 import { getGeneralMetadata } from '@/internal/util/media/common';
 import { CustomFaceElement } from '@/internal/packet/message/element/CustomFaceElement';
@@ -79,7 +79,7 @@ export class PrivateMessageBuilder extends AbstractMessageBuilder {
                 senderUin: this.friendUin,
                 senderUid: this.friendUid,
                 messageUid: this.repliedMessage.messageUid,
-                elements: this.repliedMessage[rawMessage].rawElems,
+                elements: this.repliedMessage[rawMessage][rawElems],
             } : undefined,
             repliedClientSequence: (<PrivateMessage | undefined>this.repliedMessage?.[rawMessage])?.clientSequence,
         };
