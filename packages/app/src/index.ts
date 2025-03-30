@@ -27,6 +27,7 @@ import chalk from 'chalk';
 import { MessageStoreType } from '@app/storage/types';
 import { AbstractStorage } from '@app/storage';
 import { DatabaseStorage } from '@app/storage/database';
+import { MemoryStorage } from '@app/storage/memory';
 
 export class OneBotApp {
     readonly projectDir = path.resolve(import.meta.dirname, '..');
@@ -86,7 +87,7 @@ export class OneBotApp {
         if (this.config.storage.location === 'database') {
             this.storage = new DatabaseStorage(this, this.config.storage);
         } else {
-            throw new Error(`Unsupported storage location: ${this.config.storage.location}`);
+            this.storage = new MemoryStorage(this, this.config.storage);
         }
 
         this.installMessageHandler();
