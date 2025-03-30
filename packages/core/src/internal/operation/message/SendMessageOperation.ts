@@ -1,11 +1,11 @@
 import { defineOperation } from '@/internal/operation/OperationBase';
-import { PbSendMsg, PbSendMsgResponse } from '@/internal/packet/message/PbSendMsg';
+import { PbSendMsgResponse } from '@/internal/packet/message/PbSendMsg';
 import { buildPbSendMsg, OutgoingMessage } from '@/internal/message/outgoing';
 
 export const SendMessageOperation = defineOperation(
     'sendMessage',
     'MessageSvc.PbSendMsg',
-    (ctx, params: OutgoingMessage) => Buffer.from(PbSendMsg.encode(buildPbSendMsg(params))),
+    (ctx, params: OutgoingMessage) => Buffer.from(buildPbSendMsg(params)),
     (ctx, payload) => {
         const response = PbSendMsgResponse.decode(payload);
         if (response.resultCode !== 0) {

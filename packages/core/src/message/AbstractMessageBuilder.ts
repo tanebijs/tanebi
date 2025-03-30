@@ -82,3 +82,5 @@ export abstract class AbstractMessageBuilder {
      */
     abstract build(clientSequence: number): OutgoingMessage;
 }
+
+export { sendBlob } from '@/internal/message/outgoing';
