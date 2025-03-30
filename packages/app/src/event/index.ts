@@ -1,4 +1,4 @@
-import { OneBotApp } from '@/index';
+import { OneBotApp } from '@app/index';
 
 export abstract class OneBotEvent {
     readonly time: number;

@@ -1,5 +1,5 @@
-import { decodeCQCode } from '@/message/cqcode';
-import { zOneBotSendSegment } from '@/message/segment';
+import { decodeCQCode } from '@app/message/cqcode';
+import { zOneBotSendSegment } from '@app/message/segment';
 import { z } from 'zod';
 
 export const zOneBotInputSegments = z.union([

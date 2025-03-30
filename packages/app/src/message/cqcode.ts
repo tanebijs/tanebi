@@ -1,4 +1,4 @@
-import { OneBotRecvSegment, OneBotSendSegment, zOneBotSendSegment } from '@/message/segment';
+import { OneBotRecvSegment, OneBotSendSegment, zOneBotSendSegment } from '@app/message/segment';
 
 const pattern = /\[CQ:(\w+)((,\w+=[^,\]]*)*)]/;
 

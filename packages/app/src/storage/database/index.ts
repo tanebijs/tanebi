@@ -1,8 +1,8 @@
-import { DatabaseStorageConfig } from '@/common/config';
-import { OneBotApp } from '@/index';
-import { AbstractStorage, MessageRowOrEmpty } from '@/storage';
-import { message } from '@/storage/database/schema';
-import { MessageRow } from '@/storage/types';
+import { DatabaseStorageConfig } from '@app/common/config';
+import { OneBotApp } from '@app/index';
+import { AbstractStorage, MessageRowOrEmpty } from '@app/storage';
+import { message } from '@app/storage/database/schema';
+import { MessageRow } from '@app/storage/types';
 import { and, eq } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/libsql';
 import { migrate } from 'drizzle-orm/libsql/migrator';

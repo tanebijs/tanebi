@@ -1,5 +1,5 @@
-import { OneBotApp } from '@/index';
-import { MessageRow } from '@/storage/types';
+import { OneBotApp } from '@app/index';
+import { MessageRow } from '@app/storage/types';
 import { MessageType } from 'tanebi';
 
 export type MessageRowOrEmpty = MessageRow | undefined;

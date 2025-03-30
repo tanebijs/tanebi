@@ -1,4 +1,4 @@
-import { zOneBotInputBoolean, zOneBotInputMessageId, zOneBotInputUin } from '@/common/types';
+import { zOneBotInputBoolean, zOneBotInputMessageId, zOneBotInputUin } from '@app/common/types';
 import { z } from 'zod';
 
 export const zOneBotTextSegment = z.object({

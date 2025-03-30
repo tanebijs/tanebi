@@ -4,7 +4,8 @@
     "rootDir": "./src",
     "outDir": "lib",
     "paths": {
-      "@/*": ["./src/*"]
+      "@app/*": ["./src/*"],
+      "@/*": ["../core/src/*"],
     }
   },
   "include": ["src"]

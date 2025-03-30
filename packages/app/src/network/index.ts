@@ -1,5 +1,5 @@
-import { OneBotEvent } from '@/event';
-import { OneBotApp } from '@/index';
+import { OneBotEvent } from '@app/event';
+import { OneBotApp } from '@app/index';
 
 export abstract class OneBotNetworkAdapter<T> {
     readonly logger;

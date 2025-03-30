@@ -1,7 +1,7 @@
-import { OneBotEvent } from '@/event';
-import { OneBotApp } from '@/index';
-import { encodeCQCode } from '@/message/cqcode';
-import { OneBotRecvSegment } from '@/message/segment';
+import { OneBotEvent } from '@app/event';
+import { OneBotApp } from '@app/index';
+import { encodeCQCode } from '@app/message/cqcode';
+import { OneBotRecvSegment } from '@app/message/segment';
 
 export abstract class OneBotMessageEvent extends OneBotEvent {
     readonly message: OneBotRecvSegment[] | string;

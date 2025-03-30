@@ -18,15 +18,15 @@ import {
 import { generate, QRErrorCorrectLevel } from 'ts-qrcode-terminal';
 import fs from 'node:fs';
 import path from 'node:path';
-import { Config, exampleConfig, zConfig } from '@/common/config';
-import { ActionCollection } from '@/action';
-import { OneBotNetworkAdapter } from '@/network';
-import { OneBotHttpServerAdapter } from '@/network/http-server';
+import { Config, exampleConfig, zConfig } from '@app/common/config';
+import { ActionCollection } from '@app/action';
+import { OneBotNetworkAdapter } from '@app/network';
+import { OneBotHttpServerAdapter } from '@app/network/http-server';
 import winston, { format, transports } from 'winston';
 import chalk from 'chalk';
-import { MessageStoreType } from '@/storage/types';
-import { AbstractStorage } from '@/storage';
-import { DatabaseStorage } from '@/storage/database';
+import { MessageStoreType } from '@app/storage/types';
+import { AbstractStorage } from '@app/storage';
+import { DatabaseStorage } from '@app/storage/database';
 
 export class OneBotApp {
     readonly projectDir = path.resolve(import.meta.dirname, '..');

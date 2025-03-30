@@ -1,9 +1,9 @@
 import express, { Express } from 'express';
 import http from 'node:http';
-import { Failed } from '@/action';
-import { HttpServerAdapterConfig } from '@/common/config';
-import { OneBotApp } from '@/index';
-import { OneBotNetworkAdapter } from '@/network';
+import { Failed } from '@app/action';
+import { HttpServerAdapterConfig } from '@app/common/config';
+import { OneBotApp } from '@app/index';
+import { OneBotNetworkAdapter } from '@app/network';
 
 export class OneBotHttpServerAdapter extends OneBotNetworkAdapter<HttpServerAdapterConfig> {
     readonly expressApp: Express;

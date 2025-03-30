@@ -3,7 +3,10 @@
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "out",
-    "declaration": false
+    "declaration": false,
+    "paths": {
+      "@/*": ["../core/src/*"]
+    }
   },
   "include": ["src"]
 }

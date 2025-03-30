@@ -1,4 +1,4 @@
-import { OneBotApp } from '@/index';
+import { OneBotApp } from '@app/index';
 import { z } from 'zod';
 
 export interface OneBotGeneralResponse {
