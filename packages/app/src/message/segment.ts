@@ -19,7 +19,7 @@ export const zOneBotFaceSegment = z.object({
 const zOneBotSendResourceGeneralData = z.object({
     cache: zOneBotInputBoolean.default(false),
     proxy: zOneBotInputBoolean.default(false),
-    timeout: z.number().int().positive().default(-1),
+    timeout: z.number().int().positive().optional(),
 }).and(zOneBotInputUrl);
 
 export const zOneBotSendRecordSegment = z.object({
