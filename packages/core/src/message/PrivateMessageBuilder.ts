@@ -2,7 +2,7 @@ import { BotFriendMessage } from '@/entity';
 import { AbstractMessageBuilder } from './AbstractMessageBuilder';
 import { MessageType } from '@/internal/message';
 import { ImageSubType } from '@/internal/message/incoming/segment/image';
-import { OutgoingPrivateMessage } from '@/internal/message/outgoing';
+import { OutgoingPrivateMessage, ReplyInfo } from '@/internal/message/outgoing';
 import { getImageMetadata } from '@/internal/util/media/image';
 import { ForwardedMessagePacker, rawMessage } from '@/message';
 import { Bot, ctx, log } from '@/index';
@@ -12,7 +12,8 @@ import { getGeneralMetadata } from '@/internal/util/media/common';
 import { CustomFaceElement } from '@/internal/packet/message/element/CustomFaceElement';
 
 export class PrivateMessageBuilder extends AbstractMessageBuilder {
-    repliedMessage?: BotFriendMessage;
+    replyInfo?: ReplyInfo;
+    repliedClientSequence?: number;
 
     constructor(
         protected readonly friendUin: number,
@@ -23,7 +24,14 @@ export class PrivateMessageBuilder extends AbstractMessageBuilder {
     }
 
     reply(message: BotFriendMessage) {
-        this.repliedMessage = message;
+        this.replyInfo = {
+            sequence: message.sequence,
+            senderUin: this.friendUin,
+            senderUid: this.friendUid,
+            messageUid: message.messageUid,
+            elements: message[rawMessage][rawElems],
+        };
+        this.repliedClientSequence = message[rawMessage].clientSequence;
     }
 
     override async image(data: Buffer, subType?: ImageSubType, summary?: string): Promise<void> {
@@ -74,14 +82,8 @@ export class PrivateMessageBuilder extends AbstractMessageBuilder {
             clientSequence,
             random: randomInt(0, 0x7fffffff),
             segments: this.segments,
-            reply: this.repliedMessage ? {
-                sequence: this.repliedMessage.sequence,
-                senderUin: this.friendUin,
-                senderUid: this.friendUid,
-                messageUid: this.repliedMessage.messageUid,
-                elements: this.repliedMessage[rawMessage][rawElems],
-            } : undefined,
-            repliedClientSequence: this.repliedMessage?.[rawMessage]?.clientSequence,
+            reply: this.replyInfo,
+            repliedClientSequence: this.repliedClientSequence,
         };
     }
 }

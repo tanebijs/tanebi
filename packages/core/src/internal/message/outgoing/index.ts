@@ -24,18 +24,20 @@ export type OutgoingSegmentOf<T extends OutgoingSegment['type']> = Extract<Outgo
 
 export const sendBlob = Symbol('Raw PbSendMsg');
 
+export interface ReplyInfo {
+    sequence: number;
+    senderUin: number;
+    senderUid: string;
+    messageUid: bigint;
+    elements: Uint8Array[];
+}
+
 export interface OutgoingMessageBase {
     type: MessageType;
     segments: OutgoingSegment[];
     clientSequence: number;
     random: number;
-    reply?: {
-        sequence: number;
-        senderUin: number;
-        senderUid: string;
-        messageUid: bigint;
-        elements: Uint8Array[];
-    }
+    reply?: ReplyInfo;
     [sendBlob]?: Uint8Array;
 }
 

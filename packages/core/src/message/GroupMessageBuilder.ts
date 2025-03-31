@@ -2,7 +2,7 @@ import { BotGroupMember, BotGroupMessage } from '@/entity';
 import { AbstractMessageBuilder } from './AbstractMessageBuilder';
 import { MessageType } from '@/internal/message';
 import { ImageSubType } from '@/internal/message/incoming/segment/image';
-import { OutgoingGroupMessage } from '@/internal/message/outgoing';
+import { OutgoingGroupMessage, ReplyInfo } from '@/internal/message/outgoing';
 import { getImageMetadata } from '@/internal/util/media/image';
 import { ForwardedMessagePacker, rawMessage } from '@/message';
 import { Bot, ctx, log } from '@/index';
@@ -12,7 +12,7 @@ import { CustomFaceElement } from '@/internal/packet/message/element/CustomFaceE
 import { rawElems } from '@/internal/message/incoming';
 
 export class GroupMessageBuilder extends AbstractMessageBuilder {
-    repliedMessage?: BotGroupMessage;
+    replyInfo?: ReplyInfo;
 
     constructor(private readonly groupUin: number, bot: Bot) {
         super(bot);
@@ -50,7 +50,13 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
         if (message.sender.group.uin !== this.groupUin) {
             throw new Error('Cannot reply to a message from another group');
         }
-        this.repliedMessage = message;
+        this.replyInfo = {
+            sequence: message.sequence,
+            senderUin: message.sender.uin,
+            senderUid: message.sender.uid,
+            messageUid: message.messageUid,
+            elements: message[rawMessage][rawElems],
+        };
     }
     
     override async image(data: Buffer, subType?: ImageSubType, summary?: string): Promise<void> {
@@ -100,13 +106,7 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
             clientSequence,
             random: randomInt(0, 0xffffffff),
             segments: this.segments,
-            reply: this.repliedMessage ? {
-                sequence: this.repliedMessage.sequence,
-                senderUin: this.repliedMessage.sender.uin,
-                senderUid: this.repliedMessage.sender.uid,
-                messageUid: this.repliedMessage.messageUid,
-                elements: this.repliedMessage[rawMessage][rawElems],
-            } : undefined,
+            reply: this.replyInfo,
         };
     }
 }
