@@ -1,4 +1,4 @@
-import { MessageType } from '@/message';
+import { MessageType } from 'tanebi';
 import { MemoryStorageConfig } from '@app/common/config';
 import { OneBotApp } from '@app/index';
 import { AbstractStorage, MessageRowOrEmpty } from '@app/storage';
