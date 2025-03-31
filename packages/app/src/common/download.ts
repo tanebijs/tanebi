@@ -1,3 +1,5 @@
+import fsp from 'node:fs/promises';
+
 async function getResponse(
     url: string,
     headers: Record<string, string> = {
@@ -22,4 +24,17 @@ export async function download(url: string, headers?: Record<string, string>) {
     }
 
     return await resp.blob().then(b => b.bytes());
+}
+
+export async function resolveOneBotUrl(url: string): Promise<Buffer> {
+    if (url.startsWith('file://')) {
+        return await fsp.readFile(url.slice(7));
+    }
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+        return Buffer.from(await download(url));
+    }
+    if (url.startsWith('base64://')) {
+        return Buffer.from(url.slice(9), 'base64');
+    }
+    throw new Error(`Unsupported URL scheme: ${url}`);
 }

@@ -27,9 +27,9 @@ These APIs are defined in the [OneBot 11 standard](https://github.com/botunivers
 
 | API                       | Status |
 | ------------------------- | ------ |
-| `send_private_msg`        | 🟡     |
-| `send_group_msg`          | 🟡     |
-| `send_msg`                | 🟡     |
+| `send_private_msg`        | 🟢     |
+| `send_group_msg`          | 🟢     |
+| `send_msg`                | 🟢     |
 | `delete_msg`              | 🟡     |
 | `get_msg`                 | 🟡     |
 | `get_forward_msg`         | 🟡     |

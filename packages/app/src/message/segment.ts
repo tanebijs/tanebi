@@ -1,4 +1,5 @@
-import { zOneBotInputBoolean, zOneBotInputMessageId, zOneBotInputUin } from '@app/common/types';
+import { ImageSubType } from 'tanebi';
+import { zOneBotInputBoolean, zOneBotInputMessageId, zOneBotInputUin, zOneBotInputUrl } from '@app/common/types';
 import { z } from 'zod';
 
 export const zOneBotTextSegment = z.object({
@@ -16,11 +17,10 @@ export const zOneBotFaceSegment = z.object({
 });
 
 const zOneBotSendResourceGeneralData = z.object({
-    file: z.string(),
     cache: zOneBotInputBoolean.default(false),
     proxy: zOneBotInputBoolean.default(false),
     timeout: z.number().int().positive().default(-1),
-});
+}).and(zOneBotInputUrl);
 
 export const zOneBotSendRecordSegment = z.object({
     type: z.literal('record'),
@@ -40,20 +40,9 @@ export const zOneBotSendAtSegment = z.object({
     data: zOneBotAtData.and(zOneBotSendAtExtra),
 });
 
-export enum GroupPicSubType {
-    Normal = 0,
-    Custom = 1,
-    // Hot = 2,
-    // DipperChart = 3,
-    // Smart = 4,
-    // Space = 5,
-    // Unknown = 6,
-    // Related = 7
-}
-
 const zOneBotImageExtra = z.object({
     summary: z.string().optional(),
-    sub_type: z.nativeEnum(GroupPicSubType).default(GroupPicSubType.Normal),
+    sub_type: z.nativeEnum(ImageSubType).default(ImageSubType.Picture),
 });
 
 export const zOneBotSendImageSegment = z.object({
