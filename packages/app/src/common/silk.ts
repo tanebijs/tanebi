@@ -37,9 +37,6 @@ export class NTSilkBinding {
         }
 
         const ntSilkFilePath = path.join(ntSilkPath, ntSilkFileName);
-        if (!fs.existsSync(ntSilkPath)) {
-            await fsp.mkdir(ntSilkPath);
-        }
         if (!fs.existsSync(ntSilkFilePath)) {
             console.info('First time of using NTSilk, downloading the binary...');
             const binary = await download(`https://ntsilk.ilharper.com/${ntSilkFileName}`);

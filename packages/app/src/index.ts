@@ -28,6 +28,7 @@ import { MessageStoreType } from '@app/storage/types';
 import { AbstractStorage } from '@app/storage';
 import { DatabaseStorage } from '@app/storage/database';
 import { MemoryStorage } from '@app/storage/memory';
+import { NTSilkBinding } from '@app/common/silk';
 
 export class OneBotApp {
     readonly projectDir = path.resolve(import.meta.dirname, '..');
@@ -40,6 +41,7 @@ export class OneBotApp {
         readonly userDataDir: string,
         readonly isFirstRun: boolean,
         readonly bot: Bot,
+        readonly ntSilkBinding: NTSilkBinding | null,
         readonly config: Config
     ) {
         const logDir = path.join(userDataDir, 'logs');
@@ -316,7 +318,28 @@ export class OneBotApp {
         });
         //#endregion
 
-        return new OneBotApp(userDataDir, isFirstRun, bot, config);
+        //#region NTSilk Initialization
+        const ntSilkPath = path.join(userDataDir, 'ntsilk');
+        if (!fs.existsSync(ntSilkPath)) {
+            fs.mkdirSync(ntSilkPath);
+        }
+        let ntSilkBinding: NTSilkBinding | null = null;
+        if (config.enableNtSilk) {
+            try {
+                ntSilkBinding = await NTSilkBinding.create(ntSilkPath);
+            } catch (e) {
+                console.warn('Failed to create NTSilk binding:', e);
+            }
+        }
+        //#endregion
+
+        return new OneBotApp(
+            userDataDir,
+            isFirstRun,
+            bot,
+            ntSilkBinding,
+            config
+        );
     }
 }
 
