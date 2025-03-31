@@ -58,6 +58,7 @@ export const zConfig = z.object({
     botUin: z.number().int(),
     reportSelfMessage: z.boolean(),
     messageReportType: z.enum(['array', 'string']),
+    enableNtSilk: z.boolean(),
     storage: z.union([
         zDatabaseStorageConfig,
         zMemoryStorageConfig,
@@ -86,6 +87,7 @@ export const exampleConfig: Config = {
     botUin: 0,
     reportSelfMessage: false,
     messageReportType: 'array',
+    enableNtSilk: false,
     storage: {
         location: 'database',
         compressMessage: true,
