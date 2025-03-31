@@ -24,7 +24,7 @@ const zOneBotSendResourceGeneralData = z.object({
 
 export const zOneBotSendRecordSegment = z.object({
     type: z.literal('record'),
-    date: zOneBotSendResourceGeneralData,
+    data: zOneBotSendResourceGeneralData,
 });
 
 const zOneBotAtData = z.object({
