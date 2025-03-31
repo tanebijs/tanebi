@@ -12,18 +12,21 @@ export class OneBotHttpServerAdapter extends OneBotNetworkAdapter<HttpServerAdap
     constructor(app: OneBotApp, config: HttpServerAdapterConfig, id: string) {
         super(app, config, 'HttpServer', id);
         this.expressApp = express();
-        this.expressApp.use(express.json());
-
         this.expressApp.use((req, res, next) => {
-            if (req.headers['content-type'] && req.headers['content-type'] !== 'application/json') {
-                res.status(406).json(Failed(406, 'Unsupported Content-Type'));
-                return;
+            if (req.method === 'POST') {
+                if (req.headers['content-type']?.startsWith('text/plain')) {
+                    // In case the client forgets to set the Content-Type header
+                    req.headers['content-type'] = 'application/json';
+                }
+    
+                if (req.headers['content-type'] !== 'application/json') {
+                    res.status(406).json(Failed(406, 'Unsupported Content-Type'));
+                    return;
+                }
             }
-
-            // In case the client forgets to set the Content-Type header
-            req.headers['content-type'] = 'application/json';
             next();
         });
+        this.expressApp.use(express.json());
 
         if (config.accessToken) {
             this.expressApp.use((req, res, next) => {
