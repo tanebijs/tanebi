@@ -54,7 +54,7 @@ export class ActionCollection {
                 return Failed(
                     400,
                     'Invalid payload',
-                    parsedPayload.error.issues.map((issue) => issue.message).join('; ')
+                    parsedPayload.error.issues.map((issue) => `[${issue.code}] ${issue.path.join('/')}: ${issue.message}`).join('; ')
                 );
             }
             return await action.handler(this.ctx, parsedPayload.data);
