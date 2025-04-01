@@ -7,12 +7,15 @@ import { MessageStoreType, OutgoingMessageStore } from '@app/storage/types';
 import { z } from 'zod';
 import { PushMsgBody } from '@/internal/packet/message/PushMsg';
 import { PbSendMsg } from '@/internal/packet/message/PbSendMsg';
+import { convert } from '@app/common/silk';
 
 export const send_private_msg = defineAction(
     'send_private_msg',
-    z.object({
-        user_id: zOneBotInputUin,
-    }).and(zOneBotInputMessage),
+    z
+        .object({
+            user_id: zOneBotInputUin,
+        })
+        .and(zOneBotInputMessage),
     async (ctx, payload) => {
         const friend = await ctx.bot.getFriend(payload.user_id);
         if (!friend) {
@@ -58,6 +61,14 @@ export const send_private_msg = defineAction(
                         };
                         b.repliedClientSequence = message.clientSequence!;
                     }
+                } else if (segment.type === 'record') {
+                    const record = await resolveOneBotUrl(segment.data.file);
+                    if (ctx.config.enableNtSilk) {
+                        const { data, meta } = await convert(ctx, record);
+                        await b.record(data, meta.format.duration!);
+                    } else {
+                        await b.record(record, 5);
+                    }
                 }
             }
         });
@@ -68,10 +79,12 @@ export const send_private_msg = defineAction(
             peerUin: payload.user_id,
             sequence: sendResult.sequence,
             clientSequence: sendResult.clientSequence!,
-            body: Buffer.from(OutgoingMessageStore.encode({
-                jsonElem: JSON.stringify(payload.message),
-                pbElem: sendResult[sendBlob],
-            })),
+            body: Buffer.from(
+                OutgoingMessageStore.encode({
+                    jsonElem: JSON.stringify(payload.message),
+                    pbElem: sendResult[sendBlob],
+                })
+            ),
         });
         return Ok({ message_id: dbMsgId });
     }

@@ -7,6 +7,7 @@ import { z } from 'zod';
 import { MessageStoreType, OutgoingMessageStore } from '@app/storage/types';
 import { PushMsgBody } from '@/internal/packet/message/PushMsg';
 import { PbSendMsg } from '@/internal/packet/message/PbSendMsg';
+import { convert } from '@app/common/silk';
 
 export const send_group_msg = defineAction(
     'send_group_msg',
@@ -63,6 +64,14 @@ export const send_group_msg = defineAction(
                             messageUid: 0n,
                             elements: body.body?.richText?.elements ?? [],
                         };
+                    }
+                } else if (segment.type === 'record') {
+                    const record = await resolveOneBotUrl(segment.data.file);
+                    if (ctx.config.enableNtSilk) {
+                        const { data, meta } = await convert(ctx, record);
+                        await b.record(data, meta.format.duration!);
+                    } else {
+                        await b.record(record, 5);
                     }
                 }
             }
