@@ -19,6 +19,12 @@ export const send_group_msg = defineAction(
         if (!group) {
             return Failed(404, 'Group not found');
         }
+        const firstSegment = payload.message[0];
+        if (firstSegment.type === 'poke') {
+            // TODO: Implement poke
+        } else if (firstSegment.type === 'node') {
+            // TODO: Implement send forward
+        }
         const sendResult = await group.sendMsg(async (b) => {
             for (const segment of payload.message) {
                 if (segment.type === 'text') {

@@ -11,15 +11,19 @@ import { convert } from '@app/common/silk';
 
 export const send_private_msg = defineAction(
     'send_private_msg',
-    z
-        .object({
-            user_id: zOneBotInputUin,
-        })
-        .and(zOneBotInputMessage),
+    z.object({
+        user_id: zOneBotInputUin,
+    }).and(zOneBotInputMessage),
     async (ctx, payload) => {
         const friend = await ctx.bot.getFriend(payload.user_id);
         if (!friend) {
             return Failed(404, 'Friend not found');
+        }
+        const firstSegment = payload.message[0];
+        if (firstSegment.type === 'poke') {
+            // TODO: Implement poke
+        } else if (firstSegment.type === 'node') {
+            // TODO: Implement send forward
         }
         const sendResult = await friend.sendMsg(async (b) => {
             for (const segment of payload.message) {
