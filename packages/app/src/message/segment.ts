@@ -80,17 +80,6 @@ export const zOneBotSendNodeSegment = z.object({
     data: z.union([zOneBotNodeExistentMessageData, zOneBotNodeCustomMessageData]),
 });
 
-export const zOneBotSendSegment = z.union([
-    zOneBotTextSegment,
-    zOneBotFaceSegment,
-    zOneBotSendRecordSegment,
-    zOneBotSendAtSegment,
-    zOneBotSendImageSegment,
-    zOneBotReplySegment,
-    zOneBotPokeSegment,
-    zOneBotSendNodeSegment,
-]);
-
 type DefineRecvSegment<T extends string, D> = { type: T; data: D };
 type RecvResourceGeneralData = { file: string; url: string };
 type DefineRecvResourceSegment<T extends string, Extra = unknown> = DefineRecvSegment<
@@ -129,4 +118,12 @@ export type OneBotRecvSegment =
     | OneBotPokeSegment
     | OneBotRecvForwardSegment;
 
-export type OneBotSendSegment = z.infer<typeof zOneBotSendSegment>;
+export type OneBotSendSegment =
+    | OneBotTextSegment
+    | OneBotFaceSegment
+    | OneBotSendRecordSegment
+    | OneBotSendAtSegment
+    | OneBotSendImageSegment
+    | OneBotReplySegment
+    | OneBotPokeSegment
+    | OneBotSendNodeSegment;

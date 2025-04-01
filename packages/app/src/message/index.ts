@@ -1,33 +1,53 @@
 import { decodeCQCode } from '@app/message/cqcode';
-import { OneBotSendSegment, zOneBotSendSegment } from '@app/message/segment';
+import {
+    OneBotSendSegment,
+    zOneBotFaceSegment,
+    zOneBotPokeSegment,
+    zOneBotReplySegment,
+    zOneBotSendAtSegment,
+    zOneBotSendImageSegment,
+    zOneBotSendNodeSegment,
+    zOneBotSendRecordSegment,
+    zOneBotTextSegment,
+} from '@app/message/segment';
 import { z } from 'zod';
 
-export const zOneBotInputSegments = z.union([
-    z.string(),
-    zOneBotSendSegment.transform((segment) => [segment]),
-    z.array(zOneBotSendSegment),
+export const zOneBotValidSegmentCombination = z.union([
+    z.array(
+        z.union([
+            zOneBotTextSegment,
+            zOneBotFaceSegment,
+            zOneBotSendAtSegment,
+            zOneBotSendImageSegment,
+            zOneBotReplySegment,
+        ])
+    ).min(1),
+    z.tuple([zOneBotSendRecordSegment]),
+    z.tuple([zOneBotPokeSegment]),
+    z.array(zOneBotSendNodeSegment).min(1),
 ]);
+export type OneBotValidSegmentCombination = z.infer<typeof zOneBotValidSegmentCombination>;
 
-export const zOneBotInputMessage = z.object({
-    message: zOneBotInputSegments,
-    auto_escape: z.boolean().default(false),
-}).transform<{ message: OneBotSendSegment[], auto_escape: boolean }>((payload) => {
-    if (typeof payload.message === 'string') {
-        if (payload.auto_escape) {
-            return {
-                message: [{ type: 'text', data: { text: payload.message } }],
-                auto_escape: true,
-            };
+export const zOneBotInputMessage = z
+    .object({
+        message: z.unknown(),
+        auto_escape: z.boolean().default(false),
+    })
+    .transform<{ message: OneBotSendSegment[]; auto_escape: boolean }>((payload) => {
+        let message;
+        if (typeof payload.message === 'string') {
+            if (payload.auto_escape) {
+                message = [{ type: 'text', data: { text: payload.message } }];
+            } else {
+                message = decodeCQCode(payload.message);
+            }
         } else {
-            return {
-                message: decodeCQCode(payload.message),
-                auto_escape: false,
-            };
+            if (Array.isArray(payload.message)) {
+                message = payload.message;
+            } else {
+                message = [payload.message];
+            }
         }
-    } else {
-        return {
-            message: payload.message,
-            auto_escape: payload.auto_escape,
-        };
-    }
-});
+        const parsed = zOneBotValidSegmentCombination.parse(message);
+        return { message: parsed, auto_escape: payload.auto_escape };
+    });

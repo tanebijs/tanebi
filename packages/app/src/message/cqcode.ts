@@ -1,4 +1,4 @@
-import { OneBotRecvSegment, OneBotSendSegment, zOneBotSendSegment } from '@app/message/segment';
+import { OneBotRecvSegment } from '@app/message/segment';
 
 const pattern = /\[CQ:(\w+)((,\w+=[^,\]]*)*)]/;
 
@@ -28,8 +28,8 @@ function convert(type: string, data: unknown) {
     return { type, data };
 }
 
-export function decodeCQCode(source: string): OneBotSendSegment[] {
-    const elements: Array<OneBotSendSegment> = [];
+export function decodeCQCode(source: string) {
+    const elements: Array<unknown> = [];
     let result: ReturnType<typeof from>;
     while ((result = from(source))) {
         const { type, data, capture } = result;
@@ -40,7 +40,7 @@ export function decodeCQCode(source: string): OneBotSendSegment[] {
                     data: { text: unescape(source.slice(0, capture.index)) },
                 });
             }
-            elements.push(zOneBotSendSegment.parse(convert(type, data)));
+            elements.push(convert(type, data));
             source = source.slice(capture.index + capture[0].length);
         }
 
