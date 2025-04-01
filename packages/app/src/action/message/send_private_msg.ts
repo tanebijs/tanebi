@@ -65,7 +65,7 @@ export const send_private_msg = defineAction(
                     const record = await resolveOneBotUrl(segment.data.file);
                     if (ctx.config.enableNtSilk) {
                         const { data, meta } = await convert(ctx, record);
-                        await b.record(data, meta.format.duration!);
+                        await b.record(data, Math.round(meta.format.duration!));
                     } else {
                         await b.record(record, 5);
                     }
