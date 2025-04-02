@@ -32,14 +32,16 @@ import { NTSilkBinding } from '@app/common/silk';
 import { send_msg } from '@app/action/message/send_msg';
 import { send_group_msg } from '@app/action/message/send_group_msg';
 import { send_private_msg } from '@app/action/message/send_private_msg';
+import { send_poke } from '@app/action/message/send_poke';
 
 export class OneBotApp {
     readonly projectDir = path.resolve(import.meta.dirname, '..');
     readonly logger: winston.Logger;
     readonly storage: AbstractStorage<unknown>;
     readonly actions = new ActionCollection(this, [
-        send_msg,
         send_group_msg,
+        send_msg,
+        send_poke,
         send_private_msg,
     ]);
     readonly adapters: OneBotNetworkAdapter<unknown>[];
