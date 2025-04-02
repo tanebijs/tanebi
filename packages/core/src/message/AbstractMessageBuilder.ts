@@ -1,4 +1,4 @@
-import { OutgoingSegment } from '@/entity';
+import { ImageSubType, OutgoingSegment } from '@/entity';
 import { Bot, faceCache, ForwardedMessagePacker, log } from '@/index';
 import { OutgoingMessage } from '@/internal/message/outgoing';
 
@@ -65,7 +65,7 @@ export abstract class AbstractMessageBuilder {
     /**
      * Append an image segment to the message
      */
-    abstract image(data: Uint8Array): Promise<void>;
+    abstract image(data: Uint8Array, subType?: ImageSubType, summary?: string): Promise<void>;
 
     /**
      * Append a record segment to the message
