@@ -92,6 +92,9 @@ export class OneBotApp {
         this.bot.onWarning((module, message, error) =>
             this.logger.warn(`${message} caused by ${error instanceof Error ? error.stack : error}`, { module })
         );
+        this.bot.onFatal((module, message, error) =>
+            this.logger.error(`${message} caused by ${error instanceof Error ? error.stack : error}`, { module })
+        );
 
         if (this.config.storage.location === 'database') {
             this.storage = new DatabaseStorage(this, this.config.storage);
