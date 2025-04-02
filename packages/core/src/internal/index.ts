@@ -151,4 +151,10 @@ export class BotContext {
         public signProvider: SignProvider,
     ) {
     }
+
+    async renewSsoLogic() {
+        this.ssoLogic.socket.destroy();
+        this.ssoLogic = new SsoLogic(this);
+        await this.ssoLogic.connectToMsfServer();
+    }
 }

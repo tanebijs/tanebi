@@ -8,6 +8,7 @@ import { TransEmp12_QrCodeState } from '@/internal/packet/login/wtlogin/TransEmp
 import { EventEmitter } from 'node:events';
 import { NapProtoDecodeStructType } from '@napneko/nap-proto-core';
 import { FaceDetail } from '@/internal/packet/oidb/0x9154_1';
+import { BUF0, BUF16 } from '@/internal/util/constants';
 
 /**
  * Symbol of the bot context
@@ -44,6 +45,7 @@ export class Bot {
         trace: [string, string]; // module, message
         info: [string, string]; // module, message
         warning: [string, string, unknown?]; // module, message, error
+        fatal: [string, string, unknown?]; // module, message, error
     }>();
     readonly [eventsDX] = new EventEmitter<{
         keystoreChange:             [Keystore];
@@ -494,9 +496,19 @@ export class Bot {
     async fastLogin() {
         try {
             await this.botOnline();
-        } catch {
-            await this.keyExchange();
-            await this.ntEasyLogin();
+        } catch(e) {
+            try {
+                this[log].emit('warning', 'Bot', 'Failed to go online, refreshing session', e);
+                await this[ctx].renewSsoLogic();
+                this[ctx].keystore.session.d2 = BUF0;
+                this[ctx].keystore.session.tgt = BUF0;
+                this[ctx].keystore.session.d2Key = BUF16;
+                await this.keyExchange();
+                await this.ntEasyLogin();
+            } catch(e2) {
+                this[log].emit('fatal', 'Bot', 'Still failed to re-login, please delete keystore.json and try again', e2);
+                process.exit(1);
+            }
         }
     }
 
@@ -813,6 +825,13 @@ export class Bot {
      */
     onWarning(listener: (module: string, message: string, error?: unknown) => void) {
         this[log].on('warning', listener);
+    }
+
+    /**
+     * Listen to fatal logs
+     */
+    onFatal(listener: (module: string, message: string, error?: unknown) => void) {
+        this[log].on('fatal', listener);
     }
     
     /**
