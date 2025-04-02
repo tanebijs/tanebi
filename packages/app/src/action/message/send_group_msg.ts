@@ -8,6 +8,7 @@ import { MessageStoreType, OutgoingMessageStore } from '@app/storage/types';
 import { PushMsgBody } from '@/internal/packet/message/PushMsg';
 import { PbSendMsg } from '@/internal/packet/message/PbSendMsg';
 import { convert } from '@app/common/silk';
+import { send_poke } from '@app/action/message/send_poke';
 
 export const send_group_msg = defineAction(
     'send_group_msg',
@@ -21,7 +22,10 @@ export const send_group_msg = defineAction(
         }
         const firstSegment = payload.message[0];
         if (firstSegment.type === 'poke') {
-            // TODO: Implement poke
+            return send_poke.handler(ctx, {
+                group_id: payload.group_id,
+                user_id: firstSegment.data.id,
+            });
         } else if (firstSegment.type === 'node') {
             // TODO: Implement send forward
         }

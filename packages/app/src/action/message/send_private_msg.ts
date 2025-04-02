@@ -8,6 +8,7 @@ import { z } from 'zod';
 import { PushMsgBody } from '@/internal/packet/message/PushMsg';
 import { PbSendMsg } from '@/internal/packet/message/PbSendMsg';
 import { convert } from '@app/common/silk';
+import { send_poke } from '@app/action/message/send_poke';
 
 export const send_private_msg = defineAction(
     'send_private_msg',
@@ -21,7 +22,9 @@ export const send_private_msg = defineAction(
         }
         const firstSegment = payload.message[0];
         if (firstSegment.type === 'poke') {
-            // TODO: Implement poke
+            return send_poke.handler(ctx, {
+                user_id: payload.user_id,
+            });
         } else if (firstSegment.type === 'node') {
             // TODO: Implement send forward
         }
