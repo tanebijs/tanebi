@@ -122,9 +122,9 @@ These APIs represent features that were not taken into consideration when OneBot
 | `mark_private_msg_as_read` | 🔴     |
 | `mark_group_msg_as_read`   | 🔴     |
 | `get_friend_msg_history`   | 🔴     |
-| `send_poke`                | 🟡     |
-| `friend_poke`              | 🟡     |
-| `group_poke`               | 🟡     |
+| `send_poke`                | 🟢     |
+| `friend_poke`              | 🟢     |
+| `group_poke`               | 🟢     |
 | `get_ai_record`            | 🔴     |
 | `get_ai_characters`        | 🔴     |
 | `send_group_ai_record`     | 🔴     |
