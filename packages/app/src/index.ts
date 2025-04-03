@@ -7,6 +7,7 @@ import {
     deserializeKeystore,
     DeviceInfo,
     fetchAppInfoFromSignUrl,
+    GroupMemberPermission,
     Keystore, MessageType,
     newDeviceInfo,
     newKeystore,
@@ -34,6 +35,8 @@ import { send_group_msg } from '@app/action/message/send_group_msg';
 import { send_private_msg } from '@app/action/message/send_private_msg';
 import { send_poke } from '@app/action/message/send_poke';
 import { delete_msg } from '@app/action/message/delete_msg';
+import { OneBotGroupMessageEvent, OneBotPrivateMessageEvent } from '@app/event/message';
+import { transformRecvMessage } from '@app/message/transform/recv';
 
 export class OneBotApp {
     readonly projectDir = path.resolve(import.meta.dirname, '..');
@@ -123,7 +126,7 @@ export class OneBotApp {
                 return;
             }
             try {
-                await this.storage.insert({
+                const id = await this.storage.insert({
                     createdAt: Math.round(Date.now() / 1000),
                     storeType: MessageStoreType.PushMsgBody,
                     type: MessageType.PrivateMessage,
@@ -132,8 +135,25 @@ export class OneBotApp {
                     clientSequence: message[rawMessage].clientSequence,
                     body: Buffer.from(message[rawMessage][blob]),
                 });
+                await Promise.all(
+                    this.adapters.map((adapter) => adapter.emitEvent(new OneBotPrivateMessageEvent(
+                        this,
+                        id,
+                        friend.uin,
+                        message.content.toPreviewString(),
+                        12, // TODO: Get font info
+                        transformRecvMessage(message),
+                        'friend',
+                        {
+                            user_id: friend.uin,
+                            nickname: message[rawMessage].senderName,
+                            sex: '', // TODO: Get gender from friend indo
+                            age: 0, // TODO: Get age from friend info
+                        }
+                    )))
+                );
             } catch (e) {
-                this.logger.error(`Failed to save message: ${e}`, { module: 'Database' });
+                this.logger.error(`Failed to process message: ${e}`);
             }
         });
 
@@ -142,7 +162,7 @@ export class OneBotApp {
                 return;
             }
             try {
-                await this.storage.insert({
+                const id = await this.storage.insert({
                     createdAt: Math.round(Date.now() / 1000),
                     storeType: MessageStoreType.PushMsgBody,
                     type: MessageType.GroupMessage,
@@ -151,8 +171,32 @@ export class OneBotApp {
                     clientSequence: null,
                     body: Buffer.from(message[rawMessage][blob]),
                 });
+                await Promise.all(
+                    this.adapters.map((adapter) => adapter.emitEvent(new OneBotGroupMessageEvent(
+                        this,
+                        id,
+                        sender.uin,
+                        message.content.toPreviewString(),
+                        12, // TODO: Get font info
+                        transformRecvMessage(message),
+                        'normal',
+                        group.uin,
+                        {
+                            user_id: sender.uin,
+                            nickname: message[rawMessage].senderName,
+                            card: sender.card ?? '',
+                            area: '', // TODO: Get area from member info
+                            level: '', // TODO: Get level from member info
+                            role: sender.permission === GroupMemberPermission.Owner ? 'owner' :
+                                sender.permission === GroupMemberPermission.Admin ? 'admin' : 'member',
+                            title: sender.specialTitle ?? '',
+                            sex: '', // TODO: Get gender from member indo
+                            age: 0, // TODO: Get age from member info
+                        },
+                    )))
+                );
             } catch (e) {
-                this.logger.error(`Failed to save message: ${e}`, { module: 'Database' });
+                this.logger.error(`Failed to process message: ${e}`);
             }
         });
     }

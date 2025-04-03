@@ -94,6 +94,8 @@ export type OneBotFaceSegment = z.infer<typeof zOneBotFaceSegment>;
 export type OneBotSendRecordSegment = z.infer<typeof zOneBotSendRecordSegment>;
 export type OneBotRecvRecordSegment = DefineRecvResourceSegment<'record'>;
 
+export type OneBotRecvVideoSegment = DefineRecvResourceSegment<'video'>;
+
 export type OneBotSendAtSegment = z.infer<typeof zOneBotSendAtSegment>;
 export type OneBotRecvAtSegment = DefineRecvSegment<'at', z.infer<typeof zOneBotAtData>>;
 
@@ -108,15 +110,19 @@ export type OneBotRecvForwardSegment = DefineRecvSegment<'forward', { id: string
 
 export type OneBotSendNodeSegment = z.infer<typeof zOneBotSendNodeSegment>;
 
+export type OneBotRecvJsonSegment = { type: 'json', data: { data: string } };
+
 export type OneBotRecvSegment =
     | OneBotTextSegment
     | OneBotFaceSegment
     | OneBotRecvRecordSegment
+    | OneBotRecvVideoSegment
     | OneBotRecvAtSegment
     | OneBotRecvImageSegment
     | OneBotReplySegment
     | OneBotPokeSegment
-    | OneBotRecvForwardSegment;
+    | OneBotRecvForwardSegment
+    | OneBotRecvJsonSegment;
 
 export type OneBotSendSegment =
     | OneBotTextSegment
