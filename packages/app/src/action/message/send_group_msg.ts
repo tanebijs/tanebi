@@ -5,7 +5,7 @@ import { zOneBotInputUin } from '@app/common/types';
 import { zOneBotInputMessage } from '@app/message';
 import { MessageStoreType, OutgoingMessageStore } from '@app/storage/types';
 import { send_poke } from '@app/action/message/send_poke';
-import { transformSendMessage } from '@app/message/transform';
+import { transformSendMessage } from '@app/message/transform/send';
 
 export const send_group_msg = defineAction(
     'send_group_msg',
