@@ -51,3 +51,4 @@ export const zOneBotInputMessage = z
         const parsed = zOneBotValidSegmentCombination.parse(message);
         return { message: parsed, auto_escape: payload.auto_escape };
     });
+export type OneBotInputMessage = z.infer<typeof zOneBotInputMessage>;
