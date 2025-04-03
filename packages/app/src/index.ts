@@ -33,12 +33,14 @@ import { send_msg } from '@app/action/message/send_msg';
 import { send_group_msg } from '@app/action/message/send_group_msg';
 import { send_private_msg } from '@app/action/message/send_private_msg';
 import { send_poke } from '@app/action/message/send_poke';
+import { delete_msg } from '@app/action/message/delete_msg';
 
 export class OneBotApp {
     readonly projectDir = path.resolve(import.meta.dirname, '..');
     readonly logger: winston.Logger;
     readonly storage: AbstractStorage<unknown>;
     readonly actions = new ActionCollection(this, [
+        delete_msg,
         send_group_msg,
         send_msg,
         send_poke,
