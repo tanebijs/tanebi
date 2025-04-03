@@ -14,7 +14,7 @@ import { z } from 'zod';
 
 export const zOneBotValidSegmentCombination = z.union([
     z.array(
-        z.union([
+        z.discriminatedUnion('type', [
             zOneBotTextSegment,
             zOneBotFaceSegment,
             zOneBotSendAtSegment,
