@@ -37,6 +37,7 @@ import { send_poke } from '@app/action/message/send_poke';
 import { delete_msg } from '@app/action/message/delete_msg';
 import { OneBotGroupMessageEvent, OneBotPrivateMessageEvent } from '@app/event/message';
 import { transformRecvMessage } from '@app/message/transform/recv';
+import { get_msg } from '@app/action/message/get_msg';
 
 export class OneBotApp {
     readonly projectDir = path.resolve(import.meta.dirname, '..');
@@ -44,6 +45,7 @@ export class OneBotApp {
     readonly storage: AbstractStorage<unknown>;
     readonly actions = new ActionCollection(this, [
         delete_msg,
+        get_msg,
         send_group_msg,
         send_msg,
         send_poke,

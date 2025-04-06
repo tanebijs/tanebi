@@ -36,6 +36,11 @@ export const eventsDX = Symbol('Internal events');
 export const faceCache = Symbol('Face cache');
 
 /**
+ * Symbol to access message dispatcher
+ */
+export const dispatcher = Symbol('Message dispatcher');
+
+/**
  * The Bot object. Create an instance by calling `Bot.create`.
  */
 export class Bot {
@@ -75,9 +80,9 @@ export class Bot {
                                     // group, sequence, member, reactionCode, isAdd, count
     }>();
     readonly [faceCache] = new Map<string, NapProtoDecodeStructType<typeof FaceDetail.fields>>();
+    readonly [dispatcher] = new MessageDispatcher(this);
     private readonly friendCache;
     private readonly groupCache;
-    private readonly messageDispatcher;
     private readonly globalMsg: MessageDispatcher['global'];
 
     /**
@@ -146,13 +151,12 @@ export class Bot {
             (bot, data) => new BotGroup(bot, data),
         );
 
-        this.messageDispatcher = new MessageDispatcher(this);
-        this.globalMsg = this.messageDispatcher.global;
+        this.globalMsg = this[dispatcher].global;
 
         this[ctx].events.on('messagePush', (data) => {
             try {
                 if (data) {
-                    this.messageDispatcher.emit(data);
+                    this[dispatcher].emit(data);
                 }
             } catch (e) {
                 this[log].emit('warning', 'Bot', 'Failed to handle message', e);
@@ -854,3 +858,5 @@ export * from './common';
 export * from './entity';
 export * from './message';
 export * from './util';
+
+export { parsePushMsgBody } from '@/internal/message/incoming';

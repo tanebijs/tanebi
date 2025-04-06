@@ -166,7 +166,7 @@ export class MessageDispatcher {
         }
     }
 
-    private async resolveContact(incoming: IncomingMessage) {
+    async resolveContact(incoming: IncomingMessage) {
         let contact: BotContact | undefined;
         contact = await (incoming.type === MessageType.PrivateMessage
             ? this.bot.getFriend(incoming.senderUin === this.bot.uin ? incoming.targetUin : incoming.senderUin)
