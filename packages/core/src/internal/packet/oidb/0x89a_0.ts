@@ -6,7 +6,7 @@ export const MuteAllMembers = new OidbSvcContract(
     {
         groupUin: ProtoField(1, ScalarType.UINT32),
         body: ProtoField(2, () => ({
-            duration: ProtoField(17, ScalarType.UINT32),
+            duration: ProtoField(17, ScalarType.UINT32, true),
         })),
     }
 );

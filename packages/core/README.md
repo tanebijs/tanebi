@@ -70,7 +70,6 @@ This is the core library of the project. It provides the basic functions of the 
 - [x] Handle group invitation
 - [ ] Get client key
 - [ ] Get cookies
-[^5]: Unmuting all members is currently unavailable. This is a **bug** and I'm working on it.
 </details>
 
 <details>
