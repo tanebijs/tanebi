@@ -60,9 +60,12 @@ export async function convert(ctx: OneBotApp, record: Buffer) {
     const inputPath = path.join(ctx.userDataDir, `temp-${uuid}.${audioMetadata.format.container!}`);
     const outputPath = path.join(ctx.userDataDir, `temp-${uuid}.ntsilk`);
     await fsp.writeFile(inputPath, record);
-    await ctx.ntSilkBinding!.execute(inputPath, outputPath);
-    const silk = await fsp.readFile(outputPath);
-    await fsp.unlink(inputPath);
-    await fsp.unlink(outputPath);
-    return { data: silk, meta: audioMetadata };
+    try {
+        await ctx.ntSilkBinding!.execute(inputPath, outputPath);
+        const silk = await fsp.readFile(outputPath);
+        await fsp.unlink(outputPath);
+        return { data: silk, meta: audioMetadata };
+    } finally {
+        await fsp.unlink(inputPath);
+    }
 }
