@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { defineAction, Failed, Ok } from '@app/action';
 import { zOneBotInputUin } from '@app/common/types';
 import { zOneBotSendNodeSegment } from '@app/message/segment';
-import { transformForwardMessages } from '@app/message/transform/forward';
+import { encodeForwardId, transformForwardMessages } from '@app/message/transform/forward';
 import { MessageStoreType, OutgoingMessageStore } from '@app/storage/types';
 
 export const send_group_forward_msg = defineAction(
@@ -40,7 +40,7 @@ export const send_group_forward_msg = defineAction(
         });
         return Ok({
             message_id: dbMsgId,
-            forward_id: resId,
+            forward_id: encodeForwardId(ctx.bot.uid, resId),
         });
     }
 );

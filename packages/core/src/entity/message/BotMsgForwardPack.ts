@@ -23,7 +23,7 @@ export type ForwardedMessageBody = {
 export class BotMsgForwardPack implements BotMsgType {
     constructor(
         private readonly messageType: MessageType,
-        private readonly senderUid: string,
+        readonly senderUid: string,
         private readonly segment: IncomingSegmentOf<'forward'>,
         private readonly bot: Bot,
     ) {}

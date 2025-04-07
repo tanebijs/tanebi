@@ -1,5 +1,6 @@
 import { OneBotApp } from '@app/index';
 import { OneBotRecvSegment } from '@app/message/segment';
+import { encodeForwardId } from '@app/message/transform/forward';
 import { DispatchedMessageBody, MessageType } from 'tanebi';
 
 export async function transformRecvMessage(
@@ -91,7 +92,7 @@ function transformRecvMessageBody(
             {
                 type: 'forward',
                 data: {
-                    id: msg.content.resId,
+                    id: encodeForwardId(msg.content.senderUid, msg.content.resId),
                 },
             },
         ];

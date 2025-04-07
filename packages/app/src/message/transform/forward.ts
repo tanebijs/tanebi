@@ -92,3 +92,12 @@ export async function transformNode(
         }
     }
 }
+
+export function encodeForwardId(senderUid: string, resId: string) {
+    return `${senderUid}:${resId}`;
+}
+
+export function decodeForwardId(forwardId: string) {
+    const [senderUid, resId] = forwardId.split(':');
+    return { senderUid, resId };
+}
