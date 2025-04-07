@@ -12,16 +12,17 @@ import {
 } from '@app/message/segment';
 import { z } from 'zod';
 
+export const zOneBotBubbleSegment = z.discriminatedUnion('type', [
+    zOneBotTextSegment,
+    zOneBotFaceSegment,
+    zOneBotSendAtSegment,
+    zOneBotSendImageSegment,
+    zOneBotReplySegment,
+]);
+export type OneBotBubbleSegment = z.infer<typeof zOneBotBubbleSegment>;
+
 export const zOneBotValidSegmentCombination = z.union([
-    z.array(
-        z.discriminatedUnion('type', [
-            zOneBotTextSegment,
-            zOneBotFaceSegment,
-            zOneBotSendAtSegment,
-            zOneBotSendImageSegment,
-            zOneBotReplySegment,
-        ])
-    ).min(1),
+    z.array(zOneBotBubbleSegment).min(1),
     z.tuple([zOneBotSendRecordSegment]),
     z.tuple([zOneBotPokeSegment]),
     z.array(zOneBotSendNodeSegment).min(1),

@@ -6,6 +6,7 @@ import { zOneBotInputMessage } from '@app/message';
 import { MessageStoreType, OutgoingMessageStore } from '@app/storage/types';
 import { send_poke } from '@app/action/message/send_poke';
 import { transformSendMessage } from '@app/message/transform/send';
+import { send_group_forward_msg } from '@app/action/message/send_group_forward_msg';
 
 export const send_group_msg = defineAction(
     'send_group_msg',
@@ -24,7 +25,10 @@ export const send_group_msg = defineAction(
                 user_id: firstSegment.data.id,
             });
         } else if (firstSegment.type === 'node') {
-            // TODO: Implement send forward
+            return send_group_forward_msg.handler(ctx, {
+                group_id: payload.group_id,
+                messages: payload.message,
+            });
         }
         const sendResult = await group.sendMsg(b => transformSendMessage(ctx, group, b, payload.message));
         const dbMsgId = await ctx.storage.insert({

@@ -6,6 +6,7 @@ import { zOneBotInputMessage } from '@app/message';
 import { MessageStoreType, OutgoingMessageStore } from '@app/storage/types';
 import { send_poke } from '@app/action/message/send_poke';
 import { transformSendMessage } from '@app/message/transform/send';
+import { send_private_forward_msg } from '@app/action/message/send_private_forward_msg';
 
 export const send_private_msg = defineAction(
     'send_private_msg',
@@ -23,7 +24,10 @@ export const send_private_msg = defineAction(
                 user_id: payload.user_id,
             });
         } else if (firstSegment.type === 'node') {
-            // TODO: Implement send forward
+            return send_private_forward_msg.handler(ctx, {
+                user_id: payload.user_id,
+                messages: payload.message,
+            });
         }
         const sendResult = await friend.sendMsg(b => transformSendMessage(ctx, friend, b, payload.message));
         const dbMsgId = await ctx.storage.insert({

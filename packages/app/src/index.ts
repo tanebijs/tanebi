@@ -38,6 +38,9 @@ import { delete_msg } from '@app/action/message/delete_msg';
 import { OneBotGroupMessageEvent, OneBotPrivateMessageEvent } from '@app/event/message';
 import { transformRecvMessage } from '@app/message/transform/recv';
 import { get_msg } from '@app/action/message/get_msg';
+import { send_forward_msg } from '@app/action/message/send_forward_msg';
+import { send_group_forward_msg } from '@app/action/message/send_group_forward_msg';
+import { send_private_forward_msg } from '@app/action/message/send_private_forward_msg';
 
 export class OneBotApp {
     readonly projectDir = path.resolve(import.meta.dirname, '..');
@@ -46,9 +49,12 @@ export class OneBotApp {
     readonly actions = new ActionCollection(this, [
         delete_msg,
         get_msg,
+        send_forward_msg,
+        send_group_forward_msg,
         send_group_msg,
         send_msg,
         send_poke,
+        send_private_forward_msg,
         send_private_msg,
     ]);
     readonly adapters: OneBotNetworkAdapter<unknown>[];
