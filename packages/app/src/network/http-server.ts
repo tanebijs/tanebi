@@ -59,8 +59,10 @@ export class OneBotHttpServerAdapter extends OneBotNetworkAdapter<HttpServerAdap
         this.expressApp.all('/:endpoint', async (req, res) => {
             const endpoint = req.params.endpoint;
             const payload = req.method === 'GET' ? req.query : req.body;
+            const start = Date.now();
             const response = await this.app.actions.handleAction(endpoint, payload);
-            this.logger.info(`${req.ip} -> ${req.path} (${response.retcode === 404 ? 'Not Found' : response.retcode})`);
+            const end = Date.now();
+            this.logger.info(`${req.ip} -> ${req.path} (${response.retcode === 0 ? 'OK' : response.retcode} ${end - start}ms)`);
             res.status(response.retcode >= 400 && response.retcode < 500 ? response.retcode : 200).json(response);
         });
 
