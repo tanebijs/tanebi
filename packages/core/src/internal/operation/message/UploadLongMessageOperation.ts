@@ -2,6 +2,7 @@ import { buildForwarded, OutgoingForwardedMessage } from '@/internal/message/out
 import { defineOperation } from '@/internal/operation/OperationBase';
 import { SsoSendLongMsg, SsoSendLongMsgResponse } from '@/internal/packet/message/action/SsoSendLongMsg';
 import { LongMessagePayload } from '@/internal/packet/message/forward/LongMessagePayload';
+import { PushMsgBody } from '@/internal/packet/message/PushMsg';
 import { gzipSync } from 'node:zlib';
 
 export const UploadLongMessageOperation = defineOperation(
@@ -12,7 +13,7 @@ export const UploadLongMessageOperation = defineOperation(
             actions: [{
                 command: 'MultiMsg',
                 data: {
-                    msgs: msgs.map(buildForwarded),
+                    msgs: msgs.map(buildForwarded).map(msg => PushMsgBody.encode(msg)),
                 },
             }]
         });
