@@ -50,6 +50,7 @@ export async function transformSendMessage(
                 const { data, meta } = await convert(ctx, record);
                 await b.record(data, Math.round(meta.format.duration!));
             } else {
+                ctx.logger.warn('Silk conversion is disabled, sending original file, may fail');
                 await b.record(record, 5);
             }
         } else if (segment.type === 'reply') {
