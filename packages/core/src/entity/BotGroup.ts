@@ -18,9 +18,7 @@ interface BotGroupDataBinding {
 }
 
 export type BotGroupMessage = {
-    sequence: number;
     sender: BotGroupMember;
-    repliedSequence?: number;
     [rawMessage]: GroupMessage;
 } & DispatchedMessage;
 

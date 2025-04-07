@@ -16,9 +16,7 @@ interface BotFriendDataBinding {
 }
 
 export type BotFriendMessage = {
-    sequence: number;
     isSelf: boolean;
-    repliedSequence?: number;
     [rawMessage]: PrivateMessage;
 } & DispatchedMessage;
 

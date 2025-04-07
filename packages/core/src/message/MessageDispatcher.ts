@@ -49,6 +49,8 @@ export type DispatchedMessageBody =
       };
 
 export type DispatchedMessage = DispatchedMessageBody & {
+    sequence: number;
+    repliedSequence?: number;
     messageUid: bigint;
 };
 
