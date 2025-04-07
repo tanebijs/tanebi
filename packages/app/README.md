@@ -82,8 +82,8 @@ These APIs are not defined in the OneBot 11 standard, but are supported by [go-c
 | `get_online_clients`         | 🔴     |
 | `delete_friend`              | 🔴     |
 | `mark_msg_as_read`           | 🔴     |
-| `send_group_forward_msg`     | 🟡     |
-| `send_private_forward_msg`   | 🟡     |
+| `send_group_forward_msg`     | 🟢     |
+| `send_private_forward_msg`   | 🟢     |
 | `get_group_msg_history`      | 🔴     |
 | `ocr_image`                  | 🔴     |
 | `get_group_system_msg`       | 🔴     |
@@ -118,7 +118,7 @@ These APIs represent features that were not taken into consideration when OneBot
 | API                        | Status |
 | -------------------------- | ------ |
 | `set_msg_emoji_like`       | 🟡     |
-| `send_forward_msg`         | 🟡     |
+| `send_forward_msg`         | 🟢     |
 | `mark_private_msg_as_read` | 🔴     |
 | `mark_group_msg_as_read`   | 🔴     |
 | `get_friend_msg_history`   | 🔴     |
