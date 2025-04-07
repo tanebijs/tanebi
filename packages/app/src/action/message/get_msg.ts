@@ -42,7 +42,13 @@ export const get_msg = defineAction(
             if (!dispatched) {
                 return Failed(404, 'Message type not supported');
             }
-            const transformed = transformRecvMessage(dispatched);
+            const transformed = await transformRecvMessage(
+                ctx,
+                message.type,
+                message.peerUin,
+                dispatched,
+                restored.repliedSequence
+            );
             return Ok({
                 time: message.createdAt,
                 message_type: message.type === MessageType.PrivateMessage ? 'private' : 'group',
@@ -54,7 +60,8 @@ export const get_msg = defineAction(
                     sex: 'unknown',
                     age: 0,
                 },
-                message: ctx.config.messageReportType === 'array' ? transformed : transformed.map(encodeCQCode).join(''),
+                message:
+                    ctx.config.messageReportType === 'array' ? transformed : transformed.map(encodeCQCode).join(''),
             });
         }
     }

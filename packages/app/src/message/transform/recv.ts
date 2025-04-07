@@ -1,7 +1,36 @@
+import { OneBotApp } from '@app/index';
 import { OneBotRecvSegment } from '@app/message/segment';
-import { DispatchedMessageBody } from 'tanebi';
+import { DispatchedMessageBody, MessageType } from 'tanebi';
 
-export function transformRecvMessage(msg: DispatchedMessageBody): OneBotRecvSegment[] {
+export async function transformRecvMessage(
+    ctx: OneBotApp,
+    type: MessageType,
+    peerUin: number,
+    msg: DispatchedMessageBody,
+    repliedSequence?: number,
+): Promise<OneBotRecvSegment[]> {
+    let repliedId: number | undefined;
+    if (repliedSequence) {
+        const replied = await ctx.storage.getByPeerAndSequence(type, peerUin, repliedSequence);
+        if (replied) {
+            repliedId = replied.id;
+        }
+    }
+    const segments = transformRecvMessageBody(msg);
+    if (repliedId) {
+        segments.unshift({
+            type: 'reply',
+            data: {
+                id: repliedId,
+            }
+        });
+    }
+    return segments;
+}
+
+function transformRecvMessageBody(
+    msg: DispatchedMessageBody,
+): OneBotRecvSegment[] {
     if (msg.type === 'bubble') {
         return msg.content.segments.map<OneBotRecvSegment>((s) => {
             if (s.type === 'text') {

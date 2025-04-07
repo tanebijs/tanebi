@@ -137,6 +137,13 @@ export class OneBotApp {
                     clientSequence: message[rawMessage].clientSequence,
                     body: Buffer.from(message[rawMessage][blob]),
                 });
+                const recvMessage = await transformRecvMessage(
+                    this,
+                    MessageType.PrivateMessage,
+                    friend.uin,
+                    message,
+                    message.repliedSequence
+                );
                 await Promise.all(
                     this.adapters.map((adapter) => adapter.emitEvent(new OneBotPrivateMessageEvent(
                         this,
@@ -144,7 +151,7 @@ export class OneBotApp {
                         friend.uin,
                         message.content.toPreviewString(),
                         12, // TODO: Get font info
-                        transformRecvMessage(message),
+                        recvMessage,
                         'friend',
                         {
                             user_id: friend.uin,
@@ -173,6 +180,13 @@ export class OneBotApp {
                     clientSequence: null,
                     body: Buffer.from(message[rawMessage][blob]),
                 });
+                const recvMessage = await transformRecvMessage(
+                    this,
+                    MessageType.GroupMessage,
+                    group.uin,
+                    message,
+                    message.repliedSequence
+                );
                 await Promise.all(
                     this.adapters.map((adapter) => adapter.emitEvent(new OneBotGroupMessageEvent(
                         this,
@@ -180,7 +194,7 @@ export class OneBotApp {
                         sender.uin,
                         message.content.toPreviewString(),
                         12, // TODO: Get font info
-                        transformRecvMessage(message),
+                        recvMessage,
                         'normal',
                         group.uin,
                         {
