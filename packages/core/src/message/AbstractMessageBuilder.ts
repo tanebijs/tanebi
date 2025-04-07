@@ -1,6 +1,6 @@
 import { ImageSubType, OutgoingSegment } from '@/entity';
 import { Bot, faceCache, ForwardedMessagePacker, log } from '@/index';
-import { OutgoingMessage } from '@/internal/message/outgoing';
+import { OutgoingMessage, OutgoingSegmentOf } from '@/internal/message/outgoing';
 
 export abstract class AbstractMessageBuilder {
     protected segments: OutgoingSegment[] = [];
@@ -75,7 +75,7 @@ export abstract class AbstractMessageBuilder {
     /**
      * Append a forward segment to the message
      */
-    abstract forward(packMsg: (p: ForwardedMessagePacker) => void | Promise<void>): Promise<void>;
+    abstract forward(packMsg: (p: ForwardedMessagePacker) => void | Promise<void>): Promise<OutgoingSegmentOf<'forward'>>;
 
     /**
      * Build the message

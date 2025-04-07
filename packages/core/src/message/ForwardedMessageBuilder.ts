@@ -1,4 +1,4 @@
-import { Bot, ctx, ImageSubType, log } from '@/index';
+import { Bot, ctx, ImageSubType, log, OutgoingSegmentOf } from '@/index';
 import { AbstractMessageBuilder, ForwardedMessagePacker } from '.';
 import { OutgoingForwardedMessage } from '@/internal/message/outgoing/forwarded';
 import { MessageType } from '@/internal/message';
@@ -29,10 +29,12 @@ export class ForwardedMessageBuilder extends AbstractMessageBuilder {
         });
     }
 
-    override async forward(packMsg: (p: ForwardedMessagePacker) => void | Promise<void>): Promise<void> {
+    override async forward(packMsg: (p: ForwardedMessagePacker) => void | Promise<void>): Promise<OutgoingSegmentOf<'forward'>> {
         const packer = new ForwardedMessagePacker(this.bot);
         await packMsg(packer);
-        this.segments.push(await packer.pack());
+        const pack = await packer.pack();
+        this.segments.push(pack);
+        return pack;
     }
 
     override async record(): Promise<void> {

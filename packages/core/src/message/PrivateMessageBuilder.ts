@@ -2,7 +2,7 @@ import { BotFriendMessage } from '@/entity';
 import { AbstractMessageBuilder } from './AbstractMessageBuilder';
 import { MessageType } from '@/internal/message';
 import { ImageSubType } from '@/internal/message/incoming/segment/image';
-import { OutgoingPrivateMessage, ReplyInfo } from '@/internal/message/outgoing';
+import { OutgoingPrivateMessage, OutgoingSegmentOf, ReplyInfo } from '@/internal/message/outgoing';
 import { getImageMetadata } from '@/internal/util/media/image';
 import { ForwardedMessagePacker, rawMessage } from '@/message';
 import { Bot, ctx, log } from '@/index';
@@ -15,11 +15,7 @@ export class PrivateMessageBuilder extends AbstractMessageBuilder {
     replyInfo?: ReplyInfo;
     repliedClientSequence?: number;
 
-    constructor(
-        protected readonly friendUin: number,
-        protected readonly friendUid: string,
-        bot: Bot,
-    ) {
+    constructor(protected readonly friendUin: number, protected readonly friendUid: string, bot: Bot) {
         super(bot);
     }
 
@@ -38,29 +34,26 @@ export class PrivateMessageBuilder extends AbstractMessageBuilder {
         const imageMeta = getImageMetadata(data);
         this.bot[log].emit('trace', 'PrivateMessageBuilder', `Prepare to upload image ${JSON.stringify(imageMeta)}`);
         const uploadResp = await this.bot[ctx].ops.call(
-            'uploadPrivateImage', 
+            'uploadPrivateImage',
             this.friendUid,
             imageMeta,
             subType ?? ImageSubType.Picture,
-            summary,
+            summary
         );
         await this.bot[ctx].highwayLogic.uploadImage(data, imageMeta, uploadResp, MessageType.PrivateMessage);
         this.segments.push({
             type: 'image',
             msgInfo: uploadResp.upload!.msgInfo!,
-            compatFace: uploadResp.upload?.compatQMsg ? CustomFaceElement.decode(uploadResp.upload.compatQMsg) : undefined,
+            compatFace: uploadResp.upload?.compatQMsg
+                ? CustomFaceElement.decode(uploadResp.upload.compatQMsg)
+                : undefined,
         });
     }
 
     override async record(data: Buffer, duration: number): Promise<void> {
         const recordMeta = getGeneralMetadata(data);
         this.bot[log].emit('trace', 'PrivateMessageBuilder', `Prepare to upload record ${JSON.stringify(recordMeta)}`);
-        const uploadResp = await this.bot[ctx].ops.call(
-            'uploadPrivateRecord',
-            this.friendUid,
-            recordMeta,
-            duration,
-        );
+        const uploadResp = await this.bot[ctx].ops.call('uploadPrivateRecord', this.friendUid, recordMeta, duration);
         await this.bot[ctx].highwayLogic.uploadRecord(data, recordMeta, uploadResp);
         this.segments.push({
             type: 'record',
@@ -68,10 +61,14 @@ export class PrivateMessageBuilder extends AbstractMessageBuilder {
         });
     }
 
-    override async forward(packMsg: (p: ForwardedMessagePacker) => void | Promise<void>): Promise<void> {
+    override async forward(
+        packMsg: (p: ForwardedMessagePacker) => void | Promise<void>
+    ): Promise<OutgoingSegmentOf<'forward'>> {
         const packer = new ForwardedMessagePacker(this.bot);
         await packMsg(packer);
-        this.segments.push(await packer.pack());
+        const pack = await packer.pack();
+        this.segments.push(pack);
+        return pack;
     }
 
     override build(clientSequence: number): OutgoingPrivateMessage {

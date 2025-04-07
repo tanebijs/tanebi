@@ -2,7 +2,7 @@ import { BotGroupMember, BotGroupMessage } from '@/entity';
 import { AbstractMessageBuilder } from './AbstractMessageBuilder';
 import { MessageType } from '@/internal/message';
 import { ImageSubType } from '@/internal/message/incoming/segment/image';
-import { OutgoingGroupMessage, ReplyInfo } from '@/internal/message/outgoing';
+import { OutgoingGroupMessage, OutgoingSegmentOf, ReplyInfo } from '@/internal/message/outgoing';
 import { getImageMetadata } from '@/internal/util/media/image';
 import { ForwardedMessagePacker, rawMessage } from '@/message';
 import { Bot, ctx, log } from '@/index';
@@ -17,17 +17,17 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
     constructor(private readonly groupUin: number, bot: Bot) {
         super(bot);
     }
-    
+
     /**
      * Mention a member in the group
      * @param member The member to mention
      */
     mention(member: BotGroupMember) {
         this.segments.push({
-            type: 'mention', 
-            uin: member.uin, 
-            uid: member.uid, 
-            name: '@' + (member.card || member.nickname) 
+            type: 'mention',
+            uin: member.uin,
+            uid: member.uid,
+            name: '@' + (member.card || member.nickname),
         });
     }
 
@@ -58,34 +58,31 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
             elements: message[rawMessage][rawElems],
         };
     }
-    
+
     override async image(data: Buffer, subType?: ImageSubType, summary?: string): Promise<void> {
         const imageMeta = getImageMetadata(data);
         this.bot[log].emit('trace', 'GroupMessageBuilder', `Prepare to upload image ${JSON.stringify(imageMeta)}`);
         const uploadResp = await this.bot[ctx].ops.call(
-            'uploadGroupImage', 
+            'uploadGroupImage',
             this.groupUin,
             imageMeta,
             subType ?? ImageSubType.Picture,
-            summary,
+            summary
         );
         await this.bot[ctx].highwayLogic.uploadImage(data, imageMeta, uploadResp, MessageType.GroupMessage);
         this.segments.push({
             type: 'image',
             msgInfo: uploadResp.upload!.msgInfo!,
-            compatFace: uploadResp.upload?.compatQMsg ? CustomFaceElement.decode(uploadResp.upload.compatQMsg) : undefined,
+            compatFace: uploadResp.upload?.compatQMsg
+                ? CustomFaceElement.decode(uploadResp.upload.compatQMsg)
+                : undefined,
         });
     }
 
     override async record(data: Buffer, duration: number): Promise<void> {
         const recordMeta = getGeneralMetadata(data);
         this.bot[log].emit('trace', 'GroupMessageBuilder', `Prepare to upload record ${JSON.stringify(recordMeta)}`);
-        const uploadResp = await this.bot[ctx].ops.call(
-            'uploadGroupRecord',
-            this.groupUin,
-            recordMeta,
-            duration,
-        );
+        const uploadResp = await this.bot[ctx].ops.call('uploadGroupRecord', this.groupUin, recordMeta, duration);
         await this.bot[ctx].highwayLogic.uploadRecord(data, recordMeta, uploadResp);
         this.segments.push({
             type: 'record',
@@ -93,10 +90,14 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
         });
     }
 
-    override async forward(packMsg: (p: ForwardedMessagePacker) => void | Promise<void>): Promise<void> {
+    override async forward(
+        packMsg: (p: ForwardedMessagePacker) => void | Promise<void>
+    ): Promise<OutgoingSegmentOf<'forward'>> {
         const packer = new ForwardedMessagePacker(this.bot, this.groupUin);
         await packMsg(packer);
-        this.segments.push(await packer.pack());
+        const pack = await packer.pack();
+        this.segments.push(pack);
+        return pack;
     }
 
     override build(clientSequence: number): OutgoingGroupMessage {
