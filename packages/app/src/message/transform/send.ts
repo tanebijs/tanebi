@@ -46,7 +46,7 @@ export async function transformSendMessage(
             }
         } else if (segment.type === 'record') {
             const record = await resolveOneBotUrl(segment.data.file);
-            if (ctx.config.enableNtSilk) {
+            if (ctx.ntSilkBinding) {
                 const { data, meta } = await convert(ctx, record);
                 await b.record(data, Math.round(meta.format.duration!));
             } else {
