@@ -19,6 +19,7 @@
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
+    "start": "tsx src/index.ts",
     "gen-drizzle": "drizzle-kit generate",
     "build": "tsup",
     "prepack": "npm run build"
