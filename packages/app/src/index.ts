@@ -393,7 +393,7 @@ export class OneBotApp {
         //#endregion
 
         //#region NTSilk Initialization
-        const ntSilkPath = path.join(userDataDir, 'ntsilk');
+        const ntSilkPath = path.join(baseDir, 'ntsilk');
         if (!fs.existsSync(ntSilkPath)) {
             fs.mkdirSync(ntSilkPath);
         }
