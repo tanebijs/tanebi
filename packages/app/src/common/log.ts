@@ -27,7 +27,7 @@ export function installLogger(ctx: OneBotApp) {
     );
     
     ctx.bot.onFriendRecall((friend, seq, tip) =>
-        ctx.logger.info(`${friend} [${seq}] ${tip}`, {
+        ctx.logger.info(`${friend} 撤回了一条消息 [${seq}] ${tip}`, {
             module: 'FriendRecall',
         })
     );
@@ -42,7 +42,7 @@ export function installLogger(ctx: OneBotApp) {
     
     ctx.bot.onGroupEssenceMessageChange((group, sequence, operator, isAdd) => {
         ctx.logger.info(
-            `[${group}] (sequence=${sequence} ${isAdd ? 'added to' : 'removed from'} essence) by ${operator}`,
+            `[${group}] msg [${sequence}] ${isAdd ? 'added to' : 'removed from'} essence by ${operator}`,
             { module: 'GroupEssenceMessageChange' }
         );
     });
@@ -94,7 +94,7 @@ export function installLogger(ctx: OneBotApp) {
     );
     
     ctx.bot.onGroupRecall((group, seq, tip, operator) =>
-        ctx.logger.info(`[${group}] [${seq}] ${operator} ${tip}`, { module: 'GroupRecall' })
+        ctx.logger.info(`[${group}] ${operator} 撤回了一条消息 [${seq}] ${tip}`, { module: 'GroupRecall' })
     );
     
     ctx.bot.onGroupPoke((group, sender, receiver, actionStr, _, suffix) =>
