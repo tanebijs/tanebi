@@ -40,12 +40,17 @@ import { send_group_forward_msg } from '@app/action/message/send_group_forward_m
 import { send_private_forward_msg } from '@app/action/message/send_private_forward_msg';
 import { OneBotEvent } from '@app/event';
 import { get_forward_msg } from '@app/action/message/get_forward_msg';
+import { can_send_image } from '@app/action/ability/can_send_image';
+import { can_send_record } from '@app/action/ability/can_send_record';
 
 export class OneBotApp {
     readonly projectDir = path.resolve(import.meta.dirname, '..');
     readonly logger: winston.Logger;
     readonly storage: AbstractStorage<unknown>;
     readonly actions = new ActionCollection(this, [
+        can_send_image,
+        can_send_record,
+
         delete_msg,
         get_forward_msg,
         get_msg,

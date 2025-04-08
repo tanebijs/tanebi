@@ -59,8 +59,8 @@ These APIs are defined in the [OneBot 11 standard](https://github.com/botunivers
 | `get_credentials`         | 🔴     |
 | `get_record`              | 🟡     |
 | `get_image`               | 🟡     |
-| `can_send_image`          | 🟡     |
-| `can_send_record`         | 🟡     |
+| `can_send_image`          | 🟢     |
+| `can_send_record`         | 🟢     |
 | `get_status`              | 🔴     |
 | `get_version_info`        | 🔴     |
 | `set_restart`             | ❌     |
