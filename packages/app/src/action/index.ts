@@ -63,6 +63,9 @@ export class ActionCollection {
             }
             return await action.handler(this.ctx, parsedPayload.data);
         } catch (e) {
+            this.ctx.logger.warn(`Error while handling action ${endpoint}: ${
+                e instanceof Error ? e.message + '\n' + e.stack : String(e)
+            }`);
             if (e instanceof z.ZodError) {
                 return Failed(400, 'Invalid payload', encodeZodIssues(e.issues));
             }
