@@ -79,9 +79,7 @@ export class OneBotHttpServerAdapter extends OneBotNetworkAdapter<HttpServerAdap
     }
 
     override stopImpl() {
-        return new Promise<void>((resolve, reject) => {
-            this.httpServer.close((err) => (err ? reject(err) : resolve()));
-        });
+        this.httpServer.closeAllConnections();
     }
 
     // Http server does not emit events
