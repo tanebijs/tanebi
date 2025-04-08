@@ -32,7 +32,7 @@ These APIs are defined in the [OneBot 11 standard](https://github.com/botunivers
 | `send_msg`                | 🟢     |
 | `delete_msg`              | 🟢     |
 | `get_msg`                 | 🟢     |
-| `get_forward_msg`         | 🟡     |
+| `get_forward_msg`         | 🟢     |
 | `send_like`               | 🔴     |
 | `set_group_kick`          | 🟡     |
 | `set_group_ban`           | 🟡     |

@@ -1,11 +1,19 @@
-import { dispatcher, ForwardedMessageBuilder, ForwardedMessagePacker, ctx as internalCtx, MessageType, parsePushMsgBody } from 'tanebi';
+import {
+    dispatcher,
+    ForwardedMessage,
+    ForwardedMessageBuilder,
+    ForwardedMessagePacker,
+    ctx as internalCtx,
+    MessageType,
+    parsePushMsgBody,
+} from 'tanebi';
 import { z } from 'zod';
 import { OneBotApp } from '@app/index';
-import { OneBotSendNodeSegment, zOneBotSendNodeSegment } from '@app/message/segment';
+import { OneBotRecvSegment, OneBotSendNodeSegment, zOneBotSendNodeSegment } from '@app/message/segment';
 import { MessageStoreType, OutgoingMessageStore } from '@app/storage/types';
 import { zOneBotBubbleSegment } from '@app/message';
 import { resolveOneBotUrl } from '@app/common/download';
-import { transformRecvMessage } from '@app/message/transform/recv';
+import { transformRecvMessage, transformRecvMessageBody } from '@app/message/transform/recv';
 import { decodeCQCode } from '@app/message/cqcode';
 
 export const zOneBotSendNodeContent = z.union([
@@ -65,11 +73,7 @@ export async function transformForwardMessages(
     }
 }
 
-export async function transformNode(
-    ctx: OneBotApp,
-    b: ForwardedMessageBuilder,
-    segments: OneBotSendNodeContent
-) {
+export async function transformNode(ctx: OneBotApp, b: ForwardedMessageBuilder, segments: OneBotSendNodeContent) {
     if (segments[0].type === 'node') {
         await b.forward(async (p) => {
             await transformForwardMessages(ctx, p, segments as OneBotSendNodeSegment[]);
@@ -90,6 +94,35 @@ export async function transformNode(
                 b.text(`@${segment.data.name || segment.data.qq}`);
             }
         }
+    }
+}
+
+export function transformGetForwardMessageBody(msg: ForwardedMessage): OneBotRecvSegment[] {
+    if (msg.type === 'bubble') {
+        return msg.content.segments.map<OneBotRecvSegment>((s) => {
+            if (s.type === 'text') {
+                return { type: 'text', data: { text: s.content } };
+            } else if (s.type === 'mention') {
+                return { type: 'at', data: { qq: s.uin, name: s.name } };
+            } else if (s.type === 'mentionAll') {
+                return { type: 'at', data: { qq: 'all' } };
+            } else if (s.type === 'image') {
+                return {
+                    type: 'image',
+                    data: {
+                        file: s.content.url,
+                        url: s.content.url,
+                        sub_type: s.content.subType,
+                        summary: s.content.summary,
+                    },
+                };
+            } else {
+                // s.type === 'face'
+                return { type: 'face', data: { id: '' + s.faceId } };
+            }
+        });
+    } else {
+        return transformRecvMessageBody(msg);
     }
 }
 

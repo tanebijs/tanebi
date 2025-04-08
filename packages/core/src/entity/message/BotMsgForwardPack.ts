@@ -20,6 +20,11 @@ export type ForwardedMessageBody = {
     content: BotMsgLightApp,
 };
 
+export type ForwardedMessage = ForwardedMessageBody & {
+    senderUin: number;
+    senderName: string;
+};
+
 export class BotMsgForwardPack implements BotMsgType {
     constructor(
         readonly messageType: MessageType,
@@ -87,10 +92,20 @@ export class BotMsgForwardPack implements BotMsgType {
         }
     }
 
-    async download() {
+    async download(): Promise<ForwardedMessage[]> {
         return await this.bot[ctx].ops.call('downloadLongMessage', this.senderUid, this.segment.resId)
             .then(result => Promise
-                .all(result.map(msg => this.build(msg)))
+                .all(result.map(async msg => {
+                    const build = await this.build(msg);
+                    if (build) {
+                        return {
+                            ...build,
+                            senderUin: msg.senderUin,
+                            senderName: msg.senderName,
+                        };
+                    }
+                    return undefined;
+                }))
                 .then(result => result.filter(e => e !== undefined))
             );
     }

@@ -29,7 +29,7 @@ export async function transformRecvMessage(
     return segments;
 }
 
-function transformRecvMessageBody(
+export function transformRecvMessageBody(
     msg: DispatchedMessageBody,
 ): OneBotRecvSegment[] {
     if (msg.type === 'bubble') {

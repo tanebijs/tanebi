@@ -39,6 +39,7 @@ import { send_forward_msg } from '@app/action/message/send_forward_msg';
 import { send_group_forward_msg } from '@app/action/message/send_group_forward_msg';
 import { send_private_forward_msg } from '@app/action/message/send_private_forward_msg';
 import { OneBotEvent } from '@app/event';
+import { get_forward_msg } from '@app/action/message/get_forward_msg';
 
 export class OneBotApp {
     readonly projectDir = path.resolve(import.meta.dirname, '..');
@@ -46,6 +47,7 @@ export class OneBotApp {
     readonly storage: AbstractStorage<unknown>;
     readonly actions = new ActionCollection(this, [
         delete_msg,
+        get_forward_msg,
         get_msg,
         send_forward_msg,
         send_group_forward_msg,
