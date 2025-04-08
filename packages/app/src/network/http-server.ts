@@ -69,13 +69,16 @@ export class OneBotHttpServerAdapter extends OneBotNetworkAdapter<HttpServerAdap
         this.httpServer = http.createServer(this.expressApp);
     }
 
-    override start() {
+    override startImpl() {
         return new Promise<void>((resolve) => {
-            this.httpServer.listen(this.adapterConfig.port, this.adapterConfig.host, () => resolve());
+            this.httpServer.listen(this.adapterConfig.port, this.adapterConfig.host, () => {
+                this.logger.info(`Listening at ${this.adapterConfig.host}:${this.adapterConfig.port}`);
+                resolve();
+            });
         });
     }
 
-    override stop() {
+    override stopImpl() {
         return new Promise<void>((resolve, reject) => {
             this.httpServer.close((err) => (err ? reject(err) : resolve()));
         });

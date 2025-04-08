@@ -13,9 +13,19 @@ export abstract class OneBotNetworkAdapter<T> {
         this.logger = app.logger.child({ module: `${type}#${id}` });
     }
 
-    abstract start(): void | Promise<void>;
+    async start(): Promise<void> {
+        await this.startImpl();
+        this.logger.info('Adapter started');
+    }
 
-    abstract stop(): void | Promise<void>;
+    async stop(): Promise<void> {
+        await this.stopImpl();
+        this.logger.info('Adapter stopped');
+    }
+
+    abstract startImpl(): void | Promise<void>;
+
+    abstract stopImpl(): void | Promise<void>;
 
     abstract emitEvent(event: OneBotEvent): void | Promise<void>;
 }
