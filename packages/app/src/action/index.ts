@@ -33,6 +33,10 @@ export function defineAction<T extends z.ZodType>(
     return { endpoint, alias, validator, handler };
 }
 
+function encodeZodIssues(issues: z.ZodIssue[]): string {
+    return issues.map((issue) => `[${issue.code}] ${issue.path.join('/')}: ${issue.message}`).join('; ');
+}
+
 export class ActionCollection {
     private actions: Map<string, OneBotAction> = new Map();
 
@@ -54,11 +58,14 @@ export class ActionCollection {
                 return Failed(
                     400,
                     'Invalid payload',
-                    parsedPayload.error.issues.map((issue) => `[${issue.code}] ${issue.path.join('/')}: ${issue.message}`).join('; ')
+                    encodeZodIssues(parsedPayload.error.issues)
                 );
             }
             return await action.handler(this.ctx, parsedPayload.data);
         } catch (e) {
+            if (e instanceof z.ZodError) {
+                return Failed(400, 'Invalid payload', encodeZodIssues(e.issues));
+            }
             return Failed(500, 'Internal error', e instanceof Error ? e.message : String(e));
         }
     }
