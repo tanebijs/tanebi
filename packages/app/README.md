@@ -142,8 +142,8 @@ In OneBot 11 standard, events are posted with different `post_type`s. The possib
 
 | Message Type | Status |
 | ------------ | ------ |
-| `private`    | 🟡     |
-| `group`      | 🟡     |
+| `private`    | 🟢     |
+| `group`      | 🟢     |
 
 | Notice Type              | Status |
 | ------------------------ | ------ |
