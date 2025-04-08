@@ -107,6 +107,15 @@ export function TlvVariableField<
     K extends string,
     T extends TlvVariableFieldType
 >(name: K, type: T, lengthPrefix: LengthPrefixType, lengthIncludesPrefix: boolean): TlvFieldSpec<K, T> {
+    if (typeof type === 'function') {
+        let snapshot: TlvPacketSchema | undefined;
+        return { name, type: () => {
+            if (!snapshot) {
+                snapshot = type();
+            }
+            return snapshot;
+        }, lengthPrefix, lengthIncludesPrefix } as TlvFieldSpec<K, T>;
+    }
     return { name, type, lengthPrefix, lengthIncludesPrefix } as TlvFieldSpec<K, T>;
 }
 
