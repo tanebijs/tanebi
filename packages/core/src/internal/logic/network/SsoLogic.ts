@@ -157,6 +157,7 @@ export class SsoLogic extends LogicBase {
     ]);
 
     async buildSsoPacket(cmd: string, src: Buffer, seq: number = 0) {
+        this.ctx.log.emit('trace', 'SsoLogic', `Sending packet (cmd=${cmd}, seq=${seq})`);
         let sign: SignResult | undefined;
         if (this.commandSignAllowlist.has(cmd)) {
             sign = await this.ctx.signProvider.sign(cmd, src, seq);
@@ -212,6 +213,7 @@ export class SsoLogic extends LogicBase {
         }
 
         const { header, raw } = IncomingSsoPacket.decode(decrypted);
+        this.ctx.log.emit('trace', 'SsoLogic', `Receiving packet (cmd=${header.command}, seq=${header.sequence})`);
         if (header.retcode !== 0) {
             return {
                 command: header.command,
