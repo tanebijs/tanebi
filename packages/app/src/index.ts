@@ -155,6 +155,11 @@ export class OneBotApp {
         }
     }
 
+    async dispose() {
+        await Promise.all(this.adapters.map((adapter) => adapter.stop()));
+        await this.bot.dispose();
+    }
+
     static async create(baseDir: string) {
         let bot: Bot;
 
@@ -244,6 +249,10 @@ export class OneBotApp {
 async function main() {
     const app = await OneBotApp.create('data');
     await app.start();
+    process.on('SIGINT', async () => {
+        await app.dispose();
+        process.exit(0);
+    });
 }
 
 main();
