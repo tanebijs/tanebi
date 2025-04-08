@@ -1,3 +1,4 @@
+import { RegisterDeviceInfo } from '@/internal/packet/common/RegisterDeviceInfo';
 import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
 
 export const RegisterInfo = new NapProtoMsg({
@@ -6,13 +7,7 @@ export const RegisterInfo = new NapProtoMsg({
     currentVersion: ProtoField(3, ScalarType.STRING, true),
     isFirstRegisterProxyOnline: ProtoField(4, ScalarType.INT32, true),
     localeId: ProtoField(5, ScalarType.INT32, true),
-    device: ProtoField(6, () => ({
-        user: ProtoField(1, ScalarType.STRING),
-        os: ProtoField(2, ScalarType.STRING),
-        osVer: ProtoField(3, ScalarType.STRING),
-        vendorName: ProtoField(4, ScalarType.STRING, true),
-        osLower: ProtoField(5, ScalarType.STRING),
-    }), true),
+    device: ProtoField(6, () => RegisterDeviceInfo.fields, true),
     setMute: ProtoField(7, ScalarType.INT32, true),
     registerVendorType: ProtoField(8, ScalarType.INT32, true),
     regType: ProtoField(9, ScalarType.INT32, true),
