@@ -40,7 +40,7 @@ export const send_private_forward_msg = defineAction(
         });
         return Ok({
             message_id: dbMsgId,
-            forward_id: encodeForwardId(ctx.bot.uid, resId),
+            forward_id: encodeForwardId(MessageType.PrivateMessage, ctx.bot.uid, resId),
         });
     }
 );

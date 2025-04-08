@@ -1,4 +1,4 @@
-import { dispatcher, ForwardedMessageBuilder, ForwardedMessagePacker, ctx as internalCtx, parsePushMsgBody } from 'tanebi';
+import { dispatcher, ForwardedMessageBuilder, ForwardedMessagePacker, ctx as internalCtx, MessageType, parsePushMsgBody } from 'tanebi';
 import { z } from 'zod';
 import { OneBotApp } from '@app/index';
 import { OneBotSendNodeSegment, zOneBotSendNodeSegment } from '@app/message/segment';
@@ -93,11 +93,15 @@ export async function transformNode(
     }
 }
 
-export function encodeForwardId(senderUid: string, resId: string) {
-    return `${senderUid}:${resId}`;
+export function encodeForwardId(type: MessageType, senderUid: string, resId: string) {
+    return `${type}:${senderUid}:${resId}`;
 }
 
 export function decodeForwardId(forwardId: string) {
-    const [senderUid, resId] = forwardId.split(':');
-    return { senderUid, resId };
+    const [type, senderUid, resId] = forwardId.split(':');
+    return {
+        type: parseInt(type) as MessageType,
+        senderUid,
+        resId,
+    };
 }

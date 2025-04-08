@@ -92,7 +92,7 @@ function transformRecvMessageBody(
             {
                 type: 'forward',
                 data: {
-                    id: encodeForwardId(msg.content.senderUid, msg.content.resId),
+                    id: encodeForwardId(msg.content.messageType, msg.content.senderUid, msg.content.resId),
                 },
             },
         ];
