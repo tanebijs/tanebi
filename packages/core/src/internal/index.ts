@@ -51,6 +51,7 @@ import { SetMemberAdminOperation } from '@/internal/operation/group/SetMemberAdm
 import { FetchGroupFilteredNotifiesOperation } from '@/internal/operation/group/FetchGroupFilteredNotifies';
 import { HandleGroupFilteredRequestOperation } from '@/internal/operation/group/HandleGroupFilteredRequestOperation';
 import { HandleGroupRequestOperation } from '@/internal/operation/group/HandleGroupRequestOperation';
+import { BotOfflineOperation } from '@/internal/operation/system/BotOfflineOperation';
 
 /**
  * The internal context of the bot
@@ -111,6 +112,7 @@ export class BotContext {
         SendMessageOperation,
         UploadLongMessageOperation,
 
+        BotOfflineOperation,
         BotOnlineOperation,
         FetchQrCodeOperation,
         HeartbeatOperation,

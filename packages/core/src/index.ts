@@ -619,7 +619,7 @@ export class Bot {
             clearInterval(this.heartbeatIntervalRef);
         }
 
-        this.loggedIn = false;
+        await this[ctx].ops.call('botOffline');
         this[ctx].ssoLogic.socket.destroy();
         this[log].emit('info', 'Bot', `User ${this.uin} is now offline`);
     }
