@@ -41,6 +41,7 @@ import { get_msg } from '@app/action/message/get_msg';
 import { send_forward_msg } from '@app/action/message/send_forward_msg';
 import { send_group_forward_msg } from '@app/action/message/send_group_forward_msg';
 import { send_private_forward_msg } from '@app/action/message/send_private_forward_msg';
+import { defaultProfile, zProfile } from '@app/common/profile';
 
 export class OneBotApp {
     readonly projectDir = path.resolve(import.meta.dirname, '..');
@@ -352,17 +353,25 @@ export class OneBotApp {
             fs.mkdirSync(baseDir);
         }
 
-        const configPath = path.join(baseDir, 'config.json');
+        const profilePath = path.join(baseDir, 'profile.json');
+        if (!fs.existsSync(profilePath)) {
+            fs.writeFileSync(profilePath, JSON.stringify(defaultProfile, null, 4));
+        }
+        const profile = zProfile.parse(JSON.parse(fs.readFileSync(profilePath, 'utf-8')));
 
+        const userDataDir = path.join(baseDir, profile.name);
+        if (!fs.existsSync(userDataDir)) {
+            fs.mkdirSync(userDataDir);
+        }
+
+        const configPath = path.join(userDataDir, 'config.json');
         if (!fs.existsSync(configPath)) {
             fs.writeFileSync(configPath, JSON.stringify(exampleConfig, null, 4));
             console.info(`Example config file created at ${configPath}.`);
             console.info('Please edit the config file and press any key to continue.');
             await new Promise((resolve) => process.stdin.once('data', resolve));
         }
-
         const config = zConfig.parse(JSON.parse(fs.readFileSync(configPath, 'utf-8')));
-        const userDataDir = path.join(baseDir, '' + config.botUin);
         if (!fs.existsSync(userDataDir)) {
             fs.mkdirSync(userDataDir);
         }
@@ -399,7 +408,7 @@ export class OneBotApp {
         //#endregion
 
         //#region NTSilk Initialization
-        const ntSilkPath = path.join(baseDir, 'ntsilk');
+        const ntSilkPath = path.join(baseDir, '__ntsilk');
         if (!fs.existsSync(ntSilkPath)) {
             fs.mkdirSync(ntSilkPath);
         }

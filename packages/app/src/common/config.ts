@@ -55,7 +55,6 @@ export const zConfig = z.object({
     logLevel: z.enum(['trace', 'debug', 'info', 'warn', 'error', 'fatal']),
     signApiUrl: z.string().url()
         .transform((url) => (url.endsWith('/') ? url.substring(0, url.length - 1) : url)),
-    botUin: z.number().int(),
     reportSelfMessage: z.boolean(),
     messageReportType: z.enum(['array', 'string']),
     enableNtSilk: z.boolean(),
@@ -84,7 +83,6 @@ export type WebSocketClientAdapterConfig = z.infer<typeof zWebSocketClientAdapte
 export const exampleConfig: Config = {
     logLevel: 'info',
     signApiUrl: 'https://sign.lagrangecore.org/api/sign/30366',
-    botUin: 0,
     reportSelfMessage: false,
     messageReportType: 'array',
     enableNtSilk: false,
