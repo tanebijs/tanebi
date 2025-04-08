@@ -1,10 +1,13 @@
 import { z } from 'zod';
 
-export const zUin = z.number().int().positive();
-export const zOneBotInputUin = z.union([zUin, z.string().transform(Number).pipe(zUin)]);
+export const zPositiveInteger = z.number().int().positive();
+export const zInputPositiveInteger = z.union([zPositiveInteger, z.string().transform(Number).pipe(zPositiveInteger)]);
 
-export const zMessageId = z.number().int().positive();
-export const zOneBotInputMessageId = z.union([zMessageId, z.string().transform(Number).pipe(zMessageId)]);
+export const zUin = zPositiveInteger;
+export const zOneBotInputUin = zInputPositiveInteger;
+
+export const zMessageId = zPositiveInteger;
+export const zOneBotInputMessageId = zInputPositiveInteger;
 
 export const zOneBotInputUrl = z.union([
     z.object({ file: z.string() }),
