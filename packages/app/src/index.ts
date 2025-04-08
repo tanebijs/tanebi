@@ -249,9 +249,16 @@ export class OneBotApp {
 async function main() {
     const app = await OneBotApp.create('data');
     await app.start();
-    process.on('SIGINT', async () => {
-        await app.dispose();
-        process.exit(0);
+    
+    let sigIntTriggered = false;
+    process.on('SIGINT', () => {
+        if (sigIntTriggered) {
+            return;
+        }
+        sigIntTriggered = true;
+        app.dispose().then(() => {
+            process.exit(0);
+        });
     });
 }
 
