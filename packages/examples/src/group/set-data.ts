@@ -1,6 +1,6 @@
 import bot from '../login/fast';
 
-const grp = await bot.getGroup(1018894638);
+const grp = await bot.getGroup(0);
 grp?.onMessage(msg => {
     if (msg.type === 'bubble' && msg.content.segments[0].type === 'text') {
         const content = msg.content.segments[0].content;
