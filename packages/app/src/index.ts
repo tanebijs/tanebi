@@ -1,17 +1,14 @@
 #!/usr/bin/env node
 
 import {
-    blob,
     Bot,
     deserializeDeviceInfo,
     deserializeKeystore,
     DeviceInfo,
     fetchAppInfoFromSignUrl,
-    GroupMemberPermission,
-    Keystore, MessageType,
+    Keystore, 
     newDeviceInfo,
     newKeystore,
-    rawMessage,
     serializeDeviceInfo,
     serializeKeystore,
     UrlSignProvider,
@@ -25,7 +22,9 @@ import { OneBotNetworkAdapter } from '@app/network';
 import { OneBotHttpServerAdapter } from '@app/network/http-server';
 import winston, { format, transports } from 'winston';
 import chalk from 'chalk';
-import { MessageStoreType } from '@app/storage/types';
+import { installLogger } from '@app/common/log';
+import { installMessageHandler } from '@app/message/dispatch';
+import { defaultProfile, zProfile } from '@app/common/profile';
 import { AbstractStorage } from '@app/storage';
 import { DatabaseStorage } from '@app/storage/database';
 import { MemoryStorage } from '@app/storage/memory';
@@ -35,13 +34,11 @@ import { send_group_msg } from '@app/action/message/send_group_msg';
 import { send_private_msg } from '@app/action/message/send_private_msg';
 import { send_poke } from '@app/action/message/send_poke';
 import { delete_msg } from '@app/action/message/delete_msg';
-import { OneBotGroupMessageEvent, OneBotPrivateMessageEvent } from '@app/event/message';
-import { transformRecvMessage } from '@app/message/transform/recv';
 import { get_msg } from '@app/action/message/get_msg';
 import { send_forward_msg } from '@app/action/message/send_forward_msg';
 import { send_group_forward_msg } from '@app/action/message/send_group_forward_msg';
 import { send_private_forward_msg } from '@app/action/message/send_private_forward_msg';
-import { defaultProfile, zProfile } from '@app/common/profile';
+import { OneBotEvent } from '@app/event';
 
 export class OneBotApp {
     readonly projectDir = path.resolve(import.meta.dirname, '..');
@@ -118,8 +115,8 @@ export class OneBotApp {
             this.storage = new MemoryStorage(this, this.config.storage);
         }
 
-        this.installMessageHandler();
-        this.installLogger();
+        installLogger(this);
+        installMessageHandler(this);
 
         this.adapters = config.adapters.map((adapterConfig, index) => {
             if (adapterConfig.type === 'httpServer') {
@@ -129,203 +126,8 @@ export class OneBotApp {
         });
     }
 
-    installMessageHandler() {
-        this.bot.onPrivateMessage(async (friend, message) => {
-            if (message.isSelf && !this.config.reportSelfMessage) {
-                return;
-            }
-            try {
-                const id = await this.storage.insert({
-                    createdAt: Math.round(Date.now() / 1000),
-                    storeType: MessageStoreType.PushMsgBody,
-                    type: MessageType.PrivateMessage,
-                    peerUin: friend.uin,
-                    sequence: message.sequence,
-                    clientSequence: message[rawMessage].clientSequence,
-                    body: Buffer.from(message[rawMessage][blob]),
-                });
-                const recvMessage = await transformRecvMessage(
-                    this,
-                    MessageType.PrivateMessage,
-                    friend.uin,
-                    message,
-                    message.repliedSequence
-                );
-                await Promise.all(
-                    this.adapters.map((adapter) => adapter.emitEvent(new OneBotPrivateMessageEvent(
-                        this,
-                        id,
-                        friend.uin,
-                        message.content.toPreviewString(),
-                        12, // TODO: Get font info
-                        recvMessage,
-                        'friend',
-                        {
-                            user_id: friend.uin,
-                            nickname: message[rawMessage].senderName,
-                            sex: '', // TODO: Get gender from friend indo
-                            age: 0, // TODO: Get age from friend info
-                        }
-                    )))
-                );
-            } catch (e) {
-                this.logger.error(`Failed to process message: ${e}`);
-            }
-        });
-
-        this.bot.onGroupMessage(async (group, sender, message) => {
-            if (sender.uin === this.bot.uin && !this.config.reportSelfMessage) {
-                return;
-            }
-            try {
-                const id = await this.storage.insert({
-                    createdAt: Math.round(Date.now() / 1000),
-                    storeType: MessageStoreType.PushMsgBody,
-                    type: MessageType.GroupMessage,
-                    peerUin: group.uin,
-                    sequence: message.sequence,
-                    clientSequence: null,
-                    body: Buffer.from(message[rawMessage][blob]),
-                });
-                const recvMessage = await transformRecvMessage(
-                    this,
-                    MessageType.GroupMessage,
-                    group.uin,
-                    message,
-                    message.repliedSequence
-                );
-                await Promise.all(
-                    this.adapters.map((adapter) => adapter.emitEvent(new OneBotGroupMessageEvent(
-                        this,
-                        id,
-                        sender.uin,
-                        message.content.toPreviewString(),
-                        12, // TODO: Get font info
-                        recvMessage,
-                        'normal',
-                        group.uin,
-                        {
-                            user_id: sender.uin,
-                            nickname: message[rawMessage].senderName,
-                            card: sender.card ?? '',
-                            area: '', // TODO: Get area from member info
-                            level: '', // TODO: Get level from member info
-                            role: sender.permission === GroupMemberPermission.Owner ? 'owner' :
-                                sender.permission === GroupMemberPermission.Admin ? 'admin' : 'member',
-                            title: sender.specialTitle ?? '',
-                            sex: '', // TODO: Get gender from member indo
-                            age: 0, // TODO: Get age from member info
-                        },
-                    )))
-                );
-            } catch (e) {
-                this.logger.error(`Failed to process message: ${e}`);
-            }
-        });
-    }
-
-    installLogger() {
-        this.bot.onPrivateMessage((friend, message) =>
-            this.logger.info(`${message.isSelf ? '->' : '<-'} [${chalk.yellow(friend)}] ${message.content.toPreviewString()}`, {
-                module: 'Message',
-            })
-        );
-
-        this.bot.onGroupMessage((group, sender, message) =>
-            this.logger.info(
-                `${
-                    sender.uin === this.bot.uin ? '->' : '<-'
-                } [${chalk.blueBright(group)}] [${chalk.green(sender)}] ${message.content.toPreviewString()}`,
-                { module: 'Message' }
-            )
-        );
-
-        this.bot.onFriendPoke((friend, isSelf, actionStr, _, suffix) =>
-            this.logger.info(
-                isSelf
-                    ? `你${actionStr || '戳了戳'} ${friend} ${suffix}`
-                    : `${friend} ${actionStr || '戳了戳'}你${suffix}`,
-                { module: 'FriendPoke' }
-            )
-        );
-
-        this.bot.onFriendRecall((friend, seq, tip) =>
-            this.logger.info(`${friend} [${seq}] ${tip}`, {
-                module: 'FriendRecall',
-            })
-        );
-
-        this.bot.onFriendRequest((req) => this.logger.info(req.toString(), { module: 'FriendRequest' }));
-
-        this.bot.onGroupAdminChange((group, member, isPromote) =>
-            this.logger.info(`[${group}] ${member} ${isPromote ? 'promoted to' : 'demoted from'} admin`, {
-                module: 'GroupAdminChange',
-            })
-        );
-
-        this.bot.onGroupEssenceMessageChange((group, sequence, operator, isAdd) => {
-            this.logger.info(
-                `[${group}] (sequence=${sequence} ${isAdd ? 'added to' : 'removed from'} essence) by ${operator}`,
-                { module: 'GroupEssenceMessageChange' }
-            );
-        });
-
-        this.bot.onGroupInvitationRequest((req) =>
-            this.logger.info(req.toString(), { module: 'GroupInvitationRequest' })
-        );
-
-        this.bot.onGroupInvitedJoinRequest((_, req) =>
-            this.logger.info(req.toString(), { module: 'GroupInvitedJoinRequest' })
-        );
-
-        this.bot.onGroupJoinRequest((_, req) => this.logger.info(req.toString(), { module: 'GroupJoinRequest' }));
-
-        this.bot.onGroupMemberIncrease((group, member, operator) =>
-            this.logger.info(
-                `[${group}] ${member} joined` +
-                    (operator ? ` by ${operator.card || operator.nickname} (${operator.uin})` : ''),
-                { module: 'GroupMemberIncrease' }
-            )
-        );
-
-        this.bot.onGroupMemberLeave((group, memberUin) =>
-            this.logger.info(`[${group}] (${memberUin}) left`, { module: 'GroupMemberLeave' })
-        );
-
-        this.bot.onGroupMemberKick((group, memberUin, operator) =>
-            this.logger.info(`[${group}] (${memberUin}) was kicked by ${operator}`, { module: 'GroupMemberKick' })
-        );
-
-        this.bot.onGroupMute((group, member, operator, duration) =>
-            this.logger.info(`[${group}] ${member} was muted by ${operator} for ${duration} seconds`, {
-                module: 'GroupMute',
-            })
-        );
-
-        this.bot.onGroupUnmute((group, member, operator) =>
-            this.logger.info(`[${group}] ${member} was unmuted by ${operator}`, { module: 'GroupUnmute' })
-        );
-
-        this.bot.onGroupMuteAll((group, operator, isSet) =>
-            this.logger.info(`${group} ${isSet ? 'muted' : 'unmuted'} by ${operator}`, { module: 'GroupMuteAll' })
-        );
-
-        this.bot.onGroupReaction((group, seq, operator, code, isAdd) =>
-            this.logger.info(`[${group}] ${operator} ${isAdd ? 'added' : 'removed'} reaction ${code} to msg [${seq}]`, {
-                module: 'GroupReaction',
-            })
-        );
-
-        this.bot.onGroupRecall((group, seq, tip, operator) =>
-            this.logger.info(`[${group}] [${seq}] ${operator} ${tip}`, { module: 'GroupRecall' })
-        );
-
-        this.bot.onGroupPoke((group, sender, receiver, actionStr, _, suffix) =>
-            this.logger.info(
-                `[${group}] ${sender} ${actionStr || '戳了戳'} ${receiver} ${suffix}`,
-                { module: 'GroupPoke' }
-            )
-        );
+    async dispatchEvent(event: OneBotEvent) {
+        await Promise.all(this.adapters.map((adapter) => adapter.emitEvent(event)));
     }
 
     async start() {
