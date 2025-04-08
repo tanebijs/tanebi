@@ -1,5 +1,5 @@
 import { ImageSubType } from 'tanebi';
-import { zOneBotInputBoolean, zOneBotInputMessageId, zOneBotInputUin, zOneBotInputUrl } from '@app/common/types';
+import { zInputPositiveInteger, zOneBotInputBoolean, zOneBotInputMessageId, zOneBotInputUin, zOneBotInputUrl } from '@app/common/types';
 import { z } from 'zod';
 
 export const zOneBotTextSegment = z.object({
@@ -19,7 +19,7 @@ export const zOneBotFaceSegment = z.object({
 const zOneBotSendResourceGeneralData = z.object({
     cache: zOneBotInputBoolean.default(false),
     proxy: zOneBotInputBoolean.default(false),
-    timeout: z.number().int().positive().optional(),
+    timeout: zInputPositiveInteger.optional(),
 }).and(zOneBotInputUrl);
 
 export const zOneBotSendRecordSegment = z.object({
@@ -86,6 +86,8 @@ type DefineRecvResourceSegment<T extends string, Extra = unknown> = DefineRecvSe
     T,
     RecvResourceGeneralData & Extra
 >;
+
+export type SendResourceGeneralData = z.infer<typeof zOneBotSendResourceGeneralData>;
 
 export type OneBotTextSegment = z.infer<typeof zOneBotTextSegment>;
 

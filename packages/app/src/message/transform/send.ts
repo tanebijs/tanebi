@@ -7,7 +7,7 @@ import {
     MessageType,
     PrivateMessageBuilder,
 } from 'tanebi';
-import { resolveOneBotUrl } from '@app/common/download';
+import { resolveOneBotFile } from '@app/common/download';
 import { OneBotApp } from '@app/index';
 import { OneBotInputMessage } from '@app/message';
 import { MessageStoreType, OutgoingMessageStore } from '@app/storage/types';
@@ -25,7 +25,7 @@ export async function transformSendMessage(
         if (segment.type === 'text') {
             b.text(segment.data.text);
         } else if (segment.type === 'image') {
-            const image = await resolveOneBotUrl(segment.data.file);
+            const image = await resolveOneBotFile(ctx, segment.data);
             await b.image(image, segment.data.sub_type, segment.data.summary);
         } else if (segment.type === 'face') {
             b.face(segment.data.id);
@@ -45,7 +45,7 @@ export async function transformSendMessage(
                 throw new Error('At segment is not supported in private messages');
             }
         } else if (segment.type === 'record') {
-            const record = await resolveOneBotUrl(segment.data.file);
+            const record = await resolveOneBotFile(ctx, segment.data);
             if (ctx.ntSilkBinding) {
                 const { data, meta } = await convert(ctx, record);
                 await b.record(data, Math.round(meta.format.duration!));

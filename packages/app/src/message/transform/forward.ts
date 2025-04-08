@@ -12,7 +12,7 @@ import { OneBotApp } from '@app/index';
 import { OneBotRecvSegment, OneBotSendNodeSegment, zOneBotSendNodeSegment } from '@app/message/segment';
 import { MessageStoreType, OutgoingMessageStore } from '@app/storage/types';
 import { zOneBotBubbleSegment } from '@app/message';
-import { resolveOneBotUrl } from '@app/common/download';
+import { resolveOneBotFile } from '@app/common/download';
 import { transformRecvMessage, transformRecvMessageBody } from '@app/message/transform/recv';
 import { decodeCQCode } from '@app/message/cqcode';
 
@@ -83,7 +83,7 @@ export async function transformNode(ctx: OneBotApp, b: ForwardedMessageBuilder, 
             if (segment.type === 'text') {
                 b.text(segment.data.text);
             } else if (segment.type === 'image') {
-                const image = await resolveOneBotUrl(segment.data.file);
+                const image = await resolveOneBotFile(ctx, segment.data);
                 await b.image(image, segment.data.sub_type, segment.data.summary);
             } else if (segment.type === 'face') {
                 b.face(segment.data.id);

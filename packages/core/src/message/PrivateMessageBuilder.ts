@@ -9,7 +9,6 @@ import { Bot, ctx, log } from '@/index';
 import { rawElems } from '@/internal/message/incoming';
 import { randomInt } from 'crypto';
 import { getGeneralMetadata } from '@/internal/util/media/common';
-import { CustomFaceElement } from '@/internal/packet/message/element/CustomFaceElement';
 import { NotOnlineImageElement } from '@/internal/packet/message/element/NotOnlineImageElement';
 
 export class PrivateMessageBuilder extends AbstractMessageBuilder {
