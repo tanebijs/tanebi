@@ -10,6 +10,7 @@ import { rawElems } from '@/internal/message/incoming';
 import { randomInt } from 'crypto';
 import { getGeneralMetadata } from '@/internal/util/media/common';
 import { CustomFaceElement } from '@/internal/packet/message/element/CustomFaceElement';
+import { NotOnlineImageElement } from '@/internal/packet/message/element/NotOnlineImageElement';
 
 export class PrivateMessageBuilder extends AbstractMessageBuilder {
     replyInfo?: ReplyInfo;
@@ -44,8 +45,8 @@ export class PrivateMessageBuilder extends AbstractMessageBuilder {
         this.segments.push({
             type: 'image',
             msgInfo: uploadResp.upload!.msgInfo!,
-            compatFace: uploadResp.upload?.compatQMsg
-                ? CustomFaceElement.decode(uploadResp.upload.compatQMsg)
+            compatImage: uploadResp.upload?.compatQMsg?.length
+                ? NotOnlineImageElement.decode(uploadResp.upload.compatQMsg)
                 : undefined,
         });
     }
