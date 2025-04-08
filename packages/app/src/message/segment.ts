@@ -108,6 +108,12 @@ export type OneBotPokeSegment = z.infer<typeof zOneBotPokeSegment>;
 
 export type OneBotRecvForwardSegment = DefineRecvSegment<'forward', { id: string }>;
 
+export type OneBotRecvNodeSegment = DefineRecvSegment<'node', {
+    user_id: number;
+    uin: number;
+    name: string;
+    content: string | OneBotRecvSegment[];
+}>;
 export type OneBotSendNodeSegment = z.infer<typeof zOneBotSendNodeSegment>;
 
 export type OneBotRecvJsonSegment = { type: 'json', data: { data: string } };
@@ -122,6 +128,7 @@ export type OneBotRecvSegment =
     | OneBotReplySegment
     | OneBotPokeSegment
     | OneBotRecvForwardSegment
+    | OneBotRecvNodeSegment
     | OneBotRecvJsonSegment;
 
 export type OneBotSendSegment =
