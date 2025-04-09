@@ -4,41 +4,41 @@ import fsp from 'node:fs/promises';
 
 async function getResponse(
     url: string,
-    timeout?: number,
     headers: Record<string, string> = {
         'User-Agent':
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36',
     },
-    useReferer: boolean = false
+    useReferer: boolean = false,
+    signal?: AbortSignal,
 ): Promise<Response> {
     if (useReferer && !headers['Referer']) {
         headers['Referer'] = url;
     }
-    if (timeout) {
-        const abc = new AbortController();
-        const timer = setTimeout(() => {
-            abc.abort();
-        }, timeout);
-        const resp = await fetch(url, {
-            headers,
-            signal: abc.signal,
-        });
-        clearTimeout(timer);
-        return resp;
-    } else {
-        return await fetch(url, { headers });
-    }
+    return await fetch(url, { headers, signal });
 }
 
 export async function download(url: string, timeout?: number, headers?: Record<string, string>) {
-    let resp = await getResponse(url, timeout, headers);
+    let timeoutReference: NodeJS.Timeout | undefined;
+    let signal: AbortSignal | undefined;
+    if (timeout) {
+        const controller = new AbortController();
+        signal = controller.signal;
+        timeoutReference = setTimeout(() => {
+            controller.abort();
+        }, timeout);
+    }
+    let resp = await getResponse(url, headers, false, signal);
     if (resp.status === 403 && !headers) {
-        resp = await getResponse(url, timeout, headers, true);
+        resp = await getResponse(url, headers, true, signal);
     }
     if (!resp.ok) {
         throw new Error(`Failed to download file from ${url}: ${resp.status} ${resp.statusText}`);
     }
-    return await resp.blob().then((b) => b.bytes());
+    const bytes = await resp.blob().then((b) => b.bytes());
+    if (timeoutReference) {
+        clearTimeout(timeoutReference);
+    }
+    return bytes;
 }
 
 export async function resolveOneBotFile(ctx: OneBotApp, file: SendResourceGeneralData) {
