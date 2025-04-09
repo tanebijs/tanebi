@@ -72,3 +72,33 @@ export function zigzagEncode32(n: number): number {
 export function zigzagEncode64(n: bigint): bigint {
     return (n << BigInt(1)) ^ (n >> BigInt(63));
 }
+
+export function calculateVarintSize(value: number): number {
+    let size = 0;
+    while (value > 0x7F) {
+        size++;
+        value >>>= 7;
+    }
+    return size + 1; // +1 for the last byte
+}
+
+export function calculateZigzagVarintSize(value: number): number {
+    return calculateVarintSize(zigzagEncode32(value));
+}
+
+export function calculateBigVarintSize(value: bigint): number {
+    let size = 0;
+    while (value > BigInt(0x7F)) {
+        size++;
+        value >>= BigInt(7);
+    }
+    return size + 1; // +1 for the last byte
+}
+
+export function calculateZigzagBigVarintSize(value: bigint): number {
+    return calculateBigVarintSize(zigzagEncode64(value));
+}
+
+export function calculateTagSize(fieldNumber: number, wireType: WireType): number {
+    return calculateVarintSize((fieldNumber << 3) | wireType);
+}
