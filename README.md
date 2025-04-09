@@ -19,6 +19,7 @@ The word "tanebi" is from Japanese and means "tinder" in English or "火种" in 
 ## Packages
 
 - [`core`](packages/core) ([npm](https://www.npmjs.com/package/tanebi)): Core library of the project, which provides the basic functions and stable runtime API of the QQ protocol.
+- [`protobuf`](packages/protobuf): Protobuf infrastructure for the project, which provides efficient serialization and deserialization of protocol packets.
 - [`examples`](packages/examples): Examples of using various APIs provided by the core library.
 - [`app`](packages/app): Standalone QQ bot application with [OneBot 11](https://github.com/botuniverse/onebot-11) support.
 - [`koishi-plugin-adapter-tanebi`](https://github.com/tanebijs/koishi-plugin-adapter-tanebi): [Koishi](https://koishi.chat/) ([GitHub homepage](https://github.com/koishijs/koishi)) plugin to use tanebi as a QQ bot backend.
