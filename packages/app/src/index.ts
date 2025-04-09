@@ -132,6 +132,20 @@ export class OneBotApp {
         installLogger(this);
         installMessageHandler(this);
 
+        if (this.config.onForcedOffline === 'exit') {
+            this.bot.onForceOffline(() => {
+                this.dispose().then(() => {
+                    this.logger.error('Bot is forced offline, exiting...');
+                    process.exit(1);
+                });
+            });
+        } else if (this.config.onForcedOffline === 'reLogin') {
+            this.bot.onForceOffline(() => {
+                this.logger.warn('Bot is forced offline, re-login...');
+                this.bot.fastLogin();
+            });
+        }
+
         this.adapters = config.adapters.map((adapterConfig, index) => {
             if (adapterConfig.type === 'httpServer') {
                 return new OneBotHttpServerAdapter(this, adapterConfig, '' + index);

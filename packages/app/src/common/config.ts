@@ -58,6 +58,7 @@ export const zConfig = z.object({
     reportSelfMessage: z.boolean(),
     messageReportType: z.enum(['array', 'string']),
     enableNtSilk: z.boolean(),
+    onForcedOffline: z.enum(['exit', 'reLogin', 'noAction']).default('noAction'),
     storage: z.union([
         zDatabaseStorageConfig,
         zMemoryStorageConfig,
@@ -86,6 +87,7 @@ export const exampleConfig: Config = {
     reportSelfMessage: false,
     messageReportType: 'array',
     enableNtSilk: false,
+    onForcedOffline: 'noAction',
     storage: {
         location: 'database',
         compressMessage: true,
