@@ -11,6 +11,5 @@
     "tanebi": "workspace:*"
   },
   "author": "Young",
-  "license": "GPL-3.0-only",
-  "packageManager": "pnpm@10.5.2"
+  "license": "GPL-3.0-only"
 }

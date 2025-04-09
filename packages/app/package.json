@@ -27,7 +27,6 @@
   "bin": {
     "tanebi": "dist/index.js"
   },
-  "packageManager": "pnpm@10.6.2",
   "dependencies": {
     "@libsql/client": "^0.15.1",
     "@napneko/nap-proto-core": "^0.0.8",
