@@ -36,7 +36,7 @@
     "express": "^5.0.1",
     "lru-cache": "^11.1.0",
     "music-metadata": "^11.0.2",
-    "tanebi": "^0.1.6",
+    "tanebi": "^0.2.0",
     "ts-qrcode-terminal": "^1.0.1",
     "winston": "^3.17.0",
     "ws": "^8.18.1",
