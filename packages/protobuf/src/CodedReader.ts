@@ -50,7 +50,7 @@ export class CodedReader {
     readFixed32(): number {
         const value = this.buffer.readUInt32LE(this.offset);
         this.offset += 4;
-        return value >>> 0; // Convert to unsigned
+        return value;
     }
 
     readFixed64(): bigint {
@@ -82,12 +82,4 @@ export class CodedReader {
     hasNext(): boolean {
         return this.offset < this.buffer.length;
     }
-}
-
-export function zigzagDecode32(n: number): number {
-    return (n >>> 1) ^ -(n & 1);
-}
-
-export function zigzagDecode64(n: bigint): bigint {
-    return (n >> BigInt(1)) ^ -(n & BigInt(1));
 }
