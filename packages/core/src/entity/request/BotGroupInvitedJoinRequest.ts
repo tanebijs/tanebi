@@ -56,7 +56,7 @@ export class BotGroupInvitedJoinRequest {
         if (!invitor) {
             return null;
         }
-        bot[log].emit('info', 'BotGroupInvitedJoinRequest',
+        bot[log].emit('trace', 'BotGroupInvitedJoinRequest',
             `Received invited join request: ${memberUin} -> ${groupUin}; invitor: ${invitorUid}`);
         return new BotGroupInvitedJoinRequest(
             bot, groupUin, req.sequence, memberUin, targetUid, invitor, isFiltered);

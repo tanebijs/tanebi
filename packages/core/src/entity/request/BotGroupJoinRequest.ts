@@ -49,7 +49,7 @@ export class BotGroupJoinRequest {
         const uinFetch = await bot[ctx].ops.call('fetchUserInfo', req.target.uid);
         bot[identityService].uid2uin.set(req.target.uid, uinFetch.body.uin);
         bot[identityService].uin2uid.set(uinFetch.body.uin, req.target.uid);
-        bot[log].emit('info', 'BotGroupJoinRequest',
+        bot[log].emit('trace', 'BotGroupJoinRequest',
             `Received join request: ${uinFetch.body.uin} -> ${groupUin}; comment: ${req.comment}`);
         return new BotGroupJoinRequest(
             bot, groupUin, req.sequence, uinFetch.body.uin, requestUid, req.comment, isFiltered);
