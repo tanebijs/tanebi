@@ -9,29 +9,29 @@ export class CodedWriter {
         this.offset = 0;
     }
 
-    writeByte(value: number): void {
+    writeRawByte(value: number): void {
         this.buffer[this.offset++] = value;
     }
 
-    writeBytes(bytes: Buffer): void {
+    writeRawBytes(bytes: Buffer): void {
         bytes.copy(this.buffer, this.offset);
         this.offset += bytes.length;
     }
 
     writeVarint(value: number): void {
         while (value > 0x7F) {
-            this.writeByte((value & 0x7F) | 0x80);
+            this.writeRawByte((value & 0x7F) | 0x80);
             value >>>= 7;
         }
-        this.writeByte(value & 0x7F);
+        this.writeRawByte(value & 0x7F);
     }
 
     writeBigVarint(value: bigint): void {
         while (value > BigInt(0x7F)) {
-            this.writeByte(Number((value & BigInt(0x7F)) | BigInt(0x80)));
+            this.writeRawByte(Number((value & BigInt(0x7F)) | BigInt(0x80)));
             value >>= BigInt(7);
         }
-        this.writeByte(Number(value & BigInt(0x7F)));
+        this.writeRawByte(Number(value & BigInt(0x7F)));
     }
 
     writeFixed32(value: number): void {
