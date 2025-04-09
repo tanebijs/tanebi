@@ -43,6 +43,8 @@ import { get_forward_msg } from '@app/action/message/get_forward_msg';
 import { can_send_image } from '@app/action/ability/can_send_image';
 import { can_send_record } from '@app/action/ability/can_send_record';
 import { set_group_kick } from '@app/action/group/set_group_kick';
+import { set_group_ban } from '@app/action/group/set_group_ban';
+import { set_group_whole_ban } from '@app/action/group/set_group_whole_ban';
 
 export class OneBotApp {
     readonly projectDir = path.resolve(import.meta.dirname, '..');
@@ -52,7 +54,9 @@ export class OneBotApp {
         can_send_image,
         can_send_record,
 
+        set_group_ban,
         set_group_kick,
+        set_group_whole_ban,
 
         delete_msg,
         get_forward_msg,
