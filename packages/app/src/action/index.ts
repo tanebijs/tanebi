@@ -9,7 +9,7 @@ export interface OneBotGeneralResponse {
     wording?: string;
 }
 
-export function Ok(data?: unknown): OneBotGeneralResponse {
+export function Ok(data: unknown = null): OneBotGeneralResponse {
     return { status: 'ok', retcode: 0, data };
 }
 
