@@ -52,6 +52,7 @@ import { FetchGroupFilteredNotifiesOperation } from '@/internal/operation/group/
 import { HandleGroupFilteredRequestOperation } from '@/internal/operation/group/HandleGroupFilteredRequestOperation';
 import { HandleGroupRequestOperation } from '@/internal/operation/group/HandleGroupRequestOperation';
 import { BotOfflineOperation } from '@/internal/operation/system/BotOfflineOperation';
+import { KickNTEvent } from '@/internal/event/system/KickNTEvent';
 
 /**
  * The internal context of the bot
@@ -124,6 +125,8 @@ export class BotContext {
 
     events = new EventChannel(this, [
         MessagePushEvent,
+
+        KickNTEvent,
     ]);
 
     eventsDX = new EventEmitter<{

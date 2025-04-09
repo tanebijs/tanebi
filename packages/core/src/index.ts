@@ -53,6 +53,8 @@ export class Bot {
         fatal: [string, string, unknown?]; // module, message, error
     }>();
     readonly [eventsDX] = new EventEmitter<{
+        forceOffline:               [string, string]; // title, tip
+
         keystoreChange:             [Keystore];
 
         friendRequest:              [BotFriendRequest];
@@ -161,6 +163,10 @@ export class Bot {
             } catch (e) {
                 this[log].emit('warning', 'Bot', 'Failed to handle message', e);
             }
+        });
+
+        this[ctx].events.on('kickNT', (data) => {
+            this[eventsDX].emit('forceOffline', data.title, data.tip);
         });
 
         this[ctx].log.on('trace', (module, message) =>
@@ -674,6 +680,13 @@ export class Bot {
      */
     onGroupMessage(listener: (group: BotGroup, sender: BotGroupMember, message: BotGroupMessage) => void) {
         this.globalMsg.on('group', listener);
+    }
+
+    /**
+     * Listen to force 
+     */
+    onForceOffline(listener: (title: string, tip: string) => void) {
+        this[eventsDX].on('forceOffline', listener);
     }
 
     /**

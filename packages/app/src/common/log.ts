@@ -16,6 +16,10 @@ export function installLogger(ctx: OneBotApp) {
             { module: 'Message' }
         )
     );
+
+    ctx.bot.onForceOffline((title, tip) => {
+        ctx.logger.error(`[${title}] ${tip}`, { module: 'ForcedOffline' });
+    });
     
     ctx.bot.onFriendPoke((friend, isSelf, actionStr, _, suffix) =>
         ctx.logger.info(
