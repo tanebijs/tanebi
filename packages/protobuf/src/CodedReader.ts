@@ -78,6 +78,10 @@ export class CodedReader {
             wireType: tag & 0x07,
         };
     }
+
+    hasNext(): boolean {
+        return this.offset < this.buffer.length;
+    }
 }
 
 export function zigzagDecode32(n: number): number {
