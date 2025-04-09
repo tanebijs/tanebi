@@ -64,3 +64,11 @@ export class CodedWriter {
         return this.buffer;
     }
 }
+
+export function zigzagEncode32(n: number): number {
+    return (n << 1) ^ (n >> 31);
+}
+
+export function zigzagEncode64(n: bigint): bigint {
+    return (n << BigInt(1)) ^ (n >> BigInt(63));
+}

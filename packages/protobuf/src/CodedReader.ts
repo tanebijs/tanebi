@@ -79,3 +79,11 @@ export class CodedReader {
         };
     }
 }
+
+export function zigzagDecode32(n: number): number {
+    return (n >>> 1) ^ -(n & 1);
+}
+
+export function zigzagDecode64(n: bigint): bigint {
+    return (n >> BigInt(1)) ^ -(n & BigInt(1));
+}
