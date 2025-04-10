@@ -116,6 +116,6 @@ export function ProtoField<T extends ProtoFieldType, O extends boolean, R extend
     return {
         fieldNumber, type, optional, repeated, packed,
         [kTag]: tag,
-        [kTagLength]: SizeOf.varint(tag),
+        [kTagLength]: SizeOf.varint32(tag),
     };
 }

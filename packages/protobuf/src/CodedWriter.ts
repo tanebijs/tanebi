@@ -56,10 +56,6 @@ export class CodedWriter {
         this.offset += 8;
     }
 
-    writeTag(fieldNumber: number, wireType: WireType): void {
-        this.writeVarint((fieldNumber << 3) | wireType);
-    }
-
     build(): Buffer {
         return this.buffer;
     }
