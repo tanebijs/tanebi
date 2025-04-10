@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const GeneralGrayTip = new NapProtoMsg({
+export const GeneralGrayTip = ProtoMessage.of({
     bizType: ProtoField(1, ScalarType.UINT32),
     templateParams: ProtoField(7, () => ({
         key: ProtoField(1, ScalarType.STRING),

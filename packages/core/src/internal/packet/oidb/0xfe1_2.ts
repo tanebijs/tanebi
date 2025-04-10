@@ -1,5 +1,5 @@
 import { OidbSvcContract } from '@/internal/util/binary/oidb';
-import { ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoField, ScalarType } from '@tanebijs/protobuf';
 
 export const FetchUserInfoByUid = new OidbSvcContract(
     0xfe1, 2,

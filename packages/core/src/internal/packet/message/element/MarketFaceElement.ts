@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const MarketFaceElement = new NapProtoMsg({
+export const MarketFaceElement = ProtoMessage.of({
     summary: ProtoField(1, ScalarType.STRING, true, false),
     itemType: ProtoField(2, ScalarType.INT32, false, false),
     info: ProtoField(3, ScalarType.INT32, false, false),
@@ -12,6 +12,6 @@ export const MarketFaceElement = new NapProtoMsg({
     height: ProtoField(11, ScalarType.INT32, false, false),
     pbReserve: ProtoField(13, () => MarketfaceReserve.fields, true, false),
 });
-export const MarketfaceReserve = new NapProtoMsg({
+export const MarketfaceReserve = ProtoMessage.of({
     field8: ProtoField(8, ScalarType.INT32, false, false),
 });

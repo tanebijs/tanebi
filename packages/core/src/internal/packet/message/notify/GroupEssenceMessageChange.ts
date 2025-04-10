@@ -1,11 +1,11 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
 export enum GroupEssenceMessageChangeSetFlag {
     Add = 1,
     Remove = 2,
 }
 
-export const GroupEssenceMessageChange = new NapProtoMsg({
+export const GroupEssenceMessageChange = ProtoMessage.of({
     groupUin: ProtoField(1, ScalarType.UINT32, false, false),
     msgSequence: ProtoField(2, ScalarType.UINT32, false, false),
     random: ProtoField(3, ScalarType.UINT32, false, false),

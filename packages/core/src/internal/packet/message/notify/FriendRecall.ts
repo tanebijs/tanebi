@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const FriendRecall = new NapProtoMsg({
+export const FriendRecall = ProtoMessage.of({
     body: ProtoField(1, () => ({
         fromUid: ProtoField(1, ScalarType.STRING),
         clientSequence: ProtoField(3, ScalarType.UINT32),

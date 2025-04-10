@@ -12,7 +12,7 @@ export interface ImageMetadata extends MediaGeneralMetadata {
     format: PicFormat;
 }
 
-export function getImageMetadata(img: Uint8Array): ImageMetadata {
+export function getImageMetadata(img: Buffer): ImageMetadata {
     const size = imageSize(img);
     if (!size.width || !size.height || !size.type) {
         throw new Error('Failed to get image metadata');

@@ -2,10 +2,10 @@ import { defineIncoming } from '@/internal/message/incoming/segment-base';
 import { CustomFaceElement } from '@/internal/packet/message/element/CustomFaceElement';
 import { IndexNode } from '@/internal/packet/oidb/media/IndexNode';
 import { MsgInfo } from '@/internal/packet/oidb/media/MsgInfo';
-import { NapProtoDecodeStructType } from '@napneko/nap-proto-core';
+import { InferProtoModel } from '@tanebijs/protobuf';
 
 export interface ImageSegment {
-    indexNode?: NapProtoDecodeStructType<typeof IndexNode.fields>,
+    indexNode?: InferProtoModel<typeof IndexNode.fields>,
     url?: string,
     width: number,
     height: number,
@@ -97,7 +97,7 @@ export const imageCustomFaceParser = defineIncoming(
     }
 );
 
-function parseSubTypeFromOldData(element: NapProtoDecodeStructType<typeof CustomFaceElement.fields>['oldData']) {
+function parseSubTypeFromOldData(element: InferProtoModel<typeof CustomFaceElement.fields>['oldData']) {
     if (!element || element.length < 5) {
         return ImageSubType.Picture; // May be legacy QQ
     }

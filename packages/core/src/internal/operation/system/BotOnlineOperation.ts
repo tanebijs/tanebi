@@ -9,13 +9,13 @@ export const BotOnlineOperation = defineOperation(
         reqRandom: Math.floor(Math.random() * 0xFFFFFFFF),
         curActiveStatus: 2,
         groupLastMsgTime: 0n,
-        c2CInfoSync: {
-            c2CMsgCookie: {
-                c2CLastMsgTime: 0n,
+        c2cInfoSync: {
+            c2cMsgCookie: {
+                c2cLastMsgTime: 0n,
             },
-            c2CLastMsgTime: 0n,
-            lastC2CMsgCookie: {
-                c2CLastMsgTime: 0n,
+            c2cLastMsgTime: 0n,
+            lastC2cMsgCookie: {
+                c2cLastMsgTime: 0n,
             },
         },
         registerInfo: {

@@ -1,13 +1,13 @@
 import { CommonHead } from '@/internal/packet/oidb/media/CommonHead';
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const MultiMediaReqHead = new NapProtoMsg({
+export const MultiMediaReqHead = ProtoMessage.of({
     common: ProtoField(1, () => CommonHead.fields, true, false),
     scene: ProtoField(2, () => ({
         requestType: ProtoField(101, ScalarType.UINT32, false, false),
         businessType: ProtoField(102, ScalarType.UINT32, false, false),
         sceneType: ProtoField(200, ScalarType.UINT32, false, false),
-        c2CExt: ProtoField(201, () => ({
+        c2cExt: ProtoField(201, () => ({
             accountType: ProtoField(1, ScalarType.UINT32, false, false),
             uid: ProtoField(2, ScalarType.STRING, true, false),
         }), true, false),

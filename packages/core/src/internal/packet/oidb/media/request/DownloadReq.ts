@@ -1,7 +1,7 @@
 import { IndexNode } from '@/internal/packet/oidb/media/IndexNode';
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const DownloadReq = new NapProtoMsg({
+export const DownloadReq = ProtoMessage.of({
     node: ProtoField(1, () => IndexNode.fields, true, false),
     download: ProtoField(2, () => ({
         pic: ProtoField(1, () => ({}), true, false),

@@ -10,11 +10,11 @@ import { GroupJoinRequest } from '@/internal/packet/message/notify/GroupJoinRequ
 import { GroupMemberChange, DecreaseType, OperatorInfo } from '@/internal/packet/message/notify/GroupMemberChange';
 import { GroupMute } from '@/internal/packet/message/notify/GroupMute';
 import { Event0x210SubType, Event0x2DCSubType, Event0x2DCSubType16Field13, PushMsgBody, PushMsgType } from '@/internal/packet/message/PushMsg';
-import { NapProtoDecodeStructType } from '@napneko/nap-proto-core';
+import { InferProtoModel } from '@tanebijs/protobuf';
 import { GroupEssenceMessageChangeSetFlag } from '@/internal/packet/message/notify/GroupEssenceMessageChange';
 
 export class NotifyLogic extends LogicBase {
-    parsePushMsgBodyToNotify(pushMsgBody: NapProtoDecodeStructType<typeof PushMsgBody.fields>, type: PushMsgType) {
+    parsePushMsgBodyToNotify(pushMsgBody: InferProtoModel<typeof PushMsgBody.fields>, type: PushMsgType) {
         if (!pushMsgBody.body?.msgContent) {
             return;
         }
@@ -60,24 +60,24 @@ export class NotifyLogic extends LogicBase {
         }
     }
 
-    parseGroupJoinRequest(pushMsgBody: NapProtoDecodeStructType<typeof PushMsgBody.fields>) {
+    parseGroupJoinRequest(pushMsgBody: InferProtoModel<typeof PushMsgBody.fields>) {
         const content = GroupJoinRequest.decode(pushMsgBody.body!.msgContent!);
         this.ctx.eventsDX.emit('groupJoinRequest', content.groupUin, content.memberUid);
     }
 
-    parseGroupInvitedJoinRequest(pushMsgBody: NapProtoDecodeStructType<typeof PushMsgBody.fields>) {
+    parseGroupInvitedJoinRequest(pushMsgBody: InferProtoModel<typeof PushMsgBody.fields>) {
         const content = GroupInvitationRequest.decode(pushMsgBody.body!.msgContent!);
         if (content.command === 87) {
             this.ctx.eventsDX.emit('groupInvitedJoinRequest', content.info.inner.groupUin, content.info.inner.targetUid, content.info.inner.invitorUid);
         }
     }
 
-    parseGroupInvitation(pushMsgBody: NapProtoDecodeStructType<typeof PushMsgBody.fields>) {
+    parseGroupInvitation(pushMsgBody: InferProtoModel<typeof PushMsgBody.fields>) {
         const content = GroupInvitation.decode(pushMsgBody.body!.msgContent!);
         this.ctx.eventsDX.emit('groupInvitationRequest', content.groupUin, content.invitorUid);
     }
 
-    parseGroupAdminChange(pushMsgBody: NapProtoDecodeStructType<typeof PushMsgBody.fields>) {
+    parseGroupAdminChange(pushMsgBody: InferProtoModel<typeof PushMsgBody.fields>) {
         const content = GroupAdminChange.decode(pushMsgBody.body!.msgContent!);
         if (content.body.set) {
             this.ctx.eventsDX.emit('groupAdminChange', content.groupUin, content.body.set.targetUid, true);
@@ -86,13 +86,13 @@ export class NotifyLogic extends LogicBase {
         }
     }
 
-    parseGroupMemberIncrease(pushMsgBody: NapProtoDecodeStructType<typeof PushMsgBody.fields>) {
+    parseGroupMemberIncrease(pushMsgBody: InferProtoModel<typeof PushMsgBody.fields>) {
         const content = GroupMemberChange.decode(pushMsgBody.body!.msgContent!);
         const operatorUidOrEmpty = content.operatorInfo ? Buffer.from(content.operatorInfo).toString() : undefined;
         this.ctx.eventsDX.emit('groupMemberIncrease', content.groupUin, content.memberUid, operatorUidOrEmpty);
     }
 
-    parseGroupMemberDecrease(pushMsgBody: NapProtoDecodeStructType<typeof PushMsgBody.fields>) {
+    parseGroupMemberDecrease(pushMsgBody: InferProtoModel<typeof PushMsgBody.fields>) {
         const content = GroupMemberChange.decode(pushMsgBody.body!.msgContent!);
         this.ctx.eventsDX.emit('groupMemberDecrease', content.groupUin, content.memberUid,
             content.type === DecreaseType.KickSelf ?
@@ -100,7 +100,7 @@ export class NotifyLogic extends LogicBase {
                 (content.operatorInfo ? Buffer.from(content.operatorInfo).toString() : undefined));
     }
 
-    parseFriendRequest(pushMsgBody: NapProtoDecodeStructType<typeof PushMsgBody.fields>) {
+    parseFriendRequest(pushMsgBody: InferProtoModel<typeof PushMsgBody.fields>) {
         const content = FriendRequest.decode(pushMsgBody.body!.msgContent!);
         if (!content.body) {
             return;
@@ -112,7 +112,7 @@ export class NotifyLogic extends LogicBase {
             content.body.via ?? FriendRequestExtractVia.decode(pushMsgBody.body!.msgContent!).body.via);
     }
 
-    parseFriendGrayTip(pushMsgBody: NapProtoDecodeStructType<typeof PushMsgBody.fields>) {
+    parseFriendGrayTip(pushMsgBody: InferProtoModel<typeof PushMsgBody.fields>) {
         const content = GeneralGrayTip.decode(pushMsgBody.body!.msgContent!);
         const templateParamsMap = new Map(content.templateParams.map((param) => [param.key, param.value]));
         if (content.bizType === 12) {
@@ -125,12 +125,12 @@ export class NotifyLogic extends LogicBase {
         }
     }
 
-    parseFriendRecall(pushMsgBody: NapProtoDecodeStructType<typeof PushMsgBody.fields>) {
+    parseFriendRecall(pushMsgBody: InferProtoModel<typeof PushMsgBody.fields>) {
         const content = FriendRecall.decode(pushMsgBody.body!.msgContent!).body;
         this.ctx.eventsDX.emit('friendRecall', content.fromUid, content.clientSequence, content.tipInfo.tip);
     }
 
-    parseGroupMute(pushMsgBody: NapProtoDecodeStructType<typeof PushMsgBody.fields>) {
+    parseGroupMute(pushMsgBody: InferProtoModel<typeof PushMsgBody.fields>) {
         const content = GroupMute.decode(pushMsgBody.body!.msgContent!);
         if (content.info.state.targetUid) {
             this.ctx.eventsDX.emit('groupMute', content.groupUin, content.operatorUid, content.info.state.targetUid, content.info.state.duration);
@@ -139,7 +139,7 @@ export class NotifyLogic extends LogicBase {
         }
     }
 
-    parseGroupGrayTip(pushMsgBody: NapProtoDecodeStructType<typeof PushMsgBody.fields>) {
+    parseGroupGrayTip(pushMsgBody: InferProtoModel<typeof PushMsgBody.fields>) {
         const wrapper = GroupGeneral0x2DCBody.decode(
             GroupGeneral0x2DC.decode(Buffer.from(pushMsgBody.body!.msgContent!)).body);
         const content = wrapper.generalGrayTip!;
@@ -155,7 +155,7 @@ export class NotifyLogic extends LogicBase {
         }
     }
 
-    parseGroupEssenceMessageChange(pushMsgBody: NapProtoDecodeStructType<typeof PushMsgBody.fields>) {
+    parseGroupEssenceMessageChange(pushMsgBody: InferProtoModel<typeof PushMsgBody.fields>) {
         const wrapper = GroupGeneral0x2DCBody.decode(
             GroupGeneral0x2DC.decode(Buffer.from(pushMsgBody.body!.msgContent!)).body);
         const content = wrapper.essenceMessageChange;
@@ -165,7 +165,7 @@ export class NotifyLogic extends LogicBase {
             content.setFlag === GroupEssenceMessageChangeSetFlag.Add);
     }
 
-    parseGroupRecall(pushMsgBody: NapProtoDecodeStructType<typeof PushMsgBody.fields>) {
+    parseGroupRecall(pushMsgBody: InferProtoModel<typeof PushMsgBody.fields>) {
         const wrapper = GroupGeneral0x2DCBody.decode(
             GroupGeneral0x2DC.decode(Buffer.from(pushMsgBody.body!.msgContent!)).body);
         const content = wrapper.recall!;
@@ -176,7 +176,7 @@ export class NotifyLogic extends LogicBase {
     }
 
     parseGroupReaction(
-        wrapper: NapProtoDecodeStructType<typeof GroupGeneral0x2DCBody.fields>,
+        wrapper: InferProtoModel<typeof GroupGeneral0x2DCBody.fields>,
     ) {
         const content = wrapper.reaction!;
         this.ctx.eventsDX.emit('groupReaction',

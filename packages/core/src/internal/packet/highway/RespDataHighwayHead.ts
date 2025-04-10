@@ -1,8 +1,8 @@
 import { DataHighwayHead } from '@/internal/packet/highway/DataHighwayHead';
 import { SegHead } from './SegHead';
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const RespDataHighwayHead = new NapProtoMsg({
+export const RespDataHighwayHead = ProtoMessage.of({
     msgBaseHead: ProtoField(1, () => DataHighwayHead.fields, true),
     msgSegHead: ProtoField(2, () => SegHead.fields, true),
     errorCode: ProtoField(3, ScalarType.UINT32),

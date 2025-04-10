@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const SegHead = new NapProtoMsg({
+export const SegHead = ProtoMessage.of({
     serviceId: ProtoField(1, ScalarType.UINT32, true),
     filesize: ProtoField(2, ScalarType.UINT64),
     dataOffset: ProtoField(3, ScalarType.UINT64, true),

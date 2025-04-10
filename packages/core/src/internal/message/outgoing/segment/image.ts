@@ -2,14 +2,14 @@ import { defineOutgoing } from '@/internal/message/outgoing/segment-base';
 import { CustomFaceElement } from '@/internal/packet/message/element/CustomFaceElement';
 import { NotOnlineImageElement } from '@/internal/packet/message/element/NotOnlineImageElement';
 import { MsgInfo } from '@/internal/packet/oidb/media/MsgInfo';
-import { NapProtoEncodeStructType } from '@napneko/nap-proto-core';
+import { InferProtoModelInput } from '@tanebijs/protobuf';
 
 export const imageBuilder = defineOutgoing(
     'image',
     (segment: {
-        msgInfo: NapProtoEncodeStructType<typeof MsgInfo.fields>,
-        compatImage?: NapProtoEncodeStructType<typeof NotOnlineImageElement>,
-        compatFace?: NapProtoEncodeStructType<typeof CustomFaceElement>,
+        msgInfo: InferProtoModelInput<typeof MsgInfo.fields>,
+        compatImage?: InferProtoModelInput<typeof NotOnlineImageElement.fields>,
+        compatFace?: InferProtoModelInput<typeof CustomFaceElement.fields>,
     }) => {
         return [
             {

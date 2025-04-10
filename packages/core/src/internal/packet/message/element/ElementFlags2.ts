@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const ElementFlags2 = new NapProtoMsg({
+export const ElementFlags2 = ProtoMessage.of({
     colorTextId: ProtoField(1, ScalarType.UINT32, false, false),
     msgId: ProtoField(2, ScalarType.UINT64, false, false),
     whisperSessionId: ProtoField(3, ScalarType.UINT32, false, false),
@@ -17,12 +17,12 @@ export const ElementFlags2 = new NapProtoMsg({
     crmFlags: ProtoField(14, ScalarType.UINT32, true, false),
 });
 
-export const Instance = new NapProtoMsg({
+export const Instance = ProtoMessage.of({
     appId: ProtoField(1, ScalarType.UINT32, false, false),
     instId: ProtoField(2, ScalarType.UINT32, false, false),
 });
 
-export const PcSupportDef = new NapProtoMsg({
+export const PcSupportDef = ProtoMessage.of({
     pcPtlBegin: ProtoField(1, ScalarType.UINT32, false, false),
     pcPtlEnd: ProtoField(2, ScalarType.UINT32, false, false),
     macPtlBegin: ProtoField(3, ScalarType.UINT32, false, false),

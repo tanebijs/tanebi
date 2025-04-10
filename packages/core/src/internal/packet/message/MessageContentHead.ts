@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const MessageContentHead = new NapProtoMsg({
+export const MessageContentHead = ProtoMessage.of({
     type: ProtoField(1, ScalarType.UINT32), // message type
     subType: ProtoField(2, ScalarType.UINT32, true), // message subtype (0x211/0x2dc/0x210 and other system message subtypes, same as c2c_cmd)
     c2cCmd: ProtoField(3, ScalarType.UINT32, true), // c2c message subtype

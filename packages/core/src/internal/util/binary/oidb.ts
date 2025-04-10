@@ -1,8 +1,8 @@
 import { OidbBase } from '@/internal/packet/oidb';
-import { NapProtoEncodeStructType, NapProtoMsg, ProtoMessageType } from '@napneko/nap-proto-core';
+import { InferProtoModelInput, ProtoMessage, ProtoModel } from '@tanebijs/protobuf';
 
-export class OidbSvcContract<const T extends ProtoMessageType> {
-    private readonly bodyProto: NapProtoMsg<T>;
+export class OidbSvcContract<const T extends ProtoModel> {
+    private readonly bodyProto: ProtoMessage<T>;
     
     constructor(
         public readonly command: number,
@@ -11,10 +11,10 @@ export class OidbSvcContract<const T extends ProtoMessageType> {
         public readonly addLafter: boolean = false,
         public readonly isUid: boolean = false,
     ) {
-        this.bodyProto = new NapProtoMsg(bodyFields);
+        this.bodyProto = ProtoMessage.of(bodyFields);
     }
 
-    encode(data: NapProtoEncodeStructType<T>): Uint8Array {
+    encode(data: InferProtoModelInput<T>): Buffer {
         return OidbBase.encode({
             command: this.command,
             subCommand: this.subCommand,
@@ -25,7 +25,7 @@ export class OidbSvcContract<const T extends ProtoMessageType> {
         });
     }
 
-    tryDecode(data: Uint8Array) {
+    tryDecode(data: Buffer) {
         const decoded = OidbBase.decode(data);
         return {
             ...decoded,
@@ -33,7 +33,7 @@ export class OidbSvcContract<const T extends ProtoMessageType> {
         };
     }
 
-    decodeBodyOrThrow(data: Uint8Array) {
+    decodeBodyOrThrow(data: Buffer) {
         const decoded = this.tryDecode(data);
         if (decoded.errorCode !== 0 || !decoded.body) {
             throw new Error(`Failed to decode OidbSvcTrpcTcp0x${this.command.toString(16)}_${this.subCommand} response (${decoded.errorCode}): ${decoded.errorMsg}`);

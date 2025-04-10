@@ -1,4 +1,4 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
 export enum IncreaseType {
     Approve = 130,
@@ -11,14 +11,14 @@ export enum DecreaseType {
     Kick = 131,
 }
 
-export const GroupMemberChange = new NapProtoMsg({
+export const GroupMemberChange = ProtoMessage.of({
     groupUin: ProtoField(1, ScalarType.UINT32),
     memberUid: ProtoField(3, ScalarType.STRING),
     type: ProtoField(4, ScalarType.UINT32),
     operatorInfo: ProtoField(5, ScalarType.BYTES, true),
 });
 
-export const OperatorInfo = new NapProtoMsg({
+export const OperatorInfo = ProtoMessage.of({
     body: ProtoField(1, () => ({
         uid: ProtoField(1, ScalarType.STRING),
     })),

@@ -174,11 +174,11 @@ export class SsoLogic extends LogicBase {
                 guid: this.ctx.deviceInfo.guid.toString('hex'),
                 bytes8: BUF_0x00_0x00_0x00_0x04,
                 version: this.ctx.appInfo.CurrentVersion,
-                ssoReserveFields: Buffer.from(SsoReserveFields.encode({
+                ssoReserveFields: SsoReserveFields.encode({
                     uid: this.ctx.keystore.uid,
                     secureInfo: sign, // may be empty
                     traceParent: generateTrace(),
-                })),
+                }),
             },
             body: src,
         });

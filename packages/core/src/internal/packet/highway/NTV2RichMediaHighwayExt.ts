@@ -1,7 +1,7 @@
 import { MsgInfoBody } from '@/internal/packet/oidb/media/MsgInfo';
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const NTV2RichMediaHighwayExt = new NapProtoMsg({
+export const NTV2RichMediaHighwayExt = ProtoMessage.of({
     fileUuid: ProtoField(1, ScalarType.STRING),
     uKey: ProtoField(2, ScalarType.STRING),
     network: ProtoField(5, () => ({

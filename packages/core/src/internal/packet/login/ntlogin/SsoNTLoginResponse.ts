@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const SsoNTLoginResponse = new NapProtoMsg({
+export const SsoNTLoginResponse = ProtoMessage.of({
     credentials: ProtoField(1, () => ({
         tempPassword: ProtoField(3, ScalarType.BYTES, true, false),
         tgt: ProtoField(4, ScalarType.BYTES, true, false),

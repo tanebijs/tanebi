@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const GroupRecall = new NapProtoMsg({
+export const GroupRecall = ProtoMessage.of({
     operatorUid: ProtoField(1, ScalarType.STRING),
     recallMessages: ProtoField(3, () => ({
         sequence: ProtoField(1, ScalarType.UINT32, false, false),

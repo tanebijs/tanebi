@@ -1,5 +1,5 @@
 import { OidbSvcContract } from '@/internal/util/binary/oidb';
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
 export const FetchGroupNotifies = new OidbSvcContract(
     0x10c0, 1,
@@ -31,7 +31,7 @@ export enum GroupRequestState {
     Completed = 2,
 }
 
-export const FetchGroupNotifiesGeneralResponse = new NapProtoMsg({
+export const FetchGroupNotifiesGeneralResponse = ProtoMessage.of({
     requests: ProtoField(1, () => ({
         sequence: ProtoField(1, ScalarType.UINT64),
         notifyType: ProtoField(2, ScalarType.UINT32),
@@ -55,12 +55,12 @@ export const FetchGroupFilteredNotifiesResponse = new OidbSvcContract(
     FetchGroupNotifiesGeneralResponse.fields
 );
 
-const ResponseGroup = new NapProtoMsg({
+const ResponseGroup = ProtoMessage.of({
     groupUin: ProtoField(1, ScalarType.UINT32),
     groupName: ProtoField(2, ScalarType.STRING),
 });
 
-const ResponseUser = new NapProtoMsg({
+const ResponseUser = ProtoMessage.of({
     uid: ProtoField(1, ScalarType.STRING),
     nickname: ProtoField(2, ScalarType.STRING),
 });

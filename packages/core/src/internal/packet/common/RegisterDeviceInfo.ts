@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const RegisterDeviceInfo = new NapProtoMsg({
+export const RegisterDeviceInfo = ProtoMessage.of({
     user: ProtoField(1, ScalarType.STRING),
     os: ProtoField(2, ScalarType.STRING),
     osVer: ProtoField(3, ScalarType.STRING),

@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const GroupAvatarExtra = new NapProtoMsg({
+export const GroupAvatarExtra = ProtoMessage.of({
     type: ProtoField(1, ScalarType.UINT32),
     groupUin: ProtoField(2, ScalarType.UINT32),
     field3: ProtoField(3, () => ({

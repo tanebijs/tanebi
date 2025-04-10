@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const NotOnlineFile = new NapProtoMsg({
+export const NotOnlineFile = ProtoMessage.of({
     fileType: ProtoField(1, ScalarType.INT32, true, false),
     sig: ProtoField(2, ScalarType.BYTES, true, false),
     fileUuid: ProtoField(3, ScalarType.STRING, true, false),

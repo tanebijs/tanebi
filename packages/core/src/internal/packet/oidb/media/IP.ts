@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const IPv4 = new NapProtoMsg({
+export const IPv4 = ProtoMessage.of({
     outIP: ProtoField(1, ScalarType.UINT32, false, false),
     outPort: ProtoField(2, ScalarType.UINT32, false, false),
     inIP: ProtoField(3, ScalarType.UINT32, false, false),
@@ -8,7 +8,7 @@ export const IPv4 = new NapProtoMsg({
     ipType: ProtoField(5, ScalarType.UINT32, false, false),
 });
 
-export const IPv6 = new NapProtoMsg({
+export const IPv6 = ProtoMessage.of({
     outIP: ProtoField(1, ScalarType.BYTES, true, false),
     outPort: ProtoField(2, ScalarType.UINT32, false, false),
     inIP: ProtoField(3, ScalarType.BYTES, true, false),

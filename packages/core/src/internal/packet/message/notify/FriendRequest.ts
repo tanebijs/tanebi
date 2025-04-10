@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const FriendRequest = new NapProtoMsg({
+export const FriendRequest = ProtoMessage.of({
     body: ProtoField(1, () => ({
         fromUid: ProtoField(2, ScalarType.STRING),
         message: ProtoField(10, ScalarType.STRING),
@@ -9,7 +9,7 @@ export const FriendRequest = new NapProtoMsg({
 });
 
 // SBTX
-export const FriendRequestExtractVia = new NapProtoMsg({
+export const FriendRequestExtractVia = ProtoMessage.of({
     body: ProtoField(1, () => ({
         via: ProtoField(5, ScalarType.STRING),
     })),

@@ -4,7 +4,7 @@ import { IncomingSegmentCollection } from '@/internal/message/incoming/segment-b
 import { imageCommonParser, imageNotOnlineParser, imageCustomFaceParser } from '@/internal/message/incoming/segment/image';
 import { mentionParser } from '@/internal/message/incoming/segment/mention';
 import { textParser } from '@/internal/message/incoming/segment/text';
-import { NapProtoDecodeStructType } from '@napneko/nap-proto-core';
+import { InferProtoModel } from '@tanebijs/protobuf';
 import { lightAppParser } from '@/internal/message/incoming/segment/light-app';
 import { recordParser } from '@/internal/message/incoming/segment/record';
 import { videoParser } from '@/internal/message/incoming/segment/video';
@@ -42,8 +42,8 @@ interface MessageBase {
     sequence: number;
     repliedSequence?: number;
     segments: IncomingSegment[];
-    [blob]: Uint8Array;
-    [rawElems]: Uint8Array[];
+    [blob]: Buffer;
+    [rawElems]: Buffer[];
     [msgUid]: bigint;
 }
 
@@ -62,7 +62,7 @@ export interface GroupMessage extends MessageBase {
 
 export type IncomingMessage = PrivateMessage | GroupMessage;
 
-export function parsePushMsgBody(raw: Uint8Array): IncomingMessage {
+export function parsePushMsgBody(raw: Buffer): IncomingMessage {
     const pushMsgBody = PushMsgBody.decode(raw);
     const result = parseMetadata(pushMsgBody, raw);
     if (pushMsgBody.body?.richText?.elements) {
@@ -96,7 +96,7 @@ export function parsePushMsgBody(raw: Uint8Array): IncomingMessage {
     return result;
 }
 
-function parseMetadata(pushMsg: NapProtoDecodeStructType<typeof PushMsgBody.fields>, raw: Uint8Array): IncomingMessage {
+function parseMetadata(pushMsg: InferProtoModel<typeof PushMsgBody.fields>, raw: Buffer): IncomingMessage {
     if (!pushMsg.responseHead.groupExt) {
         return {
             type: MessageType.PrivateMessage,

@@ -1,8 +1,8 @@
 import { ExtBizInfo } from '@/internal/packet/oidb/media/ExtBizInfo';
 import { FileInfo } from '@/internal/packet/oidb/media/FileInfo';
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const UploadReq = new NapProtoMsg({
+export const UploadReq = ProtoMessage.of({
     uploadInfo: ProtoField(1, () => ({
         fileInfo: ProtoField(1, () => FileInfo.fields, true, false),
         subFileType: ProtoField(2, ScalarType.UINT32, false, false),

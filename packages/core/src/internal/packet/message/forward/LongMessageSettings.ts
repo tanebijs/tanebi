@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const LongMessageSettings = new NapProtoMsg({
+export const LongMessageSettings = ProtoMessage.of({
     field1: ProtoField(1, ScalarType.UINT32),
     field2: ProtoField(2, ScalarType.UINT32),
     field3: ProtoField(3, ScalarType.UINT32),

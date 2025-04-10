@@ -1,11 +1,11 @@
 import { defineOutgoing } from '@/internal/message/outgoing/segment-base';
 import { MsgInfo } from '@/internal/packet/oidb/media/MsgInfo';
-import { NapProtoEncodeStructType } from '@napneko/nap-proto-core';
+import { InferProtoModelInput } from '@tanebijs/protobuf';
 
 export const recordBuilder = defineOutgoing(
     'record',
     (segment: {
-        msgInfo: NapProtoEncodeStructType<typeof MsgInfo.fields>,
+        msgInfo: InferProtoModelInput<typeof MsgInfo.fields>,
     }) => {
         return {
             common: {

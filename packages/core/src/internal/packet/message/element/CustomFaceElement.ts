@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const CustomFaceElement = new NapProtoMsg({
+export const CustomFaceElement = ProtoMessage.of({
     guid: ProtoField(1, ScalarType.BYTES, true, false),
     filePath: ProtoField(2, ScalarType.STRING, true, false),
     shortcut: ProtoField(3, ScalarType.STRING, true, false),

@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const TextElement = new NapProtoMsg({
+export const TextElement = ProtoMessage.of({
     str: ProtoField(1, ScalarType.STRING, true, false),
     link: ProtoField(2, ScalarType.STRING, true, false),
     attr6Buf: ProtoField(3, ScalarType.BYTES, true, false),
@@ -14,7 +14,7 @@ export enum MentionType {
     All = 1,
 }
 
-export const MentionExtra = new NapProtoMsg({
+export const MentionExtra = ProtoMessage.of({
     type: ProtoField(3, ScalarType.UINT32),
     uin: ProtoField(4, ScalarType.UINT32, true, false),
     field5: ProtoField(5, ScalarType.UINT32, true, false),

@@ -1,3 +1,3 @@
-import { NapProtoMsg } from '@napneko/nap-proto-core';
+import { ProtoMessage } from '@tanebijs/protobuf';
 
-export const DownloadSafeResp = new NapProtoMsg({});
+export const DownloadSafeResp = ProtoMessage.of({});

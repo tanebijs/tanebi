@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const SsoNTEasyLogin = new NapProtoMsg({
+export const SsoNTEasyLogin = ProtoMessage.of({
     tempPassword: ProtoField(1, ScalarType.BYTES, true, false),
     captcha: ProtoField(2, () => ({
         ticket: ProtoField(1, ScalarType.STRING, true, false),

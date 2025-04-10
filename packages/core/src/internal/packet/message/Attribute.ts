@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const Attribute = new NapProtoMsg({
+export const Attribute = ProtoMessage.of({
     codePage: ProtoField(1, ScalarType.INT32, false, false),
     time: ProtoField(2, ScalarType.INT32, false, false),
     random: ProtoField(3, ScalarType.INT32, false, false),

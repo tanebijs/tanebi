@@ -1,6 +1,6 @@
 import { PbSendMsg } from '@/internal/packet/message/PbSendMsg';
 import { timestamp } from '@/internal/util/format';
-import { MessageElementDecoded, MessageType } from '@/internal/message';
+import { MessageElementEncoded, MessageType } from '@/internal/message';
 import { OutgoingSegmentCollection } from '@/internal/message/outgoing/segment-base';
 import { mentionBuilder } from '@/internal/message/outgoing/segment/mention';
 import { textBuilder } from '@/internal/message/outgoing/segment/text';
@@ -29,7 +29,7 @@ export interface ReplyInfo {
     senderUin: number;
     senderUid: string;
     messageUid: bigint;
-    elements: Uint8Array[];
+    elements: Buffer[];
 }
 
 export interface OutgoingMessageBase {
@@ -38,7 +38,7 @@ export interface OutgoingMessageBase {
     clientSequence: number;
     random: number;
     reply?: ReplyInfo;
-    [sendBlob]?: Uint8Array;
+    [sendBlob]?: Buffer;
 }
 
 export interface OutgoingPrivateMessage extends OutgoingMessageBase {
@@ -55,7 +55,7 @@ export interface OutgoingGroupMessage extends OutgoingMessageBase {
 
 export type OutgoingMessage = OutgoingPrivateMessage | OutgoingGroupMessage;
 
-export function buildPbSendMsg(message: OutgoingMessage): Uint8Array {
+export function buildPbSendMsg(message: OutgoingMessage): Buffer {
     const pbSendMsg = buildPbSendMsgBase(message);
     pbSendMsg.body!.richText!.elements!.push(
         ...buildElements(message).map((element) => MessageElement.encode(element)));
@@ -64,8 +64,8 @@ export function buildPbSendMsg(message: OutgoingMessage): Uint8Array {
     return result;
 }
 
-export function buildElements(message: OutgoingMessage): MessageElementDecoded[] {
-    const result: MessageElementDecoded[] = [];
+export function buildElements(message: OutgoingMessage): MessageElementEncoded[] {
+    const result: MessageElementEncoded[] = [];
     if (message.reply) {
         result.push(message.type === MessageType.PrivateMessage ?
             buildPrivateReply(message.reply, message.repliedClientSequence!) :
@@ -81,7 +81,7 @@ export function buildElements(message: OutgoingMessage): MessageElementDecoded[]
 function buildPbSendMsgBase(message: OutgoingMessage): Parameters<typeof PbSendMsg.encode>[0] {
     return {
         routingHead: {
-            c2CExt: message.type === MessageType.PrivateMessage ? {
+            c2cExt: message.type === MessageType.PrivateMessage ? {
                 uin: message.targetUin,
                 uid: message.targetUid,
             } : undefined,
@@ -89,7 +89,7 @@ function buildPbSendMsgBase(message: OutgoingMessage): Parameters<typeof PbSendM
                 groupCode: message.groupUin 
             } : undefined,
         },
-        contentHead: { type: 1, subType: 0, c2CCmd: 0 },
+        contentHead: { type: 1, subType: 0, c2cCmd: 0 },
         body: { richText: { elements: [] } },
         clientSequence: message.clientSequence,
         random: message.random,
@@ -97,7 +97,7 @@ function buildPbSendMsgBase(message: OutgoingMessage): Parameters<typeof PbSendM
     };
 }
 
-function buildPrivateReply(reply: Exclude<OutgoingMessage['reply'], undefined>, seq: number): MessageElementDecoded {
+function buildPrivateReply(reply: Exclude<OutgoingMessage['reply'], undefined>, seq: number): MessageElementEncoded {
     return {
         srcMsg: {
             origSeqs: [seq],
@@ -114,7 +114,7 @@ function buildPrivateReply(reply: Exclude<OutgoingMessage['reply'], undefined>, 
     };
 }
 
-function buildGroupReply(reply: Exclude<OutgoingMessage['reply'], undefined>): MessageElementDecoded {
+function buildGroupReply(reply: Exclude<OutgoingMessage['reply'], undefined>): MessageElementEncoded {
     return {
         srcMsg: {
             origSeqs: [reply.sequence],

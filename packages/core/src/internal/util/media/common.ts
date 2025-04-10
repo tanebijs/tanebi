@@ -6,7 +6,7 @@ export interface MediaGeneralMetadata {
     sha1: Buffer;
 }
 
-export function getGeneralMetadata(data: Uint8Array): MediaGeneralMetadata {
+export function getGeneralMetadata(data: Buffer): MediaGeneralMetadata {
     return {
         size: data.length,
         md5: md5(data),

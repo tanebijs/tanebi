@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const RichMsgElement = new NapProtoMsg({
+export const RichMsgElement = ProtoMessage.of({
     template1: ProtoField(1, ScalarType.BYTES, true, false),
     serviceId: ProtoField(2, ScalarType.INT32, true, false),
     msgResId: ProtoField(3, ScalarType.BYTES, true, false),

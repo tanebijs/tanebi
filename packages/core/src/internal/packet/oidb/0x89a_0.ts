@@ -1,5 +1,5 @@
 import { OidbSvcContract } from '@/internal/util/binary/oidb';
-import { ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoField, ScalarType } from '@tanebijs/protobuf';
 
 export const MuteAllMembers = new OidbSvcContract(
     0x89a, 0,

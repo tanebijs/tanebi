@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const UploadKeyRenewalReq = new NapProtoMsg({
+export const UploadKeyRenewalReq = ProtoMessage.of({
     oldUKey: ProtoField(1, ScalarType.STRING, true, false),
     subType: ProtoField(2, ScalarType.UINT32, false, false),
 });

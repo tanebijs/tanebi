@@ -1,7 +1,7 @@
 import { LongMessageSettings } from '@/internal/packet/message/forward/LongMessageSettings';
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const SsoRecvLongMsg = new NapProtoMsg({
+export const SsoRecvLongMsg = ProtoMessage.of({
     info: ProtoField(1, () => ({
         uidInfo: ProtoField(1, () => ({
             uid: ProtoField(2, ScalarType.STRING),
@@ -12,7 +12,7 @@ export const SsoRecvLongMsg = new NapProtoMsg({
     settings: ProtoField(15, () => LongMessageSettings.fields),
 });
 
-export const SsoRecvLongMsgResponse = new NapProtoMsg({
+export const SsoRecvLongMsgResponse = ProtoMessage.of({
     result: ProtoField(1, () => ({
         payload: ProtoField(4, ScalarType.BYTES),
     })),

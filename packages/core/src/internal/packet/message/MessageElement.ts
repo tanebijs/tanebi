@@ -1,4 +1,4 @@
-import { NapProtoMsg, ProtoField } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField } from '@tanebijs/protobuf';
 import { TextElement } from '@/internal/packet/message/element/TextElement';
 import { FaceElement } from '@/internal/packet/message/element/FaceElement';
 import { OnlineImageElement } from '@/internal/packet/message/element/OnlineImageElement';
@@ -19,7 +19,7 @@ import { SrcMsgElement } from '@/internal/packet/message/element/SrcMsgElement';
 import { LightAppElement } from '@/internal/packet/message/element/LightAppElement';
 import { CommonElement } from '@/internal/packet/message/element/CommonElement';
 
-export const MessageElement = new NapProtoMsg({
+export const MessageElement = ProtoMessage.of({
     text: ProtoField(1, () => TextElement.fields, true, false),
     face: ProtoField(2, () => FaceElement.fields, true, false),
     onlineImage: ProtoField(3, () => OnlineImageElement.fields, true, false),

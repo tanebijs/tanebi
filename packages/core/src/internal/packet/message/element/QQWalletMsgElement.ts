@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const QQWalletMsgElement = new NapProtoMsg({
+export const QQWalletMsgElement = ProtoMessage.of({
     type: ProtoField(1, () => ({
         sendUin: ProtoField(1, ScalarType.UINT64, false, false),
         sender: ProtoField(2, () => QQWalletAioElem.fields, true, false),
@@ -26,7 +26,7 @@ export const QQWalletMsgElement = new NapProtoMsg({
     }), true, false),
 });
 
-export const QQWalletAioElem = new NapProtoMsg({
+export const QQWalletAioElem = ProtoMessage.of({
     background: ProtoField(1, ScalarType.UINT32, false, false),
     icon: ProtoField(2, ScalarType.UINT32, false, false),
     title: ProtoField(3, ScalarType.STRING, true, false),

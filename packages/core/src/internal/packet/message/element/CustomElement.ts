@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const CustomElement = new NapProtoMsg({
+export const CustomElement = ProtoMessage.of({
     desc: ProtoField(1, ScalarType.BYTES, true, false),
     data: ProtoField(2, ScalarType.BYTES, true, false),
     enumType: ProtoField(3, ScalarType.INT32, false, false),

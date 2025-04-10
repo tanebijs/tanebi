@@ -1,12 +1,12 @@
 import { defineOperation } from '@/internal/operation/OperationBase';
 import { DownloadGroupImage, DownloadGroupImageResponse } from '@/internal/packet/oidb/media/Action';
 import { IndexNode } from '@/internal/packet/oidb/media/IndexNode';
-import { NapProtoDecodeStructType } from '@napneko/nap-proto-core';
+import { InferProtoModel } from '@tanebijs/protobuf';
 
 export const DownloadGroupImageOperation = defineOperation(
     'downloadGroupImage',
     'OidbSvcTrpcTcp.0x11c4_200',
-    (ctx, groupUin: number, node: NapProtoDecodeStructType<typeof IndexNode.fields>) => Buffer.from(DownloadGroupImage.encode({
+    (ctx, groupUin: number, node: InferProtoModel<typeof IndexNode.fields>) => Buffer.from(DownloadGroupImage.encode({
         reqHead: {
             common: {
                 requestId: 1,

@@ -1,5 +1,5 @@
 import { OidbSvcContract } from '@/internal/util/binary/oidb';
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
 export enum GroupRequestOperation {
     Accept = 1,
@@ -7,7 +7,7 @@ export enum GroupRequestOperation {
     Ignore = 3,
 }
 
-export const HandleGroupRequestGeneral = new NapProtoMsg({
+export const HandleGroupRequestGeneral = ProtoMessage.of({
     operation: ProtoField(1, ScalarType.UINT32),
     body: ProtoField(2, () => ({
         sequence: ProtoField(1, ScalarType.UINT64),

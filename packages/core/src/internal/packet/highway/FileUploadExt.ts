@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const FileUploadExt = new NapProtoMsg({
+export const FileUploadExt = ProtoMessage.of({
     unknown1: ProtoField(1, ScalarType.INT32),
     unknown2: ProtoField(2, ScalarType.INT32),
     unknown3: ProtoField(3, ScalarType.INT32),

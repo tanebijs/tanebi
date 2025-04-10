@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const SsoReserveFields = new NapProtoMsg({
+export const SsoReserveFields = ProtoMessage.of({
     clientIpCookie: ProtoField(4, ScalarType.BYTES, true),
     flag: ProtoField(9, ScalarType.UINT32, true),
     envId: ProtoField(10, ScalarType.UINT32, true),

@@ -1,8 +1,8 @@
 import { defineOperation } from '@/internal/operation/OperationBase';
 import { FaceDetail as aFaceDetail, FetchFaceDetails, FetchFaceDetailsResponse } from '@/internal/packet/oidb/0x9154_1';
-import { NapProtoDecodeStructType } from '@napneko/nap-proto-core';
+import { InferProtoModel } from '@tanebijs/protobuf';
 
-export type FaceDetail = NapProtoDecodeStructType<typeof aFaceDetail.fields>;
+export type FaceDetail = InferProtoModel<typeof aFaceDetail.fields>;
 
 export const FetchFaceDetailsOperation = defineOperation(
     'fetchFaceDetails',

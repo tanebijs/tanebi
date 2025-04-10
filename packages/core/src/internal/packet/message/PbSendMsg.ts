@@ -1,10 +1,10 @@
 import { MessageBody } from '@/internal/packet/message/MessageBody';
 import { MessageContentHead } from '@/internal/packet/message/MessageContentHead';
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const PbSendMsg = new NapProtoMsg({
+export const PbSendMsg = ProtoMessage.of({
     routingHead: ProtoField(1, () => ({
-        c2CExt: ProtoField(1, () => ({
+        c2cExt: ProtoField(1, () => ({
             uin: ProtoField(1, ScalarType.UINT32, true, false),
             uid: ProtoField(2, ScalarType.STRING, true, false),
             field3: ProtoField(3, ScalarType.UINT32, true, false),
@@ -42,7 +42,7 @@ export const PbSendMsg = new NapProtoMsg({
     multiSendSeq: ProtoField(14, ScalarType.UINT32, false, false),
 });
 
-export const PbSendMsgResponse = new NapProtoMsg({
+export const PbSendMsgResponse = ProtoMessage.of({
     resultCode: ProtoField(1, ScalarType.INT32, false, false),
     errMsg: ProtoField(2, ScalarType.STRING, true, false),
     timestamp1: ProtoField(3, ScalarType.UINT32, false, false),

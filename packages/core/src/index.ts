@@ -6,7 +6,7 @@ import { AppInfo, CoreConfig, DeviceInfo, Keystore, SignProvider } from '@/commo
 import { BotContext } from '@/internal';
 import { TransEmp12_QrCodeState } from '@/internal/packet/login/wtlogin/TransEmp12';
 import { EventEmitter } from 'node:events';
-import { NapProtoDecodeStructType } from '@napneko/nap-proto-core';
+import { InferProtoModel } from '@tanebijs/protobuf';
 import { FaceDetail } from '@/internal/packet/oidb/0x9154_1';
 import { BUF0, BUF16 } from '@/internal/util/constants';
 
@@ -81,7 +81,7 @@ export class Bot {
         groupReaction:              [BotGroup, number, BotGroupMember, string, boolean, number];
                                     // group, sequence, member, reactionCode, isAdd, count
     }>();
-    readonly [faceCache] = new Map<string, NapProtoDecodeStructType<typeof FaceDetail.fields>>();
+    readonly [faceCache] = new Map<string, InferProtoModel<typeof FaceDetail.fields>>();
     readonly [dispatcher] = new MessageDispatcher(this);
     private readonly friendCache;
     private readonly groupCache;

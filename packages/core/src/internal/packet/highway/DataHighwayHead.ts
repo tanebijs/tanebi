@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const DataHighwayHead = new NapProtoMsg({
+export const DataHighwayHead = ProtoMessage.of({
     version: ProtoField(1, ScalarType.UINT32),
     uin: ProtoField(2, ScalarType.STRING, true),
     command: ProtoField(3, ScalarType.STRING, true),

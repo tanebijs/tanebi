@@ -10,7 +10,7 @@ import { md5 } from '@/internal/util/crypto/digest';
 import { int32ip2str } from '@/internal/util/format';
 import { MediaGeneralMetadata } from '@/internal/util/media/common';
 import { ImageMetadata } from '@/internal/util/media/image';
-import { NapProtoDecodeStructType } from '@napneko/nap-proto-core';
+import { InferProtoModelInput } from '@tanebijs/protobuf';
 import assert from 'node:assert';
 import { request } from 'node:http';
 import { connect } from 'node:net';
@@ -18,7 +18,7 @@ import { Readable, Transform, TransformCallback } from 'node:stream';
 
 const maxBlockSize = 1024 * 1024;
 
-function oidbIPv4ToHighway(ip: NapProtoDecodeStructType<typeof IPv4.fields>) {
+function oidbIPv4ToHighway(ip: InferProtoModelInput<typeof IPv4.fields>) {
     return {
         domain: {
             isEnable: true,
@@ -31,9 +31,9 @@ function oidbIPv4ToHighway(ip: NapProtoDecodeStructType<typeof IPv4.fields>) {
 export class HighwayLogic extends LogicBase {
     highwayHost: string = '';
     highwayPort: number = 0;
-    sigSession: Uint8Array = new Uint8Array(0);
+    sigSession: Buffer = Buffer.alloc(0);
 
-    setHighwayUrl(host: string, port: number, sigSession: Uint8Array) {
+    setHighwayUrl(host: string, port: number, sigSession: Buffer) {
         this.highwayHost = host;
         this.highwayPort = port;
         this.sigSession = sigSession;
@@ -42,7 +42,7 @@ export class HighwayLogic extends LogicBase {
     async uploadImage(
         image: Buffer,
         imageMeta: ImageMetadata,
-        uploadResp: NapProtoDecodeStructType<typeof NTV2RichMediaResponse.fields>,
+        uploadResp: InferProtoModelInput<typeof NTV2RichMediaResponse.fields>,
         messageType: MessageType,
     ) {
         await this.upload(
@@ -55,7 +55,7 @@ export class HighwayLogic extends LogicBase {
     async uploadRecord(
         record: Buffer,
         recordMeta: MediaGeneralMetadata,
-        uploadResp: NapProtoDecodeStructType<typeof NTV2RichMediaResponse.fields>,
+        uploadResp: InferProtoModelInput<typeof NTV2RichMediaResponse.fields>,
     ) {
         await this.upload(
             1008, record, recordMeta.md5,
@@ -63,13 +63,13 @@ export class HighwayLogic extends LogicBase {
         );
     }
 
-    private buildExtendInfo(uploadResp: NapProtoDecodeStructType<typeof NTV2RichMediaResponse.fields>, sha1: Buffer) {
-        const index = uploadResp.upload?.msgInfo?.msgInfoBody[0].index;
+    private buildExtendInfo(uploadResp: InferProtoModelInput<typeof NTV2RichMediaResponse.fields>, sha1: Buffer) {
+        const index = uploadResp.upload?.msgInfo?.msgInfoBody?.[0]?.index;
         return NTV2RichMediaHighwayExt.encode({
             fileUuid: index?.fileUuid,
             uKey: uploadResp.upload?.uKey,
             network: {
-                ipv4S: uploadResp.upload?.ipv4S?.map(oidbIPv4ToHighway),
+                ipv4s: uploadResp.upload?.ipv4s?.map(oidbIPv4ToHighway),
             },
             msgInfoBody: uploadResp.upload?.msgInfo?.msgInfoBody,
             blockSize: maxBlockSize,
@@ -79,7 +79,7 @@ export class HighwayLogic extends LogicBase {
         });
     }
 
-    private buildDataUpTrans(cmd: number, data: Buffer, md5: Uint8Array, extendInfo: Uint8Array, timeout: number = 1200): HighwayTrans {
+    private buildDataUpTrans(cmd: number, data: Buffer, md5: Buffer, extendInfo: Buffer, timeout: number = 1200): HighwayTrans {
         return {
             uin: this.ctx.keystore.uin.toString(),
             cmd: cmd,
@@ -96,7 +96,7 @@ export class HighwayLogic extends LogicBase {
         };
     }
 
-    private async upload(cmd: number, data: Buffer, md5: Uint8Array, extendInfo: Uint8Array) {
+    private async upload(cmd: number, data: Buffer, md5: Buffer, extendInfo: Buffer) {
         const trans = this.buildDataUpTrans(cmd, data, md5, extendInfo);
         try {
             await new HighwayTcpSession(this.ctx, trans).upload();
@@ -111,11 +111,11 @@ interface HighwayTrans {
     cmd: number;
     command: string;
     readable: Readable;
-    sum: Uint8Array;
+    sum: Buffer;
     size: number;
-    ticket: Uint8Array;
-    loginSig?: Uint8Array;
-    ext: Uint8Array;
+    ticket: Buffer;
+    loginSig?: Buffer;
+    ext: Buffer;
     encrypt: boolean;
     timeout?: number;
     server: string;
@@ -137,7 +137,7 @@ abstract class AbstractHighwaySession {
         });
     }
 
-    buildPicUpHead(offset: number, bodyLength: number, bodyMd5: Uint8Array) {
+    buildPicUpHead(offset: number, bodyLength: number, bodyMd5: Buffer) {
         return ReqDataHighwayHead.encode({
             msgBaseHead: {
                 version: 1,

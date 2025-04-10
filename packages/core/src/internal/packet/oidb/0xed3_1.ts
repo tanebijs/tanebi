@@ -1,5 +1,5 @@
 import { OidbSvcContract } from '@/internal/util/binary/oidb';
-import { ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoField, ScalarType } from '@tanebijs/protobuf';
 
 export const SendGrayTipPoke = new OidbSvcContract(
     0xed3, 1,

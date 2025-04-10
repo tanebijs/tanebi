@@ -1,5 +1,5 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const DownloadRKeyReq = new NapProtoMsg({
+export const DownloadRKeyReq = ProtoMessage.of({
     types: ProtoField(1, ScalarType.INT32, false, true),
 });

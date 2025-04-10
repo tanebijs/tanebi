@@ -1,9 +1,10 @@
 import { MessageElement } from '@/internal/packet/message/MessageElement';
-import { NapProtoDecodeStructType } from '@napneko/nap-proto-core';
+import { InferProtoModel, InferProtoModelInput } from '@tanebijs/protobuf';
 
 export enum MessageType {
     PrivateMessage = 1,
     GroupMessage = 2,
 }
 
-export type MessageElementDecoded = NapProtoDecodeStructType<typeof MessageElement.fields>;
+export type MessageElementDecoded = InferProtoModel<typeof MessageElement.fields>;
+export type MessageElementEncoded = InferProtoModelInput<typeof MessageElement.fields>;

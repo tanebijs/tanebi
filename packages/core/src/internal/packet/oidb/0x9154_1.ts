@@ -1,5 +1,5 @@
 import { OidbSvcContract } from '@/internal/util/binary/oidb';
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
 export const FetchFaceDetails = new OidbSvcContract(
     0x9154, 1,
@@ -19,7 +19,7 @@ export const FetchFaceDetailsResponse = new OidbSvcContract(
     }
 );
 
-export const FacesData = new NapProtoMsg({
+export const FacesData = ProtoMessage.of({
     facePackList: ProtoField(1, () => ({
         facePackName: ProtoField(1, ScalarType.STRING, true, false),
         faces: ProtoField(2, () => FaceDetail.fields, false, true),
@@ -27,7 +27,7 @@ export const FacesData = new NapProtoMsg({
     resourceUrl: ProtoField(2, () => FaceResourceUrl.fields, true, false),
 });
 
-export const FaceDetail = new NapProtoMsg({
+export const FaceDetail = ProtoMessage.of({
     qSid: ProtoField(1, ScalarType.STRING),
     qDes: ProtoField(2, ScalarType.STRING, true, false),
     emCode: ProtoField(3, ScalarType.STRING, true, false),
@@ -42,7 +42,7 @@ export const FaceDetail = new NapProtoMsg({
     aniStickerHeight: ProtoField(14, ScalarType.INT32, true, false),
 }); 
 
-export const FaceResourceUrl = new NapProtoMsg({
+export const FaceResourceUrl = ProtoMessage.of({
     baseUrl: ProtoField(1, ScalarType.STRING, true, false),
     advUrl: ProtoField(2, ScalarType.STRING, true, false),
 });

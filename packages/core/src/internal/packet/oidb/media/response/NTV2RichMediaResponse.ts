@@ -7,9 +7,9 @@ import { MultiMediaRespHead } from '@/internal/packet/oidb/media/response/MultiM
 import { UploadCompletedResp } from '@/internal/packet/oidb/media/response/UploadCompletedResp';
 import { UploadKeyRenewalResp } from '@/internal/packet/oidb/media/response/UploadKeyRenewalResp';
 import { UploadResp } from '@/internal/packet/oidb/media/response/UploadResp';
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const NTV2RichMediaResponse = new NapProtoMsg({
+export const NTV2RichMediaResponse = ProtoMessage.of({
     respHead: ProtoField(1, () => MultiMediaRespHead.fields, true, false),
     upload: ProtoField(2, () => UploadResp.fields, true, false),
     download: ProtoField(3, () => DownloadResp.fields, true, false),

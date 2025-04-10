@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const GroupMute = new NapProtoMsg({
+export const GroupMute = ProtoMessage.of({
     groupUin: ProtoField(1, ScalarType.UINT32),
     operatorUid: ProtoField(4, ScalarType.STRING),
     info: ProtoField(5, () => ({

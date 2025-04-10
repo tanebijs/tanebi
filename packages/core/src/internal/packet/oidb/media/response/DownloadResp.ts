@@ -1,8 +1,8 @@
 import { IPv4, IPv6 } from '@/internal/packet/oidb/media/IP';
 import { PicUrlExtInfo, VideoExtInfo } from '@/internal/packet/oidb/media/MsgInfo';
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const DownloadResp = new NapProtoMsg({
+export const DownloadResp = ProtoMessage.of({
     rKeyParam: ProtoField(1, ScalarType.STRING, true, false),
     rKeyTtlSecond: ProtoField(2, ScalarType.UINT32, false, false),
     info: ProtoField(3, () => ({

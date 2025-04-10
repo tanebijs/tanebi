@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const LargeFaceInfo = new NapProtoMsg({
+export const LargeFaceInfo = ProtoMessage.of({
     aniStickerPackId: ProtoField(1, ScalarType.STRING),
     aniStickerId: ProtoField(2, ScalarType.STRING),
     faceId: ProtoField(3, ScalarType.INT32),

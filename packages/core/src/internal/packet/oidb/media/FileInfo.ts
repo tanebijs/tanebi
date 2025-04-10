@@ -1,4 +1,4 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
 export enum PicFormat {
     UNKNOWN = 0,  // regard as jpg
@@ -10,7 +10,7 @@ export enum PicFormat {
     TIFF = 1006,
 }
 
-export const FileInfo = new NapProtoMsg({
+export const FileInfo = ProtoMessage.of({
     fileSize: ProtoField(1, ScalarType.UINT32, false, false),
     fileHash: ProtoField(2, ScalarType.STRING, true, false),
     fileSha1: ProtoField(3, ScalarType.STRING, true, false),

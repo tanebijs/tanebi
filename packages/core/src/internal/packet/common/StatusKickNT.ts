@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const StatusKickNT = new NapProtoMsg({
+export const StatusKickNT = ProtoMessage.of({
     tip: ProtoField(3, ScalarType.STRING),
     title: ProtoField(4, ScalarType.STRING),
 });

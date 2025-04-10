@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const GroupReaction = new NapProtoMsg({
+export const GroupReaction = ProtoMessage.of({
     data: ProtoField(1, () => ({
         data: ProtoField(1, () => ({
             target: ProtoField(2, () => ({

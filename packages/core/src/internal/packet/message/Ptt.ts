@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const Ptt = new NapProtoMsg({
+export const Ptt = ProtoMessage.of({
     fileType: ProtoField(1, ScalarType.INT32, false, false),
     srcUin: ProtoField(2, ScalarType.INT64, false, false),
     fileUuid: ProtoField(3, ScalarType.STRING, true, false),

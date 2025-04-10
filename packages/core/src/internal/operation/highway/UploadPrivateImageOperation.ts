@@ -22,7 +22,7 @@ export const UploadPrivateImageOperation = defineOperation(
                     requestType: 2,
                     businessType: 1,
                     sceneType: 1,
-                    c2CExt: { accountType: 2, uid },
+                    c2cExt: { accountType: 2, uid },
                 },
                 client: {
                     agentType: 2

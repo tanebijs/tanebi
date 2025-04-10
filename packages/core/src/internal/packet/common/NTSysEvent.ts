@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const NTSysEvent = new NapProtoMsg({
+export const NTSysEvent = ProtoMessage.of({
     ip: ProtoField(1, ScalarType.STRING),
     sid: ProtoField(2, ScalarType.INT64),
     sub: ProtoField(3, () => ({

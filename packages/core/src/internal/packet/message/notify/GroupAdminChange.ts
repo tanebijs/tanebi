@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const GroupAdminChange = new NapProtoMsg({
+export const GroupAdminChange = ProtoMessage.of({
     groupUin: ProtoField(1, ScalarType.UINT32),
     body: ProtoField(4, () => ({
         unset: ProtoField(1, () => ({

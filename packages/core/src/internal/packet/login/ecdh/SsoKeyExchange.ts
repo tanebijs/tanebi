@@ -1,7 +1,7 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 import { Tlv, TlvScalarField, TlvVariableField } from '@/internal/util/binary/tlv';
 
-export const SsoKeyExchange = new NapProtoMsg({
+export const SsoKeyExchange = ProtoMessage.of({
     publicKey: ProtoField(1, ScalarType.BYTES),
     type: ProtoField(2, ScalarType.UINT32), // 1
     gcmCalc1: ProtoField(3, ScalarType.BYTES),
@@ -9,7 +9,7 @@ export const SsoKeyExchange = new NapProtoMsg({
     gcmCalc2: ProtoField(5, ScalarType.BYTES),
 });
 
-export const SsoKeyExchangePart1 = new NapProtoMsg({
+export const SsoKeyExchangePart1 = ProtoMessage.of({
     uin: ProtoField(1, ScalarType.UINT32, true),
     guid: ProtoField(2, ScalarType.STRING, true),
 });
@@ -22,13 +22,13 @@ export const SsoKeyExchangePart2 = Tlv.plain([
     TlvScalarField('timestamp', 'uint32'),
 ]);
 
-export const SsoKeyExchangeResponse = new NapProtoMsg({
+export const SsoKeyExchangeResponse = ProtoMessage.of({
     gcmEncrypted: ProtoField(1, ScalarType.BYTES),
     body: ProtoField(2, ScalarType.BYTES),
     publicKey: ProtoField(3, ScalarType.BYTES),
 });
 
-export const SsoKeyExchangeResult = new NapProtoMsg({
+export const SsoKeyExchangeResult = ProtoMessage.of({
     gcmKey: ProtoField(1, ScalarType.BYTES),
     sign: ProtoField(2, ScalarType.BYTES),
     expiration: ProtoField(3, ScalarType.UINT32),

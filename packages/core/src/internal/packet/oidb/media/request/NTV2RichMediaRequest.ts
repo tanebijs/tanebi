@@ -1,5 +1,5 @@
 import { MultiMediaReqHead } from '@/internal/packet/oidb/media/request/MultiMediaReqHead';
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 import { UploadReq } from '@/internal/packet/oidb/media/request/UploadReq';
 import { DownloadReq } from '@/internal/packet/oidb/media/request/DownloadReq';
 import { DownloadRKeyReq } from '@/internal/packet/oidb/media/request/DownloadRKeyReq';
@@ -9,7 +9,7 @@ import { MsgInfoAuthReq } from '@/internal/packet/oidb/media/request/MsgInfoAuth
 import { UploadKeyRenewalReq } from '@/internal/packet/oidb/media/request/UploadKeyRenewalReq';
 import { DownloadSafeReq } from '@/internal/packet/oidb/media/request/DownloadSafeReq';
 
-export const NTV2RichMediaRequest = new NapProtoMsg({
+export const NTV2RichMediaRequest = ProtoMessage.of({
     reqHead: ProtoField(1, () => MultiMediaReqHead.fields, true, false),
     upload: ProtoField(2, () => UploadReq.fields, true, false),
     download: ProtoField(3, () => DownloadReq.fields, true, false),

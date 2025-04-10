@@ -1,7 +1,7 @@
 import { RegisterDeviceInfo } from '@/internal/packet/common/RegisterDeviceInfo';
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const RegisterInfo = new NapProtoMsg({
+export const RegisterInfo = ProtoMessage.of({
     guid: ProtoField(1, ScalarType.STRING, true),
     kickPC: ProtoField(2, ScalarType.INT32, true),
     currentVersion: ProtoField(3, ScalarType.STRING, true),
@@ -19,7 +19,7 @@ export const RegisterInfo = new NapProtoMsg({
     field12: ProtoField(12, ScalarType.UINT32, true),
 });
 
-export const RegisterInfoResponse = new NapProtoMsg({
+export const RegisterInfoResponse = ProtoMessage.of({
     message: ProtoField(2, ScalarType.STRING, true),
     timestamp: ProtoField(3, ScalarType.UINT32),
 });

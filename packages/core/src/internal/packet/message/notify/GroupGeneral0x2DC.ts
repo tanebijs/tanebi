@@ -3,7 +3,7 @@ import { GroupEssenceMessageChange } from '@/internal/packet/message/notify/Grou
 import { GroupReaction } from '@/internal/packet/message/notify/GroupReaction';
 import { GroupRecall } from '@/internal/packet/message/notify/GroupRecall';
 import { Tlv, TlvScalarField, TlvVariableField } from '@/internal/util/binary/tlv';
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
 export const GroupGeneral0x2DC = Tlv.plain([
     TlvScalarField('groupUin', 'uint32'),
@@ -11,7 +11,7 @@ export const GroupGeneral0x2DC = Tlv.plain([
     TlvVariableField('body', 'bytes', 'uint16', false),
 ]);
 
-export const GroupGeneral0x2DCBody = new NapProtoMsg({
+export const GroupGeneral0x2DCBody = ProtoMessage.of({
     type: ProtoField(1, ScalarType.UINT32, false, false),
     groupUin: ProtoField(4, ScalarType.UINT32, false, false),
     eventParam: ProtoField(5, ScalarType.BYTES, true, false),

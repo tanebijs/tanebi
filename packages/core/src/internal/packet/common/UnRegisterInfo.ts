@@ -1,6 +1,6 @@
 import { RegisterDeviceInfo } from '@/internal/packet/common/RegisterDeviceInfo';
-import { NapProtoMsg, ProtoField } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField } from '@tanebijs/protobuf';
 
-export const UnRegisterInfo = new NapProtoMsg({
+export const UnRegisterInfo = ProtoMessage.of({
     device: ProtoField(2, () => RegisterDeviceInfo.fields),
 });

@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const OidbBase = new NapProtoMsg({
+export const OidbBase = ProtoMessage.of({
     command: ProtoField(1, ScalarType.UINT32, false, false),
     subCommand: ProtoField(2, ScalarType.UINT32, false, false),
     errorCode: ProtoField(3, ScalarType.UINT32, false, false),

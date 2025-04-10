@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const GroupInvitation = new NapProtoMsg({
+export const GroupInvitation = ProtoMessage.of({
     groupUin: ProtoField(1, ScalarType.UINT32),
     invitorUid: ProtoField(5, ScalarType.STRING),
 });

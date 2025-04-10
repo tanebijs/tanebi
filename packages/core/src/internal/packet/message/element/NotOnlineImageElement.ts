@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const NotOnlineImageElement = new NapProtoMsg({
+export const NotOnlineImageElement = ProtoMessage.of({
     filePath: ProtoField(1, ScalarType.STRING, true, false),
     fileLen: ProtoField(2, ScalarType.UINT32, false, false),
     downloadPath: ProtoField(3, ScalarType.STRING, true, false),

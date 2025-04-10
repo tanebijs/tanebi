@@ -1,7 +1,7 @@
 import { IndexNode } from '@/internal/packet/oidb/media/IndexNode';
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const DeleteReq = new NapProtoMsg({
+export const DeleteReq = ProtoMessage.of({
     index: ProtoField(1, () => IndexNode.fields, false, true),
     needRecallMsg: ProtoField(2, ScalarType.BOOL, false, false),
     msgSeq: ProtoField(3, ScalarType.UINT64, false, false),

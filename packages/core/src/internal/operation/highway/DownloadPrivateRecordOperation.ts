@@ -1,12 +1,12 @@
 import { defineOperation } from '@/internal/operation/OperationBase';
 import { DownloadPrivateRecord, DownloadPrivateRecordResponse } from '@/internal/packet/oidb/media/Action';
 import { IndexNode } from '@/internal/packet/oidb/media/IndexNode';
-import { NapProtoDecodeStructType } from '@napneko/nap-proto-core';
+import { InferProtoModel } from '@tanebijs/protobuf';
 
 export const DownloadPrivateRecordOperation = defineOperation(
     'downloadPrivateRecord',
     'OidbSvcTrpcTcp.0x126d_200',
-    (ctx, senderUid: string, node: NapProtoDecodeStructType<typeof IndexNode.fields>) => Buffer.from(DownloadPrivateRecord.encode({
+    (ctx, senderUid: string, node: InferProtoModel<typeof IndexNode.fields>) => Buffer.from(DownloadPrivateRecord.encode({
         reqHead: {
             common: {
                 requestId: 1,
@@ -16,7 +16,7 @@ export const DownloadPrivateRecordOperation = defineOperation(
                 requestType: 1,
                 businessType: 3,
                 sceneType: 1,
-                c2CExt: {
+                c2cExt: {
                     accountType: 2,
                     uid: senderUid,
                 }

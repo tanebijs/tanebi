@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const SsoC2CRecallMsg = new NapProtoMsg({
+export const SsoC2CRecallMsg = ProtoMessage.of({
     type: ProtoField(1, ScalarType.UINT32),
     targetUid: ProtoField(3, ScalarType.STRING),
     info: ProtoField(4, () => ({

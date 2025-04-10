@@ -1,7 +1,7 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 import { RegisterInfo, RegisterInfoResponse } from '@/internal/packet/common/RegisterInfo';
 
-export const SsoInfoSync = new NapProtoMsg({
+export const SsoInfoSync = ProtoMessage.of({
     syncFlag: ProtoField(1, ScalarType.UINT32),
     reqRandom: ProtoField(2, ScalarType.UINT32, true),
     curActiveStatus: ProtoField(4, ScalarType.UINT32, true),
@@ -26,10 +26,10 @@ export const SsoInfoSync = new NapProtoMsg({
     }), true),
 });
 
-export const SsoC2CMsgCookie = new NapProtoMsg({
+export const SsoC2CMsgCookie = ProtoMessage.of({
     c2cLastMsgTime: ProtoField(1, ScalarType.UINT64),
 });
 
-export const SsoInfoSyncResponse = new NapProtoMsg({
+export const SsoInfoSyncResponse = ProtoMessage.of({
     registerInfoResponse: ProtoField(7, () => RegisterInfoResponse.fields, true),
 });

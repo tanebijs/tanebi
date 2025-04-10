@@ -1,5 +1,5 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const SsoHeartBeat = new NapProtoMsg({
+export const SsoHeartBeat = ProtoMessage.of({
     type: ProtoField(1, ScalarType.INT32),
 });

@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const ExtraInfoElement = new NapProtoMsg({
+export const ExtraInfoElement = ProtoMessage.of({
     nick: ProtoField(1, ScalarType.STRING, true, false),
     groupCard: ProtoField(2, ScalarType.STRING, true, false),
     level: ProtoField(3, ScalarType.INT32, false, false),

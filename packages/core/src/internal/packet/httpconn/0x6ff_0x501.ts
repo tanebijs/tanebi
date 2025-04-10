@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const FetchHighwayUrl = new NapProtoMsg({
+export const FetchHighwayUrl = ProtoMessage.of({
     body: ProtoField(0x501, () => ({
         field1: ProtoField(1, ScalarType.INT32),
         field2: ProtoField(2, ScalarType.INT32),
@@ -16,7 +16,7 @@ export const FetchHighwayUrl = new NapProtoMsg({
     })),
 });
 
-export const FetchHighwayUrlResponse = new NapProtoMsg({
+export const FetchHighwayUrlResponse = ProtoMessage.of({
     body: ProtoField(0x501, () => ({
         sigSession: ProtoField(1, ScalarType.BYTES),
         sessionKey: ProtoField(2, ScalarType.BYTES),

@@ -1,6 +1,6 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 
-export const SsoNTLoginWrapper = new NapProtoMsg({
+export const SsoNTLoginWrapper = ProtoMessage.of({
     sign: ProtoField(1, ScalarType.BYTES, true),
     gcmCalc: ProtoField(3, ScalarType.BYTES, true),
     type: ProtoField(4, ScalarType.INT32, false),
@@ -16,7 +16,7 @@ export enum NTLoginErrorCode
     Unknown = 1,
 }
 
-export const SsoNTLoginBase = new NapProtoMsg({
+export const SsoNTLoginBase = ProtoMessage.of({
     header: ProtoField(1, () => ({
         uin: ProtoField(1, () => ({
             uin: ProtoField(1, ScalarType.STRING, true, false),

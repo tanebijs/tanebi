@@ -1,9 +1,9 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 import { NTSysEvent } from '@/internal/packet/common/NTSysEvent';
 import { MessageContentHead } from '@/internal/packet/message/MessageContentHead';
 import { MessageBody } from '@/internal/packet/message/MessageBody';
 
-export const PushMsg = new NapProtoMsg({
+export const PushMsg = ProtoMessage.of({
     message: ProtoField(1, ScalarType.BYTES),
     status: ProtoField(3, ScalarType.INT32, true),
     ntEvent: ProtoField(4, () => NTSysEvent.fields, true),
@@ -55,7 +55,7 @@ export enum Event0x210SubType {
     GroupKick = 212,
 }
 
-export const PushMsgBody = new NapProtoMsg({
+export const PushMsgBody = ProtoMessage.of({
     responseHead: ProtoField(1, () => ({
         fromUin: ProtoField(1, ScalarType.UINT32),
         fromUid: ProtoField(2, ScalarType.STRING, true),
