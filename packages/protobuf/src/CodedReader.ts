@@ -2,11 +2,13 @@ import { WireType } from './WireType';
 
 export class CodedReader {
     private buffer: Buffer;
-    private offset: number;
+    offset: number;
+    length: number;
 
     constructor(buffer: Buffer) {
         this.buffer = buffer;
         this.offset = 0;
+        this.length = buffer.length;
     }
 
     readByte(): number {
@@ -79,7 +81,16 @@ export class CodedReader {
         };
     }
 
-    hasNext(): boolean {
-        return this.offset < this.buffer.length;
+    skip(wireType: WireType): void {
+        if (wireType === WireType.Varint) {
+            this.readVarint();
+        } else if (wireType === WireType.Fixed64) {
+            this.offset += 8;
+        } else if (wireType === WireType.Fixed32) {
+            this.offset += 4;
+        } else if (wireType === WireType.LengthDelimited) {
+            const length = this.readVarint();
+            this.offset += length;
+        }
     }
 }

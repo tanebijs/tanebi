@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { CodedReader } from './CodedReader';
 import { CodedWriter } from './CodedWriter';
+import { ProtoDeserializer, ScarlarDeserializerCompiler } from './ProtoDeserializer';
 import { InferProtoSpec, InferProtoSpecInput, kTag, kTagLength, ProtoFieldType, ProtoSpec } from './ProtoField';
 import { ProtoSerializer, ScalarSerializerCompiler } from './ProtoSerializer';
 import { ScalarTypeDefaultValue } from './ScalarType';
@@ -22,7 +24,10 @@ export class ProtoMessage<const T extends ProtoModel> {
 
     private readonly fieldSizeCalculators = new Map<string, SizeCalculator>();
     private readonly fieldSerializers = new Map<string, ProtoSerializer>();
+
     private readonly fieldDefaultValues: [string, any | (() => any)][] = [];
+    private readonly fieldDeserializers = new Map<number, ProtoDeserializer>();
+
     private constructor(readonly fields: T) {
         for (const key in fields) {
             const spec = fields[key];
@@ -56,6 +61,14 @@ export class ProtoMessage<const T extends ProtoModel> {
                         }
                     });
                     this.fieldDefaultValues.push([key, () => []]);
+                    this.fieldDeserializers.set(spec.fieldNumber, (draft, reader) => {
+                        const message = ProtoMessage.of(lazyLoad());
+                        const item = message.createDraft();
+                        const offset = reader.offset;
+                        const length = reader.readVarint();
+                        message.read(item, reader, offset + length);
+                        draft[key].push(item);
+                    });
                 } else {
                     this.fieldSizeCalculators.set(key, (data, cache) => {
                         const message = ProtoMessage.of(lazyLoad());
@@ -77,6 +90,14 @@ export class ProtoMessage<const T extends ProtoModel> {
                             return message.createDraft();
                         }]);
                     }
+                    this.fieldDeserializers.set(spec.fieldNumber, (draft, reader) => {
+                        const message = ProtoMessage.of(lazyLoad());
+                        const item = message.createDraft();
+                        const offset = reader.offset;
+                        const length = reader.readVarint();
+                        message.read(item, reader, offset + length);
+                        draft[key] = item;
+                    });
                 }
             } else {
                 this.fieldSizeCalculators.set(key, ScalarSizeCalculatorCompiler[type](spec));
@@ -88,6 +109,15 @@ export class ProtoMessage<const T extends ProtoModel> {
                 } else {
                     this.fieldDefaultValues.push([key, ScalarTypeDefaultValue[type]]);
                 }
+                this.fieldDeserializers.set(
+                    spec.fieldNumber,
+                    ScarlarDeserializerCompiler[type](
+                        key,
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                        // @ts-ignore
+                        spec
+                    )
+                );
             }
         }
     }
@@ -124,7 +154,7 @@ export class ProtoMessage<const T extends ProtoModel> {
         }
     }
 
-    createDraft(): InferProtoModel<T> {
+    private createDraft(): InferProtoModel<T> {
         const draft: any = {};
         for (const [key, valueOrSupplier] of this.fieldDefaultValues) {
             if (valueOrSupplier !== undefined) {
@@ -134,12 +164,33 @@ export class ProtoMessage<const T extends ProtoModel> {
         return draft;
     }
 
+    private read(draft: InferProtoModel<T>, reader: CodedReader, limit: number = reader.length) {
+        while (reader.offset < limit) {
+            const { fieldNumber, wireType } = reader.readTag();
+            console.log(fieldNumber, wireType);
+            if (!this.fieldDeserializers.has(fieldNumber)) {
+                console.warn(`Unknown field number: ${fieldNumber}`);
+                reader.skip(wireType);
+                continue;
+            }
+            const deserializer = this.fieldDeserializers.get(fieldNumber)!;
+            deserializer(draft, reader, wireType);
+        }
+    }
+
     encode(message: InferProtoModelInput<T>): Buffer {
         const cache = new WeakMap<object, number>();
         const size = this.calculateSerializedSize(message, cache);
         const writer = new CodedWriter(size);
         this.write(message, writer, cache);
         return writer.build();
+    }
+
+    decode(buffer: Buffer): InferProtoModel<T> {
+        const reader = new CodedReader(buffer);
+        const draft = this.createDraft();
+        this.read(draft, reader);
+        return draft;
     }
 
     static of<const T extends ProtoModel>(model: T): ProtoMessage<T> {

@@ -18,7 +18,7 @@ const TestMessage = ProtoMessage.of({
     repeatedNotPackedField: ProtoField(9, ScalarType.UINT32, false, true, false),
 });
 
-console.log(TestMessage.encode({
+const encoded = TestMessage.encode({
     uint32Field: 1,
     fixed32Field: 2,
     sint32Field: -1,
@@ -33,4 +33,8 @@ console.log(TestMessage.encode({
     ],
     repeatedPackedField: [1, 2, 3],
     repeatedNotPackedField: [4, 5, 6],
-}).toString('hex'));
+});
+console.log(encoded.toString('hex'));
+
+const decoded = TestMessage.decode(encoded);
+console.log(decoded);
