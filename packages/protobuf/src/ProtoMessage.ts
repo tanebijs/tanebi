@@ -64,8 +64,8 @@ export class ProtoMessage<const T extends ProtoModel> {
                     this.fieldDeserializers.set(spec.fieldNumber, (draft, reader) => {
                         const message = ProtoMessage.of(lazyLoad());
                         const item = message.createDraft();
-                        const offset = reader.offset;
                         const length = reader.readVarint();
+                        const offset = reader.offset;
                         message.read(item, reader, offset + length);
                         draft[key].push(item);
                     });
@@ -93,8 +93,8 @@ export class ProtoMessage<const T extends ProtoModel> {
                     this.fieldDeserializers.set(spec.fieldNumber, (draft, reader) => {
                         const message = ProtoMessage.of(lazyLoad());
                         const item = message.createDraft();
-                        const offset = reader.offset;
                         const length = reader.readVarint();
+                        const offset = reader.offset;
                         message.read(item, reader, offset + length);
                         draft[key] = item;
                     });
