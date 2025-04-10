@@ -2,6 +2,10 @@ const MAX_UINT64 = 2n ** 64n;
 const MAX_INT64 = 2n ** 63n;
 
 export class Converter {
+    static tag(fieldNumber: number, wireType: number): number {
+        return (fieldNumber << 3) | wireType;
+    }
+
     static toSigned32(value: number): number {
         return value | 0;
     }
