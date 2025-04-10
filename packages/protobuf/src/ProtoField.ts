@@ -89,20 +89,34 @@ const ScalarTypeToWireType: {
     [ScalarType.SINT64]: WireType.Varint,
 };
 
-export function ProtoField<T extends ProtoFieldType, O extends boolean, R extends boolean>(
+export function ProtoField<T extends ProtoFieldType>(
     fieldNumber: number,
     type: T,
-    optional: O,
-    repeated: R,
+    optional?: false,
+    repeated?: false,
     packed?: boolean
-): ProtoSpec<T, O, R> {
-    if (packed && (
-        typeof type === 'function' ||
-        type === ScalarType.STRING || type === ScalarType.BYTES
-    )) {
-        throw new Error('Packed fields must be of scalar type');
-    }
-
+): ProtoSpec<T, false, false>;
+export function ProtoField<T extends ProtoFieldType>(
+    fieldNumber: number,
+    type: T,
+    optional: true,
+    repeated?: false,
+    packed?: boolean
+): ProtoSpec<T, true, false>;
+export function ProtoField<T extends ProtoFieldType>(
+    fieldNumber: number,
+    type: T,
+    optional: false,
+    repeated: true,
+    packed?: boolean
+): ProtoSpec<T, false, true>;
+export function ProtoField<T extends ProtoFieldType>(
+    fieldNumber: number,
+    type: T,
+    optional: boolean = false,
+    repeated: boolean = false,
+    packed: boolean = true,
+): ProtoSpec<T, boolean, boolean> {
     if (repeated && optional) {
         throw new Error('Repeated fields cannot be optional');
     }
@@ -114,7 +128,11 @@ export function ProtoField<T extends ProtoFieldType, O extends boolean, R extend
     );
 
     return {
-        fieldNumber, type, optional, repeated, packed,
+        fieldNumber,
+        type,
+        optional: optional ?? false,
+        repeated: repeated ?? false,
+        packed,
         [kTag]: tag,
         [kTagLength]: SizeOf.varint32(tag),
     };
