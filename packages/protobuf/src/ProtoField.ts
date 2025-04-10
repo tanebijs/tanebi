@@ -66,7 +66,7 @@ export type ScalarTypeToTsType<T extends ScalarType> = T extends
     : T extends ScalarType.STRING
     ? string
     : T extends ScalarType.BYTES
-    ? Uint8Array
+    ? Buffer
     : never;
 
 const ScalarTypeToWireType: {
