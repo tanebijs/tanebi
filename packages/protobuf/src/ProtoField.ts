@@ -1,12 +1,14 @@
 import { Converter } from './Converter';
 import { InferProtoModel, InferProtoModelInput, ProtoModel } from './ProtoMessage';
 import { ScalarType } from './ScalarType';
+import { SizeOf } from './SizeOf';
 import { WireType } from './WireType';
 
 export type Supplier<T> = () => T;
 export type ProtoFieldType = ScalarType | Supplier<ProtoModel>;
 
 export const kTag = Symbol('Cached Tag');
+export const kTagLength = Symbol('Cached Tag Length');
 
 export interface ProtoSpec<
     T extends ProtoFieldType,
@@ -19,6 +21,7 @@ export interface ProtoSpec<
     repeated: R;
     packed?: boolean;
     [kTag]: number;
+    [kTagLength]: number;
 }
 
 export type InferProtoSpec<Spec> = Spec extends ProtoSpec<infer T, infer O, infer R>
@@ -104,12 +107,15 @@ export function ProtoField<T extends ProtoFieldType, O extends boolean, R extend
         throw new Error('Repeated fields cannot be optional');
     }
 
+    const tag = Converter.tag(
+        fieldNumber,
+        typeof type === 'function' ? WireType.LengthDelimited :
+            packed ? WireType.LengthDelimited : ScalarTypeToWireType[type]
+    );
+
     return {
         fieldNumber, type, optional, repeated, packed,
-        [kTag]: Converter.tag(
-            fieldNumber,
-            typeof type === 'function' ? WireType.LengthDelimited :
-                packed ? WireType.LengthDelimited : ScalarTypeToWireType[type]
-        )
+        [kTag]: tag,
+        [kTagLength]: SizeOf.varint(tag),
     };
 }
