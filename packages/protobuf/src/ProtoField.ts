@@ -44,9 +44,9 @@ export type InferProtoSpecInput<Spec> = Spec extends ProtoSpec<infer T, infer O,
             ? never
             : Array<InferProtoSpecInput<ProtoSpec<T, O, false>>>
         : T extends ScalarType
-        ? ScalarTypeToTsType<T> | undefined
+        ? ScalarTypeToTsType<T>
         : T extends Supplier<infer S extends ProtoModel>
-        ? InferProtoModelInput<S> | undefined
+        ? InferProtoModelInput<S>
         : never
     : never;
 

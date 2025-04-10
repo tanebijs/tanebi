@@ -11,9 +11,9 @@ export type InferProtoModel<T extends ProtoModel> = {
     [Key in keyof T]: InferProtoSpec<T[Key]>;
 };
 
-export type InferProtoModelInput<T extends ProtoModel> = {
-    [Key in keyof T]: InferProtoSpecInput<T[Key]> | undefined;
-};
+export type InferProtoModelInput<T extends ProtoModel> = Partial<{
+    [Key in keyof T]: InferProtoSpecInput<T[Key]>;
+}>;
 
 export class ProtoMessage<const T extends ProtoModel> {
     private static compiledMessages = new WeakMap<ProtoModel, ProtoMessage<ProtoModel>>();
