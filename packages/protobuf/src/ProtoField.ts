@@ -1,8 +1,12 @@
+import { Converter } from './Converter';
 import { InferProtoModel, InferProtoModelInput, ProtoModel } from './ProtoMessage';
 import { ScalarType } from './ScalarType';
+import { WireType } from './WireType';
 
 export type Supplier<T> = () => T;
 export type ProtoFieldType = ScalarType | Supplier<ProtoModel>;
+
+export const kTag = Symbol('Cached Tag');
 
 export interface ProtoSpec<
     T extends ProtoFieldType,
@@ -14,6 +18,7 @@ export interface ProtoSpec<
     optional: O;
     repeated: R;
     packed?: boolean;
+    [kTag]: number;
 }
 
 export type InferProtoSpec<Spec> = Spec extends ProtoSpec<infer T, infer O, infer R>
@@ -61,6 +66,26 @@ export type ScalarTypeToTsType<T extends ScalarType> = T extends
     ? Uint8Array
     : never;
 
+const ScalarTypeToWireType: {
+    [K in ScalarType]: WireType;
+} = {
+    [ScalarType.DOUBLE]: WireType.Fixed64,
+    [ScalarType.FLOAT]: WireType.Fixed32,
+    [ScalarType.INT64]: WireType.Varint,
+    [ScalarType.UINT64]: WireType.Varint,
+    [ScalarType.INT32]: WireType.Varint,
+    [ScalarType.FIXED64]: WireType.Fixed64,
+    [ScalarType.FIXED32]: WireType.Fixed32,
+    [ScalarType.BOOL]: WireType.Varint,
+    [ScalarType.STRING]: WireType.LengthDelimited,
+    [ScalarType.BYTES]: WireType.LengthDelimited,
+    [ScalarType.UINT32]: WireType.Varint,
+    [ScalarType.SFIXED32]: WireType.Fixed32,
+    [ScalarType.SFIXED64]: WireType.Fixed64,
+    [ScalarType.SINT32]: WireType.Varint,
+    [ScalarType.SINT64]: WireType.Varint,
+};
+
 export function ProtoField<T extends ProtoFieldType, O extends boolean, R extends boolean>(
     fieldNumber: number,
     type: T,
@@ -68,5 +93,23 @@ export function ProtoField<T extends ProtoFieldType, O extends boolean, R extend
     repeated: R,
     packed?: boolean
 ): ProtoSpec<T, O, R> {
-    return { fieldNumber, type, optional, repeated, packed };
+    if (packed && (
+        typeof type === 'function' ||
+        type === ScalarType.STRING || type === ScalarType.BYTES
+    )) {
+        throw new Error('Packed fields must be of scalar type');
+    }
+
+    if (repeated && optional) {
+        throw new Error('Repeated fields cannot be optional');
+    }
+
+    return {
+        fieldNumber, type, optional, repeated, packed,
+        [kTag]: Converter.tag(
+            fieldNumber,
+            typeof type === 'function' ? WireType.LengthDelimited :
+                packed ? WireType.LengthDelimited : ScalarTypeToWireType[type]
+        )
+    };
 }
