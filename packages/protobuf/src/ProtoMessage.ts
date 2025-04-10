@@ -167,9 +167,7 @@ export class ProtoMessage<const T extends ProtoModel> {
     private read(draft: InferProtoModel<T>, reader: CodedReader, limit: number = reader.length) {
         while (reader.offset < limit) {
             const { fieldNumber, wireType } = reader.readTag();
-            console.log(fieldNumber, wireType);
             if (!this.fieldDeserializers.has(fieldNumber)) {
-                console.warn(`Unknown field number: ${fieldNumber}`);
                 reader.skip(wireType);
                 continue;
             }
