@@ -10,8 +10,5 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@napneko/nap-proto-core": "^0.0.8"
-  }
+  "license": "ISC"
 }

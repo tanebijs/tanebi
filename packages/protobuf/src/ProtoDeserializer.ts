@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ScalarType } from '@napneko/nap-proto-core';
+import { ScalarType } from './ScalarType';
 import { CodedReader } from './CodedReader';
 import { ProtoSpec } from './ProtoField';
 import { Converter } from './Converter';
