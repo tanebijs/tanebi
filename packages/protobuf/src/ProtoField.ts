@@ -115,10 +115,14 @@ export function ProtoField<T extends ProtoFieldType>(
     type: T,
     optional: boolean = false,
     repeated: boolean = false,
-    packed: boolean = true,
+    packed?: boolean,
 ): ProtoSpec<T, boolean, boolean> {
     if (repeated && optional) {
         throw new Error('Repeated fields cannot be optional');
+    }
+
+    if (repeated && packed === undefined) {
+        packed = true;
     }
 
     const tag = Converter.tag(
