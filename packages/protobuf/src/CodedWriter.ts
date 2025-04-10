@@ -1,5 +1,3 @@
-import { WireType } from './WireType';
-
 export class CodedWriter {
     private buffer: Buffer;
     private offset: number;
