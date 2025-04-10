@@ -1,4 +1,4 @@
-import { NapProtoMsg, ProtoField, ScalarType } from '@napneko/nap-proto-core';
+import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 import { MessageType } from 'tanebi';
 
 export interface MessageRow {
@@ -17,7 +17,7 @@ export enum MessageStoreType {
     OutgoingMessageStore = 1,
 }
 
-export const OutgoingMessageStore = new NapProtoMsg({
+export const OutgoingMessageStore = ProtoMessage.of({
     jsonElem: ProtoField(1, ScalarType.STRING),
     pbElem: ProtoField(2, ScalarType.BYTES),
 });

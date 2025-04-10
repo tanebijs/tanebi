@@ -29,7 +29,6 @@
   },
   "dependencies": {
     "@libsql/client": "^0.15.1",
-    "@napneko/nap-proto-core": "^0.0.8",
     "chalk": "^5.4.1",
     "drizzle-orm": "^0.41.0",
     "express": "^5.0.1",
@@ -42,6 +41,7 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@tanebijs/protobuf": "workspace:*",
     "@types/express": "^5.0.1",
     "@types/ws": "^8.18.0",
     "drizzle-kit": "^0.30.6"
