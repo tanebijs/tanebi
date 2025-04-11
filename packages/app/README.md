@@ -38,7 +38,7 @@ These APIs are defined in the [OneBot 11 standard](https://github.com/botunivers
 | `set_group_ban`           | 🟢     |
 | `set_group_anonymous_ban` | ❌     |
 | `set_group_whole_ban`     | 🟢     |
-| `set_group_admin`         | 🟡     |
+| `set_group_admin`         | 🟢     |
 | `set_group_anonymous`     | ❌     |
 | `set_group_card`          | 🟡     |
 | `set_group_name`          | 🔴     |

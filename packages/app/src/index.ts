@@ -46,6 +46,7 @@ import { set_group_kick } from '@app/action/group/set_group_kick';
 import { set_group_ban } from '@app/action/group/set_group_ban';
 import { set_group_whole_ban } from '@app/action/group/set_group_whole_ban';
 import { get_msg_count } from '@app/action/message/get_msg_count';
+import { set_group_admin } from '@app/action/group/set_group_admin';
 
 export class OneBotApp {
     readonly projectDir = path.resolve(import.meta.dirname, '..');
@@ -55,6 +56,7 @@ export class OneBotApp {
         can_send_image,
         can_send_record,
 
+        set_group_admin,
         set_group_ban,
         set_group_kick,
         set_group_whole_ban,
