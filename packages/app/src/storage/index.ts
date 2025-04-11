@@ -13,4 +13,5 @@ export abstract class AbstractStorage<T> {
     abstract getById(id: number): PromiseOr<MessageRowOrEmpty>;
     abstract getByPeerAndSequence(type: MessageType, peerUin: number, sequence: number): PromiseOr<MessageRowOrEmpty>;
     abstract getPrivateByClientSequence(friendUin: number, clientSequence: number): PromiseOr<MessageRowOrEmpty>;
+    abstract size(): PromiseOr<number>;
 }

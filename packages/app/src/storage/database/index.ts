@@ -76,4 +76,8 @@ export class DatabaseStorage extends AbstractStorage<DatabaseStorageConfig> {
             body: result.isCompressed ? await promisify(inflate)(result.body) : result.body,
         };
     }
+
+    override async size(): Promise<number> {
+        return await this.db.$count(message);
+    }
 }

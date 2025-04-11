@@ -54,4 +54,8 @@ export class MemoryStorage extends AbstractStorage<MemoryStorageConfig> {
     override getPrivateByClientSequence(friendUin: number, clientSequence: number): MessageRowOrEmpty {
         return this.private_ClientSequenceIndex.get(encodeClientSequence(friendUin, clientSequence));
     }
+
+    override size(): number {
+        return this.primaryIndex.size;
+    }
 }
