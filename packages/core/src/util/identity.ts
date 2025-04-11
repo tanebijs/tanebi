@@ -19,7 +19,7 @@ export class BotIdentityService {
         const result = this.uin2uid.get(uin);
         if (!result) {
             this.bot[log].emit('warning', 'BotIdentityService', `Failed to resolve Uin ${uin} to Uid` +
-                groupUin ? ` in group ${groupUin}` : ''
+                (groupUin ? ` in group ${groupUin}` : '')
             );
         }
         return result;
@@ -38,7 +38,7 @@ export class BotIdentityService {
         const result = this.uid2uin.get(uid);
         if (!result) {
             this.bot[log].emit('warning', 'BotIdentityService', `Failed to resolve Uid ${uid} to Uin` + 
-                groupUin ? ` in group ${groupUin}` : ''
+                (groupUin ? ` in group ${groupUin}` : '')
             );
         }
         return result;
