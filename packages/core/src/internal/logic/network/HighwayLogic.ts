@@ -208,7 +208,7 @@ class HighwayTcpUploaderTransform extends Transform {
             const head = this.session.buildPicUpHead(this.offset, chunk.length, chunkMd5);
             chunkOffset += chunk.length;
             this.offset += chunk.length;
-            this.push(packFrame(Buffer.from(head), chunk));
+            this.push(packFrame(head, chunk));
         }
         callback(null);
     }
@@ -296,7 +296,7 @@ class HighwayHttpSession extends AbstractHighwaySession {
     private async uploadBlock(block: Buffer, offset: number): Promise<void> {
         const chunkMd5 = md5(block);
         const payload = this.buildPicUpHead(offset, block.length, chunkMd5);
-        const frame = packFrame(Buffer.from(payload), block);
+        const frame = packFrame(payload, block);
 
         const resp = await this.httpPostHighwayContent(frame,
             `http://${this.trans.server}:${this.trans.port}/cgi-bin/httpconn?htcmd=0x6FF0087&uin=${this.trans.uin}`);

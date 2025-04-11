@@ -6,7 +6,7 @@ import { InferProtoModel } from '@tanebijs/protobuf';
 export const DownloadPrivateImageOperation = defineOperation(
     'downloadPrivateImage',
     'OidbSvcTrpcTcp.0x11c5_200',
-    (ctx, senderUid: string, node: InferProtoModel<typeof IndexNode.fields>) => Buffer.from(DownloadPrivateImage.encode({
+    (ctx, senderUid: string, node: InferProtoModel<typeof IndexNode.fields>) => DownloadPrivateImage.encode({
         reqHead: {
             common: {
                 requestId: 1,
@@ -24,7 +24,7 @@ export const DownloadPrivateImageOperation = defineOperation(
             client: { agentType: 2 },
         },
         download: { node },
-    })),
+    }),
     (ctx, payload) => {
         const response = DownloadPrivateImageResponse.decodeBodyOrThrow(payload).download;
         if (!response) {

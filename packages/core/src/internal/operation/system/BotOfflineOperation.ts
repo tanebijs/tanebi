@@ -5,7 +5,7 @@ import { UnRegisterInfo } from '@/internal/packet/common/UnRegisterInfo';
 export const BotOfflineOperation = defineOperation(
     'botOffline',
     'trpc.qq_new_tech.status_svc.StatusService.UnRegister',
-    (ctx) => Buffer.from(UnRegisterInfo.encode({
+    (ctx) => UnRegisterInfo.encode({
         device: {
             user: ctx.deviceInfo.deviceName,
             os: ctx.appInfo.Kernel,
@@ -13,6 +13,6 @@ export const BotOfflineOperation = defineOperation(
             vendorName: '',
             osLower: ctx.appInfo.VendorOs,
         },
-    })),
+    }),
     (ctx, payload) => RegisterInfoResponse.decode(payload).message,
 );

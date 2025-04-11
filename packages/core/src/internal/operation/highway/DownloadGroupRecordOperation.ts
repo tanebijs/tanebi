@@ -6,7 +6,7 @@ import { InferProtoModel } from '@tanebijs/protobuf';
 export const DownloadGroupRecordOperation = defineOperation(
     'downloadGroupRecord',
     'OidbSvcTrpcTcp.0x126e_200',
-    (ctx, groupUin: number, node: InferProtoModel<typeof IndexNode.fields>) => Buffer.from(DownloadGroupRecord.encode({
+    (ctx, groupUin: number, node: InferProtoModel<typeof IndexNode.fields>) => DownloadGroupRecord.encode({
         reqHead: {
             common: {
                 requestId: 4,
@@ -21,7 +21,7 @@ export const DownloadGroupRecordOperation = defineOperation(
             client: { agentType: 2 },
         },
         download: { node }
-    })),
+    }),
     (ctx, payload) => {
         const response = DownloadGroupRecordResponse.decodeBodyOrThrow(payload).download;
         if (!response) {

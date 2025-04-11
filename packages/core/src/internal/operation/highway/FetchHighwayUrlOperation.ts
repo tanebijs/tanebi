@@ -5,7 +5,7 @@ import { int32ip2str } from '@/internal/util/format';
 export const FetchHighwayUrlOperation = defineOperation(
     'fetchHighwayUrl',
     'HttpConn.0x6ff_501',
-    () => Buffer.from(FetchHighwayUrl.encode({
+    () => FetchHighwayUrl.encode({
         body: {
             field1: 0,
             field2: 0,
@@ -18,7 +18,7 @@ export const FetchHighwayUrlOperation = defineOperation(
             field11: 8,
             ver: '1.0.1',
         },
-    })),
+    }),
     (ctx, payload) => {
         const body = FetchHighwayUrlResponse.decode(payload).body;
         return {

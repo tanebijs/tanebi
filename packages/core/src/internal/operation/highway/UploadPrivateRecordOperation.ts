@@ -12,7 +12,7 @@ export const UploadPrivateRecordOperation = defineOperation(
     (ctx, uid: string, record: MediaGeneralMetadata, duration: number) => {
         const md5Str = record.md5.toString('hex');
         const generatedFileName = `${md5Str}.amr`;
-        return Buffer.from(UploadPrivateRecord.encode({
+        return UploadPrivateRecord.encode({
             reqHead: {
                 common: {
                     requestId: 4,
@@ -56,7 +56,7 @@ export const UploadPrivateRecordOperation = defineOperation(
                 },
                 noNeedCompatMsg: false,
             }
-        }));
+        });
     },
     (ctx, payload) => UploadPrivateRecordResponse.decodeBodyOrThrow(payload),
 );

@@ -6,7 +6,7 @@ import { InferProtoModel } from '@tanebijs/protobuf';
 export const DownloadGroupImageOperation = defineOperation(
     'downloadGroupImage',
     'OidbSvcTrpcTcp.0x11c4_200',
-    (ctx, groupUin: number, node: InferProtoModel<typeof IndexNode.fields>) => Buffer.from(DownloadGroupImage.encode({
+    (ctx, groupUin: number, node: InferProtoModel<typeof IndexNode.fields>) => DownloadGroupImage.encode({
         reqHead: {
             common: {
                 requestId: 1,
@@ -21,7 +21,7 @@ export const DownloadGroupImageOperation = defineOperation(
             client: { agentType: 2 },
         },
         download: { node },
-    })),
+    }),
     (ctx, payload) => {
         const response = DownloadGroupImageResponse.decodeBodyOrThrow(payload).download;
         if (!response) {

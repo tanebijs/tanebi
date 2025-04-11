@@ -4,7 +4,7 @@ import { FetchGroups, FetchGroupsResponse } from '@/internal/packet/oidb/0xfe5_2
 export const FetchGroupsOperation = defineOperation(
     'fetchGroups',
     'OidbSvcTrpcTcp.0xfe5_2',
-    () => Buffer.from(FetchGroups.encode({
+    () => FetchGroups.encode({
         config: {
             config1: {
                 groupOwner: true,
@@ -55,6 +55,6 @@ export const FetchGroupsOperation = defineOperation(
                 field6: true,
             },
         }
-    })),
+    }),
     (ctx, payload) => FetchGroupsResponse.decodeBodyOrThrow(payload),
 );

@@ -16,7 +16,7 @@ export const FetchFriendsOperation = defineOperation(
     'fetchFriends',
     'OidbSvcTrpcTcp.0xfd4_1',
     (ctx, nextUin?: number, friendCount?: number) =>
-        Buffer.from(FetchFriends.encode({
+        FetchFriends.encode({
             friendCount: friendCount ?? 300,
             queried: [
                 {
@@ -38,7 +38,7 @@ export const FetchFriendsOperation = defineOperation(
                 },
             ],
             nextUin: nextUin ? { uin: nextUin } : undefined,
-        })),
+        }),
     (ctx, payload) => {
         const response = FetchFriendsResponse.decodeBodyOrThrow(payload);
         return {
@@ -61,8 +61,8 @@ export const FetchFriendsOperation = defineOperation(
                 };
             }),
             friendCategories: Object.fromEntries(response.friendCategories.map(
-                category => [category.code, category.value]
+                category => [category.code, category.value],
             )),
         };
-    }
+    },
 );

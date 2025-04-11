@@ -32,17 +32,17 @@ export const NTEasyLoginOperation = defineOperation(
                 success: false,
                 errorCode: response.header.error.errorCode ?? NTLoginErrorCode.Unknown,
                 unusual: {
-                    sign: Buffer.from(response.body!.unusual!.sig!),
+                    sign: response.body!.unusual!.sig!,
                     cookies: response.header.cookie!.cookie!,
                 }
             };
         } else {
             return {
                 success: true,
-                tgt: Buffer.from(response.body!.credentials!.tgt!),
-                d2: Buffer.from(response.body!.credentials!.d2!),
-                d2Key: Buffer.from(response.body!.credentials!.d2Key!),
-                tempPassword: Buffer.from(response.body!.credentials!.tempPassword!),
+                tgt: response.body!.credentials!.tgt!,
+                d2: response.body!.credentials!.d2!,
+                d2Key: response.body!.credentials!.d2Key!,
+                tempPassword: response.body!.credentials!.tempPassword!,
                 sessionDate: new Date(),
             };
         }

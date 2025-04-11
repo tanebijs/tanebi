@@ -33,10 +33,10 @@ export const send_private_forward_msg = defineAction(
             peerUin: payload.user_id,
             sequence: sendResult.sequence,
             clientSequence: sendResult.clientSequence,
-            body: Buffer.from(OutgoingMessageStore.encode({
+            body: OutgoingMessageStore.encode({
                 jsonElem: JSON.stringify(payload.messages),
                 pbElem: sendResult[sendBlob],
-            })),
+            }),
         });
         return Ok({
             message_id: dbMsgId,

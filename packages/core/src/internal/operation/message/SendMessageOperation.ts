@@ -5,7 +5,7 @@ import { buildPbSendMsg, OutgoingMessage } from '@/internal/message/outgoing';
 export const SendMessageOperation = defineOperation(
     'sendMessage',
     'MessageSvc.PbSendMsg',
-    (ctx, params: OutgoingMessage) => Buffer.from(buildPbSendMsg(params)),
+    (ctx, params: OutgoingMessage) => buildPbSendMsg(params),
     (ctx, payload) => {
         const response = PbSendMsgResponse.decode(payload);
         if (response.resultCode !== 0) {

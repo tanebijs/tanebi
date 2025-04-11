@@ -8,7 +8,7 @@ import { FetchGroupMembers, FetchGroupMembersResponse } from '@/internal/packet/
 export const FetchGroupMembersOperation = defineOperation(
     'fetchGroupMembers',
     'OidbSvcTrpcTcp.0xfe7_3',
-    (ctx, groupUin: number, token?: string) => Buffer.from(FetchGroupMembers.encode({
+    (ctx, groupUin: number, token?: string) => FetchGroupMembers.encode({
         groupUin,
         queried: {
             memberName: true,
@@ -21,6 +21,6 @@ export const FetchGroupMembersOperation = defineOperation(
             permission: true,
         },
         token,
-    })),
+    }),
     (ctx, payload) => FetchGroupMembersResponse.decodeBodyOrThrow(payload),
 );

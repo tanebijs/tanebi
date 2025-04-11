@@ -33,10 +33,10 @@ export const send_group_forward_msg = defineAction(
             peerUin: payload.group_id,
             sequence: sendResult.sequence,
             clientSequence: null,
-            body: Buffer.from(OutgoingMessageStore.encode({
+            body: OutgoingMessageStore.encode({
                 jsonElem: JSON.stringify(payload.messages),
                 pbElem: sendResult[sendBlob],
-            })),
+            }),
         });
         return Ok({
             message_id: dbMsgId,

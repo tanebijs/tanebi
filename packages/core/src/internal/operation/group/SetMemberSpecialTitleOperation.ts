@@ -4,7 +4,7 @@ import { SetMemberSpecialTitle } from '@/internal/packet/oidb/0x8fc_2';
 export const SetMemberSpecialTitleOperation = defineOperation(
     'setMemberSpecialTitle',
     'OidbSvcTrpcTcp.0x8fc_2',
-    (ctx, groupUin: number, targetUid: string, specialTitle: string,) => Buffer.from(
+    (ctx, groupUin: number, targetUid: string, specialTitle: string,) => 
         SetMemberSpecialTitle.encode({
             groupUin,
             body: {
@@ -13,5 +13,5 @@ export const SetMemberSpecialTitleOperation = defineOperation(
                 expireTime: -1,
                 specialTitle2: specialTitle,
             }
-        })),
+        }),
 );

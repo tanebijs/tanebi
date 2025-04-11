@@ -4,6 +4,6 @@ import { FetchGroupFilteredNotifies, FetchGroupFilteredNotifiesResponse } from '
 export const FetchGroupFilteredNotifiesOperation = defineOperation(
     'fetchGroupFilteredNotifies',
     'OidbSvcTrpcTcp.0x10c0_2',
-    (ctx, count: number = 20) => Buffer.from(FetchGroupFilteredNotifies.encode({ count })),
+    (ctx, count: number = 20) => FetchGroupFilteredNotifies.encode({ count }),
     (ctx, payload) => FetchGroupFilteredNotifiesResponse.decodeBodyOrThrow(payload).requests,
 );

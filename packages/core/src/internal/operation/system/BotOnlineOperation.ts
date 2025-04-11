@@ -4,7 +4,7 @@ import { SsoInfoSync, SsoInfoSyncResponse } from '@/internal/packet/common/SsoIn
 export const BotOnlineOperation = defineOperation(
     'botOnline',
     'trpc.msg.register_proxy.RegisterProxy.SsoInfoSync',
-    (ctx) => Buffer.from(SsoInfoSync.encode({
+    (ctx) => SsoInfoSync.encode({
         syncFlag: 735,
         reqRandom: Math.floor(Math.random() * 0xFFFFFFFF),
         curActiveStatus: 2,
@@ -50,7 +50,7 @@ export const BotOnlineOperation = defineOperation(
             appStatus: 0,
             silenceStatus: 0,
         },
-    })),
+    }),
     (ctx, payload) =>
         SsoInfoSyncResponse.decode(payload)
             ?.registerInfoResponse

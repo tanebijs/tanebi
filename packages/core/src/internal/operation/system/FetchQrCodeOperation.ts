@@ -51,13 +51,13 @@ export const FetchQrCodeOperation = defineOperation(
                 '0x35': { ptOsVersion: ctx.appInfo.SsoVersion },
                 '0x66': { ptOsVersion: ctx.appInfo.SsoVersion },
                 '0xd1': {
-                    body: Buffer.from(TlvQrCode0x0d1Body.encode({
+                    body: TlvQrCode0x0d1Body.encode({
                         system: {
                             os: ctx.appInfo.Os,
                             name: ctx.deviceInfo.deviceName,
                         },
                         type: BUF_0x30_0x01,
-                    })),
+                    }),
                 },
             }),
         }))),

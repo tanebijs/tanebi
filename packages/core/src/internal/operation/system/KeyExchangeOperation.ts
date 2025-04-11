@@ -33,24 +33,24 @@ export const KeyExchangeOperation = defineOperation(
         const hash = sha256(part2);
         const gcmCalc2 = aesGcmEncrypt(hash, gcmCalc2Key);
 
-        return Buffer.from(SsoKeyExchange.encode({
+        return SsoKeyExchange.encode({
             publicKey: ctx.ecdh256.publicKey,
             type: 1,
             gcmCalc1,
             timestamp,
             gcmCalc2,
-        }));
+        });
     },
     (ctx, payload) => {
         const response = SsoKeyExchangeResponse.decode(payload);
 
-        const shareKey = ctx.ecdh256.exchange(Buffer.from(response.publicKey));
-        const gcmDecrypted = aesGcmDecrypt(Buffer.from(response.gcmEncrypted), shareKey);
+        const shareKey = ctx.ecdh256.exchange(response.publicKey);
+        const gcmDecrypted = aesGcmDecrypt(response.gcmEncrypted, shareKey);
         const decrypted = SsoKeyExchangeResult.decode(gcmDecrypted);
 
         return {
-            gcmKey: Buffer.from(decrypted.gcmKey),
-            sign: Buffer.from(decrypted.sign),
+            gcmKey: decrypted.gcmKey,
+            sign: decrypted.sign,
             expiration: decrypted.expiration,
         };
     }

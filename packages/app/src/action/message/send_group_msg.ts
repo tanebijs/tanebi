@@ -38,10 +38,10 @@ export const send_group_msg = defineAction(
             peerUin: payload.group_id,
             sequence: sendResult.sequence,
             clientSequence: null,
-            body: Buffer.from(OutgoingMessageStore.encode({
+            body: OutgoingMessageStore.encode({
                 jsonElem: JSON.stringify(payload.message),
                 pbElem: sendResult[sendBlob],
-            })),
+            }),
         });
         return Ok({ message_id: dbMsgId });
     }

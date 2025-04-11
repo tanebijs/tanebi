@@ -5,9 +5,9 @@ export const SetMemberAdminOperation = defineOperation(
     'setMemberAdmin',
     'OidbSvcTrpcTcp.0x1096_1',
     (ctx, groupUin: number, memberUid: string, isSet: boolean) =>
-        Buffer.from(SetMemberAdmin.encode({
+        SetMemberAdmin.encode({
             groupUin,
             memberUid,
             isSet,
-        })),
+        }),
 );

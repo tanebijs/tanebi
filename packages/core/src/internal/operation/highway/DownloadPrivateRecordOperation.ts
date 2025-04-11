@@ -6,7 +6,7 @@ import { InferProtoModel } from '@tanebijs/protobuf';
 export const DownloadPrivateRecordOperation = defineOperation(
     'downloadPrivateRecord',
     'OidbSvcTrpcTcp.0x126d_200',
-    (ctx, senderUid: string, node: InferProtoModel<typeof IndexNode.fields>) => Buffer.from(DownloadPrivateRecord.encode({
+    (ctx, senderUid: string, node: InferProtoModel<typeof IndexNode.fields>) => DownloadPrivateRecord.encode({
         reqHead: {
             common: {
                 requestId: 1,
@@ -24,7 +24,7 @@ export const DownloadPrivateRecordOperation = defineOperation(
             client: { agentType: 2 },
         },
         download: { node }
-    })),
+    }),
     (ctx, payload) => {
         const response = DownloadPrivateRecordResponse.decodeBodyOrThrow(payload).download;
         if (!response) {

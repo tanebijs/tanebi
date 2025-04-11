@@ -5,7 +5,7 @@ export const RecallFriendMessageOperation = defineOperation(
     'recallFriendMessage',
     'trpc.msg.msg_svc.MsgService.SsoC2CRecallMsg',
     (ctx, friendUid: string, clientSequence: number, random: number, timestamp: number, ntMsgSeq: number) =>
-        Buffer.from(SsoC2CRecallMsg.encode({
+        SsoC2CRecallMsg.encode({
             type: 1,
             targetUid: friendUid,
             info: {
@@ -21,5 +21,5 @@ export const RecallFriendMessageOperation = defineOperation(
                 field2: 0,
             },
             field6: 0,
-        })),
+        }),
 );

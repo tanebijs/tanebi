@@ -12,7 +12,7 @@ export const UploadPrivateImageOperation = defineOperation(
     (ctx, uid: string, img: ImageMetadata, subType: ImageSubType, summary?: string) => {
         const md5Str = img.md5.toString('hex');
         const generatedFileName = `${md5Str}.${img.ext}`;
-        return Buffer.from(UploadPrivateImage.encode({
+        return UploadPrivateImage.encode({
             reqHead: {
                 common: {
                     requestId: 1,
@@ -59,7 +59,7 @@ export const UploadPrivateImageOperation = defineOperation(
                 },
                 noNeedCompatMsg: false,
             }
-        }));
+        });
     },
     (ctx, payload) => UploadPrivateImageResponse.decodeBodyOrThrow(payload),
 );

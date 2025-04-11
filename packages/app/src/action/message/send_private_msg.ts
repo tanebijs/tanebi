@@ -37,12 +37,10 @@ export const send_private_msg = defineAction(
             peerUin: payload.user_id,
             sequence: sendResult.sequence,
             clientSequence: sendResult.clientSequence!,
-            body: Buffer.from(
-                OutgoingMessageStore.encode({
-                    jsonElem: JSON.stringify(payload.message),
-                    pbElem: sendResult[sendBlob],
-                })
-            ),
+            body: OutgoingMessageStore.encode({
+                jsonElem: JSON.stringify(payload.message),
+                pbElem: sendResult[sendBlob],
+            }),
         });
         return Ok({ message_id: dbMsgId });
     }

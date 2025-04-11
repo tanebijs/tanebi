@@ -6,7 +6,7 @@ import { aesGcmEncrypt } from '@/internal/util/crypto/aes';
 
 export class NTLoginLogic extends LogicBase {
     buildNTLoginPacket(body: Buffer) {
-        return Buffer.from(SsoNTLoginWrapper.encode({
+        return SsoNTLoginWrapper.encode({
             sign: this.ctx.keystore.session.keySign,
             gcmCalc: aesGcmEncrypt(SsoNTLoginBase.encode({
                 header: {
@@ -24,17 +24,17 @@ export class NTLoginLogic extends LogicBase {
                     },
                     cookie: { cookie: this.ctx.keystore.session.unusualCookies },
                 },
-                body: Buffer.from(SsoNTEasyLogin.encode({
+                body: SsoNTEasyLogin.encode({
                     tempPassword: body,
                     captcha: this.ctx.keystore.session.captcha ? {
                         ticket: this.ctx.keystore.session.captcha[0],
                         randStr: this.ctx.keystore.session.captcha[1],
                         aid: this.ctx.keystore.session.captcha[2],
                     } : undefined,
-                })),
+                }),
             }), this.ctx.keystore.session.exchangeKey!),
             type: 1,
-        }));
+        });
     }
 
     decodeNTLoginPacket(packet: Buffer) {

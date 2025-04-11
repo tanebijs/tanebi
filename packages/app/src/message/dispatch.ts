@@ -17,7 +17,7 @@ export function installMessageHandler(ctx: OneBotApp) {
                 peerUin: friend.uin,
                 sequence: message.sequence,
                 clientSequence: message[rawMessage].clientSequence,
-                body: Buffer.from(message[rawMessage][blob]),
+                body: message[rawMessage][blob],
             });
             const recvMessage = await transformRecvMessage(
                 ctx,
@@ -58,7 +58,7 @@ export function installMessageHandler(ctx: OneBotApp) {
                 peerUin: group.uin,
                 sequence: message.sequence,
                 clientSequence: null,
-                body: Buffer.from(message[rawMessage][blob]),
+                body: message[rawMessage][blob],
             });
             const recvMessage = await transformRecvMessage(
                 ctx,

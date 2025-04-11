@@ -74,7 +74,7 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
                     nickname: member.memberName,
                     card: member.memberCard?.value,
                     level: member.level?.level ?? 0,
-                    specialTitle: member.specialTitle ? Buffer.from(member.specialTitle).toString('utf-8') : undefined,
+                    specialTitle: member.specialTitle ? member.specialTitle.toString() : undefined,
                     joinTime: member.joinTimestamp,
                     lastMsgTime: member.lastMsgTimestamp,
                     shutUpTime: member.shutUpTimestamp,

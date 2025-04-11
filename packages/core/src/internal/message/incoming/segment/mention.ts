@@ -7,7 +7,7 @@ export const mentionParser = defineIncoming(
         if (element.attr6Buf?.length && element.attr6Buf.length >= 11) {
             return {
                 name: element.str!,
-                uin: Buffer.from(element.attr6Buf).readUInt32BE(7),
+                uin: element.attr6Buf.readUInt32BE(7),
             };
         }
     }

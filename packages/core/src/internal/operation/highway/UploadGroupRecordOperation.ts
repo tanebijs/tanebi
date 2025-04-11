@@ -12,7 +12,7 @@ export const UploadGroupRecordOperation = defineOperation(
     (ctx, groupUin: number, record: MediaGeneralMetadata, duration: number) => {
         const md5Str = record.md5.toString('hex');
         const generatedFileName = `${md5Str}.amr`;
-        return Buffer.from(UploadGroupRecord.encode({
+        return UploadGroupRecord.encode({
             reqHead: {
                 common: {
                     requestId: 1,
@@ -56,7 +56,7 @@ export const UploadGroupRecordOperation = defineOperation(
                 },
                 noNeedCompatMsg: false,
             }
-        }));
+        });
     },
     (ctx, payload) => UploadGroupRecordResponse.decodeBodyOrThrow(payload),
 );

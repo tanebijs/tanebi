@@ -7,14 +7,14 @@ import { gunzipSync } from 'node:zlib';
 export const DownloadLongMessageOperation = defineOperation(
     'downloadLongMessage',
     'trpc.group.long_msg_interface.MsgService.SsoRecvLongMsg',
-    (ctx, senderUid: string, resId: string) => Buffer.from(SsoRecvLongMsg.encode({
+    (ctx, senderUid: string, resId: string) => SsoRecvLongMsg.encode({
         info: {
             uidInfo: { uid: senderUid },
             resId,
             isAcquire: true,
         },
         settings: { field1: 2 }
-    })),
+    }),
     (ctx, payload) => {
         const downloadResult = LongMessagePayload.decode(
             gunzipSync((SsoRecvLongMsgResponse.decode(payload)).result.payload)

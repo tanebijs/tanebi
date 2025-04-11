@@ -12,7 +12,7 @@ export const UploadGroupImageOperation = defineOperation(
     (ctx, groupUin: number, img: ImageMetadata, subType: ImageSubType, summary?: string) => {
         const md5Str = img.md5.toString('hex');
         const generatedFileName = `${md5Str}.${img.ext}`;
-        return Buffer.from(UploadGroupImage.encode({
+        return UploadGroupImage.encode({
             reqHead: {
                 common: {
                     requestId: 1,
@@ -59,7 +59,7 @@ export const UploadGroupImageOperation = defineOperation(
                 },
                 noNeedCompatMsg: false,
             }
-        }));
+        });
     },
     (ctx, payload) => UploadGroupImageResponse.decodeBodyOrThrow(payload),
 );

@@ -5,9 +5,9 @@ export const RecallGroupMessageOperation = defineOperation(
     'recallGroupMessage',
     'trpc.msg.msg_svc.MsgService.SsoGroupRecallMsg',
     (ctx, groupUin: number, sequence: number) =>
-        Buffer.from(SsoGroupRecallMsg.encode({
+        SsoGroupRecallMsg.encode({
             type: 1,
             groupUin,
             info: { sequence },
-        })),
+        }),
 );

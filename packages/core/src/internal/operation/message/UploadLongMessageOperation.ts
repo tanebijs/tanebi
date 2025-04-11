@@ -17,7 +17,7 @@ export const UploadLongMessageOperation = defineOperation(
                 },
             }]
         });
-        return Buffer.from(SsoSendLongMsg.encode({
+        return SsoSendLongMsg.encode({
             info: {
                 type: groupUin ? 3 : 1,
                 uidInfo: {
@@ -32,7 +32,7 @@ export const UploadLongMessageOperation = defineOperation(
                 field3: 7,
                 field4: 0,
             }
-        }));
+        });
     },
     (ctx, payload) => {
         const res = SsoSendLongMsgResponse.decode(payload);

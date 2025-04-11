@@ -12,7 +12,7 @@ export const HandleGroupRequestOperation = defineOperation(
         eventType: GroupNotifyType,
         operation: GroupRequestOperation,
         message: string
-    ) => Buffer.from(HandleGroupRequest.encode({
+    ) => HandleGroupRequest.encode({
         operation,
         body: {
             sequence,
@@ -20,5 +20,5 @@ export const HandleGroupRequestOperation = defineOperation(
             groupUin,
             message,
         },
-    })),
+    }),
 );

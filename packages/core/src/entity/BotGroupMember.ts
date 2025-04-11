@@ -116,7 +116,7 @@ export class BotGroupMember extends BotEntity<BotGroupMemberDataBinding> {
      * One CJK character takes 3 bytes.
      */
     async setSpecialTitle(specialTitle: string) {
-        if (Buffer.from(specialTitle).length > 18) {
+        if (Buffer.byteLength(specialTitle) > 18) {
             throw new Error('Special title is too long');
         }
         this.bot[log].emit('trace', this.moduleName, `Set special title to ${specialTitle}`);

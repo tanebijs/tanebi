@@ -7,7 +7,7 @@ import { InferProtoModel } from '@tanebijs/protobuf';
 export const DownloadVideoOperation = defineOperation(
     'downloadVideo',
     'OidbSvcTrpcTcp.0x11e9_200',
-    (ctx, senderUid: string, node: InferProtoModel<typeof IndexNode.fields>, msgType: MessageType) => Buffer.from(DownloadVideo.encode({
+    (ctx, senderUid: string, node: InferProtoModel<typeof IndexNode.fields>, msgType: MessageType) => DownloadVideo.encode({
         reqHead: {
             common: {
                 requestId: msgType === MessageType.GroupMessage ? 3 : 34,
@@ -25,7 +25,7 @@ export const DownloadVideoOperation = defineOperation(
             client: { agentType: 2 },
         },
         download: { node },
-    })),
+    }),
     (ctx, payload) => {
         const response = DownloadVideoResponse.decodeBodyOrThrow(payload).download;
         if (!response) {

@@ -52,7 +52,7 @@ export class NotifyLogic extends LogicBase {
                 this.parseGroupRecall(pushMsgBody);
             } else if (subType === Event0x2DCSubType.SubType16) {
                 const wrapper = GroupGeneral0x2DCBody.decode(
-                    GroupGeneral0x2DC.decode(Buffer.from(pushMsgBody.body!.msgContent!)).body);
+                    GroupGeneral0x2DC.decode(pushMsgBody.body.msgContent).body);
                 if (wrapper.field13 === Event0x2DCSubType16Field13.GroupReaction) {
                     this.parseGroupReaction(wrapper);
                 }
@@ -88,7 +88,7 @@ export class NotifyLogic extends LogicBase {
 
     parseGroupMemberIncrease(pushMsgBody: InferProtoModel<typeof PushMsgBody.fields>) {
         const content = GroupMemberChange.decode(pushMsgBody.body!.msgContent!);
-        const operatorUidOrEmpty = content.operatorInfo ? Buffer.from(content.operatorInfo).toString() : undefined;
+        const operatorUidOrEmpty = content.operatorInfo ? content.operatorInfo.toString() : undefined;
         this.ctx.eventsDX.emit('groupMemberIncrease', content.groupUin, content.memberUid, operatorUidOrEmpty);
     }
 
@@ -97,7 +97,7 @@ export class NotifyLogic extends LogicBase {
         this.ctx.eventsDX.emit('groupMemberDecrease', content.groupUin, content.memberUid,
             content.type === DecreaseType.KickSelf ?
                 OperatorInfo.decode(content.operatorInfo!).body.uid :
-                (content.operatorInfo ? Buffer.from(content.operatorInfo).toString() : undefined));
+                (content.operatorInfo ? content.operatorInfo.toString() : undefined));
     }
 
     parseFriendRequest(pushMsgBody: InferProtoModel<typeof PushMsgBody.fields>) {
@@ -141,7 +141,7 @@ export class NotifyLogic extends LogicBase {
 
     parseGroupGrayTip(pushMsgBody: InferProtoModel<typeof PushMsgBody.fields>) {
         const wrapper = GroupGeneral0x2DCBody.decode(
-            GroupGeneral0x2DC.decode(Buffer.from(pushMsgBody.body!.msgContent!)).body);
+            GroupGeneral0x2DC.decode(pushMsgBody.body!.msgContent!).body);
         const content = wrapper.generalGrayTip!;
         const templateParamsMap = new Map(content.templateParams.map((param) => [param.key, param.value]));
         if (content.bizType === 12) {
@@ -157,7 +157,7 @@ export class NotifyLogic extends LogicBase {
 
     parseGroupEssenceMessageChange(pushMsgBody: InferProtoModel<typeof PushMsgBody.fields>) {
         const wrapper = GroupGeneral0x2DCBody.decode(
-            GroupGeneral0x2DC.decode(Buffer.from(pushMsgBody.body!.msgContent!)).body);
+            GroupGeneral0x2DC.decode(pushMsgBody.body!.msgContent!).body);
         const content = wrapper.essenceMessageChange;
         if (!content) return;
         this.ctx.eventsDX.emit('groupEssenceMessageChange',
@@ -167,7 +167,7 @@ export class NotifyLogic extends LogicBase {
 
     parseGroupRecall(pushMsgBody: InferProtoModel<typeof PushMsgBody.fields>) {
         const wrapper = GroupGeneral0x2DCBody.decode(
-            GroupGeneral0x2DC.decode(Buffer.from(pushMsgBody.body!.msgContent!)).body);
+            GroupGeneral0x2DC.decode(pushMsgBody.body!.msgContent!).body);
         const content = wrapper.recall!;
         content.recallMessages.forEach((recall) => {
             this.ctx.eventsDX.emit('groupRecall',
