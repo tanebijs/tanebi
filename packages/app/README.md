@@ -50,7 +50,7 @@ These APIs are defined in the [OneBot 11 standard](https://github.com/botunivers
 | `get_stranger_info`       | 🟢     |
 | `get_friend_list`         | 🟢     |
 | `get_group_info`          | 🟡     |
-| `get_group_list`          | 🟡     |
+| `get_group_list`          | 🟢     |
 | `get_group_member_info`   | 🟡     |
 | `get_group_member_list`   | 🟡     |
 | `get_group_honor_info`    | 🔴     |
