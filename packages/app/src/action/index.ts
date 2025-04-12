@@ -9,8 +9,8 @@ export interface OneBotGeneralResponse {
     wording?: string;
 }
 
-export function Ok(data: unknown = null): OneBotGeneralResponse {
-    return { status: 'ok', retcode: 0, data };
+export function Ok<T = null>(data?: T): OneBotGeneralResponse {
+    return { status: 'ok', retcode: 0, data: data ?? null };
 }
 
 export function Failed(retcode: number, msg: string, wording: string = msg): OneBotGeneralResponse {
