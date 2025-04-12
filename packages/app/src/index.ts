@@ -50,6 +50,7 @@ import { set_group_admin } from '@app/action/group/set_group_admin';
 import { set_group_card } from '@app/action/group/set_group_card';
 import { set_group_leave } from '@app/action/group/set_group_leave';
 import { set_group_special_title } from '@app/action/group/set_group_special_title';
+import { get_login_info } from '@app/action/system/get_login_info';
 
 export class OneBotApp {
     readonly projectDir = path.resolve(import.meta.dirname, '..');
@@ -78,6 +79,8 @@ export class OneBotApp {
         send_poke,
         send_private_forward_msg,
         send_private_msg,
+
+        get_login_info,
     ]);
     readonly adapters: OneBotNetworkAdapter<unknown>[];
 

@@ -46,7 +46,7 @@ These APIs are defined in the [OneBot 11 standard](https://github.com/botunivers
 | `set_group_special_title` | 🟢     |
 | `set_friend_add_request`  | 🟡     |
 | `set_group_add_request`   | 🟡     |
-| `get_login_info`          | 🔴     |
+| `get_login_info`          | 🟢     |
 | `get_stranger_info`       | 🔴     |
 | `get_friend_list`         | 🟡     |
 | `get_group_info`          | 🟡     |
