@@ -31,5 +31,5 @@ export const get_stranger_info = defineAction(
             sign: stranger.signature ?? '',
         });
     },
-    ['get_user_info']
+    ['get_user_info', 'get_friend_info']
 );
