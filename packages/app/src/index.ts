@@ -51,6 +51,7 @@ import { set_group_card } from '@app/action/group/set_group_card';
 import { set_group_leave } from '@app/action/group/set_group_leave';
 import { set_group_special_title } from '@app/action/group/set_group_special_title';
 import { get_login_info } from '@app/action/system/get_login_info';
+import { get_stranger_info } from '@app/action/friend/get_stranger_info';
 
 export class OneBotApp {
     readonly projectDir = path.resolve(import.meta.dirname, '..');
@@ -59,6 +60,8 @@ export class OneBotApp {
     readonly actions = new ActionCollection(this, [
         can_send_image,
         can_send_record,
+
+        get_stranger_info,
 
         set_group_admin,
         set_group_card,
