@@ -2,6 +2,43 @@ import { defineOperation } from '@/internal/operation/OperationBase';
 import { UserInfoAvatar, UserInfoBusiness, UserInfoGender } from '@/internal/packet/common/UserInfo';
 import { FetchUserInfoByUid, FetchUserInfoByUin, FetchUserInfoKey, FetchUserInfoResponse } from '@/internal/packet/oidb/0xfe1_2';
 
+export type EnumToStringKey = {
+    [FetchUserInfoKey.Avatar]: 'avatar';
+    [FetchUserInfoKey.Signature]: 'signature';
+    [FetchUserInfoKey.Level]: 'level';
+    [FetchUserInfoKey.BusinessList]: 'businessList';
+    [FetchUserInfoKey.Nickname]: 'nickname';
+    [FetchUserInfoKey.Country]: 'country';
+    [FetchUserInfoKey.Gender]: 'gender';
+    [FetchUserInfoKey.City]: 'city';
+    [FetchUserInfoKey.School]: 'school';
+    [FetchUserInfoKey.RegisterTime]: 'registerTime';
+    [FetchUserInfoKey.Age]: 'age';
+    [FetchUserInfoKey.Qid]: 'qid';
+}
+
+export interface FetchUserInfoGeneralReturn {
+    uin: number;
+    avatar?: string;
+    signature?: string;
+    level?: number;
+    businessList?: Array<{
+        type: number;
+        isYear: boolean;
+        level: number;
+        isPro: boolean;
+        icon: string;
+    }>;
+    nickname?: string;
+    country?: string;
+    gender?: UserInfoGender;
+    city?: string;
+    school?: string;
+    registerTime?: number;
+    age?: number;
+    qid?: string;
+}
+
 export const FetchUserInfoOperation = defineOperation(
     'fetchUserInfo',
     'OidbSvcTrpcTcp.0xfe1_2',
@@ -22,27 +59,7 @@ export const FetchUserInfoOperation = defineOperation(
         typeof uinOrUid === 'string' ?
             FetchUserInfoByUid.encode({ uid: uinOrUid, keys: keys.map(key => ({ key })) }) :
             FetchUserInfoByUin.encode({ uin: uinOrUid, keys: keys.map(key => ({ key })) }),
-    (ctx, payload): {
-        uin: number;
-        avatar?: string;
-        signature?: string;
-        level?: number;
-        businessList?: Array<{
-            type: number;
-            isYear: boolean;
-            level: number;
-            isPro: boolean;
-            icon: string;
-        }>;
-        nickname?: string;
-        country?: string;
-        gender?: UserInfoGender;
-        city?: string;
-        school?: string;
-        registerTime?: number;
-        age?: number;
-        qid?: string;
-    } => {
+    (ctx, payload): FetchUserInfoGeneralReturn => {
         const response = FetchUserInfoResponse.decodeBodyOrThrow(payload).body;
         const numberProps = new Map<number, number>(response.properties
             .numberProperties.map(p => [p.key, p.value]));

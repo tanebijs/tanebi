@@ -1,7 +1,6 @@
 import { Bot, ctx, identityService, log } from '@/index';
 import { GroupNotifyType } from '@/internal/packet/oidb/0x10c0';
 import { GroupRequestOperation } from '.';
-import { FetchUserInfoKey } from '@/internal/packet/oidb/0xfe1_2';
 
 export class BotGroupJoinRequest {
     private constructor(
@@ -47,9 +46,7 @@ export class BotGroupJoinRequest {
                 return null;
             }
         }
-        const uinFetch = await bot[ctx].ops.call('fetchUserInfo', req.target.uid, [
-            FetchUserInfoKey.Level // at least 1 field is required
-        ]);
+        const uinFetch = await bot.getUserInfo(req.target.uid);
         bot[identityService].uid2uin.set(req.target.uid, uinFetch.uin);
         bot[identityService].uin2uid.set(uinFetch.uin, req.target.uid);
         bot[log].emit('trace', 'BotGroupJoinRequest',

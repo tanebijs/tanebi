@@ -9,6 +9,8 @@ import { EventEmitter } from 'node:events';
 import { InferProtoModel } from '@tanebijs/protobuf';
 import { FaceDetail } from '@/internal/packet/oidb/0x9154_1';
 import { BUF0, BUF16 } from '@/internal/util/constants';
+import { FetchUserInfoKey } from '@/internal/packet/oidb/0xfe1_2';
+import { EnumToStringKey, FetchUserInfoGeneralReturn } from '@/internal/operation/friend/FetchUserInfoOperation';
 
 /**
  * Symbol of the bot context
@@ -666,6 +668,25 @@ export class Bot {
     async getGroup(uin: number, forceUpdate = false) {
         this[log].emit('trace', 'Bot', `Getting group ${uin}`);
         return this.groupCache.get(uin, forceUpdate);
+    }
+
+    /**
+     * Get user info of specified uin / uid
+     * @param uinOrUid Uin or Uid of the user
+     * @param keys Keys to fetch; at least one
+     * @returns User info of specified keys
+     */
+    async getUserInfo<const K extends FetchUserInfoKey[] = []>(
+        uinOrUid: number | string, keys?: K
+    ) {
+        this[log].emit('trace', 'Bot', `Getting user info for ${uinOrUid}`);
+        const userInfo = await this[ctx].ops.call('fetchUserInfo', uinOrUid, keys ?? [
+            FetchUserInfoKey.Age // at least one key is required
+        ]);
+        return userInfo as Pick<
+            FetchUserInfoGeneralReturn,
+            'uin' | EnumToStringKey[K[number]]
+        >;
     }
 
     /**
