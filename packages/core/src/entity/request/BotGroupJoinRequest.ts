@@ -47,11 +47,11 @@ export class BotGroupJoinRequest {
             }
         }
         const uinFetch = await bot[ctx].ops.call('fetchUserInfo', req.target.uid);
-        bot[identityService].uid2uin.set(req.target.uid, uinFetch.body.uin);
-        bot[identityService].uin2uid.set(uinFetch.body.uin, req.target.uid);
+        bot[identityService].uid2uin.set(req.target.uid, uinFetch.uin);
+        bot[identityService].uin2uid.set(uinFetch.uin, req.target.uid);
         bot[log].emit('trace', 'BotGroupJoinRequest',
-            `Received join request: ${uinFetch.body.uin} -> ${groupUin}; comment: ${req.comment}`);
+            `Received join request: ${uinFetch.uin} -> ${groupUin}; comment: ${req.comment}`);
         return new BotGroupJoinRequest(
-            bot, groupUin, req.sequence, uinFetch.body.uin, requestUid, req.comment, isFiltered);
+            bot, groupUin, req.sequence, uinFetch.uin, requestUid, req.comment, isFiltered);
     }
 }

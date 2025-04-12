@@ -1,6 +1,21 @@
 import { OidbSvcContract } from '@/internal/util/binary/oidb';
 import { ProtoField, ScalarType } from '@tanebijs/protobuf';
 
+export enum FetchUserInfoKey {
+    Avatar = 101,
+    Signature = 102,
+    Level = 105,
+    BusinessList = 107,
+    Nickname = 20002,
+    Country = 20003,
+    Gender = 20009,
+    City = 20020,
+    School = 20021,
+    RegisterTime = 20026,
+    Age = 20037,
+    Qid = 27394,
+}
+
 export const FetchUserInfoByUid = new OidbSvcContract(
     0xfe1, 2,
     {
