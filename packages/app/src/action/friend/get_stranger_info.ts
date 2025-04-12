@@ -1,4 +1,4 @@
-import { FetchUserInfoKey, UserInfoGender } from '@/index';
+import { FetchUserInfoKey, UserInfoGender } from 'tanebi';
 import { defineAction, Ok } from '@app/action';
 import { zOneBotInputBoolean, zOneBotInputUin } from '@app/common/types';
 import { OneBotGender, OneBotStranger } from '@app/entity/user';
