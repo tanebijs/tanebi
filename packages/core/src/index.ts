@@ -894,3 +894,5 @@ export * from './message';
 export * from './util';
 
 export { parsePushMsgBody } from '@/internal/message/incoming';
+export { FetchUserInfoKey };
+export { UserInfoGender } from '@/internal/packet/common/UserInfo';
