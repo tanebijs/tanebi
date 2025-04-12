@@ -49,6 +49,7 @@ import { get_msg_count } from '@app/action/message/get_msg_count';
 import { set_group_admin } from '@app/action/group/set_group_admin';
 import { set_group_card } from '@app/action/group/set_group_card';
 import { set_group_leave } from '@app/action/group/set_group_leave';
+import { set_group_special_title } from '@app/action/group/set_group_special_title';
 
 export class OneBotApp {
     readonly projectDir = path.resolve(import.meta.dirname, '..');
@@ -63,6 +64,7 @@ export class OneBotApp {
         set_group_ban,
         set_group_kick,
         set_group_leave,
+        set_group_special_title,
         set_group_whole_ban,
 
         delete_msg,
