@@ -26,8 +26,8 @@ export class BotIdentityService {
     }
 
     async resolveUin(uid: string, groupUin?: number) {
-        const uin = this.uid2uin.get(uid);
-        if (uin) return uin;
+        const fromCache = this.uid2uin.get(uid);
+        if (fromCache) return fromCache;
         
         this.bot[log].emit('trace', 'BotIdentityService', `Cache miss, resolving Uid ${uid} to Uin`);
         if (groupUin) {
@@ -35,12 +35,20 @@ export class BotIdentityService {
         } else {
             await this.bot.getFriends(true);
         }
-        const result = this.uid2uin.get(uid);
-        if (!result) {
-            this.bot[log].emit('warning', 'BotIdentityService', `Failed to resolve Uid ${uid} to Uin` + 
-                (groupUin ? ` in group ${groupUin}` : '')
-            );
+
+        const fromUpdatedCache = this.uid2uin.get(uid);
+        if (fromUpdatedCache) return fromUpdatedCache;
+
+        const fromRemote = (await this.bot.getUserInfo(uid)).uin;
+        if (fromRemote) {
+            this.uin2uid.set(fromRemote, uid);
+            this.uid2uin.set(uid, fromRemote);
+            this.bot[log].emit('trace', 'BotIdentityService', `Resolved Uid ${uid} to Uin from remote`);
+            return fromRemote;
         }
-        return result;
+
+        this.bot[log].emit('warning', 'BotIdentityService', `Failed to resolve Uid ${uid} to Uin` + 
+            (groupUin ? ` in group ${groupUin}` : '')
+        );
     }
 }
