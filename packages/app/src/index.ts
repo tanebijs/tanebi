@@ -65,6 +65,7 @@ import { get_status } from '@app/action/system/get_status';
 import { get_version_info } from '@app/action/system/get_version_info';
 import { set_friend_add_request } from '@app/action/friend/set_friend_add_request';
 import { set_group_add_request } from '@app/action/group/set_group_add_request';
+import { OneBotHttpClientAdapter } from '@app/network/http-client';
 
 export class OneBotApp {
     readonly projectDir = path.resolve(import.meta.dirname, '..');
@@ -191,6 +192,8 @@ export class OneBotApp {
         this.adapters = config.adapters.map((adapterConfig, index) => {
             if (adapterConfig.type === 'httpServer') {
                 return new OneBotHttpServerAdapter(this, adapterConfig, '' + index);
+            } else if (adapterConfig.type === 'httpClient') {
+                return new OneBotHttpClientAdapter(this, adapterConfig, '' + index);
             }
             throw new Error(`Unsupported adapter type: ${adapterConfig.type}`);
         });
