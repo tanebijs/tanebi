@@ -150,22 +150,22 @@ In OneBot 11 standard, events are posted with different `post_type`s. The possib
 | Notice Type              | Status |
 | ------------------------ | ------ |
 | `group_upload`           | 🔴     |
-| `group_admin`            | 🟡     |
-| `group_decrease`         | 🟡     |
-| `group_increase`         | 🟡     |
-| `group_ban`              | 🟡     |
+| `group_admin`            | 🟢     |
+| `group_decrease`         | 🟢     |
+| `group_increase`         | 🟢     |
+| `group_ban`              | 🟢     |
 | `friend_add`             | 🔴     |
-| `group_recall`           | 🟡     |
-| `friend_recall`          | 🟡     |
-| `notify` -> `poke`       | 🟡     |
+| `group_recall`           | 🟢     |
+| `friend_recall`          | 🟢     |
+| `notify` -> `poke`       | 🟢     |
 | `notify` -> `lucky_king` | 🔴     |
 | `notify` -> `honor`      | 🔴     |
 
 | Request Type        | Status |
 | ------------------- | ------ |
-| `friend`            | 🟡     |
-| `group` -> `add`    | 🟡     |
-| `group` -> `invite` | 🟡     |
+| `friend`            | 🟢     |
+| `group` -> `add`    | 🟢     |
+| `group` -> `invite` | 🟢     |
 
 | Meta Event Type | Status |
 | --------------- | ------ |
