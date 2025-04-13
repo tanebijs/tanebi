@@ -1,4 +1,4 @@
-import { GroupMemberPermission } from '@/entity';
+import { GroupMemberPermission } from 'tanebi';
 import { defineAction, Failed, Ok } from '@app/action';
 import { zOneBotInputBoolean, zOneBotInputUin } from '@app/common/types';
 import { OneBotGroupMember, OneBotGroupMemberRole } from '@app/entity/user';
