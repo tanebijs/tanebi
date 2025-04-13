@@ -297,7 +297,7 @@ export class Bot {
                 if (group) {
                     const uin = await this[identityService].resolveUin(memberUid);
                     if (!uin) return;
-                    if (type === DecreaseType.Kick) {
+                    if (type === DecreaseType.Kick || type === DecreaseType.KickSelf) {
                         let operator: BotGroupMember | undefined;
                         if (operatorUid) {
                             const operatorUin = await this[identityService].resolveUin(operatorUid);

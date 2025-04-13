@@ -134,7 +134,7 @@ export function installNoticeEventHandler(ctx: OneBotApp) {
             group.uin,
             uin,
             operator?.uin ?? 0,
-            'kick',
+            uin === ctx.bot.uin ? 'kick_me' : 'kick',
         ));
     });
 
