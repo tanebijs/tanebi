@@ -57,8 +57,8 @@ These APIs are defined in the [OneBot 11 standard](https://github.com/botunivers
 | `get_cookies`             | 🔴     |
 | `get_csrf_token`          | 🔴     |
 | `get_credentials`         | 🔴     |
-| `get_record`              | 🟡     |
-| `get_image`               | 🟡     |
+| `get_record`              | ❌     |
+| `get_image`               | ❌     |
 | `can_send_image`          | 🟢     |
 | `can_send_record`         | 🟢     |
 | `get_status`              | 🔴     |
