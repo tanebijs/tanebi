@@ -58,6 +58,12 @@ export interface PrivateMessage extends MessageBase {
 export interface GroupMessage extends MessageBase {
     type: MessageType.GroupMessage;
     groupUin: number;
+    senderDataBindingUpdate?: {
+        nickname?: string;
+        card?: string;
+        level?: number;
+        specialTitle?: string;
+    }
 }
 
 export type IncomingMessage = PrivateMessage | GroupMessage;
@@ -75,6 +81,15 @@ export function parsePushMsgBody(raw: Buffer): IncomingMessage {
                 result.repliedSequence = element.srcMsg.pbReserve?.friendSequence // for private message
                     ?? element.srcMsg.origSeqs?.[0]; // for group message
                 continue;
+            }
+
+            if (element.extraInfo && result.type === MessageType.GroupMessage) {
+                result.senderDataBindingUpdate = {
+                    nickname: element.extraInfo.nick,
+                    card: element.extraInfo.groupCard,
+                    level: element.extraInfo.level,
+                    specialTitle: element.extraInfo.senderTitle,
+                };
             }
 
             const parsed = incomingSegments.parse(element);

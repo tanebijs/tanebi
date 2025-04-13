@@ -3,10 +3,7 @@ import { BotEntity } from '@/entity';
 import { OutgoingSegment, OutgoingSegmentOf } from '@/internal/message/outgoing';
 
 export abstract class BotContact<T extends { uin: number } = { uin: number }> extends BotEntity<T> {
-    protected constructor(
-        public readonly bot: Bot,
-        public readonly data: T,
-    ) {
+    protected constructor(bot: Bot, data: T) {
         super(bot, data);
     }
 

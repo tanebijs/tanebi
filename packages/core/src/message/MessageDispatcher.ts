@@ -153,15 +153,43 @@ export class MessageDispatcher {
             this.global.emit('private', contact, friendMessage);
         } else if (contact instanceof BotGroup) {
             const sender = await contact.getMember(raw.senderUin);
+            const rawGroup = raw as GroupMessage;
             if (sender) {
                 const groupMessage: BotGroupMessage = {
                     sequence: raw.sequence,
                     sender,
                     repliedSequence: raw.repliedSequence,
-                    [rawMessage]: raw as GroupMessage,
+                    [rawMessage]: rawGroup,
                     messageUid: raw[msgUid],
                     ...message,
                 };
+                const bindingUpdate = rawGroup.senderDataBindingUpdate;
+                if (bindingUpdate) {
+                    if (bindingUpdate.card) {
+                        const oldCard = sender.card;
+                        if (oldCard !== bindingUpdate.card) {
+                            sender.data.card = bindingUpdate.card;
+                        }
+                    }
+                    if (bindingUpdate.nickname) {
+                        const oldNickname = sender.nickname;
+                        if (oldNickname !== bindingUpdate.nickname) {
+                            sender.data.nickname = bindingUpdate.nickname;
+                        }
+                    }
+                    if (bindingUpdate.level) {
+                        const oldLevel = sender.level;
+                        if (oldLevel !== bindingUpdate.level) {
+                            sender.data.level = bindingUpdate.level;
+                        }
+                    }
+                    if (bindingUpdate.specialTitle) {
+                        const oldSpecialTitle = sender.specialTitle;
+                        if (oldSpecialTitle !== bindingUpdate.specialTitle) {
+                            sender.data.specialTitle = bindingUpdate.specialTitle;
+                        }
+                    }
+                }
                 contact[eventsGDX].emit('message', groupMessage);
                 this.global.emit('group', contact, sender, groupMessage);
             }
