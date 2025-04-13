@@ -108,6 +108,7 @@ export class Bot {
 
         this[identityService] = new BotIdentityService(this);
 
+        //#region Init cache
         this.friendCache = new BotCacheService<number, BotFriend>(
             this,
             async (bot) => {
@@ -154,9 +155,11 @@ export class Bot {
             },
             (bot, data) => new BotGroup(bot, data),
         );
+        //#endregion
 
         this.globalMsg = this[dispatcher].global;
 
+        //#region Events
         this[ctx].events.on('messagePush', (data) => {
             try {
                 if (data) {
@@ -420,8 +423,10 @@ export class Bot {
                 this[log].emit('warning', 'Bot', 'Failed to handle group reaction', e);
             }
         });
+        //#endregion
     }
 
+    //#region Meta info
     get uin() {
         return this[ctx].keystore.uin === 0 ? undefined : this[ctx].keystore.uin;
     }
@@ -429,7 +434,9 @@ export class Bot {
     get uid() {
         return this[ctx].keystore.uid!;
     }
+    //#endregion
     
+    //#region Lifecycle
     /**
      * Login with QR code, accepts a callback function to handle QR code
      * @param onQrCode Callback function to handle QR code
@@ -631,7 +638,9 @@ export class Bot {
         this[ctx].ssoLogic.socket.destroy();
         this[log].emit('info', 'Bot', `User ${this.uin} is now offline`);
     }
+    //#endregion
 
+    //#region API
     /**
      * Get all friends
      * @param forceUpdate Whether to force update the friend list
@@ -688,7 +697,9 @@ export class Bot {
             'uin' | EnumToStringKey[K[number]]
         >;
     }
+    //#endregion
 
+    //#region Events
     /**
      * Listen to private messages
      */
@@ -835,7 +846,9 @@ export class Bot {
     onGroupReaction(listener: (group: BotGroup, sequence: number, operator: BotGroupMember, reactionCode: string, isAdd: boolean, count: number) => void) {
         this[eventsDX].on('groupReaction', listener);
     }
+    //#endregion
 
+    //#endregion Logging
     /**
      * Listen to trace logs
      */
@@ -871,6 +884,7 @@ export class Bot {
     onFatal(listener: (module: string, message: string, error?: unknown) => void) {
         this[log].on('fatal', listener);
     }
+    //#endregion
     
     /**
      * Create a new Bot instance and complete necessary initialization
