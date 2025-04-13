@@ -3,7 +3,6 @@ import {
     ForwardedMessage,
     ForwardedMessageBuilder,
     ForwardedMessagePacker,
-    ctx as internalCtx,
     MessageType,
     parsePushMsgBody,
 } from 'tanebi';
@@ -40,7 +39,7 @@ export async function transformForwardMessages(
             }
             if (message.storeType === MessageStoreType.OutgoingMessageStore) {
                 const json = JSON.parse(OutgoingMessageStore.decode(message.body).jsonElem);
-                await p.fake(ctx.bot.uin!, ctx.bot[internalCtx].keystore.info.name, async (b) => {
+                await p.fake(ctx.bot.uin, ctx.bot.name, async (b) => {
                     await transformNode(ctx, b, zOneBotSendNodeContent.parse(json));
                 });
             } else {
@@ -65,7 +64,7 @@ export async function transformForwardMessages(
                 });
             }
         } else {
-            const uin = data.user_id ?? data.uin ?? ctx.bot.uin!;
+            const uin = data.user_id ?? data.uin ?? ctx.bot.uin;
             await p.fake(uin, data.name, async (b) => {
                 await transformNode(ctx, b, zOneBotInputSendNodeContent.parse(data.content));
             });

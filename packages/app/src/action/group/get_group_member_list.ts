@@ -16,7 +16,7 @@ export const get_group_member_list = defineAction(
             return Failed(404, 'Group not found');
         }
         const members = await group.getMembers(payload.no_cache);
-        const self = await group.getMember(ctx.bot.uin!);
+        const self = await group.getMember(ctx.bot.uin);
         return Ok<Partial<OneBotGroupMember>[]>(Array.from(members).map(member => ({
             group_id: group.uin,
             user_id: member.uin,

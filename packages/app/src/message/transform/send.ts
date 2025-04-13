@@ -75,7 +75,7 @@ export async function transformSendMessage(
                     const body = PbSendMsg.decode(OutgoingMessageStore.decode(message.body).pbElem);
                     b.replyInfo = {
                         sequence: message.sequence,
-                        senderUin: ctx.bot.uin!,
+                        senderUin: ctx.bot.uin,
                         senderUid: ctx.bot.uid,
                         messageUid: 0n,
                         elements: body.body?.richText?.elements ?? [],

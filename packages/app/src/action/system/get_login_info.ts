@@ -1,4 +1,3 @@
-import { ctx as internalCtx } from 'tanebi';
 import { defineAction, Ok } from '@app/action';
 import { z } from 'zod';
 
@@ -8,7 +7,7 @@ export const get_login_info = defineAction(
     (ctx) => {
         return Ok({
             user_id: ctx.bot.uin,
-            nickname: ctx.bot[internalCtx].keystore.info.name,
+            nickname: ctx.bot.name,
         });
     }
 );

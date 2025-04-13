@@ -23,7 +23,7 @@ export const get_group_member_info = defineAction(
         }
         const extraInfo = (await get_stranger_info.handler(ctx, { user_id: member.uin, no_cache: payload.no_cache }))
             .data as OneBotStranger;
-        const self = await group.getMember(ctx.bot.uin!);
+        const self = await group.getMember(ctx.bot.uin);
         return Ok<OneBotGroupMember>({
             group_id: group.uin,
             user_id: member.uin,

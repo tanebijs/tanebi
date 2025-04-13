@@ -1,4 +1,4 @@
-import { dispatcher, ctx as internalCtx, MessageType, parsePushMsgBody } from 'tanebi';
+import { dispatcher, MessageType, parsePushMsgBody, UserInfoGender } from 'tanebi';
 import { defineAction, Failed, Ok } from '@app/action';
 import { zOneBotInputMessageId } from '@app/common/types';
 import { MessageStoreType, OutgoingMessageStore } from '@app/storage/types';
@@ -25,10 +25,10 @@ export const get_msg = defineAction(
                 real_id: message.id,
                 sender: {
                     user_id: ctx.bot.uin,
-                    nickname: ctx.bot[internalCtx].keystore.info.name,
-                    sex: ctx.bot[internalCtx].keystore.info.gender === 1 ? 'male' :
-                        ctx.bot[internalCtx].keystore.info.gender === 2 ? 'female' : 'unknown',
-                    age: ctx.bot[internalCtx].keystore.info.age,
+                    nickname: ctx.bot.name,
+                    sex: ctx.bot.gender === UserInfoGender.Male ? 'male' :
+                        ctx.bot.gender === UserInfoGender.Female ? 'female' : 'unknown',
+                    age: ctx.bot.age,
                 },
                 message: ctx.config.messageReportType === 'array' ? json : json.map(encodeCQCode).join(''),
             });
