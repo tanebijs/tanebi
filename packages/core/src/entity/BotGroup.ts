@@ -32,20 +32,23 @@ export const eventsGDX = Symbol('Group internal events');
 
 export class BotGroup extends BotContact<BotGroupDataBinding> {
     [eventsGDX]: EventEmitter<{
-        message: [BotGroupMessage];
-        joinRequest: [BotGroupJoinRequest];
-        invitedJoinRequest: [BotGroupInvitedJoinRequest];
-        adminChange: [BotGroupMember, boolean]; // member, isPromote
-        memberIncrease: [BotGroupMember, BotGroupMember?]; // member, operator
-        memberLeave: [number]; // uin
-        memberKick: [number, BotGroupMember]; // uin, operator
-        mute: [BotGroupMember, BotGroupMember, number]; // member, operator, duration
-        unmute: [BotGroupMember, BotGroupMember]; // member, operator
-        muteAll: [BotGroupMember, boolean]; // operator, isSet
-        poke: [BotGroupMember, BotGroupMember, string, string, string?]; // sender, receiver, actionStr, actionImgUrl, suffix
-        essenceMessageChange: [number, BotGroupMember, boolean]; // sequence, operator, isAdd
-        recall: [number, string, BotGroupMember]; // clientSequence, tip, operator
-        reaction: [number, BotGroupMember, string, boolean, number]; // sequence, member, reactionCode, isAdd, count
+        message:                [BotGroupMessage];
+        joinRequest:            [BotGroupJoinRequest];
+        invitedJoinRequest:     [BotGroupInvitedJoinRequest];
+        adminChange:            [BotGroupMember, boolean]; // member, isPromote
+        memberIncrease:         [BotGroupMember, BotGroupMember?]; // member, operator
+        memberLeave:            [number]; // uin
+        memberCardChange:       [BotGroupMember, string, string]; // member, oldCard, newCard
+        memberKick:             [number, BotGroupMember]; // uin, operator
+        mute:                   [BotGroupMember, BotGroupMember, number]; // member, operator, duration
+        unmute:                 [BotGroupMember, BotGroupMember]; // member, operator
+        muteAll:                [BotGroupMember, boolean]; // operator, isSet
+        poke:                   [BotGroupMember, BotGroupMember, string, string, string?];
+                                // sender, receiver, actionStr, actionImgUrl, suffix
+        essenceMessageChange:   [number, BotGroupMember, boolean]; // sequence, operator, isAdd
+        recall:                 [number, string, BotGroupMember]; // clientSequence, tip, operator
+        reaction:               [number, BotGroupMember, string, boolean, number];
+                                // sequence, member, reactionCode, isAdd, count
     }> = new EventEmitter();
 
     private clientSequence = 100000;
@@ -254,6 +257,13 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
      */
     onMemberLeave(listener: (uin: number) => void) {
         this[eventsGDX].on('memberLeave', listener);
+    }
+
+    /**
+     * Listen to member card change events in this group
+     */
+    onMemberCardChange(listener: (member: BotGroupMember, oldCard: string, newCard: string) => void) {
+        this[eventsGDX].on('memberCardChange', listener);
     }
 
     /**

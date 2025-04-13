@@ -71,6 +71,7 @@ export class Bot {
         groupAdminChange:           [BotGroup, BotGroupMember, boolean]; // group, member, isPromote
         groupMemberIncrease:        [BotGroup, BotGroupMember, BotGroupMember?]; // group, member, operator
         groupMemberLeave:           [BotGroup, number]; // group, uin
+        groupMemberCardChange:      [BotGroup, BotGroupMember, string, string]; // group, member, oldCard, newCard
         groupMemberKick:            [BotGroup, number, BotGroupMember]; // group, uin, operator
         groupMute:                  [BotGroup, BotGroupMember, BotGroupMember, number];
                                     // group, member, operator, duration
@@ -816,6 +817,13 @@ export class Bot {
      */
     onGroupMemberLeave(listener: (group: BotGroup, uin: number) => void) {
         this[eventsDX].on('groupMemberLeave', listener);
+    }
+
+    /**
+     * Listen to group member card changes
+     */
+    onGroupMemberCardChange(listener: (group: BotGroup, member: BotGroupMember, newCard: string) => void) {
+        this[eventsDX].on('groupMemberCardChange', listener);
     }
 
     /**

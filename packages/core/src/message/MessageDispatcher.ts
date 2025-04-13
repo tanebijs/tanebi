@@ -169,6 +169,19 @@ export class MessageDispatcher {
                         const oldCard = sender.card;
                         if (oldCard !== bindingUpdate.card) {
                             sender.data.card = bindingUpdate.card;
+                            this.bot[eventsDX].emit(
+                                'groupMemberCardChange',
+                                contact,
+                                sender,
+                                oldCard ?? '',
+                                bindingUpdate.card
+                            );
+                            contact[eventsGDX].emit(
+                                'memberCardChange',
+                                sender,
+                                oldCard ?? '',
+                                bindingUpdate.card
+                            );
                         }
                     }
                     if (bindingUpdate.nickname) {
