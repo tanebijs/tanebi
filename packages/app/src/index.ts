@@ -24,6 +24,8 @@ import winston, { format, transports } from 'winston';
 import chalk from 'chalk';
 import { installLogger } from '@app/common/log';
 import { installMessageHandler } from '@app/message/dispatch';
+import { installNoticeEventHandler } from '@app/event/notice';
+import { installRequestEventHandler } from '@app/event/request';
 import { defaultProfile, zProfile } from '@app/common/profile';
 import { AbstractStorage } from '@app/storage';
 import { DatabaseStorage } from '@app/storage/database';
@@ -165,6 +167,8 @@ export class OneBotApp {
 
         installLogger(this);
         installMessageHandler(this);
+        installNoticeEventHandler(this);
+        installRequestEventHandler(this);
 
         if (this.config.onForcedOffline === 'exit') {
             this.bot.onForceOffline(() => {

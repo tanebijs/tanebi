@@ -34,3 +34,36 @@ export class OneBotGroupRequestEvent extends OneBotRequestEvent {
         super(app, 'group', flag);
     }
 }
+
+export function installRequestEventHandler(ctx: OneBotApp) {
+    ctx.bot.onFriendRequest((req) => {
+        ctx.dispatchEvent(new OneBotFriendRequestEvent(
+            ctx,
+            req.fromUid,
+            req.fromUin,
+            req.message,
+        ));
+    });
+
+    ctx.bot.onGroupJoinRequest((_, req) => {
+        ctx.dispatchEvent(new OneBotGroupRequestEvent(
+            ctx,
+            'Join#' + req.sequence,
+            req.groupUin,
+            req.requestUin,
+            'add',
+            req.comment,
+        ));
+    });
+
+    ctx.bot.onGroupInvitedJoinRequest((_, req) => {
+        ctx.dispatchEvent(new OneBotGroupRequestEvent(
+            ctx,
+            'Invite#' + req.sequence,
+            req.groupUin,
+            req.invitor.uin,
+            'invite',
+            '',
+        ));
+    });
+}
