@@ -44,7 +44,7 @@ These APIs are defined in the [OneBot 11 standard](https://github.com/botunivers
 | `set_group_name`          | 🟢     |
 | `set_group_leave`         | 🟠[^1] |
 | `set_group_special_title` | 🟢     |
-| `set_friend_add_request`  | 🟡     |
+| `set_friend_add_request`  | 🟠[^2] |
 | `set_group_add_request`   | 🟡     |
 | `get_login_info`          | 🟢     |
 | `get_stranger_info`       | 🟢     |
@@ -68,6 +68,7 @@ These APIs are defined in the [OneBot 11 standard](https://github.com/botunivers
 | `.handle_quick_operation` | 🟡     |
 
 [^1]: `is_dismiss` not implemented
+[^2]: `remark` not implemented
 
 </details>
 
