@@ -709,6 +709,21 @@ export class Bot {
             'uin' | EnumToStringKey[K[number]]
         >;
     }
+
+    /**
+     * Send likes to a profile
+     * @param targetUin Uin of the target user
+     * @param count Number of likes to send
+     * @param fromGroupUin Uin of the group which the target user is from
+     */
+    async sendProfileLike(targetUin: number, count: number, fromGroupUin?: number) {
+        this[log].emit('trace', 'Bot', `Sending profile like to ${targetUin}`);
+        const targetUid = await this[identityService].resolveUid(targetUin, fromGroupUin);
+        if (!targetUid) {
+            throw new Error(`Failed to resolve UID for ${targetUin}`);
+        }
+        await this[ctx].ops.call('sendProfileLike', targetUid, count);
+    }
     //#endregion
 
     //#region Events

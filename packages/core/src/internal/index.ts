@@ -54,6 +54,7 @@ import { HandleGroupFilteredRequestOperation } from '@/internal/operation/group/
 import { HandleGroupRequestOperation } from '@/internal/operation/group/HandleGroupRequestOperation';
 import { BotOfflineOperation } from '@/internal/operation/system/BotOfflineOperation';
 import { SetGroupNameOperation } from '@/internal/operation/group/SetGroupNameOperation';
+import { SendProfileLikeOperation } from '@/internal/operation/friend/SendProfileLikeOperation';
 
 /**
  * The internal context of the bot
@@ -78,6 +79,7 @@ export class BotContext {
         FetchFriendsOperation,
         FetchUserInfoOperation,
         HandleFriendRequestOperation,
+        SendProfileLikeOperation,
 
         AddGroupReactionOperation,
         FetchGroupFilteredNotifiesOperation,
