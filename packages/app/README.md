@@ -64,7 +64,7 @@ These APIs are defined in the [OneBot 11 standard](https://github.com/botunivers
 | `get_status`              | 🟢     |
 | `get_version_info`        | 🟢     |
 | `set_restart`             | ❌     |
-| `clean_cache`             | 🔴     |
+| `clean_cache`             | ❌     |
 | `.handle_quick_operation` | 🟡     |
 
 [^1]: `is_dismiss` not implemented
