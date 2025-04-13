@@ -61,7 +61,7 @@ export function installLogger(ctx: OneBotApp) {
     
     ctx.bot.onGroupJoinRequest((_, req) => ctx.logger.info(req.toString(), { module: 'GroupJoinRequest' }));
     
-    ctx.bot.onGroupMemberIncrease((group, member, operator) =>
+    ctx.bot.onGroupMemberIncrease((group, member, _, operator) =>
         ctx.logger.info(
             `[${group}] ${member} joined` +
                         (operator ? ` by ${operator.card || operator.nickname} (${operator.uin})` : ''),
