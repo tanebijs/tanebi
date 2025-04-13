@@ -55,6 +55,7 @@ import { HandleGroupRequestOperation } from '@/internal/operation/group/HandleGr
 import { BotOfflineOperation } from '@/internal/operation/system/BotOfflineOperation';
 import { SetGroupNameOperation } from '@/internal/operation/group/SetGroupNameOperation';
 import { SendProfileLikeOperation } from '@/internal/operation/friend/SendProfileLikeOperation';
+import { DecreaseType, IncreaseType } from '@/internal/packet/message/notify/GroupMemberChange';
 
 /**
  * The internal context of the bot
@@ -142,8 +143,8 @@ export class BotContext {
         groupInvitedJoinRequest: [number, string, string]; // groupUin, targetUid, invitorUid
         groupInvitationRequest: [number, string]; // groupUin, invitorUid
         groupAdminChange: [number, string, boolean]; // groupUin, targetUid, isPromote
-        groupMemberIncrease: [number, string, string?]; // groupUin, memberUid, operatorUid?
-        groupMemberDecrease: [number, string, string?]; // groupUin, memberUid, operatorUid?
+        groupMemberIncrease: [number, string, IncreaseType, string?]; // groupUin, memberUid, type, operatorUid?
+        groupMemberDecrease: [number, string, DecreaseType, string?]; // groupUin, memberUid, type, operatorUid?
         groupMute: [number, string, string, number]; // groupUin, operatorUid, targetUid, duration
         groupMuteAll: [number, string, boolean]; // groupUin, operatorUid, isSet
         groupPoke: [number, number, number, string, string, string?]; // groupUin, fromUin, toUin, actionStr, actionImgUrl, suffix

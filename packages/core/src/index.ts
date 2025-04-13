@@ -11,6 +11,7 @@ import { FaceDetail } from '@/internal/packet/oidb/0x9154_1';
 import { BUF0, BUF16 } from '@/internal/util/constants';
 import { FetchUserInfoKey } from '@/internal/packet/oidb/0xfe1_2';
 import { EnumToStringKey, FetchUserInfoGeneralReturn } from '@/internal/operation/friend/FetchUserInfoOperation';
+import { DecreaseType, IncreaseType } from '@/internal/packet/message/notify/GroupMemberChange';
 
 /**
  * Symbol of the bot context
@@ -69,10 +70,10 @@ export class Bot {
         groupJoinRequest:           [BotGroup, BotGroupJoinRequest];
         groupInvitedJoinRequest:    [BotGroup, BotGroupInvitedJoinRequest];
         groupAdminChange:           [BotGroup, BotGroupMember, boolean]; // group, member, isPromote
-        groupMemberIncrease:        [BotGroup, BotGroupMember, BotGroupMember?]; // group, member, operator
+        groupMemberIncrease:        [BotGroup, BotGroupMember, IncreaseType, BotGroupMember?]; // group, member, operator
         groupMemberLeave:           [BotGroup, number]; // group, uin
         groupMemberCardChange:      [BotGroup, BotGroupMember, string, string]; // group, member, oldCard, newCard
-        groupMemberKick:            [BotGroup, number, BotGroupMember]; // group, uin, operator
+        groupMemberKick:            [BotGroup, number, BotGroupMember?]; // group, uin, operator
         groupMute:                  [BotGroup, BotGroupMember, BotGroupMember, number];
                                     // group, member, operator, duration
         groupUnmute:                [BotGroup, BotGroupMember, BotGroupMember]; // group, member, operator
@@ -261,7 +262,7 @@ export class Bot {
             }
         });
 
-        this[ctx].eventsDX.on('groupMemberIncrease', async (groupUin, memberUid, operatorUid) => {
+        this[ctx].eventsDX.on('groupMemberIncrease', async (groupUin, memberUid, type, operatorUid) => {
             this[log].emit('trace', 'Bot', `Received member increase in group ${groupUin} for ${memberUid}`);
             try {
                 const group = await this.getGroup(groupUin);
@@ -275,12 +276,12 @@ export class Bot {
                             if (!operatorUin) return;
                             const operator = await group.getMember(operatorUin);
                             if (operator) {
-                                this[eventsDX].emit('groupMemberIncrease', group, member, operator);
-                                group[eventsGDX].emit('memberIncrease', member, operator);
+                                this[eventsDX].emit('groupMemberIncrease', group, member, type, operator);
+                                group[eventsGDX].emit('memberIncrease', member, type, operator);
                             }
                         } else {
-                            this[eventsDX].emit('groupMemberIncrease', group, member);
-                            group[eventsGDX].emit('memberIncrease', member);
+                            this[eventsDX].emit('groupMemberIncrease', group, member, type);
+                            group[eventsGDX].emit('memberIncrease', member, type);
                         }
                     }
                 }
@@ -289,21 +290,22 @@ export class Bot {
             }
         });
 
-        this[ctx].eventsDX.on('groupMemberDecrease', async (groupUin, memberUid, operatorUid) => {
+        this[ctx].eventsDX.on('groupMemberDecrease', async (groupUin, memberUid, type, operatorUid) => {
             this[log].emit('trace', 'Bot', `Received member decrease in group ${groupUin} for ${memberUid}`);
             try {
                 const group = await this.getGroup(groupUin);
                 if (group) {
                     const uin = await this[identityService].resolveUin(memberUid);
                     if (!uin) return;
-                    if (operatorUid) {
-                        const operatorUin = await this[identityService].resolveUin(operatorUid);
-                        if (!operatorUin) return;
-                        const operator = await group.getMember(operatorUin);
-                        if (operator) {
-                            this[eventsDX].emit('groupMemberKick', group, uin, operator);
-                            group[eventsGDX].emit('memberKick', uin, operator);
+                    if (type === DecreaseType.Kick) {
+                        let operator: BotGroupMember | undefined;
+                        if (operatorUid) {
+                            const operatorUin = await this[identityService].resolveUin(operatorUid);
+                            if (!operatorUin) return;
+                            operator = await group.getMember(operatorUin);
                         }
+                        this[eventsDX].emit('groupMemberKick', group, uin, operator);
+                        group[eventsGDX].emit('memberKick', uin, operator);
                     } else {
                         this[eventsDX].emit('groupMemberLeave', group, uin);
                         group[eventsGDX].emit('memberLeave', uin);
@@ -809,7 +811,7 @@ export class Bot {
     /**
      * Listen to group member increases
      */
-    onGroupMemberIncrease(listener: (group: BotGroup, member: BotGroupMember, operator?: BotGroupMember) => void) {
+    onGroupMemberIncrease(listener: (group: BotGroup, member: BotGroupMember, type: IncreaseType, operator?: BotGroupMember) => void) {
         this[eventsDX].on('groupMemberIncrease', listener);
     }
 
@@ -830,7 +832,7 @@ export class Bot {
     /**
      * Listen to group member kicks
      */
-    onGroupMemberKick(listener: (group: BotGroup, uin: number, operator: BotGroupMember) => void) {
+    onGroupMemberKick(listener: (group: BotGroup, uin: number, operator?: BotGroupMember) => void) {
         this[eventsDX].on('groupMemberKick', listener);
     }
 
@@ -946,3 +948,4 @@ export * from './util';
 export { parsePushMsgBody } from '@/internal/message/incoming';
 export { FetchUserInfoKey };
 export { UserInfoGender } from '@/internal/packet/common/UserInfo';
+export { IncreaseType, DecreaseType };

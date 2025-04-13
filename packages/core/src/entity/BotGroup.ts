@@ -5,6 +5,7 @@ import { BotCacheService } from '@/util';
 import EventEmitter from 'node:events';
 import { OutgoingGroupMessage } from '@/internal/message/outgoing';
 import { GroupMessage } from '@/internal/message/incoming';
+import { IncreaseType } from '@/internal/packet/message/notify/GroupMemberChange';
 
 interface BotGroupDataBinding {
     uin: number;
@@ -36,10 +37,10 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
         joinRequest:            [BotGroupJoinRequest];
         invitedJoinRequest:     [BotGroupInvitedJoinRequest];
         adminChange:            [BotGroupMember, boolean]; // member, isPromote
-        memberIncrease:         [BotGroupMember, BotGroupMember?]; // member, operator
+        memberIncrease:         [BotGroupMember, IncreaseType, BotGroupMember?]; // member, operator
         memberLeave:            [number]; // uin
         memberCardChange:       [BotGroupMember, string, string]; // member, oldCard, newCard
-        memberKick:             [number, BotGroupMember]; // uin, operator
+        memberKick:             [number, BotGroupMember?]; // uin, operator
         mute:                   [BotGroupMember, BotGroupMember, number]; // member, operator, duration
         unmute:                 [BotGroupMember, BotGroupMember]; // member, operator
         muteAll:                [BotGroupMember, boolean]; // operator, isSet
@@ -248,7 +249,7 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
     /**
      * Listen to member increase events in this group
      */
-    onMemberIncrease(listener: (member: BotGroupMember, operator?: BotGroupMember) => void) {
+    onMemberIncrease(listener: (member: BotGroupMember, type: IncreaseType, operator?: BotGroupMember) => void) {
         this[eventsGDX].on('memberIncrease', listener);
     }
 
@@ -269,7 +270,7 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
     /**
      * Listen to member kick events in this group
      */
-    onMemberKick(listener: (uin: number, operator: BotGroupMember) => void) {
+    onMemberKick(listener: (uin: number, operator?: BotGroupMember) => void) {
         this[eventsGDX].on('memberKick', listener);
     }
 
