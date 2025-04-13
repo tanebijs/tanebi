@@ -57,6 +57,7 @@ import { get_group_list } from '@app/action/group/get_group_list';
 import { get_group_info } from '@app/action/group/get_group_info';
 import { get_group_member_list } from '@app/action/group/get_group_member_list';
 import { get_group_member_info } from '@app/action/group/get_group_member_info';
+import { set_group_name } from '@app/action/group/set_group_name';
 
 export class OneBotApp {
     readonly projectDir = path.resolve(import.meta.dirname, '..');
@@ -78,6 +79,7 @@ export class OneBotApp {
         set_group_ban,
         set_group_kick,
         set_group_leave,
+        set_group_name,
         set_group_special_title,
         set_group_whole_ban,
 
