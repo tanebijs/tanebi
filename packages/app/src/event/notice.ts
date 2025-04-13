@@ -210,9 +210,7 @@ export function installNoticeEventHandler(ctx: OneBotApp) {
 
     ctx.bot.onFriendRecall(async (friend, clientSeq) => {
         try {
-            const message = await ctx.storage.getByPeerAndSequence(
-                MessageType.PrivateMessage, friend.uin, clientSeq,
-            );
+            const message = await ctx.storage.getPrivateByClientSequence(friend.uin, clientSeq);
             if (!message) {
                 return;
             }
