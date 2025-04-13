@@ -176,6 +176,7 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
     async setName(name: string) {
         this.bot[log].emit('trace', this.moduleName, `Set group name to ${name}`);
         await this.bot[ctx].ops.call('setGroupName', this.uin, name);
+        this.data.name = name;
     }
 
     /**
