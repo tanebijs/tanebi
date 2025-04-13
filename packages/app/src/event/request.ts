@@ -30,6 +30,7 @@ export class OneBotGroupRequestEvent extends OneBotRequestEvent {
         readonly user_id: number,
         readonly sub_type: 'add' | 'invite',
         readonly comment: string,
+        readonly invitor_id?: number,
     ) {
         super(app, 'group', flag);
     }
@@ -61,9 +62,10 @@ export function installRequestEventHandler(ctx: OneBotApp) {
             ctx,
             `Invite#${req.groupUin}#${req.sequence}`,
             req.groupUin,
-            req.invitor.uin,
+            req.targetUin,
             'invite',
             '',
+            req.invitor.uin,
         ));
     });
 }
