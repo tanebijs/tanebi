@@ -8,6 +8,7 @@ export interface OneBotFriend {
 export interface OneBotGroupMember {
     group_id: number;
     user_id: number;
+    qid?: string;
     nickname: string;
     card: string;
     sex: OneBotGender;

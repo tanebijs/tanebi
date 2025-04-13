@@ -27,6 +27,7 @@ export const get_group_member_info = defineAction(
         return Ok<OneBotGroupMember>({
             group_id: group.uin,
             user_id: member.uin,
+            qid: extraInfo.qid,
             nickname: member.nickname || '' + member.uin,
             card: member.card ?? '',
             sex: extraInfo.sex,
