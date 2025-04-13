@@ -193,7 +193,16 @@ export class OneBotApp {
     }
 
     async dispatchEvent(event: OneBotEvent) {
-        await Promise.all(this.adapters.map((adapter) => adapter.emitEvent(event)));
+        const dispatchResult = await Promise.allSettled(this.adapters.map((adapter) => adapter.emitEvent(event)));
+        const errorIndexes: number[] = [];
+        dispatchResult.forEach((value, index) => {
+            if (value.status === 'rejected') {
+                errorIndexes.push(index);
+            }
+        });
+        if (errorIndexes.length > 0) {
+            this.logger.error(`Failed to dispatch event to ${errorIndexes.length} adapter(s): ${errorIndexes.join(', ')}`);
+        }
     }
 
     async start() {
