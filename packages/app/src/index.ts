@@ -58,6 +58,7 @@ import { get_group_info } from '@app/action/group/get_group_info';
 import { get_group_member_list } from '@app/action/group/get_group_member_list';
 import { get_group_member_info } from '@app/action/group/get_group_member_info';
 import { set_group_name } from '@app/action/group/set_group_name';
+import { send_like } from '@app/action/friend/send_like';
 
 export class OneBotApp {
     readonly projectDir = path.resolve(import.meta.dirname, '..');
@@ -69,6 +70,7 @@ export class OneBotApp {
 
         get_friend_list,
         get_stranger_info,
+        send_like,
 
         get_group_list,
         get_group_info,
