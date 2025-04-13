@@ -67,7 +67,7 @@ export class BotGroupMember extends BotEntity<BotGroupMemberDataBinding> {
     }
 
     toString() {
-        return `${this.nickname} (${this.uin})`;
+        return `${this.card || this.nickname} (${this.uin})`;
     }
 
     /**
