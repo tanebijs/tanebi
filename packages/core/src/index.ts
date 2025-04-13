@@ -279,6 +279,7 @@ export class Bot {
                                 group[eventsGDX].emit('memberIncrease', member, operator);
                             }
                         } else {
+                            this[eventsDX].emit('groupMemberIncrease', group, member);
                             group[eventsGDX].emit('memberIncrease', member);
                         }
                     }
