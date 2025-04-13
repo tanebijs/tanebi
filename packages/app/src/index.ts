@@ -60,6 +60,7 @@ import { get_group_member_info } from '@app/action/group/get_group_member_info';
 import { set_group_name } from '@app/action/group/set_group_name';
 import { send_like } from '@app/action/friend/send_like';
 import { get_status } from '@app/action/system/get_status';
+import { get_version_info } from '@app/action/system/get_version_info';
 
 export class OneBotApp {
     readonly projectDir = path.resolve(import.meta.dirname, '..');
@@ -100,6 +101,7 @@ export class OneBotApp {
 
         get_login_info,
         get_status,
+        get_version_info,
     ]);
     readonly adapters: OneBotNetworkAdapter<unknown>[];
 
