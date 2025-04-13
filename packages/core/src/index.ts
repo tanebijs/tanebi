@@ -428,11 +428,23 @@ export class Bot {
 
     //#region Meta info
     get uin() {
-        return this[ctx].keystore.uin === 0 ? undefined : this[ctx].keystore.uin;
+        return this[ctx].keystore.uin;
     }
 
     get uid() {
         return this[ctx].keystore.uid!;
+    }
+
+    get name() {
+        return this[ctx].keystore.info.name;
+    }
+
+    get gender() {
+        return this[ctx].keystore.info.gender;
+    }
+
+    get age() {
+        return this[ctx].keystore.info.age;
     }
     //#endregion
     
