@@ -172,6 +172,15 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
     /**
      * Set the name of this group.
      * You must be the owner / an admin of the group to do this.
+     */
+    async setName(name: string) {
+        this.bot[log].emit('trace', this.moduleName, `Set group name to ${name}`);
+        await this.bot[ctx].ops.call('setGroupName', this.uin, name);
+    }
+
+    /**
+     * Set the name of this group.
+     * You must be the owner / an admin of the group to do this.
      * Also note that the owner and admins are not influenced by this.
      */
     async setMuteAll(isSet: boolean) {

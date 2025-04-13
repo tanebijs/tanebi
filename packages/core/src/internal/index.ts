@@ -1,18 +1,21 @@
 import EventEmitter from 'node:events';
 import { WtLoginLogic } from '@/internal/logic/login/WtLoginLogic';
 import { Ecdh } from '@/internal/util/crypto/ecdh';
+import { EventChannel } from '@/internal/event/EventBase';
+import { MessagePushEvent } from '@/internal/event/message/MessagePushEvent';
+import { KickNTEvent } from '@/internal/event/system/KickNTEvent';
+import { NTLoginLogic } from '@/internal/logic/login/NTLoginLogic';
+import { AppInfo, CoreConfig, DeviceInfo, Keystore, SignProvider } from '@/common';
+import { SsoLogic } from '@/internal/logic/network/SsoLogic';
+import { NotifyLogic } from '@/internal/logic/NotifyLogic';
+import { HighwayLogic } from '@/internal/logic/network/HighwayLogic';
 import { OperationCollection } from '@/internal/operation/OperationBase';
 import { KeyExchangeOperation } from '@/internal/operation/system/KeyExchangeOperation';
 import { WtLoginOperation } from '@/internal/operation/system/WtLoginOperation';
 import { FetchQrCodeOperation } from '@/internal/operation/system/FetchQrCodeOperation';
 import { QueryQrCodeResultOperation } from '@/internal/operation/system/QueryQrCodeResultOperation';
 import { BotOnlineOperation } from '@/internal/operation/system/BotOnlineOperation';
-import { EventChannel } from '@/internal/event/EventBase';
-import { MessagePushEvent } from '@/internal/event/message/MessagePushEvent';
-import { NTLoginLogic } from '@/internal/logic/login/NTLoginLogic';
 import { NTEasyLoginOperation } from '@/internal/operation/system/NTEasyLoginOperation';
-import { AppInfo, CoreConfig, DeviceInfo, Keystore, SignProvider } from '@/common';
-import { SsoLogic } from '@/internal/logic/network/SsoLogic';
 import { SendMessageOperation } from '@/internal/operation/message/SendMessageOperation';
 import { FetchGroupsOperation } from '@/internal/operation/group/FetchGroupsOperation';
 import { FetchFriendsOperation } from '@/internal/operation/friend/FetchFriendsOperation';
@@ -22,13 +25,11 @@ import { DownloadGroupImageOperation } from '@/internal/operation/highway/Downlo
 import { DownloadPrivateImageOperation } from '@/internal/operation/highway/DownloadPrivateImageOperation';
 import { FetchHighwayUrlOperation } from '@/internal/operation/highway/FetchHighwayUrlOperation';
 import { UploadGroupImageOperation } from '@/internal/operation/highway/UploadGroupImageOperation';
-import { HighwayLogic } from '@/internal/logic/network/HighwayLogic';
 import { UploadPrivateImageOperation } from '@/internal/operation/highway/UploadPrivateImageOperation';
 import { FetchGroupNotifiesOperation } from '@/internal/operation/group/FetchGroupNotifiesOperation';
 import { FetchUserInfoOperation } from '@/internal/operation/friend/FetchUserInfoOperation';
 import { SetMemberSpecialTitleOperation } from '@/internal/operation/group/SetMemberSpecialTitleOperation';
 import { SendGrayTipPokeOperation } from '@/internal/operation/message/SendGrayTipPokeOperation';
-import { NotifyLogic } from '@/internal/logic/NotifyLogic';
 import { SetMemberCardOperation } from '@/internal/operation/group/SetMemberCardOperation';
 import { AddGroupReactionOperation } from '@/internal/operation/group/AddGroupReactionOperation';
 import { RemoveGroupReactionOperation } from '@/internal/operation/group/RemoveGroupReactionOperation';
@@ -52,7 +53,7 @@ import { FetchGroupFilteredNotifiesOperation } from '@/internal/operation/group/
 import { HandleGroupFilteredRequestOperation } from '@/internal/operation/group/HandleGroupFilteredRequestOperation';
 import { HandleGroupRequestOperation } from '@/internal/operation/group/HandleGroupRequestOperation';
 import { BotOfflineOperation } from '@/internal/operation/system/BotOfflineOperation';
-import { KickNTEvent } from '@/internal/event/system/KickNTEvent';
+import { SetGroupNameOperation } from '@/internal/operation/group/SetGroupNameOperation';
 
 /**
  * The internal context of the bot
@@ -90,6 +91,7 @@ export class BotContext {
         MuteAllMembersOperation,
         MuteMemberOperation,
         RemoveGroupReactionOperation,
+        SetGroupNameOperation,
         SetMemberAdminOperation,
         SetMemberCardOperation,
         SetMemberSpecialTitleOperation,
