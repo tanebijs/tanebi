@@ -48,7 +48,7 @@ export function installRequestEventHandler(ctx: OneBotApp) {
     ctx.bot.onGroupJoinRequest((_, req) => {
         ctx.dispatchEvent(new OneBotGroupRequestEvent(
             ctx,
-            req.isFiltered ? `FilteredJoin#${req.sequence}` : `Join#${req.sequence}`,
+            req.isFiltered ? `FilteredJoin#${req.groupUin}#${req.sequence}` : `Join#${req.groupUin}#${req.sequence}`,
             req.groupUin,
             req.requestUin,
             'add',
@@ -59,7 +59,7 @@ export function installRequestEventHandler(ctx: OneBotApp) {
     ctx.bot.onGroupInvitedJoinRequest((_, req) => {
         ctx.dispatchEvent(new OneBotGroupRequestEvent(
             ctx,
-            'Invite#' + req.sequence,
+            `Invite#${req.groupUin}#${req.sequence}`,
             req.groupUin,
             req.invitor.uin,
             'invite',
