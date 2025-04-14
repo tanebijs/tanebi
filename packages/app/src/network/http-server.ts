@@ -49,7 +49,11 @@ export class OneBotHttpServerAdapter extends OneBotNetworkAdapter<HttpServerAdap
             const start = Date.now();
             const response = await this.app.actions.handleAction(endpoint, payload);
             const end = Date.now();
-            this.logger.info(`${c.env.incoming.socket.remoteAddress} -> ${c.req.path} (${response.retcode === 0 ? 'OK' : response.retcode} ${end - start}ms)`);
+            this.logger.info(
+                `${c.env.incoming.socket.remoteAddress} -> ${c.req.path} (${
+                    response.retcode === 0 ? 'OK' : response.retcode
+                } ${end - start}ms)`
+            );
             c.status((response.retcode >= 400 && response.retcode < 500 ? response.retcode : 200) as StatusCode);
             return c.json(response);
         });
