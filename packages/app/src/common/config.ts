@@ -11,45 +11,37 @@ const zMemoryStorageConfig = z.object({
     maxLifetime: z.number().int().positive().default(3600),
 });
 
-const zServerLikeConfig = z.object({
+export const zHttpServerAdapterConfig = z.object({
+    type: z.literal('httpServer'),
     host: z.string().ip(),
     port: z.number().int().positive().max(65535),
     accessToken: z.string().optional(),
 });
 
-const zClientLikeConfig = z.object({
-    url: z.string().url(),
-    accessToken: z.string().optional(),
-});
-
-const zHeartbeatLikeConfig = z.union([
-    z.object({
-        enableHeartbeat: z.literal(true),
-        heartbeatInterval: z.number().int().positive(),
-    }),
-    z.object({
-        enableHeartbeat: z.literal(false),
-        heartbeatInterval: z.number().optional(),
-    }),
-]);
-
-export const zHttpServerAdapterConfig = z.object({
-    type: z.literal('httpServer'),
-}).and(zServerLikeConfig);
-
 export const zHttpClientAdapterConfig = z.object({
     type: z.literal('httpClient'),
+    url: z.string().url(),
+    enableHeartbeat: z.boolean(),
+    heartbeatInterval: z.number().int().positive().min(1000).optional(),
     signatureSecret: z.string().optional(),
-}).and(zClientLikeConfig).and(zHeartbeatLikeConfig);
+});
 
 export const zWebSocketServerAdapterConfig = z.object({
     type: z.literal('webSocketServer'),
-}).and(zServerLikeConfig).and(zHeartbeatLikeConfig);
+    host: z.string().ip(),
+    port: z.number().int().positive().max(65535),
+    accessToken: z.string().optional(),
+    enableHeartbeat: z.boolean(),
+    heartbeatInterval: z.number().int().positive().min(1000).optional(),
+});
 
 export const zWebSocketClientAdapterConfig = z.object({
     type: z.literal('webSocketClient'),
-    reconnectInterval: z.number().int().positive(),
-}).and(zClientLikeConfig).and(zHeartbeatLikeConfig);
+    url: z.string().url(),
+    enableHeartbeat: z.boolean(),
+    heartbeatInterval: z.number().int().positive().min(1000).optional(),
+    reconnectInterval: z.number().int().positive().min(1000).default(5000),
+});
 
 export const zConfig = z.object({
     logLevel: z.enum(['trace', 'debug', 'info', 'warn', 'error', 'fatal']),
@@ -63,7 +55,7 @@ export const zConfig = z.object({
         zDatabaseStorageConfig,
         zMemoryStorageConfig,
     ]),
-    adapters: z.array(z.union([
+    adapters: z.array(z.discriminatedUnion('type', [
         zHttpServerAdapterConfig,
         zHttpClientAdapterConfig,
         zWebSocketServerAdapterConfig,
