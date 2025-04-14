@@ -55,6 +55,15 @@ export class OneBotWebSocketClientAdapter extends OneBotNetworkAdapter<WebSocket
                     })
                 );
             });
+            this.websocket.on('close', () => {
+                this.websocket = undefined;
+                this.logger.warn(`Lost connection, reconnecting in ${this.adapterConfig.reconnectInterval}ms`);
+                this.stopImpl();
+                setTimeout(() => {
+                    this.logger.info('Reconnecting...');
+                    this.startImpl();
+                }, this.adapterConfig.reconnectInterval);
+            });
             if (this.adapterConfig.enableHeartbeat && this.adapterConfig.heartbeatInterval) {
                 this.heartbeatRef = setInterval(() => {
                     const heartbeatEvent = new OneBotHeartbeatEvent(
