@@ -170,7 +170,7 @@ In OneBot 11 standard, events are posted with different `post_type`s. The possib
 
 | Meta Event Type | Status |
 | --------------- | ------ |
-| `lifecycle`     | 🔴     |
-| `heartbeat`     | 🔴     |
+| `lifecycle`     | 🟢     |
+| `heartbeat`     | 🟢     |
 
 </details>
