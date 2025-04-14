@@ -1,7 +1,7 @@
 import { get_status } from '@app/action/system/get_status';
 import { HttpClientAdapterConfig } from '@app/common/config';
 import { OneBotEvent } from '@app/event';
-import { OneBotHeartbeatEvent } from '@app/event/meta';
+import { OneBotHeartbeatEvent, OneBotLifecycleEvent } from '@app/event/meta';
 import { OneBotApp } from '@app/index';
 import { OneBotNetworkAdapter } from '@app/network';
 import { createHmac } from 'node:crypto';
@@ -33,6 +33,7 @@ export class OneBotHttpClientAdapter extends OneBotNetworkAdapter<HttpClientAdap
 
     override async startImpl() {
         this.isStarted = true;
+        await this.emitEvent(new OneBotLifecycleEvent(this.app, 'enable'));
         if (this.adapterConfig.enableHeartbeat && this.adapterConfig.heartbeatInterval) {
             this.heartbeatRef = setInterval(() => {
                 const heartbeatEvent = new OneBotHeartbeatEvent(
@@ -47,6 +48,7 @@ export class OneBotHttpClientAdapter extends OneBotNetworkAdapter<HttpClientAdap
 
     override async stopImpl() {
         this.isStarted = false;
+        await this.emitEvent(new OneBotLifecycleEvent(this.app, 'disable'));
         if (this.heartbeatRef) {
             clearInterval(this.heartbeatRef);
             this.heartbeatRef = undefined;

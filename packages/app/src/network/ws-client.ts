@@ -3,7 +3,7 @@ import { get_status } from '@app/action/system/get_status';
 import { WebSocketClientAdapterConfig } from '@app/common/config';
 import { zWebSocketInputData } from '@app/common/types';
 import { OneBotEvent } from '@app/event';
-import { OneBotHeartbeatEvent } from '@app/event/meta';
+import { OneBotHeartbeatEvent, OneBotLifecycleEvent } from '@app/event/meta';
 import { OneBotApp } from '@app/index';
 import { OneBotNetworkAdapter } from '@app/network';
 import { WebSocket } from 'ws';
@@ -24,7 +24,10 @@ export class OneBotWebSocketClientAdapter extends OneBotNetworkAdapter<WebSocket
                     'User-Agent': 'OneBot/11',
                 },
             });
-            this.websocket.on('open', () => resolve());
+            this.websocket.on('open', () => {
+                this.websocket!.send(JSON.stringify(new OneBotLifecycleEvent(this.app, 'connect')));
+                resolve();
+            });
             this.websocket.on('message', async (data) => {
                 const payload = data.toString();
                 const parseResult = zWebSocketInputData.safeParse(JSON.parse(payload));

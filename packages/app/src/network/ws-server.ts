@@ -9,7 +9,7 @@ import { WSContext, WSEvents } from 'hono/ws';
 import { Failed } from '@app/action';
 import { zWebSocketInputData } from '@app/common/types';
 import { OneBotEvent } from '@app/event';
-import { OneBotHeartbeatEvent } from '@app/event/meta';
+import { OneBotHeartbeatEvent, OneBotLifecycleEvent } from '@app/event/meta';
 import { get_status } from '@app/action/system/get_status';
 
 export class OneBotWebSocketServerAdapter extends OneBotNetworkAdapter<WebSocketServerAdapterConfig> {
@@ -107,6 +107,7 @@ export class OneBotWebSocketServerAdapter extends OneBotNetworkAdapter<WebSocket
                     onOpen: (_, ws) => {
                         this.eventPushClients.set(ws, c.env.incoming.socket.remoteAddress!);
                         this.logger.info(`${c.env.incoming.socket.remoteAddress} -> /event (Open)`);
+                        ws.send(JSON.stringify(new OneBotLifecycleEvent(this.app, 'connect')));
                     },
                     onClose: (_, ws) => {
                         this.eventPushClients.delete(ws);
@@ -123,6 +124,7 @@ export class OneBotWebSocketServerAdapter extends OneBotNetworkAdapter<WebSocket
                     onOpen: (_, ws) => {
                         this.eventPushClients.set(ws, c.env.incoming.socket.remoteAddress!);
                         this.logger.info(`${c.env.incoming.socket.remoteAddress} -> / (Open)`);
+                        ws.send(JSON.stringify(new OneBotLifecycleEvent(this.app, 'connect')));
                     },
                     onMessage: createOnMessage(c.env.incoming.socket.remoteAddress!),
                     onClose: (_, ws) => {
