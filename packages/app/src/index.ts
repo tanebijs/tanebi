@@ -22,6 +22,7 @@ import { OneBotNetworkAdapter } from '@app/network';
 import { OneBotHttpServerAdapter } from '@app/network/http-server';
 import { OneBotHttpClientAdapter } from '@app/network/http-client';
 import { OneBotWebSocketServerAdapter } from '@app/network/ws-server';
+import { OneBotWebSocketClientAdapter } from '@app/network/ws-client';
 import winston, { format, transports } from 'winston';
 import chalk from 'chalk';
 import { installLogger } from '@app/common/log';
@@ -197,8 +198,9 @@ export class OneBotApp {
                 return new OneBotHttpClientAdapter(this, adapterConfig, '' + index);
             } else if (adapterConfig.type === 'webSocketServer') {
                 return new OneBotWebSocketServerAdapter(this, adapterConfig, '' + index);
+            } else { // if (adapterConfig.type === 'webSocketClient')
+                return new OneBotWebSocketClientAdapter(this, adapterConfig, '' + index);
             }
-            throw new Error(`Unsupported adapter type: ${adapterConfig.type}`);
         });
     }
 
