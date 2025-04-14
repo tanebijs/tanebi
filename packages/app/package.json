@@ -1,6 +1,6 @@
 {
   "name": "@tanebijs/app",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Standalone QQ bot application with OneBot 11 support",
   "keywords": [
     "qq",
