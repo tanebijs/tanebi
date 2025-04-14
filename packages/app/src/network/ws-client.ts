@@ -1,13 +1,16 @@
 import { Failed } from '@app/action';
+import { get_status } from '@app/action/system/get_status';
 import { WebSocketClientAdapterConfig } from '@app/common/config';
 import { zWebSocketInputData } from '@app/common/types';
 import { OneBotEvent } from '@app/event';
+import { OneBotHeartbeatEvent } from '@app/event/meta';
 import { OneBotApp } from '@app/index';
 import { OneBotNetworkAdapter } from '@app/network';
 import { WebSocket } from 'ws';
 
 export class OneBotWebSocketClientAdapter extends OneBotNetworkAdapter<WebSocketClientAdapterConfig> {
     websocket: WebSocket | undefined;
+    heartbeatRef: NodeJS.Timeout | undefined;
 
     constructor(app: OneBotApp, config: WebSocketClientAdapterConfig, id: string) {
         super(app, config, 'WsClient', id);
@@ -49,11 +52,25 @@ export class OneBotWebSocketClientAdapter extends OneBotNetworkAdapter<WebSocket
                     })
                 );
             });
+            if (this.adapterConfig.enableHeartbeat && this.adapterConfig.heartbeatInterval) {
+                this.heartbeatRef = setInterval(() => {
+                    const heartbeatEvent = new OneBotHeartbeatEvent(
+                        this.app,
+                        get_status.handler(this.app, {}),
+                                this.adapterConfig.heartbeatInterval!,
+                    );
+                    this.emitEvent(heartbeatEvent);
+                }, this.adapterConfig.heartbeatInterval);
+            }
         });
     }
 
     override stopImpl() {
         this.websocket?.close();
+        if (this.heartbeatRef) {
+            clearInterval(this.heartbeatRef);
+            this.heartbeatRef = undefined;
+        }
         this.websocket = undefined;
     }
 

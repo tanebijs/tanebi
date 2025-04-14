@@ -9,12 +9,15 @@ import { WSContext, WSEvents } from 'hono/ws';
 import { Failed } from '@app/action';
 import { zWebSocketInputData } from '@app/common/types';
 import { OneBotEvent } from '@app/event';
+import { OneBotHeartbeatEvent } from '@app/event/meta';
+import { get_status } from '@app/action/system/get_status';
 
 export class OneBotWebSocketServerAdapter extends OneBotNetworkAdapter<WebSocketServerAdapterConfig> {
     readonly honoApp;
     eventPushClients = new Map<WSContext, string>();
     httpServer: Server | undefined;
     injectWebSocket;
+    heartbeatRef: NodeJS.Timeout | undefined;
 
     constructor(app: OneBotApp, config: WebSocketServerAdapterConfig, id: string) {
         super(app, config, 'WsServer', id);
@@ -138,10 +141,25 @@ export class OneBotWebSocketServerAdapter extends OneBotNetworkAdapter<WebSocket
             hostname: this.adapterConfig.host,
         }) as Server;
         this.injectWebSocket(this.httpServer);
+        if (this.adapterConfig.enableHeartbeat && this.adapterConfig.heartbeatInterval) {
+            this.heartbeatRef = setInterval(() => {
+                const heartbeatEvent = new OneBotHeartbeatEvent(
+                    this.app,
+                    get_status.handler(this.app, {}),
+                                        this.adapterConfig.heartbeatInterval!,
+                );
+                this.emitEvent(heartbeatEvent);
+            }, this.adapterConfig.heartbeatInterval);
+        }
     }
 
     override stopImpl() {
+        if (this.heartbeatRef) {
+            clearInterval(this.heartbeatRef);
+            this.heartbeatRef = undefined;
+        }
         this.httpServer?.closeAllConnections();
+        this.httpServer = undefined;
     }
 
     override async emitEvent(event: OneBotEvent): Promise<void> {
