@@ -31,4 +31,4 @@ This project could not exist without the following projects and their contributo
 - [LagrangeDev/Lagrange.Core](https://github.com/LagrangeDev/Lagrange.Core), providing basic project structure and most protocol packets.
 - [LagrangeDev/lagrangejs](https://github.com/LagrangeDev/lagrangejs), providing JavaScript implementation of NTQQ protocol crypto and authentication.
 - [takayama-lily/oicq](https://github.com/takayama-lily/oicq), the initial QQ protocol implementation in JavaScript, and of course, the parent project of lagrangejs.
-- [NapNeko/NapCatQQ](https://github.com/NapNeko/NapCatQQ), providing JavaScript implementation of Highway logic, which is essential to uploading media.
+- @pk5ls20 for writing JavaScript implementation of Highway logic, which is essential to uploading media.
