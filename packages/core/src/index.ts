@@ -542,7 +542,6 @@ export class Bot {
                 await this.ntEasyLogin();
             } catch(e2) {
                 this[log].emit('fatal', 'Bot', 'Still failed to re-login, please delete keystore.json and try again', e2);
-                process.exit(1);
             }
         }
     }
