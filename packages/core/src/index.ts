@@ -532,17 +532,13 @@ export class Bot {
         try {
             await this.botOnline();
         } catch(e) {
-            try {
-                this[log].emit('warning', 'Bot', 'Failed to go online, refreshing session', e);
-                await this[ctx].renewSsoLogic();
-                this[ctx].keystore.session.d2 = BUF0;
-                this[ctx].keystore.session.tgt = BUF0;
-                this[ctx].keystore.session.d2Key = BUF16;
-                await this.keyExchange();
-                await this.ntEasyLogin();
-            } catch(e2) {
-                this[log].emit('fatal', 'Bot', 'Still failed to re-login, please delete keystore.json and try again', e2);
-            }
+            this[log].emit('warning', 'Bot', 'Failed to go online, refreshing session', e);
+            await this[ctx].renewSsoLogic();
+            this[ctx].keystore.session.d2 = BUF0;
+            this[ctx].keystore.session.tgt = BUF0;
+            this[ctx].keystore.session.d2Key = BUF16;
+            await this.keyExchange();
+            await this.ntEasyLogin();
         }
     }
 
