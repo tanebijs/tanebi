@@ -34,6 +34,8 @@ export const zOneBotInputBoolean = z.union([
     z.literal('1').transform(() => true),
     z.literal(0).transform(() => false),
     z.literal(1).transform(() => true),
+    z.literal('no').transform(() => false),
+    z.literal('yes').transform(() => true),
 ]);
 
 export const zWebSocketInputData = z.object({
