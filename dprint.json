@@ -1,6 +1,9 @@
 {
     "typescript": {
-        "indentWidth": 4
+        "indentWidth": 4,
+        "semiColons": "always",
+        "quoteStyle": "alwaysSingle",
+        "operatorPosition": "sameLine"
     },
     "json": {
         "indentWidth": 4
