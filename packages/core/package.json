@@ -28,8 +28,7 @@
     ],
     "scripts": {
         "build": "node swc-build.mjs",
-        "dts": "tsc --project tsconfig.json --declaration --emitDeclarationOnly --outdir dist",
-        "lint": ""
+        "dts": "tsc --project tsconfig.json --declaration --emitDeclarationOnly --outdir dist"
     },
     "dependencies": {
         "@tanebijs/protobuf": "^0.0.1",

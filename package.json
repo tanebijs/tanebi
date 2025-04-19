@@ -8,6 +8,8 @@
         "build:app": "pnpm -C packages/app build",
         "build:dev:app": "pnpm -C packages/app build:dev",
         "build:core": "pnpm -C packages/core build",
+        "build:dev:core": "pnpm -C packages/core build:dev",
+        "dts:core": "pnpm -C packages/core dts",
         "build:core-test": "pnpm -C packages/core-test build",
         "build:dev:core-test": "pnpm -C packages/core-test build"
     },

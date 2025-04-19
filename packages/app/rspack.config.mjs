@@ -27,6 +27,11 @@ export default defineConfig({
                 type: "javascript/auto",
             },
         ],
+        parser: {
+            javascript: {
+                importMeta: false
+            }
+        }
     },
     resolve: {
         alias: { "@app": path.join(import.meta.dirname, "src") },
