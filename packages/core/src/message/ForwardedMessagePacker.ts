@@ -19,7 +19,7 @@ export class ForwardedMessagePacker {
         const builder = new ForwardedMessageBuilder(uin, nick, this.bot);
         // When uploading resources, use the bot itself's uid.
         await buildMsg(builder);
-        const msg = builder.build(this.clientSequence++);
+        const msg = await builder.build(this.clientSequence++);
         this.messages.push(msg);
         if (this.preview.length < 4) {
             this.preview.push(generatePreview(msg));
@@ -34,7 +34,7 @@ export class ForwardedMessagePacker {
             type: 'forward',
             resId: await this.bot[ctx].ops.call('uploadLongMessage', this.messages, this.groupUin),
             preview: this.preview,
-            count: this.messages.length
+            count: this.messages.length,
         };
     }
 }

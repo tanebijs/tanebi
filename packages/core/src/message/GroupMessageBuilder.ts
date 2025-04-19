@@ -1,15 +1,16 @@
 import { BotGroupMember, BotGroupMessage } from '@/entity';
-import { AbstractMessageBuilder } from './AbstractMessageBuilder';
+import { Bot, ctx, log } from '@/index';
 import { MessageType } from '@/internal/message';
+import { rawElems } from '@/internal/message/incoming';
 import { ImageSubType } from '@/internal/message/incoming/segment/image';
-import { OutgoingGroupMessage, OutgoingSegmentOf, ReplyInfo } from '@/internal/message/outgoing';
+import { OutgoingGroupMessage, type OutgoingSegment, OutgoingSegmentOf, ReplyInfo } from '@/internal/message/outgoing';
+import { CustomFaceElement } from '@/internal/packet/message/element/CustomFaceElement';
+import { getGeneralMetadata } from '@/internal/util/media/common';
 import { getImageMetadata } from '@/internal/util/media/image';
 import { ForwardedMessagePacker, rawMessage } from '@/message';
-import { Bot, ctx, log } from '@/index';
 import { randomInt } from 'crypto';
-import { getGeneralMetadata } from '@/internal/util/media/common';
-import { CustomFaceElement } from '@/internal/packet/message/element/CustomFaceElement';
-import { rawElems } from '@/internal/message/incoming';
+import { isPromise } from 'util/types';
+import { AbstractMessageBuilder } from './AbstractMessageBuilder';
 
 export class GroupMessageBuilder extends AbstractMessageBuilder {
     replyInfo?: ReplyInfo;
@@ -29,6 +30,8 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
             uid: member.uid,
             name: '@' + (member.card || member.nickname),
         });
+
+        return this;
     }
 
     /**
@@ -41,6 +44,8 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
             uid: '',
             name: '@全体成员',
         });
+
+        return this;
     }
 
     /**
@@ -57,41 +62,55 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
             messageUid: message.messageUid,
             elements: message[rawMessage][rawElems],
         };
+
+        return this;
     }
 
-    override async image(data: Buffer, subType?: ImageSubType, summary?: string): Promise<void> {
-        const imageMeta = getImageMetadata(data);
-        this.bot[log].emit('trace', 'GroupMessageBuilder', `Prepare to upload image ${JSON.stringify(imageMeta)}`);
-        const uploadResp = await this.bot[ctx].ops.call(
-            'uploadGroupImage',
-            this.groupUin,
-            imageMeta,
-            subType ?? ImageSubType.Picture,
-            summary
-        );
-        await this.bot[ctx].highwayLogic.uploadImage(data, imageMeta, uploadResp, MessageType.GroupMessage);
-        this.segments.push({
-            type: 'image',
-            msgInfo: uploadResp.upload!.msgInfo!,
-            compatFace: uploadResp.upload?.compatQMsg
-                ? CustomFaceElement.decode(uploadResp.upload.compatQMsg)
-                : undefined,
-        });
+    override image(data: Buffer, subType?: ImageSubType, summary?: string): this {
+        this.segments.push((async () => {
+            const imageMeta = getImageMetadata(data);
+            this.bot[log].emit('trace', 'GroupMessageBuilder', `Prepare to upload image ${JSON.stringify(imageMeta)}`);
+            const uploadResp = await this.bot[ctx].ops.call(
+                'uploadGroupImage',
+                this.groupUin,
+                imageMeta,
+                subType ?? ImageSubType.Picture,
+                summary,
+            );
+            await this.bot[ctx].highwayLogic.uploadImage(data, imageMeta, uploadResp, MessageType.GroupMessage);
+            return {
+                type: 'image',
+                msgInfo: uploadResp.upload!.msgInfo!,
+                compatFace: uploadResp.upload?.compatQMsg ?
+                    CustomFaceElement.decode(uploadResp.upload.compatQMsg) :
+                    undefined,
+            };
+        })());
+
+        return this;
     }
 
-    override async record(data: Buffer, duration: number): Promise<void> {
-        const recordMeta = getGeneralMetadata(data);
-        this.bot[log].emit('trace', 'GroupMessageBuilder', `Prepare to upload record ${JSON.stringify(recordMeta)}`);
-        const uploadResp = await this.bot[ctx].ops.call('uploadGroupRecord', this.groupUin, recordMeta, duration);
-        await this.bot[ctx].highwayLogic.uploadRecord(data, recordMeta, uploadResp);
-        this.segments.push({
-            type: 'record',
-            msgInfo: uploadResp.upload!.msgInfo!,
-        });
+    override record(data: Buffer, duration: number): this {
+        this.segments.push((async () => {
+            const recordMeta = getGeneralMetadata(data);
+            this.bot[log].emit(
+                'trace',
+                'GroupMessageBuilder',
+                `Prepare to upload record ${JSON.stringify(recordMeta)}`,
+            );
+            const uploadResp = await this.bot[ctx].ops.call('uploadGroupRecord', this.groupUin, recordMeta, duration);
+            await this.bot[ctx].highwayLogic.uploadRecord(data, recordMeta, uploadResp);
+            return {
+                type: 'record',
+                msgInfo: uploadResp.upload!.msgInfo!,
+            };
+        })());
+
+        return this;
     }
 
     override async forward(
-        packMsg: (p: ForwardedMessagePacker) => void | Promise<void>
+        packMsg: (p: ForwardedMessagePacker) => void | Promise<void>,
     ): Promise<OutgoingSegmentOf<'forward'>> {
         const packer = new ForwardedMessagePacker(this.bot, this.groupUin);
         await packMsg(packer);
@@ -100,13 +119,17 @@ export class GroupMessageBuilder extends AbstractMessageBuilder {
         return pack;
     }
 
-    override build(clientSequence: number): OutgoingGroupMessage {
+    override async build(clientSequence: number): Promise<OutgoingGroupMessage> {
+        for (let i = 0; i < this.segments.length; i++) {
+            if (isPromise(this.segments[i])) this.segments[i] = await this.segments[i];
+        }
+
         return {
             type: MessageType.GroupMessage,
             groupUin: this.groupUin,
             clientSequence,
             random: randomInt(0, 0xffffffff),
-            segments: this.segments,
+            segments: this.segments as OutgoingSegment[],
             reply: this.replyInfo,
         };
     }

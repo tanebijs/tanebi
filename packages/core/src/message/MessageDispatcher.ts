@@ -1,4 +1,3 @@
-import { Bot, eventsDX } from '@/index';
 import {
     BotContact,
     BotFriend,
@@ -16,6 +15,7 @@ import {
     eventsFDX,
     eventsGDX,
 } from '@/entity';
+import { Bot, eventsDX } from '@/index';
 import { MessageType } from '@/internal/message';
 import { blob, GroupMessage, IncomingMessage, msgUid, PrivateMessage, rawElems } from '@/internal/message/incoming';
 import { EventEmitter } from 'node:events';
@@ -24,29 +24,29 @@ export const rawMessage = Symbol('Raw message');
 
 export type DispatchedMessageBody =
     | {
-          type: 'bubble';
-          content: BotMsgBubble;
-      }
+        type: 'bubble';
+        content: BotMsgBubble;
+    }
     | {
-          type: 'image';
-          content: BotMsgImage;
-      }
+        type: 'image';
+        content: BotMsgImage;
+    }
     | {
-          type: 'record';
-          content: BotMsgRecord;
-      }
+        type: 'record';
+        content: BotMsgRecord;
+    }
     | {
-          type: 'video';
-          content: BotMsgVideo;
-      }
+        type: 'video';
+        content: BotMsgVideo;
+    }
     | {
-          type: 'forward';
-          content: BotMsgForwardPack;
-      }
+        type: 'forward';
+        content: BotMsgForwardPack;
+    }
     | {
-          type: 'lightApp';
-          content: BotMsgLightApp;
-      };
+        type: 'lightApp';
+        content: BotMsgLightApp;
+    };
 
 export type DispatchedMessage = DispatchedMessageBody & {
     sequence: number;
@@ -116,7 +116,7 @@ export class MessageDispatcher {
                 if (firstSegment.app === 'com.tencent.qun.invite' && contact instanceof BotFriend) {
                     this.bot[eventsDX].emit(
                         'groupInvitationRequest',
-                        await BotGroupInvitationRequest.create(contact, firstSegment, this.bot)
+                        await BotGroupInvitationRequest.create(contact, firstSegment, this.bot),
                     );
                 }
                 return {
@@ -174,13 +174,13 @@ export class MessageDispatcher {
                                 contact,
                                 sender,
                                 oldCard ?? '',
-                                bindingUpdate.card
+                                bindingUpdate.card,
                             );
                             contact[eventsGDX].emit(
                                 'memberCardChange',
                                 sender,
                                 oldCard ?? '',
-                                bindingUpdate.card
+                                bindingUpdate.card,
                             );
                         }
                     }
@@ -211,16 +211,16 @@ export class MessageDispatcher {
 
     async resolveContact(incoming: IncomingMessage) {
         let contact: BotContact | undefined;
-        contact = await (incoming.type === MessageType.PrivateMessage
-            ? this.bot.getFriend(incoming.senderUin === this.bot.uin ? incoming.targetUin : incoming.senderUin)
-            : this.bot.getGroup(incoming.groupUin));
+        contact = await (incoming.type === MessageType.PrivateMessage ?
+            this.bot.getFriend(incoming.senderUin === this.bot.uin ? incoming.targetUin : incoming.senderUin) :
+            this.bot.getGroup(incoming.groupUin));
         if (!contact) {
-            contact = await (incoming.type === MessageType.PrivateMessage
-                ? this.bot.getFriend(
+            contact = await (incoming.type === MessageType.PrivateMessage ?
+                this.bot.getFriend(
                     incoming.senderUin === this.bot.uin ? incoming.targetUin : incoming.senderUin,
-                    true
-                )
-                : this.bot.getGroup(incoming.groupUin, true));
+                    true,
+                ) :
+                this.bot.getGroup(incoming.groupUin, true));
         }
         return contact;
     }
@@ -229,4 +229,4 @@ export class MessageDispatcher {
 }
 
 export { MessageType };
-export { rawElems, msgUid, blob };
+export { blob, msgUid, rawElems };
