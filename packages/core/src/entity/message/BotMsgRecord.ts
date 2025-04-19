@@ -1,7 +1,7 @@
-import { BotMsgType } from '.';
 import { Bot, ctx } from '@/index';
 import { MessageType } from '@/internal/message';
 import { IncomingMessage, IncomingSegmentOf } from '@/internal/message/incoming';
+import { BotMsgType } from '.';
 
 export class BotMsgRecord implements BotMsgType {
     private constructor(

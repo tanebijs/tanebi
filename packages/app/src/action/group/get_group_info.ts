@@ -20,5 +20,5 @@ export const get_group_info = defineAction(
             member_count: group.memberCount,
             max_member_count: group.maxMemberCount,
         });
-    }
+    },
 );

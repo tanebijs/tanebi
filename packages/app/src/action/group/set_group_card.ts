@@ -20,5 +20,5 @@ export const set_group_card = defineAction(
         }
         await member.setCard(payload.card);
         return Ok();
-    }
+    },
 );

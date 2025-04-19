@@ -1,7 +1,7 @@
 import { Bot, faceCache } from '@/index';
-import { BotMsgImage, BotMsgType } from '.';
-import { IncomingMessage, IncomingSegment } from '@/internal/message/incoming';
 import { MessageType } from '@/internal/message';
+import { IncomingMessage, IncomingSegment } from '@/internal/message/incoming';
+import { BotMsgImage, BotMsgType } from '.';
 
 export class BotMsgForwardBubble implements BotMsgType {
     private constructor(public readonly segments: ForwardedBubbleSegment[]) {}
@@ -27,10 +27,10 @@ export class BotMsgForwardBubble implements BotMsgType {
                 } else if (element.type === 'image') {
                     return {
                         type: 'image',
-                        content: await BotMsgImage.createForward(element, parentMsgType, bot)
+                        content: await BotMsgImage.createForward(element, parentMsgType, bot),
                     };
                 }
-            })
+            }),
         )).filter((e) => e !== undefined));
     }
 
@@ -52,8 +52,8 @@ export class BotMsgForwardBubble implements BotMsgType {
 }
 
 export type ForwardedBubbleSegment =
-    | { type: 'text'; content: string }
-    | { type: 'face'; faceId: number; summary: string; isInLargeCategory: boolean }
-    | { type: 'mention'; uin: number; name: string }
-    | { type: 'mentionAll' }
-    | { type: 'image'; content: BotMsgImage };
+    | { type: 'text'; content: string; }
+    | { type: 'face'; faceId: number; summary: string; isInLargeCategory: boolean; }
+    | { type: 'mention'; uin: number; name: string; }
+    | { type: 'mentionAll'; }
+    | { type: 'image'; content: BotMsgImage; };

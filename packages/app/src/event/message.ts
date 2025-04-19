@@ -38,7 +38,7 @@ export class OneBotPrivateMessageEvent extends OneBotMessageEvent {
             nickname: string;
             sex: string;
             age: number;
-        }
+        },
     ) {
         super(app, 'private', message_id, user_id, raw_message, font, segments);
     }
@@ -64,7 +64,7 @@ export class OneBotGroupMessageEvent extends OneBotMessageEvent {
             level: string;
             role: string;
             title: string;
-        }
+        },
     ) {
         super(app, 'group', message_id, user_id, raw_message, font, segments);
     }

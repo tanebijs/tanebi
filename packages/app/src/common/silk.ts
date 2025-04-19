@@ -1,12 +1,12 @@
 import { download } from '@app/common/download';
-import os from 'node:os';
-import path from 'node:path';
+import { OneBotApp } from '@app/index';
+import { parseBuffer } from 'music-metadata';
+import cp from 'node:child_process';
+import { randomUUID } from 'node:crypto';
 import fs from 'node:fs';
 import fsp from 'node:fs/promises';
-import cp from 'node:child_process';
-import { OneBotApp } from '@app/index';
-import { randomUUID } from 'node:crypto';
-import { parseBuffer } from 'music-metadata';
+import os from 'node:os';
+import path from 'node:path';
 
 export class NTSilkBinding {
     private constructor(readonly ntSilkPath: string, readonly ntSilkFilePath: string) {}
@@ -22,7 +22,7 @@ export class NTSilkBinding {
                     } else {
                         resolve();
                     }
-                }
+                },
             );
         });
     }

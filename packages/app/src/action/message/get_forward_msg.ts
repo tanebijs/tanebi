@@ -1,9 +1,9 @@
-import { BotMsgForwardPack } from 'tanebi';
 import { defineAction, Ok } from '@app/action';
-import { decodeForwardId, transformGetForwardMessageBody } from '@app/message/transform/forward';
-import { z } from 'zod';
-import { OneBotRecvNodeSegment } from '@app/message/segment';
 import { encodeCQCode } from '@app/message/cqcode';
+import { OneBotRecvNodeSegment } from '@app/message/segment';
+import { decodeForwardId, transformGetForwardMessageBody } from '@app/message/transform/forward';
+import { BotMsgForwardPack } from 'tanebi';
+import { z } from 'zod';
 
 export const get_forward_msg = defineAction(
     'get_forward_msg',
@@ -17,7 +17,7 @@ export const get_forward_msg = defineAction(
             message_id: z.string(),
             // GoCQ API flavor, the message_id is actually the forward_id
             // the return value is { messages: [...] }
-        })
+        }),
     ]),
     async (ctx, payload) => {
         let forwardId: string;
@@ -51,12 +51,12 @@ export const get_forward_msg = defineAction(
                 content: ctx.config.messageReportType === 'array' ?
                     transformGetForwardMessageBody(msg) :
                     transformGetForwardMessageBody(msg).map(encodeCQCode).join(''),
-            }
+            },
         }));
         return Ok(
             useGoCQApiFlavor ?
                 { messages } :
-                { message: messages }
+                { message: messages },
         );
-    }
+    },
 );

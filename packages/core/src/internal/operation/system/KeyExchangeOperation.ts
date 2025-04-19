@@ -53,5 +53,5 @@ export const KeyExchangeOperation = defineOperation(
             sign: decrypted.sign,
             expiration: decrypted.expiration,
         };
-    }
+    },
 );

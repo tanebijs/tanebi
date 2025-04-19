@@ -21,5 +21,5 @@ export const set_group_kick = defineAction(
         }
         await member.kick(payload.reject_add_request, payload.reason);
         return Ok();
-    }
+    },
 );

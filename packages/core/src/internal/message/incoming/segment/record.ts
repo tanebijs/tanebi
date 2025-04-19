@@ -6,9 +6,9 @@ export const recordParser = defineIncoming(
     'record',
     (element) => {
         if (
-            element.serviceType === 48
-            && (element.businessType === 22 || element.businessType === 12)
-            && element.pbElement
+            element.serviceType === 48 &&
+            (element.businessType === 22 || element.businessType === 12) &&
+            element.pbElement
         ) {
             const msgInfo = MsgInfo.decode(element.pbElement);
             if (msgInfo.msgInfoBody.length > 0) {
@@ -17,5 +17,5 @@ export const recordParser = defineIncoming(
                 };
             }
         }
-    }
+    },
 );

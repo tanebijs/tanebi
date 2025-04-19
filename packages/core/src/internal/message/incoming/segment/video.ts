@@ -6,9 +6,9 @@ export const videoParser = defineIncoming(
     'video',
     (element) => {
         if (
-            element.serviceType === 48
-            && (element.businessType === 21 || element.businessType === 11)
-            && element.pbElement
+            element.serviceType === 48 &&
+            (element.businessType === 21 || element.businessType === 11) &&
+            element.pbElement
         ) {
             const msgInfo = MsgInfo.decode(element.pbElement);
             if (msgInfo.msgInfoBody.length > 0) {
@@ -17,5 +17,5 @@ export const videoParser = defineIncoming(
                 };
             }
         }
-    }
+    },
 );

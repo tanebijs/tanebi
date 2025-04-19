@@ -1,5 +1,5 @@
-import { TlvScalarField, TlvVariableField } from '@/internal/util/binary/tlv/serialize';
 import { Tlv } from '@/internal/util/binary/tlv';
+import { TlvScalarField, TlvVariableField } from '@/internal/util/binary/tlv/serialize';
 
 export const WtLoginResponseBase = Tlv.plain([
     TlvScalarField('internalLength', 'uint16'),

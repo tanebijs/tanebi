@@ -24,23 +24,25 @@ export class BotGroupJoinRequest {
             this.sequence,
             GroupNotifyType.JoinRequest,
             operation,
-            message ?? ''
+            message ?? '',
         );
     }
 
     static async create(groupUin: number, requestUid: string, bot: Bot) {
         const latestReqs = await bot[ctx].ops.call('fetchGroupNotifies');
         let req = latestReqs.find((req) =>
-            req.notifyType === GroupNotifyType.JoinRequest
-            && req.group.groupUin === groupUin
-            && req.target.uid === requestUid);
+            req.notifyType === GroupNotifyType.JoinRequest &&
+            req.group.groupUin === groupUin &&
+            req.target.uid === requestUid
+        );
         let isFiltered = false;
         if (!req) {
             const latestFilteredReqs = await bot[ctx].ops.call('fetchGroupFilteredNotifies');
             req = latestFilteredReqs.find((fReq) =>
-                fReq.notifyType === GroupNotifyType.JoinRequest
-                && fReq.group.groupUin === groupUin
-                && fReq.target.uid === requestUid);
+                fReq.notifyType === GroupNotifyType.JoinRequest &&
+                fReq.group.groupUin === groupUin &&
+                fReq.target.uid === requestUid
+            );
             isFiltered = true;
             if (!req) {
                 return null;
@@ -49,9 +51,19 @@ export class BotGroupJoinRequest {
         const uinFetch = await bot.getUserInfo(req.target.uid);
         bot[identityService].uid2uin.set(req.target.uid, uinFetch.uin);
         bot[identityService].uin2uid.set(uinFetch.uin, req.target.uid);
-        bot[log].emit('trace', 'BotGroupJoinRequest',
-            `Received join request: ${uinFetch.uin} -> ${groupUin}; comment: ${req.comment}`);
+        bot[log].emit(
+            'trace',
+            'BotGroupJoinRequest',
+            `Received join request: ${uinFetch.uin} -> ${groupUin}; comment: ${req.comment}`,
+        );
         return new BotGroupJoinRequest(
-            bot, groupUin, req.sequence, uinFetch.uin, requestUid, req.comment, isFiltered);
+            bot,
+            groupUin,
+            req.sequence,
+            uinFetch.uin,
+            requestUid,
+            req.comment,
+            isFiltered,
+        );
     }
 }

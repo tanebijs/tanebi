@@ -9,5 +9,5 @@ export const get_status = defineAction(
             online: ctx.bot.loggedIn,
             good: true,
         });
-    }
+    },
 );

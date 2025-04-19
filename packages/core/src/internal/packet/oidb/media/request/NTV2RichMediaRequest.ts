@@ -1,13 +1,13 @@
-import { MultiMediaReqHead } from '@/internal/packet/oidb/media/request/MultiMediaReqHead';
-import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
-import { UploadReq } from '@/internal/packet/oidb/media/request/UploadReq';
+import { DeleteReq } from '@/internal/packet/oidb/media/request/DeleteReq';
 import { DownloadReq } from '@/internal/packet/oidb/media/request/DownloadReq';
 import { DownloadRKeyReq } from '@/internal/packet/oidb/media/request/DownloadRKeyReq';
-import { DeleteReq } from '@/internal/packet/oidb/media/request/DeleteReq';
-import { UploadCompletedReq } from '@/internal/packet/oidb/media/request/UploadCompletedReq';
-import { MsgInfoAuthReq } from '@/internal/packet/oidb/media/request/MsgInfoAuthReq';
-import { UploadKeyRenewalReq } from '@/internal/packet/oidb/media/request/UploadKeyRenewalReq';
 import { DownloadSafeReq } from '@/internal/packet/oidb/media/request/DownloadSafeReq';
+import { MsgInfoAuthReq } from '@/internal/packet/oidb/media/request/MsgInfoAuthReq';
+import { MultiMediaReqHead } from '@/internal/packet/oidb/media/request/MultiMediaReqHead';
+import { UploadCompletedReq } from '@/internal/packet/oidb/media/request/UploadCompletedReq';
+import { UploadKeyRenewalReq } from '@/internal/packet/oidb/media/request/UploadKeyRenewalReq';
+import { UploadReq } from '@/internal/packet/oidb/media/request/UploadReq';
+import { ProtoField, ProtoMessage, ScalarType } from '@tanebijs/protobuf';
 
 export const NTV2RichMediaRequest = ProtoMessage.of({
     reqHead: ProtoField(1, () => MultiMediaReqHead.fields, true, false),
@@ -22,10 +22,10 @@ export const NTV2RichMediaRequest = ProtoMessage.of({
     extension: ProtoField(99, ScalarType.BYTES, true, false),
 });
 
-export function NTV2RichMediaRequestOf<T extends 
-    Exclude<keyof typeof NTV2RichMediaRequest.fields, 'reqHead' | 'extension'>
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
->(_type: T) {
+export function NTV2RichMediaRequestOf<
+    T extends Exclude<keyof typeof NTV2RichMediaRequest.fields, 'reqHead' | 'extension'>,
+> // eslint-disable-next-line @typescript-eslint/no-unused-vars
+(_type: T) {
     return NTV2RichMediaRequest.fields as ({
         [K in T | 'reqHead' | 'extension']: typeof NTV2RichMediaRequest.fields[K];
     });

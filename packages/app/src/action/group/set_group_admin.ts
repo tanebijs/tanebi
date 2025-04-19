@@ -20,5 +20,5 @@ export const set_group_admin = defineAction(
         }
         await member.setAdmin(payload.enable);
         return Ok();
-    }
+    },
 );

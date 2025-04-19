@@ -10,8 +10,8 @@ export const lightAppParser = defineIncoming(
     'lightApp',
     'lightApp',
     (element): {
-        app: string,
-        payload: z.infer<typeof lightAppSchema>,
+        app: string;
+        payload: z.infer<typeof lightAppSchema>;
     } | undefined => {
         const payloadRaw = inflateSync(element.data!.subarray(1)).toString('utf-8');
         const payload = lightAppSchema.safeParse(JSON.parse(payloadRaw));
@@ -22,5 +22,5 @@ export const lightAppParser = defineIncoming(
             app: payload.data.app,
             payload: payload.data,
         };
-    }
+    },
 );

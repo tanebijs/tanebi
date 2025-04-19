@@ -1,5 +1,5 @@
-import { BotMsgType } from '.';
 import { IncomingSegmentOf } from '@/internal/message/incoming';
+import { BotMsgType } from '.';
 
 export class BotMsgLightApp implements BotMsgType {
     constructor(

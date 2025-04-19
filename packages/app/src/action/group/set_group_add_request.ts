@@ -1,8 +1,8 @@
-import { GroupRequestOperation, ctx as internalCtx } from 'tanebi';
 import { defineAction, Failed, Ok } from '@app/action';
 import { zOneBotInputBoolean } from '@app/common/types';
+import { ctx as internalCtx, GroupRequestOperation } from 'tanebi';
+import { GroupNotifyType } from 'tanebi/internal/packet/oidb/0x10c0';
 import { z } from 'zod';
-import { GroupNotifyType } from '@/internal/packet/oidb/0x10c0';
 
 export const set_group_add_request = defineAction(
     'set_group_add_request',
@@ -44,5 +44,5 @@ export const set_group_add_request = defineAction(
             return Failed(400, 'Invalid flag type');
         }
         return Ok();
-    }
+    },
 );

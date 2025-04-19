@@ -1,5 +1,5 @@
-import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 import { RichText } from '@/internal/packet/message/RichText';
+import { ProtoField, ProtoMessage, ScalarType } from '@tanebijs/protobuf';
 
 export const MessageBody = ProtoMessage.of({
     richText: ProtoField(1, () => RichText.fields, true),

@@ -2,7 +2,8 @@ import { OidbSvcContract } from '@/internal/util/binary/oidb';
 import { ProtoField, ScalarType } from '@tanebijs/protobuf';
 
 export const FetchGroups = new OidbSvcContract(
-    0xfe5, 2,
+    0xfe5,
+    2,
     {
         config: ProtoField(1, () => ({
             config1: ProtoField(1, () => ({
@@ -55,26 +56,43 @@ export const FetchGroups = new OidbSvcContract(
             }), true),
         }), true),
     },
-    false, true
+    false,
+    true,
 );
 
 export const FetchGroupsResponse = new OidbSvcContract(
-    0xfe5, 2,
+    0xfe5,
+    2,
     {
-        groups: ProtoField(2, () => ({
-            groupUin: ProtoField(3, ScalarType.UINT32, false, false),
-            info: ProtoField(4, () => ({
-                groupOwner: ProtoField(1, () => ({
-                    uid: ProtoField(2, ScalarType.STRING, true, false),
-                }), true, false),
-                createdTime: ProtoField(2, ScalarType.UINT32, false, false),
-                memberMax: ProtoField(3, ScalarType.UINT32, false, false),
-                memberCount: ProtoField(4, ScalarType.UINT32, false, false),
-                groupName: ProtoField(5, ScalarType.STRING, true, false),
-                description: ProtoField(18, ScalarType.STRING, true, false),
-                question: ProtoField(19, ScalarType.STRING, true, false),
-                announcement: ProtoField(30, ScalarType.STRING, true, false),
-            }), true, false),
-        }), false, true),
-    }
+        groups: ProtoField(
+            2,
+            () => ({
+                groupUin: ProtoField(3, ScalarType.UINT32, false, false),
+                info: ProtoField(
+                    4,
+                    () => ({
+                        groupOwner: ProtoField(
+                            1,
+                            () => ({
+                                uid: ProtoField(2, ScalarType.STRING, true, false),
+                            }),
+                            true,
+                            false,
+                        ),
+                        createdTime: ProtoField(2, ScalarType.UINT32, false, false),
+                        memberMax: ProtoField(3, ScalarType.UINT32, false, false),
+                        memberCount: ProtoField(4, ScalarType.UINT32, false, false),
+                        groupName: ProtoField(5, ScalarType.STRING, true, false),
+                        description: ProtoField(18, ScalarType.STRING, true, false),
+                        question: ProtoField(19, ScalarType.STRING, true, false),
+                        announcement: ProtoField(30, ScalarType.STRING, true, false),
+                    }),
+                    true,
+                    false,
+                ),
+            }),
+            false,
+            true,
+        ),
+    },
 );

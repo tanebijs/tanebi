@@ -24,5 +24,5 @@ export const set_group_ban = defineAction(
             await member.unmute();
         }
         return Ok();
-    }
+    },
 );

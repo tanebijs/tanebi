@@ -132,7 +132,7 @@ export function serializeKeystore(data: Keystore): KeystoreSerialized {
             age: data.info.age,
             gender: data.info.gender,
             name: data.info.name,
-        }
+        },
     };
 }
 

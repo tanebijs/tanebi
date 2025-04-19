@@ -7,17 +7,18 @@ import { gunzipSync } from 'node:zlib';
 export const DownloadLongMessageOperation = defineOperation(
     'downloadLongMessage',
     'trpc.group.long_msg_interface.MsgService.SsoRecvLongMsg',
-    (ctx, senderUid: string, resId: string) => SsoRecvLongMsg.encode({
-        info: {
-            uidInfo: { uid: senderUid },
-            resId,
-            isAcquire: true,
-        },
-        settings: { field1: 2 }
-    }),
+    (ctx, senderUid: string, resId: string) =>
+        SsoRecvLongMsg.encode({
+            info: {
+                uidInfo: { uid: senderUid },
+                resId,
+                isAcquire: true,
+            },
+            settings: { field1: 2 },
+        }),
     (ctx, payload) => {
         const downloadResult = LongMessagePayload.decode(
-            gunzipSync((SsoRecvLongMsgResponse.decode(payload)).result.payload)
+            gunzipSync((SsoRecvLongMsgResponse.decode(payload)).result.payload),
         ).actions.find(action => action.command === 'MultiMsg');
         if (!downloadResult) throw new Error('Failed to download long message');
         return downloadResult.data.msgs.map(parsePushMsgBody);

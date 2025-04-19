@@ -7,11 +7,12 @@ export type FaceDetail = InferProtoModel<typeof aFaceDetail.fields>;
 export const FetchFaceDetailsOperation = defineOperation(
     'fetchFaceDetails',
     'OidbSvcTrpcTcp.0x9154_1',
-    () => FetchFaceDetails.encode({
-        field1: 0,
-        field2: 7,
-        field3: '0',
-    }),
+    () =>
+        FetchFaceDetails.encode({
+            field1: 0,
+            field2: 7,
+            field3: '0',
+        }),
     (ctx, payload): FaceDetail[] => {
         const response = FetchFaceDetailsResponse.decodeBodyOrThrow(payload);
         return [

@@ -16,7 +16,7 @@ export const UploadGroupImageOperation = defineOperation(
             reqHead: {
                 common: {
                     requestId: 1,
-                    command: 100
+                    command: 100,
                 },
                 scene: {
                     requestType: 2,
@@ -25,8 +25,8 @@ export const UploadGroupImageOperation = defineOperation(
                     groupExt: { groupUin },
                 },
                 client: {
-                    agentType: 2
-                }
+                    agentType: 2,
+                },
             },
             upload: {
                 uploadInfo: [
@@ -42,9 +42,9 @@ export const UploadGroupImageOperation = defineOperation(
                             },
                             width: img.width,
                             height: img.height,
-                            original: 1
+                            original: 1,
                         },
-                    }
+                    },
                 ],
                 tryFastUploadCompleted: true,
                 srvSendMsg: false,
@@ -58,7 +58,7 @@ export const UploadGroupImageOperation = defineOperation(
                     },
                 },
                 noNeedCompatMsg: false,
-            }
+            },
         });
     },
     (ctx, payload) => UploadGroupImageResponse.decodeBodyOrThrow(payload),

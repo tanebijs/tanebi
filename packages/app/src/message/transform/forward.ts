@@ -1,3 +1,10 @@
+import { resolveOneBotFile } from '@app/common/download';
+import { OneBotApp } from '@app/index';
+import { zOneBotBubbleSegment } from '@app/message';
+import { decodeCQCode } from '@app/message/cqcode';
+import { OneBotRecvSegment, OneBotSendNodeSegment, zOneBotSendNodeSegment } from '@app/message/segment';
+import { transformRecvMessage, transformRecvMessageBody } from '@app/message/transform/recv';
+import { MessageStoreType, OutgoingMessageStore } from '@app/storage/types';
 import {
     dispatcher,
     ForwardedMessage,
@@ -7,13 +14,6 @@ import {
     parsePushMsgBody,
 } from 'tanebi';
 import { z } from 'zod';
-import { OneBotApp } from '@app/index';
-import { OneBotRecvSegment, OneBotSendNodeSegment, zOneBotSendNodeSegment } from '@app/message/segment';
-import { MessageStoreType, OutgoingMessageStore } from '@app/storage/types';
-import { zOneBotBubbleSegment } from '@app/message';
-import { resolveOneBotFile } from '@app/common/download';
-import { transformRecvMessage, transformRecvMessageBody } from '@app/message/transform/recv';
-import { decodeCQCode } from '@app/message/cqcode';
 
 export const zOneBotSendNodeContent = z.union([
     z.array(zOneBotBubbleSegment).min(1),
@@ -29,7 +29,7 @@ export const zOneBotInputSendNodeContent = z.union([
 export async function transformForwardMessages(
     ctx: OneBotApp,
     p: ForwardedMessagePacker,
-    messages: OneBotSendNodeSegment[]
+    messages: OneBotSendNodeSegment[],
 ) {
     for (const { data } of messages) {
         if ('id' in data) {
@@ -57,7 +57,7 @@ export async function transformForwardMessages(
                     message.type,
                     message.peerUin,
                     dispatched,
-                    restored.repliedSequence
+                    restored.repliedSequence,
                 );
                 await p.fake(restored.senderUin, restored.senderName, async (b) => {
                     await transformNode(ctx, b, zOneBotSendNodeContent.parse(transformed));

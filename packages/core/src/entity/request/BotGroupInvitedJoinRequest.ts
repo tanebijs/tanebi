@@ -1,5 +1,5 @@
-import { Bot, ctx, identityService, log } from '@/index';
 import { BotGroupMember, GroupRequestOperation } from '@/entity';
+import { Bot, ctx, identityService, log } from '@/index';
 import { GroupNotifyType } from '@/internal/packet/oidb/0x10c0';
 
 export class BotGroupInvitedJoinRequest {
@@ -24,25 +24,27 @@ export class BotGroupInvitedJoinRequest {
             this.sequence,
             GroupNotifyType.InvitedJoinRequest,
             operation,
-            message ?? ''
+            message ?? '',
         );
     }
 
     static async create(groupUin: number, targetUid: string, invitorUid: string, bot: Bot) {
         const latestReqs = await bot[ctx].ops.call('fetchGroupNotifies');
         let req = latestReqs.find((req) =>
-            req.notifyType === GroupNotifyType.InvitedJoinRequest
-                    && req.group.groupUin === groupUin
-                    && req.target.uid === targetUid
-                    && req.invitor?.uid === invitorUid);
+            req.notifyType === GroupNotifyType.InvitedJoinRequest &&
+            req.group.groupUin === groupUin &&
+            req.target.uid === targetUid &&
+            req.invitor?.uid === invitorUid
+        );
         let isFiltered = false;
         if (!req) {
             const latestFilteredReqs = await bot[ctx].ops.call('fetchGroupFilteredNotifies');
             req = latestFilteredReqs.find((req) =>
-                req.notifyType === GroupNotifyType.InvitedJoinRequest
-                        && req.group.groupUin === groupUin
-                        && req.target.uid === targetUid
-                        && req.invitor?.uid === invitorUid);
+                req.notifyType === GroupNotifyType.InvitedJoinRequest &&
+                req.group.groupUin === groupUin &&
+                req.target.uid === targetUid &&
+                req.invitor?.uid === invitorUid
+            );
             isFiltered = true;
             if (!req) {
                 return null;
@@ -56,9 +58,19 @@ export class BotGroupInvitedJoinRequest {
         if (!invitor) {
             return null;
         }
-        bot[log].emit('trace', 'BotGroupInvitedJoinRequest',
-            `Received invited join request: ${memberUin} -> ${groupUin}; invitor: ${invitorUid}`);
+        bot[log].emit(
+            'trace',
+            'BotGroupInvitedJoinRequest',
+            `Received invited join request: ${memberUin} -> ${groupUin}; invitor: ${invitorUid}`,
+        );
         return new BotGroupInvitedJoinRequest(
-            bot, groupUin, req.sequence, memberUin, targetUid, invitor, isFiltered);
+            bot,
+            groupUin,
+            req.sequence,
+            memberUin,
+            targetUid,
+            invitor,
+            isFiltered,
+        );
     }
 }

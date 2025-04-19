@@ -15,5 +15,5 @@ export const set_group_whole_ban = defineAction(
         }
         await group.setMuteAll(payload.enable);
         return Ok();
-    }
+    },
 );

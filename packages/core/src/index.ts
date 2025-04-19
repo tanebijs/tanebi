@@ -1,17 +1,29 @@
-import { BotFriend, BotFriendMessage, BotFriendRequest, BotGroup, BotGroupInvitationRequest, BotGroupInvitedJoinRequest, BotGroupJoinRequest, BotGroupMember, BotGroupMessage, eventsFDX, eventsGDX } from '@/entity';
+import { AppInfo, CoreConfig, DeviceInfo, Keystore, SignProvider } from '@/common';
+import {
+    BotFriend,
+    BotFriendMessage,
+    BotFriendRequest,
+    BotGroup,
+    BotGroupInvitationRequest,
+    BotGroupInvitedJoinRequest,
+    BotGroupJoinRequest,
+    BotGroupMember,
+    BotGroupMessage,
+    eventsFDX,
+    eventsGDX,
+} from '@/entity';
+import { BotContext } from '@/internal';
+import { EnumToStringKey, FetchUserInfoGeneralReturn } from '@/internal/operation/friend/FetchUserInfoOperation';
+import { TransEmp12_QrCodeState } from '@/internal/packet/login/wtlogin/TransEmp12';
+import { DecreaseType, IncreaseType } from '@/internal/packet/message/notify/GroupMemberChange';
+import { FaceDetail } from '@/internal/packet/oidb/0x9154_1';
+import { FetchUserInfoKey } from '@/internal/packet/oidb/0xfe1_2';
+import { BUF0, BUF16 } from '@/internal/util/constants';
 import { MessageDispatcher } from '@/message';
 import { BotCacheService } from '@/util';
 import { BotIdentityService } from '@/util/identity';
-import { AppInfo, CoreConfig, DeviceInfo, Keystore, SignProvider } from '@/common';
-import { BotContext } from '@/internal';
-import { TransEmp12_QrCodeState } from '@/internal/packet/login/wtlogin/TransEmp12';
-import { EventEmitter } from 'node:events';
 import { InferProtoModel } from '@tanebijs/protobuf';
-import { FaceDetail } from '@/internal/packet/oidb/0x9154_1';
-import { BUF0, BUF16 } from '@/internal/util/constants';
-import { FetchUserInfoKey } from '@/internal/packet/oidb/0xfe1_2';
-import { EnumToStringKey, FetchUserInfoGeneralReturn } from '@/internal/operation/friend/FetchUserInfoOperation';
-import { DecreaseType, IncreaseType } from '@/internal/packet/message/notify/GroupMemberChange';
+import { EventEmitter } from 'node:events';
 
 /**
  * Symbol of the bot context
@@ -56,34 +68,34 @@ export class Bot {
         fatal: [string, string, unknown?]; // module, message, error
     }>();
     readonly [eventsDX] = new EventEmitter<{
-        forceOffline:               [string, string]; // title, tip
+        forceOffline: [string, string]; // title, tip
 
-        keystoreChange:             [Keystore];
+        keystoreChange: [Keystore];
 
-        friendRequest:              [BotFriendRequest];
-        groupInvitationRequest:     [BotGroupInvitationRequest];
+        friendRequest: [BotFriendRequest];
+        groupInvitationRequest: [BotGroupInvitationRequest];
 
-        friendPoke:                 [BotFriend, boolean, string, string, string?];
-                                    // friend, isSelf, actionStr, actionImgUrl, suffix
-        friendRecall:               [BotFriend, number, string]; // friend, clientSequence, tip
+        friendPoke: [BotFriend, boolean, string, string, string?];
+        // friend, isSelf, actionStr, actionImgUrl, suffix
+        friendRecall: [BotFriend, number, string]; // friend, clientSequence, tip
 
-        groupJoinRequest:           [BotGroup, BotGroupJoinRequest];
-        groupInvitedJoinRequest:    [BotGroup, BotGroupInvitedJoinRequest];
-        groupAdminChange:           [BotGroup, BotGroupMember, boolean]; // group, member, isPromote
-        groupMemberIncrease:        [BotGroup, BotGroupMember, IncreaseType, BotGroupMember?]; // group, member, operator
-        groupMemberLeave:           [BotGroup, number]; // group, uin
-        groupMemberCardChange:      [BotGroup, BotGroupMember, string, string]; // group, member, oldCard, newCard
-        groupMemberKick:            [BotGroup, number, BotGroupMember?]; // group, uin, operator
-        groupMute:                  [BotGroup, BotGroupMember, BotGroupMember, number];
-                                    // group, member, operator, duration
-        groupUnmute:                [BotGroup, BotGroupMember, BotGroupMember]; // group, member, operator
-        groupMuteAll:               [BotGroup, BotGroupMember, boolean]; // group, operator, isSet
-        groupPoke:                  [BotGroup, BotGroupMember, BotGroupMember, string, string, string?];
-                                    // group, sender, receiver, actionStr, actionImgUrl, suffix
-        groupEssenceMessageChange:  [BotGroup, number, BotGroupMember, boolean]; // group, sequence, operator, isAdd
-        groupRecall:                [BotGroup, number, string, BotGroupMember]; // group, sequence, tip, operator
-        groupReaction:              [BotGroup, number, BotGroupMember, string, boolean, number];
-                                    // group, sequence, member, reactionCode, isAdd, count
+        groupJoinRequest: [BotGroup, BotGroupJoinRequest];
+        groupInvitedJoinRequest: [BotGroup, BotGroupInvitedJoinRequest];
+        groupAdminChange: [BotGroup, BotGroupMember, boolean]; // group, member, isPromote
+        groupMemberIncrease: [BotGroup, BotGroupMember, IncreaseType, BotGroupMember?]; // group, member, operator
+        groupMemberLeave: [BotGroup, number]; // group, uin
+        groupMemberCardChange: [BotGroup, BotGroupMember, string, string]; // group, member, oldCard, newCard
+        groupMemberKick: [BotGroup, number, BotGroupMember?]; // group, uin, operator
+        groupMute: [BotGroup, BotGroupMember, BotGroupMember, number];
+        // group, member, operator, duration
+        groupUnmute: [BotGroup, BotGroupMember, BotGroupMember]; // group, member, operator
+        groupMuteAll: [BotGroup, BotGroupMember, boolean]; // group, operator, isSet
+        groupPoke: [BotGroup, BotGroupMember, BotGroupMember, string, string, string?];
+        // group, sender, receiver, actionStr, actionImgUrl, suffix
+        groupEssenceMessageChange: [BotGroup, number, BotGroupMember, boolean]; // group, sequence, operator, isAdd
+        groupRecall: [BotGroup, number, string, BotGroupMember]; // group, sequence, tip, operator
+        groupReaction: [BotGroup, number, BotGroupMember, string, boolean, number];
+        // group, sequence, member, reactionCode, isAdd, count
     }>();
     readonly [faceCache] = new Map<string, InferProtoModel<typeof FaceDetail.fields>>();
     readonly [dispatcher] = new MessageDispatcher(this);
@@ -110,7 +122,7 @@ export class Bot {
 
         this[identityService] = new BotIdentityService(this);
 
-        //#region Init cache
+        // #region Init cache
         this.friendCache = new BotCacheService<number, BotFriend>(
             this,
             async (bot) => {
@@ -134,7 +146,7 @@ export class Bot {
                     remark: friend.remark,
                     signature: friend.signature,
                     qid: friend.qid,
-                    category: friend.category
+                    category: friend.category,
                 }]));
             },
             (bot, data) => new BotFriend(bot, data),
@@ -157,11 +169,11 @@ export class Bot {
             },
             (bot, data) => new BotGroup(bot, data),
         );
-        //#endregion
+        // #endregion
 
         this.globalMsg = this[dispatcher].global;
 
-        //#region Events
+        // #region Events
         this[ctx].events.on('messagePush', (data) => {
             try {
                 if (data) {
@@ -176,12 +188,12 @@ export class Bot {
             this[eventsDX].emit('forceOffline', data.title, data.tip);
         });
 
-        this[ctx].log.on('trace', (module, message) =>
-            this[log].emit('trace', `${module}@Internal`, message));
-        this[ctx].log.on('info', (module, message) =>
-            this[log].emit('info', `${module}@Internal`, message));
-        this[ctx].log.on('warning', (module, message, e) =>
-            this[log].emit('warning', `${module}@Internal`, message, e));
+        this[ctx].log.on('trace', (module, message) => this[log].emit('trace', `${module}@Internal`, message));
+        this[ctx].log.on('info', (module, message) => this[log].emit('info', `${module}@Internal`, message));
+        this[ctx].log.on(
+            'warning',
+            (module, message, e) => this[log].emit('warning', `${module}@Internal`, message, e),
+        );
 
         this[ctx].eventsDX.on('friendRequest', (fromUin, fromUid, message, via) => {
             this[log].emit('trace', 'Bot', `Received friend request from ${fromUid}`);
@@ -231,7 +243,11 @@ export class Bot {
         });
 
         this[ctx].eventsDX.on('groupInvitedJoinRequest', async (groupUin, targetUid, invitorUid) => {
-            this[log].emit('trace', 'Bot', `Received invited join request from ${invitorUid} to ${targetUid} in group ${groupUin}`);
+            this[log].emit(
+                'trace',
+                'Bot',
+                `Received invited join request from ${invitorUid} to ${targetUid} in group ${groupUin}`,
+            );
             try {
                 const request = await BotGroupInvitedJoinRequest.create(groupUin, targetUid, invitorUid, this);
                 const group = await this.getGroup(groupUin);
@@ -393,7 +409,11 @@ export class Bot {
         });
 
         this[ctx].eventsDX.on('groupRecall', async (groupUin, sequence, tip, operatorUid) => {
-            this[log].emit('trace', 'Bot', `Received recall in group ${groupUin} for message ${sequence} by ${operatorUid}`);
+            this[log].emit(
+                'trace',
+                'Bot',
+                `Received recall in group ${groupUin} for message ${sequence} by ${operatorUid}`,
+            );
             try {
                 const group = await this.getGroup(groupUin);
                 if (group) {
@@ -411,7 +431,11 @@ export class Bot {
         });
 
         this[ctx].eventsDX.on('groupReaction', async (groupUin, sequence, operatorUid, reactionCode, isAdd, count) => {
-            this[log].emit('trace', 'Bot', `Received reaction in group ${groupUin} for message ${sequence} by ${operatorUid}`);
+            this[log].emit(
+                'trace',
+                'Bot',
+                `Received reaction in group ${groupUin} for message ${sequence} by ${operatorUid}`,
+            );
             try {
                 const group = await this.getGroup(groupUin);
                 if (group) {
@@ -423,14 +447,14 @@ export class Bot {
                         group[eventsGDX].emit('reaction', sequence, operator, reactionCode, isAdd, count);
                     }
                 }
-            } catch(e) {
+            } catch (e) {
                 this[log].emit('warning', 'Bot', 'Failed to handle group reaction', e);
             }
         });
-        //#endregion
+        // #endregion
     }
 
-    //#region Meta info
+    // #region Meta info
     get uin() {
         return this[ctx].keystore.uin;
     }
@@ -450,9 +474,9 @@ export class Bot {
     get age() {
         return this[ctx].keystore.info.age;
     }
-    //#endregion
-    
-    //#region Lifecycle
+    // #endregion
+
+    // #region Lifecycle
     /**
      * Login with QR code, accepts a callback function to handle QR code
      * @param onQrCode Callback function to handle QR code
@@ -484,7 +508,10 @@ export class Bot {
                         this[ctx].keystore.stub.tgtgtKey = res.tgtgtKey;
                         resolve();
                     } else {
-                        if (res.state === TransEmp12_QrCodeState.CodeExpired || res.state === TransEmp12_QrCodeState.Canceled) {
+                        if (
+                            res.state === TransEmp12_QrCodeState.CodeExpired ||
+                            res.state === TransEmp12_QrCodeState.Canceled
+                        ) {
                             clearInterval(this.qrCodeQueryIntervalRef);
                             reject(new Error('Session expired or cancelled'));
                         }
@@ -501,7 +528,9 @@ export class Bot {
 
         const loginResult = await this[ctx].ops.call('wtLogin');
         if (!loginResult.success) {
-            throw new Error(`Login failed (state=${loginResult.state} tag=${loginResult.tag} message=${loginResult.message})`);
+            throw new Error(
+                `Login failed (state=${loginResult.state} tag=${loginResult.tag} message=${loginResult.message})`,
+            );
         }
 
         this[ctx].keystore.uid = loginResult.uid;
@@ -518,8 +547,13 @@ export class Bot {
 
         this[log].emit('trace', 'Bot', `Keystore: ${JSON.stringify(this[ctx].keystore)}`);
         this[log].emit('info', 'Bot', `Credentials for user ${this.uin} successfully retrieved`);
-        this[log].emit('info', 'Bot',
-            `Name: ${this[ctx].keystore.info.name}; Gender: ${this[ctx].keystore.info.gender}; Age: ${this[ctx].keystore.info.age}`);
+        this[log].emit(
+            'info',
+            'Bot',
+            `Name: ${this[ctx].keystore.info.name}; Gender: ${this[ctx].keystore.info.gender}; Age: ${
+                this[ctx].keystore.info.age
+            }`,
+        );
 
         await this.botOnline();
     }
@@ -531,7 +565,7 @@ export class Bot {
     async fastLogin() {
         try {
             await this.botOnline();
-        } catch(e) {
+        } catch (e) {
             this[log].emit('warning', 'Bot', 'Failed to go online, refreshing session', e);
             await this[ctx].renewSsoLogic();
             this[ctx].keystore.session.d2 = BUF0;
@@ -569,7 +603,7 @@ export class Bot {
         this[ctx].keystore.session.sessionDate = easyLoginResult.sessionDate;
 
         this[eventsDX].emit('keystoreChange', this[ctx].keystore);
-        
+
         this[log].emit('trace', 'Bot', `Keystore: ${JSON.stringify(this[ctx].keystore)}`);
         this[log].emit('info', 'Bot', `Credentials for user ${this.uin} successfully retrieved`);
 
@@ -592,11 +626,11 @@ export class Bot {
             try {
                 await this[ctx].ops.call('heartbeat');
                 this[log].emit('trace', 'Bot', 'Heartbeat sent');
-            } catch(e) {
+            } catch (e) {
                 this[log].emit('warning', 'Bot', 'Failed to send heartbeat', e);
             }
         }, 4.5 * 60 * 1000 /* 4.5 minute */);
-        
+
         await this.postOnline();
     }
 
@@ -649,9 +683,9 @@ export class Bot {
         this[ctx].ssoLogic.socket.destroy();
         this[log].emit('info', 'Bot', `User ${this.uin} is now offline`);
     }
-    //#endregion
+    // #endregion
 
-    //#region API
+    // #region API
     /**
      * Get all friends
      * @param forceUpdate Whether to force update the friend list
@@ -697,12 +731,17 @@ export class Bot {
      * @returns User info of specified keys
      */
     async getUserInfo<const K extends FetchUserInfoKey[] = []>(
-        uinOrUid: number | string, keys?: K
+        uinOrUid: number | string,
+        keys?: K,
     ) {
         this[log].emit('trace', 'Bot', `Getting user info for ${uinOrUid}`);
-        const userInfo = await this[ctx].ops.call('fetchUserInfo', uinOrUid, keys ?? [
-            FetchUserInfoKey.Age // at least one key is required
-        ]);
+        const userInfo = await this[ctx].ops.call(
+            'fetchUserInfo',
+            uinOrUid,
+            keys ?? [
+                FetchUserInfoKey.Age, // at least one key is required
+            ],
+        );
         return userInfo as Pick<
             FetchUserInfoGeneralReturn,
             'uin' | EnumToStringKey[K[number]]
@@ -723,9 +762,9 @@ export class Bot {
         }
         await this[ctx].ops.call('sendProfileLike', targetUid, count);
     }
-    //#endregion
+    // #endregion
 
-    //#region Events
+    // #region Events
     /**
      * Listen to private messages
      */
@@ -741,7 +780,7 @@ export class Bot {
     }
 
     /**
-     * Listen to force 
+     * Listen to force
      */
     onForceOffline(listener: (title: string, tip: string) => void) {
         this[eventsDX].on('forceOffline', listener);
@@ -771,7 +810,15 @@ export class Bot {
     /**
      * Listen to friend pokes
      */
-    onFriendPoke(listener: (friend: BotFriend, isSelf: boolean, actionStr: string, actionImgUrl: string, suffix?: string) => void) {
+    onFriendPoke(
+        listener: (
+            friend: BotFriend,
+            isSelf: boolean,
+            actionStr: string,
+            actionImgUrl: string,
+            suffix?: string,
+        ) => void,
+    ) {
         this[eventsDX].on('friendPoke', listener);
     }
 
@@ -806,7 +853,9 @@ export class Bot {
     /**
      * Listen to group member increases
      */
-    onGroupMemberIncrease(listener: (group: BotGroup, member: BotGroupMember, type: IncreaseType, operator?: BotGroupMember) => void) {
+    onGroupMemberIncrease(
+        listener: (group: BotGroup, member: BotGroupMember, type: IncreaseType, operator?: BotGroupMember) => void,
+    ) {
         this[eventsDX].on('groupMemberIncrease', listener);
     }
 
@@ -834,7 +883,9 @@ export class Bot {
     /**
      * Listen to group mutes
      */
-    onGroupMute(listener: (group: BotGroup, member: BotGroupMember, operator: BotGroupMember, duration: number) => void) {
+    onGroupMute(
+        listener: (group: BotGroup, member: BotGroupMember, operator: BotGroupMember, duration: number) => void,
+    ) {
         this[eventsDX].on('groupMute', listener);
     }
 
@@ -855,14 +906,25 @@ export class Bot {
     /**
      * Listen to group pokes
      */
-    onGroupPoke(listener: (group: BotGroup, sender: BotGroupMember, receiver: BotGroupMember, actionStr: string, actionImgUrl: string, suffix?: string) => void) {
+    onGroupPoke(
+        listener: (
+            group: BotGroup,
+            sender: BotGroupMember,
+            receiver: BotGroupMember,
+            actionStr: string,
+            actionImgUrl: string,
+            suffix?: string,
+        ) => void,
+    ) {
         this[eventsDX].on('groupPoke', listener);
     }
 
     /**
      * Listen to group essence message changes
      */
-    onGroupEssenceMessageChange(listener: (group: BotGroup, sequence: number, operator: BotGroupMember, isAdd: boolean) => void) {
+    onGroupEssenceMessageChange(
+        listener: (group: BotGroup, sequence: number, operator: BotGroupMember, isAdd: boolean) => void,
+    ) {
         this[eventsDX].on('groupEssenceMessageChange', listener);
     }
 
@@ -876,12 +938,21 @@ export class Bot {
     /**
      * Listen to group reactions
      */
-    onGroupReaction(listener: (group: BotGroup, sequence: number, operator: BotGroupMember, reactionCode: string, isAdd: boolean, count: number) => void) {
+    onGroupReaction(
+        listener: (
+            group: BotGroup,
+            sequence: number,
+            operator: BotGroupMember,
+            reactionCode: string,
+            isAdd: boolean,
+            count: number,
+        ) => void,
+    ) {
         this[eventsDX].on('groupReaction', listener);
     }
-    //#endregion
+    // #endregion
 
-    //#endregion Logging
+    // #endregion Logging
     /**
      * Listen to trace logs
      */
@@ -917,8 +988,8 @@ export class Bot {
     onFatal(listener: (module: string, message: string, error?: unknown) => void) {
         this[log].on('fatal', listener);
     }
-    //#endregion
-    
+    // #endregion
+
     /**
      * Create a new Bot instance and complete necessary initialization
      */
@@ -943,4 +1014,4 @@ export * from './util';
 export { parsePushMsgBody } from '@/internal/message/incoming';
 export { FetchUserInfoKey };
 export { UserInfoGender } from '@/internal/packet/common/UserInfo';
-export { IncreaseType, DecreaseType };
+export { DecreaseType, IncreaseType };

@@ -8,19 +8,20 @@ import { FetchGroupMembers, FetchGroupMembersResponse } from '@/internal/packet/
 export const FetchGroupMembersOperation = defineOperation(
     'fetchGroupMembers',
     'OidbSvcTrpcTcp.0xfe7_3',
-    (ctx, groupUin: number, token?: string) => FetchGroupMembers.encode({
-        groupUin,
-        queried: {
-            memberName: true,
-            memberCard: true,
-            level: true,
-            specialTitle: true,
-            joinTimestamp: true,
-            lastMsgTimestamp: true,
-            shutUpTimestamp: true,
-            permission: true,
-        },
-        token,
-    }),
+    (ctx, groupUin: number, token?: string) =>
+        FetchGroupMembers.encode({
+            groupUin,
+            queried: {
+                memberName: true,
+                memberCard: true,
+                level: true,
+                specialTitle: true,
+                joinTimestamp: true,
+                lastMsgTimestamp: true,
+                shutUpTimestamp: true,
+                permission: true,
+            },
+            token,
+        }),
     (ctx, payload) => FetchGroupMembersResponse.decodeBodyOrThrow(payload),
 );

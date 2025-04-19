@@ -1,5 +1,5 @@
-import { randomString } from '@/internal/util/random';
 import { hexTemplate } from '@/internal/util/constants';
+import { randomString } from '@/internal/util/random';
 
 /**
  * Generate a UNIX timestamp

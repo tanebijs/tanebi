@@ -15,5 +15,5 @@ export const set_group_name = defineAction(
         }
         await group.setName(payload.group_name);
         return Ok();
-    }
+    },
 );

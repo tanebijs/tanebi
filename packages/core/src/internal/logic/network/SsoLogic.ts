@@ -1,25 +1,32 @@
-import { Socket } from 'node:net';
-import { BUF0, BUF16 } from '@/internal/util/constants';
-import { BotContext } from '@/internal';
-import { Mutex } from 'async-mutex';
-import { LogicBase } from '@/internal/logic/LogicBase';
 import { SignResult } from '@/common';
-import { EncryptionType, IncomingSsoPacketWrapper, IncomingSsoPacket, CompressionType } from '@/internal/packet/common/IncomingSsoPacket';
+import { BotContext } from '@/internal';
+import { LogicBase } from '@/internal/logic/LogicBase';
+import {
+    CompressionType,
+    EncryptionType,
+    IncomingSsoPacket,
+    IncomingSsoPacketWrapper,
+} from '@/internal/packet/common/IncomingSsoPacket';
 import { OutgoingSsoPacket, OutgoingSsoPacketWrapper } from '@/internal/packet/common/OutgoingSsoPacket';
 import { SsoReserveFields } from '@/internal/packet/common/SsoReserveFields';
-import { encryptTea, decryptTea } from '@/internal/util/crypto/tea';
+import { BUF0, BUF16 } from '@/internal/util/constants';
+import { decryptTea, encryptTea } from '@/internal/util/crypto/tea';
 import { generateTrace } from '@/internal/util/format';
+import { Mutex } from 'async-mutex';
+import { Socket } from 'node:net';
 import { unzipSync } from 'node:zlib';
 
-export type IncomingSsoPacket = {
-    command: string;
-    sequence: number;
-} & ({
-    body: Buffer; // retcode = 0;
-} | {
-    retcode: number;
-    extra: string;
-})
+export type IncomingSsoPacket =
+    & {
+        command: string;
+        sequence: number;
+    }
+    & ({
+        body: Buffer; // retcode = 0;
+    } | {
+        retcode: number;
+        extra: string;
+    });
 
 const bytes3_Default = Buffer.from('020000000000000000000000', 'hex');
 const BUF_0x00_0x00_0x00_0x04 = Buffer.from('00000004', 'hex');
@@ -73,12 +80,14 @@ export class SsoLogic extends LogicBase {
     sendSsoPacket(cmd: string, src: Buffer, seq: number, timeout: number = 5000): Promise<IncomingSsoPacket> {
         return new Promise((resolve, reject) => {
             this.buildSsoPacket(cmd, src, seq)
-                .then(packet => this.outgoingDataMutex.runExclusive(() => {
-                    const length = Buffer.allocUnsafe(4);
-                    length.writeUInt32BE(packet.length + 4);
-                    this.socket.write(length);
-                    this.socket.write(packet);
-                }));
+                .then(packet =>
+                    this.outgoingDataMutex.runExclusive(() => {
+                        const length = Buffer.allocUnsafe(4);
+                        length.writeUInt32BE(packet.length + 4);
+                        this.socket.write(length);
+                        this.socket.write(packet);
+                    })
+                );
 
             const timer = setTimeout(() => {
                 this.handlePacketMutex.runExclusive(() => {
@@ -153,7 +162,7 @@ export class SsoLogic extends LogicBase {
         'OidbSvcTrpcTcp.0xf55_1',
         'OidbSvcTrpcTcp.0xf67_1',
         'OidbSvcTrpcTcp.0xf67_5',
-        'OidbSvcTrpcTcp.0x6d9_4'
+        'OidbSvcTrpcTcp.0x6d9_4',
     ]);
 
     async buildSsoPacket(cmd: string, src: Buffer, seq: number = 0) {
@@ -260,7 +269,7 @@ export class SsoLogic extends LogicBase {
                 'warning',
                 'SsoLogic',
                 `Unexpected error while handling packet (cmd=${resolved.command}, seq=${seq})`,
-                e
+                e,
             );
         }
     }
@@ -280,7 +289,7 @@ export class SsoLogic extends LogicBase {
                             'warning',
                             'SsoLogic',
                             'Unexpected error while handling packet',
-                            e
+                            e,
                         );
                     }
                 } else {

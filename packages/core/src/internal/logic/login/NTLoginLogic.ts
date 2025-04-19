@@ -8,31 +8,36 @@ export class NTLoginLogic extends LogicBase {
     buildNTLoginPacket(body: Buffer) {
         return SsoNTLoginWrapper.encode({
             sign: this.ctx.keystore.session.keySign,
-            gcmCalc: aesGcmEncrypt(SsoNTLoginBase.encode({
-                header: {
-                    uin: { uin: this.ctx.keystore.uin.toString() },
-                    system: {
-                        os: this.ctx.appInfo.Os,
-                        deviceName: this.ctx.deviceInfo.deviceName,
-                        type: this.ctx.appInfo.NTLoginType,
-                        guid: this.ctx.deviceInfo.guid,
+            gcmCalc: aesGcmEncrypt(
+                SsoNTLoginBase.encode({
+                    header: {
+                        uin: { uin: this.ctx.keystore.uin.toString() },
+                        system: {
+                            os: this.ctx.appInfo.Os,
+                            deviceName: this.ctx.deviceInfo.deviceName,
+                            type: this.ctx.appInfo.NTLoginType,
+                            guid: this.ctx.deviceInfo.guid,
+                        },
+                        version: {
+                            kernelVersion: this.ctx.deviceInfo.kernelVersion,
+                            appId: this.ctx.appInfo.AppId,
+                            packageName: this.ctx.appInfo.PackageName,
+                        },
+                        cookie: { cookie: this.ctx.keystore.session.unusualCookies },
                     },
-                    version: {
-                        kernelVersion: this.ctx.deviceInfo.kernelVersion,
-                        appId: this.ctx.appInfo.AppId,
-                        packageName: this.ctx.appInfo.PackageName,
-                    },
-                    cookie: { cookie: this.ctx.keystore.session.unusualCookies },
-                },
-                body: SsoNTEasyLogin.encode({
-                    tempPassword: body,
-                    captcha: this.ctx.keystore.session.captcha ? {
-                        ticket: this.ctx.keystore.session.captcha[0],
-                        randStr: this.ctx.keystore.session.captcha[1],
-                        aid: this.ctx.keystore.session.captcha[2],
-                    } : undefined,
+                    body: SsoNTEasyLogin.encode({
+                        tempPassword: body,
+                        captcha: this.ctx.keystore.session.captcha ?
+                            {
+                                ticket: this.ctx.keystore.session.captcha[0],
+                                randStr: this.ctx.keystore.session.captcha[1],
+                                aid: this.ctx.keystore.session.captcha[2],
+                            } :
+                            undefined,
+                    }),
                 }),
-            }), this.ctx.keystore.session.exchangeKey!),
+                this.ctx.keystore.session.exchangeKey!,
+            ),
             type: 1,
         });
     }

@@ -5,13 +5,15 @@ import { InferProtoModelInput } from '@tanebijs/protobuf';
 
 export const faceBuilder = defineOutgoing(
     'face',
-    (segment: {
-        oldFaceId: number,
-    } | {
-        largeFaceInfo: InferProtoModelInput<typeof LargeFaceInfo.fields>,
-    } | {
-        smallExtraFaceInfo: InferProtoModelInput<typeof SmallExtraFaceInfo.fields>,
-    }) => {
+    (
+        segment: {
+            oldFaceId: number;
+        } | {
+            largeFaceInfo: InferProtoModelInput<typeof LargeFaceInfo.fields>;
+        } | {
+            smallExtraFaceInfo: InferProtoModelInput<typeof SmallExtraFaceInfo.fields>;
+        },
+    ) => {
         if ('oldFaceId' in segment) {
             return { face: { index: segment.oldFaceId } };
         }
@@ -21,7 +23,7 @@ export const faceBuilder = defineOutgoing(
                     serviceType: 37,
                     pbElement: LargeFaceInfo.encode(segment.largeFaceInfo),
                     businessType: segment.largeFaceInfo.aniStickerType ?? 1,
-                }
+                },
             };
         }
         if ('smallExtraFaceInfo' in segment) {
@@ -30,8 +32,8 @@ export const faceBuilder = defineOutgoing(
                     serviceType: 33,
                     pbElement: SmallExtraFaceInfo.encode(segment.smallExtraFaceInfo),
                     businessType: 1,
-                }
+                },
             };
         }
-    }
+    },
 );

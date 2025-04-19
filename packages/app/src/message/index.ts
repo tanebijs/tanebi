@@ -34,7 +34,7 @@ export const zOneBotInputMessage = z
         message: z.unknown(),
         auto_escape: z.boolean().default(false),
     })
-    .transform<{ message: OneBotSendSegment[]; auto_escape: boolean }>((payload) => {
+    .transform<{ message: OneBotSendSegment[]; auto_escape: boolean; }>((payload) => {
         let message;
         if (typeof payload.message === 'string') {
             if (payload.auto_escape) {

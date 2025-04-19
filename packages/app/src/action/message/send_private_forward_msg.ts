@@ -1,10 +1,10 @@
-import { MessageType, sendBlob } from 'tanebi';
-import { z } from 'zod';
 import { defineAction, Failed, Ok } from '@app/action';
 import { zOneBotInputUin } from '@app/common/types';
 import { zOneBotSendNodeSegment } from '@app/message/segment';
 import { encodeForwardId, transformForwardMessages } from '@app/message/transform/forward';
 import { MessageStoreType, OutgoingMessageStore } from '@app/storage/types';
+import { MessageType, sendBlob } from 'tanebi';
+import { z } from 'zod';
 
 export const send_private_forward_msg = defineAction(
     'send_private_forward_msg',
@@ -42,5 +42,5 @@ export const send_private_forward_msg = defineAction(
             message_id: dbMsgId,
             forward_id: encodeForwardId(MessageType.PrivateMessage, ctx.bot.uid, resId),
         });
-    }
+    },
 );

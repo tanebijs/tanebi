@@ -35,6 +35,6 @@ export function UrlSignProvider(signApiUrl: string): SignProvider {
                 token: Buffer.from(signBody.token, 'hex'),
                 extra: Buffer.from(signBody.extra, 'hex'),
             });
-        }
+        },
     };
 }

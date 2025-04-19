@@ -43,7 +43,6 @@ export function decodeCQCode(source: string) {
             elements.push(convert(type, data));
             source = source.slice(capture.index + capture[0].length);
         }
-
     }
     if (source) {
         elements.push({

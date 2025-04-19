@@ -1,7 +1,7 @@
-import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
+import { ProtoField, ProtoMessage, ScalarType } from '@tanebijs/protobuf';
 
 export enum PicFormat {
-    UNKNOWN = 0,  // regard as jpg
+    UNKNOWN = 0, // regard as jpg
     PNG = 1001,
     JPEG = 1000,
     GIF = 2000,
@@ -15,12 +15,17 @@ export const FileInfo = ProtoMessage.of({
     fileHash: ProtoField(2, ScalarType.STRING, true, false),
     fileSha1: ProtoField(3, ScalarType.STRING, true, false),
     fileName: ProtoField(4, ScalarType.STRING, true, false),
-    type: ProtoField(5, () => ({
-        type: ProtoField(1, ScalarType.UINT32, false, false),
-        picFormat: ProtoField(2, ScalarType.UINT32, false, false),
-        videoFormat: ProtoField(3, ScalarType.UINT32, false, false),
-        voiceFormat: ProtoField(4, ScalarType.UINT32, false, false),
-    }), true, false),
+    type: ProtoField(
+        5,
+        () => ({
+            type: ProtoField(1, ScalarType.UINT32, false, false),
+            picFormat: ProtoField(2, ScalarType.UINT32, false, false),
+            videoFormat: ProtoField(3, ScalarType.UINT32, false, false),
+            voiceFormat: ProtoField(4, ScalarType.UINT32, false, false),
+        }),
+        true,
+        false,
+    ),
     width: ProtoField(6, ScalarType.UINT32, false, false),
     height: ProtoField(7, ScalarType.UINT32, false, false),
     time: ProtoField(8, ScalarType.UINT32, false, false),

@@ -9,8 +9,8 @@ const lightAppGroupInvitationPattern = z.object({
     meta: z.object({
         news: z.object({
             jumpUrl: z.string(),
-        })
-    })
+        }),
+    }),
 });
 
 export class BotGroupInvitationRequest {
@@ -32,7 +32,7 @@ export class BotGroupInvitationRequest {
             this.sequence,
             GroupNotifyType.Invitation,
             isAccept ? GroupRequestOperation.Accept : GroupRequestOperation.Reject,
-            message ?? ''
+            message ?? '',
         );
     }
 

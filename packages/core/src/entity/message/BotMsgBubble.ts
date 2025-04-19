@@ -1,7 +1,7 @@
-import { Bot, faceCache, log } from '@/index';
 import { BotContact, BotGroup, BotGroupMember } from '@/entity';
-import { BotMsgImage, BotMsgType } from '.';
+import { Bot, faceCache, log } from '@/index';
 import { IncomingMessage, IncomingSegment } from '@/internal/message/incoming';
+import { BotMsgImage, BotMsgType } from '.';
 
 export class BotMsgBubble implements BotMsgType {
     private constructor(public readonly segments: BubbleSegment[]) {}
@@ -24,18 +24,19 @@ export class BotMsgBubble implements BotMsgType {
                             return { type: 'mentionAll' };
                         } else {
                             const mentioned = await peer.getMember(element.uin);
-                            if (mentioned)
+                            if (mentioned) {
                                 return {
                                     type: 'mention',
                                     mentioned,
                                 };
+                            }
                         }
                     }
                     bot[log].emit('warning', 'BotMsgBubble.create', 'Failed to resolve mention');
                 } else if (element.type === 'image') {
                     return { type: 'image', content: await BotMsgImage.create(element, msg, bot) };
                 }
-            })
+            }),
         )).filter((e) => e !== undefined));
     }
 
@@ -57,8 +58,8 @@ export class BotMsgBubble implements BotMsgType {
 }
 
 export type BubbleSegment =
-    | { type: 'text'; content: string }
-    | { type: 'face'; faceId: number; summary: string; isInLargeCategory: boolean }
-    | { type: 'mention'; mentioned: BotGroupMember }
-    | { type: 'mentionAll' }
-    | { type: 'image'; content: BotMsgImage };
+    | { type: 'text'; content: string; }
+    | { type: 'face'; faceId: number; summary: string; isInLargeCategory: boolean; }
+    | { type: 'mention'; mentioned: BotGroupMember; }
+    | { type: 'mentionAll'; }
+    | { type: 'image'; content: BotMsgImage; };

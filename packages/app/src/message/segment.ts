@@ -1,5 +1,11 @@
+import {
+    zInputPositiveInteger,
+    zOneBotInputBoolean,
+    zOneBotInputMessageId,
+    zOneBotInputUin,
+    zOneBotInputUrl,
+} from '@app/common/types';
 import { ImageSubType } from 'tanebi';
-import { zInputPositiveInteger, zOneBotInputBoolean, zOneBotInputMessageId, zOneBotInputUin, zOneBotInputUrl } from '@app/common/types';
 import { z } from 'zod';
 
 export const zOneBotTextSegment = z.object({
@@ -80,8 +86,8 @@ export const zOneBotSendNodeSegment = z.object({
     data: z.union([zOneBotNodeExistentMessageData, zOneBotNodeCustomMessageData]),
 });
 
-type DefineRecvSegment<T extends string, D> = { type: T; data: D };
-type RecvResourceGeneralData = { file: string; url: string };
+type DefineRecvSegment<T extends string, D> = { type: T; data: D; };
+type RecvResourceGeneralData = { file: string; url: string; };
 type DefineRecvResourceSegment<T extends string, Extra = unknown> = DefineRecvSegment<
     T,
     RecvResourceGeneralData & Extra
@@ -108,7 +114,7 @@ export type OneBotReplySegment = z.infer<typeof zOneBotReplySegment>;
 
 export type OneBotPokeSegment = z.infer<typeof zOneBotPokeSegment>;
 
-export type OneBotRecvForwardSegment = DefineRecvSegment<'forward', { id: string }>;
+export type OneBotRecvForwardSegment = DefineRecvSegment<'forward', { id: string; }>;
 
 export type OneBotRecvNodeSegment = DefineRecvSegment<'node', {
     user_id: number;
@@ -118,7 +124,7 @@ export type OneBotRecvNodeSegment = DefineRecvSegment<'node', {
 }>;
 export type OneBotSendNodeSegment = z.infer<typeof zOneBotSendNodeSegment>;
 
-export type OneBotRecvJsonSegment = { type: 'json', data: { data: string } };
+export type OneBotRecvJsonSegment = { type: 'json'; data: { data: string; }; };
 
 export type OneBotRecvSegment =
     | OneBotTextSegment

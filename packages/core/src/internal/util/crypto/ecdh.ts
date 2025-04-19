@@ -1,5 +1,5 @@
-import { createECDH, ECDH } from 'node:crypto';
 import { md5 } from '@/internal/util/crypto/digest';
+import { createECDH, ECDH } from 'node:crypto';
 
 const OICQ_PUBLIC_KEY_256 = Buffer.from(
     '049D1423332735980EDABE7E9EA451B3395B6F35250DB8FC56F25889F628CBAE3E8E73077914071EEEBC108F4E0170057792BB17AA303AF652313D17C1AC815E79',

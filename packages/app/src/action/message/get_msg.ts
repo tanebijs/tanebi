@@ -1,10 +1,10 @@
-import { dispatcher, MessageType, parsePushMsgBody, UserInfoGender } from 'tanebi';
 import { defineAction, Failed, Ok } from '@app/action';
 import { zOneBotInputMessageId } from '@app/common/types';
-import { MessageStoreType, OutgoingMessageStore } from '@app/storage/types';
-import { z } from 'zod';
 import { encodeCQCode } from '@app/message/cqcode';
 import { transformRecvMessage } from '@app/message/transform/recv';
+import { MessageStoreType, OutgoingMessageStore } from '@app/storage/types';
+import { dispatcher, MessageType, parsePushMsgBody, UserInfoGender } from 'tanebi';
+import { z } from 'zod';
 
 export const get_msg = defineAction(
     'get_msg',
@@ -26,8 +26,11 @@ export const get_msg = defineAction(
                 sender: {
                     user_id: ctx.bot.uin,
                     nickname: ctx.bot.name,
-                    sex: ctx.bot.gender === UserInfoGender.Male ? 'male' :
-                        ctx.bot.gender === UserInfoGender.Female ? 'female' : 'unknown',
+                    sex: ctx.bot.gender === UserInfoGender.Male ?
+                        'male' :
+                        ctx.bot.gender === UserInfoGender.Female ?
+                        'female' :
+                        'unknown',
                     age: ctx.bot.age,
                 },
                 message: ctx.config.messageReportType === 'array' ? json : json.map(encodeCQCode).join(''),
@@ -47,7 +50,7 @@ export const get_msg = defineAction(
                 message.type,
                 message.peerUin,
                 dispatched,
-                restored.repliedSequence
+                restored.repliedSequence,
             );
             return Ok({
                 time: message.createdAt,
@@ -60,9 +63,10 @@ export const get_msg = defineAction(
                     sex: 'unknown',
                     age: 0,
                 },
-                message:
-                    ctx.config.messageReportType === 'array' ? transformed : transformed.map(encodeCQCode).join(''),
+                message: ctx.config.messageReportType === 'array' ?
+                    transformed :
+                    transformed.map(encodeCQCode).join(''),
             });
         }
-    }
+    },
 );

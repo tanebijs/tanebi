@@ -1,7 +1,7 @@
-import { IncreaseType, MessageType, parsePushMsgBody } from 'tanebi';
 import { OneBotEvent } from '@app/event';
 import { OneBotApp } from '@app/index';
 import { MessageStoreType } from '@app/storage/types';
+import { IncreaseType, MessageType, parsePushMsgBody } from 'tanebi';
 
 export abstract class OneBotNoticeEvent extends OneBotEvent {
     constructor(app: OneBotApp, readonly notice_type: string) {
@@ -110,81 +110,97 @@ export class OneBotPokeNoticeEvent extends OneBotNotifyEvent {
 
 export function installNoticeEventHandler(ctx: OneBotApp) {
     ctx.bot.onGroupAdminChange((group, member, isPromote) => {
-        ctx.dispatchEvent(new OneBotGroupAdminNoticeEvent(
-            ctx,
-            group.uin,
-            member.uin,
-            isPromote ? 'set' : 'unset',
-        ));
+        ctx.dispatchEvent(
+            new OneBotGroupAdminNoticeEvent(
+                ctx,
+                group.uin,
+                member.uin,
+                isPromote ? 'set' : 'unset',
+            ),
+        );
     });
 
     ctx.bot.onGroupMemberLeave((group, uin) => {
-        ctx.dispatchEvent(new OneBotGroupDecreaseNoticeEvent(
-            ctx,
-            group.uin,
-            uin,
-            uin,
-            'leave',
-        ));
+        ctx.dispatchEvent(
+            new OneBotGroupDecreaseNoticeEvent(
+                ctx,
+                group.uin,
+                uin,
+                uin,
+                'leave',
+            ),
+        );
     });
 
     ctx.bot.onGroupMemberKick((group, uin, operator) => {
-        ctx.dispatchEvent(new OneBotGroupDecreaseNoticeEvent(
-            ctx,
-            group.uin,
-            uin,
-            operator?.uin ?? 0,
-            uin === ctx.bot.uin ? 'kick_me' : 'kick',
-        ));
+        ctx.dispatchEvent(
+            new OneBotGroupDecreaseNoticeEvent(
+                ctx,
+                group.uin,
+                uin,
+                operator?.uin ?? 0,
+                uin === ctx.bot.uin ? 'kick_me' : 'kick',
+            ),
+        );
     });
 
     ctx.bot.onGroupMemberIncrease((group, member, type, operator) => {
-        ctx.dispatchEvent(new OneBotGroupIncreaseNoticeEvent(
-            ctx,
-            group.uin,
-            member.uin,
-            operator?.uin ?? 0,
-            type === IncreaseType.Invite ? 'invite' : 'approve',
-        ));
+        ctx.dispatchEvent(
+            new OneBotGroupIncreaseNoticeEvent(
+                ctx,
+                group.uin,
+                member.uin,
+                operator?.uin ?? 0,
+                type === IncreaseType.Invite ? 'invite' : 'approve',
+            ),
+        );
     });
 
     ctx.bot.onGroupMute((group, member, operator, duration) => {
-        ctx.dispatchEvent(new OneBotGroupBanNoticeEvent(
-            ctx,
-            group.uin,
-            member.uin,
-            operator.uin,
-            duration,
-            'ban',
-        ));
+        ctx.dispatchEvent(
+            new OneBotGroupBanNoticeEvent(
+                ctx,
+                group.uin,
+                member.uin,
+                operator.uin,
+                duration,
+                'ban',
+            ),
+        );
     });
 
     ctx.bot.onGroupUnmute((group, member, operator) => {
-        ctx.dispatchEvent(new OneBotGroupBanNoticeEvent(
-            ctx,
-            group.uin,
-            member.uin,
-            operator.uin,
-            0,
-            'lift',
-        ));
+        ctx.dispatchEvent(
+            new OneBotGroupBanNoticeEvent(
+                ctx,
+                group.uin,
+                member.uin,
+                operator.uin,
+                0,
+                'lift',
+            ),
+        );
     });
 
     ctx.bot.onGroupMuteAll((group, operator, isSet) => {
-        ctx.dispatchEvent(new OneBotGroupBanNoticeEvent(
-            ctx,
-            group.uin,
-            0,
-            operator.uin,
-            -1, // forever, unless lifted
-            isSet ? 'ban' : 'lift',
-        ));
+        ctx.dispatchEvent(
+            new OneBotGroupBanNoticeEvent(
+                ctx,
+                group.uin,
+                0,
+                operator.uin,
+                -1, // forever, unless lifted
+                isSet ? 'ban' : 'lift',
+            ),
+        );
     });
 
     ctx.bot.onGroupRecall(async (group, seq, tip, operator) => {
         try {
             const message = await ctx.storage.getByPeerAndSequence(
-                MessageType.GroupMessage, group.uin, seq,
+                MessageType.GroupMessage,
+                group.uin,
+                seq,
             );
             if (!message) {
                 return;
@@ -196,15 +212,19 @@ export function installNoticeEventHandler(ctx: OneBotApp) {
             } else {
                 senderUin = ctx.bot.uin;
             }
-            ctx.dispatchEvent(new OneBotGroupRecallNoticeEvent(
-                ctx,
-                group.uin,
-                senderUin,
-                operator.uin,
-                message.id,
-            ));
-        } catch(e) {
-            ctx.logger.warn(`Failed to resolve message for group recall (${group}, [${seq}]): ${e}`, { module: 'GroupRecall' });
+            ctx.dispatchEvent(
+                new OneBotGroupRecallNoticeEvent(
+                    ctx,
+                    group.uin,
+                    senderUin,
+                    operator.uin,
+                    message.id,
+                ),
+            );
+        } catch (e) {
+            ctx.logger.warn(`Failed to resolve message for group recall (${group}, [${seq}]): ${e}`, {
+                module: 'GroupRecall',
+            });
         }
     });
 
@@ -214,23 +234,29 @@ export function installNoticeEventHandler(ctx: OneBotApp) {
             if (!message) {
                 return;
             }
-            ctx.dispatchEvent(new OneBotFriendRecallNoticeEvent(
-                ctx,
-                friend.uin,
-                message.storeType === MessageStoreType.PushMsgBody ? friend.uin : ctx.bot.uin,
-                message.id,
-            ));
-        } catch(e) {
-            ctx.logger.warn(`Failed to resolve message for friend recall (${friend}, [${clientSeq}]): ${e}`, { module: 'FriendRecall' });
+            ctx.dispatchEvent(
+                new OneBotFriendRecallNoticeEvent(
+                    ctx,
+                    friend.uin,
+                    message.storeType === MessageStoreType.PushMsgBody ? friend.uin : ctx.bot.uin,
+                    message.id,
+                ),
+            );
+        } catch (e) {
+            ctx.logger.warn(`Failed to resolve message for friend recall (${friend}, [${clientSeq}]): ${e}`, {
+                module: 'FriendRecall',
+            });
         }
     });
 
     ctx.bot.onGroupPoke((group, sender, receiver) => {
-        ctx.dispatchEvent(new OneBotPokeNoticeEvent(
-            ctx,
-            group.uin,
-            sender.uin,
-            receiver.uin,
-        ));
+        ctx.dispatchEvent(
+            new OneBotPokeNoticeEvent(
+                ctx,
+                group.uin,
+                sender.uin,
+                receiver.uin,
+            ),
+        );
     });
 }

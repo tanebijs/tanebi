@@ -1,5 +1,5 @@
 import { OidbSvcContract } from '@/internal/util/binary/oidb';
-import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
+import { ProtoField, ProtoMessage, ScalarType } from '@tanebijs/protobuf';
 
 export enum GroupRequestOperation {
     Accept = 1,
@@ -18,13 +18,17 @@ export const HandleGroupRequestGeneral = ProtoMessage.of({
 });
 
 export const HandleGroupRequest = new OidbSvcContract(
-    0x10c8, 1,
+    0x10c8,
+    1,
     HandleGroupRequestGeneral.fields,
-    false, true,
+    false,
+    true,
 );
 
 export const HandleGroupFilteredRequest = new OidbSvcContract(
-    0x10c8, 2,
+    0x10c8,
+    2,
     HandleGroupRequestGeneral.fields,
-    false, true,
+    false,
+    true,
 );

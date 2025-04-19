@@ -6,12 +6,14 @@ grp?.onMessage(msg => {
         const content = msg.content.segments[0].content;
         if (content.startsWith('/title')) {
             const title = content.slice(6).trim();
-            if (title.length !== 0)
+            if (title.length !== 0) {
                 msg.sender.setSpecialTitle(title);
+            }
         } else if (content.startsWith('/card')) {
             const card = content.slice(5).trim();
-            if (card.length !== 0)
+            if (card.length !== 0) {
                 msg.sender.setCard(card);
+            }
         } else if (content.startsWith('/mute')) {
             msg.sender.mute(60);
             setTimeout(() => msg.sender.unmute(), 5000);

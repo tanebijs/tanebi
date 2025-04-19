@@ -1,9 +1,9 @@
-import { MessageType } from 'tanebi';
 import { MemoryStorageConfig } from '@app/common/config';
 import { OneBotApp } from '@app/index';
 import { AbstractStorage, MessageRowOrEmpty } from '@app/storage';
 import { MessageRow } from '@app/storage/types';
 import { LRUCache } from 'lru-cache';
+import { MessageType } from 'tanebi';
 
 function encodePeerAndSequence(type: number, peerUin: number, sequence: number): bigint {
     return BigInt(type) << 63n | BigInt(peerUin) << 31n | BigInt(sequence);

@@ -1,9 +1,9 @@
-import { Bot, ctx, log } from '@/index';
 import { BotContact } from '@/entity';
+import { Bot, ctx, log } from '@/index';
+import { PrivateMessage } from '@/internal/message/incoming';
+import { OutgoingPrivateMessage } from '@/internal/message/outgoing';
 import { DispatchedMessage, PrivateMessageBuilder, type rawMessage } from '@/message';
 import EventEmitter from 'node:events';
-import { OutgoingPrivateMessage } from '@/internal/message/outgoing';
-import { PrivateMessage } from '@/internal/message/incoming';
 
 interface BotFriendDataBinding {
     uin: number;
@@ -30,9 +30,9 @@ export const eventsFDX = Symbol('Friend internal events');
 
 export class BotFriend extends BotContact<BotFriendDataBinding> {
     private readonly [eventsFDX] = new EventEmitter<{
-        message: [BotFriendMessage],
-        poke: [boolean, string, string, string?], // isSelf, actionStr, actionImgUrl, suffix
-        recall: [number, string], // clientSequence, tip
+        message: [BotFriendMessage];
+        poke: [boolean, string, string, string?]; // isSelf, actionStr, actionImgUrl, suffix
+        recall: [number, string]; // clientSequence, tip
     }>();
     private clientSequence = 100000;
 
@@ -81,15 +81,21 @@ export class BotFriend extends BotContact<BotFriendDataBinding> {
         this.bot[log].emit('trace', this.moduleName, 'Send message');
         const builder = new PrivateMessageBuilder(this.uin, this.uid, this.bot);
         await buildMsg(builder);
-        const message = builder.build(this.clientSequence++);
+        const message = await builder.build(this.clientSequence++);
         const sendResult = await this.bot[ctx].ops.call('sendMessage', message);
         return {
             ...sendResult,
             ...message,
             recall: async () => {
-                await this.bot[ctx].ops.call('recallFriendMessage',
-                    this.uid, message.clientSequence, message.random, sendResult.timestamp, sendResult.sequence);
-            }
+                await this.bot[ctx].ops.call(
+                    'recallFriendMessage',
+                    this.uid,
+                    message.clientSequence,
+                    message.random,
+                    sendResult.timestamp,
+                    sendResult.sequence,
+                );
+            },
         };
     }
 

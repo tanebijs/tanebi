@@ -10,11 +10,13 @@ export const get_friend_list = defineAction(
     }),
     async (ctx, payload) => {
         const friends = await ctx.bot.getFriends(payload.no_cache);
-        return Ok<OneBotFriend[]>(Array.from(friends).map(friend => ({
-            user_id: friend.uin,
-            qid: friend.qid,
-            nickname: friend.nickname ?? '' + friend.uin,
-            remark: friend.remark ?? '',
-        })));
+        return Ok<OneBotFriend[]>(
+            Array.from(friends).map(friend => ({
+                user_id: friend.uin,
+                qid: friend.qid,
+                nickname: friend.nickname ?? '' + friend.uin,
+                remark: friend.remark ?? '',
+            })),
+        );
     },
 );

@@ -8,7 +8,8 @@ group?.onReaction(async (sequence, member, reactionCode, isAdd) => {
         sequence - 1,
         reactionCode,
         parseInt(reactionCode) >= 100000 ?
-            ReactionType.Emoji : ReactionType.Face,
-        isAdd
+            ReactionType.Emoji :
+            ReactionType.Face,
+        isAdd,
     );
 });

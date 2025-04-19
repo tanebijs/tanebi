@@ -6,5 +6,5 @@ export const get_msg_count = defineAction(
     z.object({}),
     async (ctx) => {
         return Ok({ count: await ctx.storage.size() });
-    }
+    },
 );

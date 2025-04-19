@@ -6,10 +6,10 @@ import { MessageRow } from '@app/storage/types';
 import { and, eq } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/libsql';
 import { migrate } from 'drizzle-orm/libsql/migrator';
-import { MessageType } from 'tanebi';
 import path from 'node:path';
 import { promisify } from 'node:util';
 import { deflate, inflate } from 'node:zlib';
+import { MessageType } from 'tanebi';
 
 export class DatabaseStorage extends AbstractStorage<DatabaseStorageConfig> {
     readonly db;
@@ -44,12 +44,12 @@ export class DatabaseStorage extends AbstractStorage<DatabaseStorageConfig> {
     override async getByPeerAndSequence(
         type: MessageType,
         peerUin: number,
-        sequence: number
+        sequence: number,
     ): Promise<MessageRowOrEmpty> {
         return this.postProcessResult(
             await this.db.query.message.findFirst({
                 where: and(eq(message.type, type), eq(message.peerUin, peerUin), eq(message.sequence, sequence)),
-            })
+            }),
         );
     }
 
@@ -59,14 +59,14 @@ export class DatabaseStorage extends AbstractStorage<DatabaseStorageConfig> {
                 where: and(
                     eq(message.type, MessageType.PrivateMessage),
                     eq(message.peerUin, friendUin),
-                    eq(message.clientSequence, clientSequence)
+                    eq(message.clientSequence, clientSequence),
                 ),
-            })
+            }),
         );
     }
 
     private async postProcessResult(
-        result?: MessageRow & { isCompressed: boolean | null }
+        result?: MessageRow & { isCompressed: boolean | null; },
     ): Promise<MessageRowOrEmpty> {
         if (!result) {
             return undefined;

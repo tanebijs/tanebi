@@ -15,13 +15,13 @@ export const UploadLongMessageOperation = defineOperation(
                 data: {
                     msgs: msgs.map(buildForwarded).map(msg => PushMsgBody.encode(msg)),
                 },
-            }]
+            }],
         });
         return SsoSendLongMsg.encode({
             info: {
                 type: groupUin ? 3 : 1,
                 uidInfo: {
-                    uid: groupUin?.toString() ?? ctx.keystore.uid,                  
+                    uid: groupUin?.toString() ?? ctx.keystore.uid,
                 },
                 groupUin,
                 payload: gzipSync(payload),
@@ -31,11 +31,11 @@ export const UploadLongMessageOperation = defineOperation(
                 field2: 1,
                 field3: 7,
                 field4: 0,
-            }
+            },
         });
     },
     (ctx, payload) => {
         const res = SsoSendLongMsgResponse.decode(payload);
         return res.result.resId;
-    }
+    },
 );

@@ -1,5 +1,5 @@
-import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 import { Tlv, TlvVariableField } from '@/internal/util/binary/tlv';
+import { ProtoField, ProtoMessage, ScalarType } from '@tanebijs/protobuf';
 
 export const TlvQrCode0x0d1 = Tlv.tagged([
     TlvVariableField('body', 'bytes', 'none', false),

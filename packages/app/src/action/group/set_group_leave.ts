@@ -15,5 +15,5 @@ export const set_group_leave = defineAction(
         }
         await group.leave();
         return Ok();
-    }
+    },
 );

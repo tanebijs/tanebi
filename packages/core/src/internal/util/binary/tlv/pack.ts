@@ -5,14 +5,14 @@ export type TlvTag = `0x${string}`;
 export type TaggedTlvPacketSchema<Tag extends TlvTag, Schema extends TlvPacketSchema> = {
     tag: Tag;
     schema: Schema;
-}
+};
 export type PackedTlvSchema = readonly TaggedTlvPacketSchema<TlvTag, TlvPacketSchema>[];
 
 type ExtractTag<T> = T extends TaggedTlvPacketSchema<infer Tag, TlvPacketSchema> ? Tag : never;
 type ExtractSchema<T> = T extends TaggedTlvPacketSchema<TlvTag, infer Schema> ? Schema : never;
 export type Unpacked<T extends PackedTlvSchema> = {
     [K in T[number] as ExtractTag<K>]?: Deserialized<ExtractSchema<K>>;
-}
+};
 export type PackTlvInput<T extends PackedTlvSchema> = Required<Unpacked<T>>;
 
 /**
@@ -23,16 +23,18 @@ export type PackTlvInput<T extends PackedTlvSchema> = Required<Unpacked<T>>;
  */
 export function packTlv<const T extends PackedTlvSchema>(
     schema: T,
-    data: PackTlvInput<T>
+    data: PackTlvInput<T>,
 ) {
     const buffer = new SmartBuffer();
     buffer.writeUInt16BE(schema.length);
     for (let i = 0; i < schema.length; i++) {
         const { tag, schema: subSchema } = schema[i];
-        const body = encodeTlv(subSchema,
+        const body = encodeTlv(
+            subSchema,
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            data[tag]);
+            data[tag],
+        );
         buffer.writeUInt16BE(parseInt(tag))
             .writeUInt16BE(body.length)
             .writeBuffer(body);
@@ -48,7 +50,7 @@ export function packTlv<const T extends PackedTlvSchema>(
  */
 export function unpackTlv<const T extends PackedTlvSchema>(
     schema: T,
-    data: Buffer
+    data: Buffer,
 ): Unpacked<T> {
     const result: Record<string, unknown> = {};
     const reader = SmartBuffer.fromBuffer(data);

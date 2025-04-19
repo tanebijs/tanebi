@@ -1,4 +1,4 @@
-import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
+import { ProtoField, ProtoMessage, ScalarType } from '@tanebijs/protobuf';
 
 export const ExtBizInfo = ProtoMessage.of({
     pic: ProtoField(1, () => PicExtBizInfo.fields, true, false),
@@ -34,4 +34,3 @@ export const PttExtBizInfo = ProtoMessage.of({
     bytesPbReserve: ProtoField(12, ScalarType.BYTES, true, false),
     bytesGeneralFlags: ProtoField(13, ScalarType.BYTES, true, false),
 });
-

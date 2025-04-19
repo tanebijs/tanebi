@@ -1,12 +1,17 @@
 import { ExtBizInfo } from '@/internal/packet/oidb/media/ExtBizInfo';
 import { FileInfo } from '@/internal/packet/oidb/media/FileInfo';
-import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
+import { ProtoField, ProtoMessage, ScalarType } from '@tanebijs/protobuf';
 
 export const UploadReq = ProtoMessage.of({
-    uploadInfo: ProtoField(1, () => ({
-        fileInfo: ProtoField(1, () => FileInfo.fields, true, false),
-        subFileType: ProtoField(2, ScalarType.UINT32, false, false),
-    }), false, true),
+    uploadInfo: ProtoField(
+        1,
+        () => ({
+            fileInfo: ProtoField(1, () => FileInfo.fields, true, false),
+            subFileType: ProtoField(2, ScalarType.UINT32, false, false),
+        }),
+        false,
+        true,
+    ),
     tryFastUploadCompleted: ProtoField(2, ScalarType.BOOL, false, false),
     srvSendMsg: ProtoField(3, ScalarType.BOOL, false, false),
     clientRandomId: ProtoField(4, ScalarType.UINT64, false, false),

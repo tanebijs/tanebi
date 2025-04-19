@@ -1,17 +1,23 @@
 import { LogicBase } from '@/internal/logic/LogicBase';
 import { FriendRecall } from '@/internal/packet/message/notify/FriendRecall';
 import { FriendRequest, FriendRequestExtractVia } from '@/internal/packet/message/notify/FriendRequest';
-import { GroupGeneral0x2DC, GroupGeneral0x2DCBody } from '@/internal/packet/message/notify/GroupGeneral0x2DC';
 import { GeneralGrayTip } from '@/internal/packet/message/notify/GeneralGrayTip';
 import { GroupAdminChange } from '@/internal/packet/message/notify/GroupAdminChange';
+import { GroupEssenceMessageChangeSetFlag } from '@/internal/packet/message/notify/GroupEssenceMessageChange';
+import { GroupGeneral0x2DC, GroupGeneral0x2DCBody } from '@/internal/packet/message/notify/GroupGeneral0x2DC';
 import { GroupInvitation } from '@/internal/packet/message/notify/GroupInvitation';
 import { GroupInvitationRequest } from '@/internal/packet/message/notify/GroupInvitedJoinRequest';
 import { GroupJoinRequest } from '@/internal/packet/message/notify/GroupJoinRequest';
-import { GroupMemberChange, DecreaseType, OperatorInfo } from '@/internal/packet/message/notify/GroupMemberChange';
+import { DecreaseType, GroupMemberChange, OperatorInfo } from '@/internal/packet/message/notify/GroupMemberChange';
 import { GroupMute } from '@/internal/packet/message/notify/GroupMute';
-import { Event0x210SubType, Event0x2DCSubType, Event0x2DCSubType16Field13, PushMsgBody, PushMsgType } from '@/internal/packet/message/PushMsg';
+import {
+    Event0x210SubType,
+    Event0x2DCSubType,
+    Event0x2DCSubType16Field13,
+    PushMsgBody,
+    PushMsgType,
+} from '@/internal/packet/message/PushMsg';
 import { InferProtoModel } from '@tanebijs/protobuf';
-import { GroupEssenceMessageChangeSetFlag } from '@/internal/packet/message/notify/GroupEssenceMessageChange';
 
 export class NotifyLogic extends LogicBase {
     parsePushMsgBodyToNotify(pushMsgBody: InferProtoModel<typeof PushMsgBody.fields>, type: PushMsgType) {
@@ -52,7 +58,8 @@ export class NotifyLogic extends LogicBase {
                 this.parseGroupRecall(pushMsgBody);
             } else if (subType === Event0x2DCSubType.SubType16) {
                 const wrapper = GroupGeneral0x2DCBody.decode(
-                    GroupGeneral0x2DC.decode(pushMsgBody.body.msgContent).body);
+                    GroupGeneral0x2DC.decode(pushMsgBody.body.msgContent).body,
+                );
                 if (wrapper.field13 === Event0x2DCSubType16Field13.GroupReaction) {
                     this.parseGroupReaction(wrapper);
                 }
@@ -68,7 +75,12 @@ export class NotifyLogic extends LogicBase {
     parseGroupInvitedJoinRequest(pushMsgBody: InferProtoModel<typeof PushMsgBody.fields>) {
         const content = GroupInvitationRequest.decode(pushMsgBody.body!.msgContent!);
         if (content.command === 87) {
-            this.ctx.eventsDX.emit('groupInvitedJoinRequest', content.info.inner.groupUin, content.info.inner.targetUid, content.info.inner.invitorUid);
+            this.ctx.eventsDX.emit(
+                'groupInvitedJoinRequest',
+                content.info.inner.groupUin,
+                content.info.inner.targetUid,
+                content.info.inner.invitorUid,
+            );
         }
     }
 
@@ -89,16 +101,26 @@ export class NotifyLogic extends LogicBase {
     parseGroupMemberIncrease(pushMsgBody: InferProtoModel<typeof PushMsgBody.fields>) {
         const content = GroupMemberChange.decode(pushMsgBody.body!.msgContent!);
         const operatorUidOrEmpty = content.operatorInfo ? content.operatorInfo.toString() : undefined;
-        this.ctx.eventsDX.emit('groupMemberIncrease', content.groupUin, content.memberUid, content.type,
-            operatorUidOrEmpty);
+        this.ctx.eventsDX.emit(
+            'groupMemberIncrease',
+            content.groupUin,
+            content.memberUid,
+            content.type,
+            operatorUidOrEmpty,
+        );
     }
 
     parseGroupMemberDecrease(pushMsgBody: InferProtoModel<typeof PushMsgBody.fields>) {
         const content = GroupMemberChange.decode(pushMsgBody.body!.msgContent!);
-        this.ctx.eventsDX.emit('groupMemberDecrease', content.groupUin, content.memberUid, content.type,
+        this.ctx.eventsDX.emit(
+            'groupMemberDecrease',
+            content.groupUin,
+            content.memberUid,
+            content.type,
             content.type === DecreaseType.KickSelf ?
                 OperatorInfo.decode(content.operatorInfo!).body.uid :
-                (content.operatorInfo ? content.operatorInfo.toString() : undefined));
+                (content.operatorInfo ? content.operatorInfo.toString() : undefined),
+        );
     }
 
     parseFriendRequest(pushMsgBody: InferProtoModel<typeof PushMsgBody.fields>) {
@@ -106,23 +128,27 @@ export class NotifyLogic extends LogicBase {
         if (!content.body) {
             return;
         }
-        this.ctx.eventsDX.emit('friendRequest',
+        this.ctx.eventsDX.emit(
+            'friendRequest',
             pushMsgBody.responseHead.fromUin,
             content.body.fromUid,
             content.body.message,
-            content.body.via ?? FriendRequestExtractVia.decode(pushMsgBody.body!.msgContent!).body.via);
+            content.body.via ?? FriendRequestExtractVia.decode(pushMsgBody.body!.msgContent!).body.via,
+        );
     }
 
     parseFriendGrayTip(pushMsgBody: InferProtoModel<typeof PushMsgBody.fields>) {
         const content = GeneralGrayTip.decode(pushMsgBody.body!.msgContent!);
         const templateParamsMap = new Map(content.templateParams.map((param) => [param.key, param.value]));
         if (content.bizType === 12) {
-            this.ctx.eventsDX.emit('friendPoke',
+            this.ctx.eventsDX.emit(
+                'friendPoke',
                 parseInt(templateParamsMap.get('uin_str1')!),
                 parseInt(templateParamsMap.get('uin_str2')!),
                 templateParamsMap.get('action_str') ?? templateParamsMap.get('alt_str1') ?? '',
                 templateParamsMap.get('action_img_url')!,
-                templateParamsMap.get('suffix_str'));
+                templateParamsMap.get('suffix_str'),
+            );
         }
     }
 
@@ -134,45 +160,70 @@ export class NotifyLogic extends LogicBase {
     parseGroupMute(pushMsgBody: InferProtoModel<typeof PushMsgBody.fields>) {
         const content = GroupMute.decode(pushMsgBody.body!.msgContent!);
         if (content.info.state.targetUid) {
-            this.ctx.eventsDX.emit('groupMute', content.groupUin, content.operatorUid, content.info.state.targetUid, content.info.state.duration);
+            this.ctx.eventsDX.emit(
+                'groupMute',
+                content.groupUin,
+                content.operatorUid,
+                content.info.state.targetUid,
+                content.info.state.duration,
+            );
         } else {
-            this.ctx.eventsDX.emit('groupMuteAll', content.groupUin, content.operatorUid, content.info.state.duration !== 0);
+            this.ctx.eventsDX.emit(
+                'groupMuteAll',
+                content.groupUin,
+                content.operatorUid,
+                content.info.state.duration !== 0,
+            );
         }
     }
 
     parseGroupGrayTip(pushMsgBody: InferProtoModel<typeof PushMsgBody.fields>) {
         const wrapper = GroupGeneral0x2DCBody.decode(
-            GroupGeneral0x2DC.decode(pushMsgBody.body!.msgContent!).body);
+            GroupGeneral0x2DC.decode(pushMsgBody.body!.msgContent!).body,
+        );
         const content = wrapper.generalGrayTip!;
         const templateParamsMap = new Map(content.templateParams.map((param) => [param.key, param.value]));
         if (content.bizType === 12) {
-            this.ctx.eventsDX.emit('groupPoke',
+            this.ctx.eventsDX.emit(
+                'groupPoke',
                 wrapper.groupUin,
                 parseInt(templateParamsMap.get('uin_str1')!),
                 parseInt(templateParamsMap.get('uin_str2')!),
                 templateParamsMap.get('action_str') ?? templateParamsMap.get('alt_str1') ?? '',
                 templateParamsMap.get('action_img_url')!,
-                templateParamsMap.get('suffix_str'));
+                templateParamsMap.get('suffix_str'),
+            );
         }
     }
 
     parseGroupEssenceMessageChange(pushMsgBody: InferProtoModel<typeof PushMsgBody.fields>) {
         const wrapper = GroupGeneral0x2DCBody.decode(
-            GroupGeneral0x2DC.decode(pushMsgBody.body!.msgContent!).body);
+            GroupGeneral0x2DC.decode(pushMsgBody.body!.msgContent!).body,
+        );
         const content = wrapper.essenceMessageChange;
         if (!content) return;
-        this.ctx.eventsDX.emit('groupEssenceMessageChange',
-            content.groupUin, content.msgSequence, content.operatorUin,
-            content.setFlag === GroupEssenceMessageChangeSetFlag.Add);
+        this.ctx.eventsDX.emit(
+            'groupEssenceMessageChange',
+            content.groupUin,
+            content.msgSequence,
+            content.operatorUin,
+            content.setFlag === GroupEssenceMessageChangeSetFlag.Add,
+        );
     }
 
     parseGroupRecall(pushMsgBody: InferProtoModel<typeof PushMsgBody.fields>) {
         const wrapper = GroupGeneral0x2DCBody.decode(
-            GroupGeneral0x2DC.decode(pushMsgBody.body!.msgContent!).body);
+            GroupGeneral0x2DC.decode(pushMsgBody.body!.msgContent!).body,
+        );
         const content = wrapper.recall!;
         content.recallMessages.forEach((recall) => {
-            this.ctx.eventsDX.emit('groupRecall',
-                wrapper.groupUin, recall.sequence, content.tipInfo?.tip ?? '', content.operatorUid);
+            this.ctx.eventsDX.emit(
+                'groupRecall',
+                wrapper.groupUin,
+                recall.sequence,
+                content.tipInfo?.tip ?? '',
+                content.operatorUid,
+            );
         });
     }
 
@@ -180,12 +231,14 @@ export class NotifyLogic extends LogicBase {
         wrapper: InferProtoModel<typeof GroupGeneral0x2DCBody.fields>,
     ) {
         const content = wrapper.reaction!;
-        this.ctx.eventsDX.emit('groupReaction',
+        this.ctx.eventsDX.emit(
+            'groupReaction',
             wrapper.groupUin,
             content.data.data.target.sequence,
             content.data.data.data.operatorUid,
             content.data.data.data.code,
             content.data.data.data.type === 1,
-            content.data.data.data.count);
+            content.data.data.data.count,
+        );
     }
 }

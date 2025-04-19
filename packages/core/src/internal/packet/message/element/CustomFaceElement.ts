@@ -1,4 +1,4 @@
-import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
+import { ProtoField, ProtoMessage, ScalarType } from '@tanebijs/protobuf';
 
 export const CustomFaceElement = ProtoMessage.of({
     guid: ProtoField(1, ScalarType.BYTES, true, false),
@@ -34,12 +34,17 @@ export const CustomFaceElement = ProtoMessage.of({
     x400Url: ProtoField(31, ScalarType.STRING, true, false),
     x400Width: ProtoField(32, ScalarType.INT32, false, false),
     x400Height: ProtoField(33, ScalarType.INT32, false, false),
-    pbReserve: ProtoField(34, () => ({
-        subType: ProtoField(1, ScalarType.INT32, false, false),
-        field3: ProtoField(3, ScalarType.INT32, false, false),
-        field4: ProtoField(4, ScalarType.INT32, false, false),
-        summary: ProtoField(9, ScalarType.STRING, true, false),
-        field10: ProtoField(10, ScalarType.INT32, false, false),
-        pbRes: ProtoField(21, ScalarType.BYTES, true, false),
-    }), true, false),
+    pbReserve: ProtoField(
+        34,
+        () => ({
+            subType: ProtoField(1, ScalarType.INT32, false, false),
+            field3: ProtoField(3, ScalarType.INT32, false, false),
+            field4: ProtoField(4, ScalarType.INT32, false, false),
+            summary: ProtoField(9, ScalarType.STRING, true, false),
+            field10: ProtoField(10, ScalarType.INT32, false, false),
+            pbRes: ProtoField(21, ScalarType.BYTES, true, false),
+        }),
+        true,
+        false,
+    ),
 });

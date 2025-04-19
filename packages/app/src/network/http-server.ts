@@ -2,8 +2,8 @@ import { Failed } from '@app/action';
 import { HttpServerAdapterConfig } from '@app/common/config';
 import { OneBotApp } from '@app/index';
 import { OneBotNetworkAdapter } from '@app/network';
-import { Hono } from 'hono';
 import { HttpBindings, serve } from '@hono/node-server';
+import { Hono } from 'hono';
 import { StatusCode } from 'hono/utils/http-status';
 import { Server } from 'node:http';
 
@@ -13,7 +13,7 @@ export class OneBotHttpServerAdapter extends OneBotNetworkAdapter<HttpServerAdap
 
     constructor(app: OneBotApp, config: HttpServerAdapterConfig, id: string) {
         super(app, config, 'HttpServer', id);
-        this.honoApp = new Hono<{ Bindings: HttpBindings }>();
+        this.honoApp = new Hono<{ Bindings: HttpBindings; }>();
         if (config.accessToken) {
             this.honoApp.use(async (c, next) => {
                 let inputToken;
@@ -52,7 +52,7 @@ export class OneBotHttpServerAdapter extends OneBotNetworkAdapter<HttpServerAdap
             this.logger.info(
                 `${c.env.incoming.socket.remoteAddress} -> ${c.req.path} (${
                     response.retcode === 0 ? 'OK' : response.retcode
-                } ${end - start}ms)`
+                } ${end - start}ms)`,
             );
             c.status((response.retcode >= 400 && response.retcode < 500 ? response.retcode : 200) as StatusCode);
             return c.json(response);

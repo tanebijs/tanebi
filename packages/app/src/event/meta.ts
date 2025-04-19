@@ -4,7 +4,7 @@ import { OneBotApp } from '@app/index';
 export abstract class OneBotMetaEvent extends OneBotEvent {
     constructor(
         app: OneBotApp,
-        readonly meta_event_type: 'heartbeat' | 'lifecycle'
+        readonly meta_event_type: 'heartbeat' | 'lifecycle',
     ) {
         super(app, 'meta_event');
     }

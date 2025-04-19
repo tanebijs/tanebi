@@ -8,7 +8,7 @@ export abstract class OneBotNetworkAdapter<T> {
         readonly app: OneBotApp,
         readonly adapterConfig: T,
         readonly type: string,
-        readonly id: string
+        readonly id: string,
     ) {
         this.logger = app.logger.child({ module: `${type}#${id}` });
     }

@@ -1,23 +1,23 @@
-import { ProtoMessage, ProtoField } from '@tanebijs/protobuf';
-import { TextElement } from '@/internal/packet/message/element/TextElement';
-import { FaceElement } from '@/internal/packet/message/element/FaceElement';
-import { OnlineImageElement } from '@/internal/packet/message/element/OnlineImageElement';
-import { NotOnlineImageElement } from '@/internal/packet/message/element/NotOnlineImageElement';
-import { TransElement } from '@/internal/packet/message/element/TransElement';
-import { MarketFaceElement } from '@/internal/packet/message/element/MarketFaceElement';
+import { AnonymousGroupMessageElement } from '@/internal/packet/message/element/AnonymousGroupMessageElement';
+import { CommonElement } from '@/internal/packet/message/element/CommonElement';
+import { CustomElement } from '@/internal/packet/message/element/CustomElement';
 import { CustomFaceElement } from '@/internal/packet/message/element/CustomFaceElement';
 import { ElementFlags2 } from '@/internal/packet/message/element/ElementFlags2';
-import { RichMsgElement } from '@/internal/packet/message/element/RichMsgElement';
-import { GroupFileElement } from '@/internal/packet/message/element/GroupFileElement';
 import { ExtraInfoElement } from '@/internal/packet/message/element/ExtraInfoElement';
-import { VideoFileElement } from '@/internal/packet/message/element/VideoFileElement';
-import { AnonymousGroupMessageElement } from '@/internal/packet/message/element/AnonymousGroupMessageElement';
-import { QQWalletMsgElement } from '@/internal/packet/message/element/QQWalletMsgElement';
-import { CustomElement } from '@/internal/packet/message/element/CustomElement';
+import { FaceElement } from '@/internal/packet/message/element/FaceElement';
 import { GeneralFlagsElement } from '@/internal/packet/message/element/GeneralFlagsElement';
-import { SrcMsgElement } from '@/internal/packet/message/element/SrcMsgElement';
+import { GroupFileElement } from '@/internal/packet/message/element/GroupFileElement';
 import { LightAppElement } from '@/internal/packet/message/element/LightAppElement';
-import { CommonElement } from '@/internal/packet/message/element/CommonElement';
+import { MarketFaceElement } from '@/internal/packet/message/element/MarketFaceElement';
+import { NotOnlineImageElement } from '@/internal/packet/message/element/NotOnlineImageElement';
+import { OnlineImageElement } from '@/internal/packet/message/element/OnlineImageElement';
+import { QQWalletMsgElement } from '@/internal/packet/message/element/QQWalletMsgElement';
+import { RichMsgElement } from '@/internal/packet/message/element/RichMsgElement';
+import { SrcMsgElement } from '@/internal/packet/message/element/SrcMsgElement';
+import { TextElement } from '@/internal/packet/message/element/TextElement';
+import { TransElement } from '@/internal/packet/message/element/TransElement';
+import { VideoFileElement } from '@/internal/packet/message/element/VideoFileElement';
+import { ProtoField, ProtoMessage } from '@tanebijs/protobuf';
 
 export const MessageElement = ProtoMessage.of({
     text: ProtoField(1, () => TextElement.fields, true, false),

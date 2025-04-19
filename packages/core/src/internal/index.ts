@@ -1,61 +1,61 @@
-import EventEmitter from 'node:events';
-import { WtLoginLogic } from '@/internal/logic/login/WtLoginLogic';
-import { Ecdh } from '@/internal/util/crypto/ecdh';
+import { AppInfo, CoreConfig, DeviceInfo, Keystore, SignProvider } from '@/common';
 import { EventChannel } from '@/internal/event/EventBase';
 import { MessagePushEvent } from '@/internal/event/message/MessagePushEvent';
 import { KickNTEvent } from '@/internal/event/system/KickNTEvent';
 import { NTLoginLogic } from '@/internal/logic/login/NTLoginLogic';
-import { AppInfo, CoreConfig, DeviceInfo, Keystore, SignProvider } from '@/common';
+import { WtLoginLogic } from '@/internal/logic/login/WtLoginLogic';
+import { HighwayLogic } from '@/internal/logic/network/HighwayLogic';
 import { SsoLogic } from '@/internal/logic/network/SsoLogic';
 import { NotifyLogic } from '@/internal/logic/NotifyLogic';
-import { HighwayLogic } from '@/internal/logic/network/HighwayLogic';
-import { OperationCollection } from '@/internal/operation/OperationBase';
-import { KeyExchangeOperation } from '@/internal/operation/system/KeyExchangeOperation';
-import { WtLoginOperation } from '@/internal/operation/system/WtLoginOperation';
-import { FetchQrCodeOperation } from '@/internal/operation/system/FetchQrCodeOperation';
-import { QueryQrCodeResultOperation } from '@/internal/operation/system/QueryQrCodeResultOperation';
-import { BotOnlineOperation } from '@/internal/operation/system/BotOnlineOperation';
-import { NTEasyLoginOperation } from '@/internal/operation/system/NTEasyLoginOperation';
-import { SendMessageOperation } from '@/internal/operation/message/SendMessageOperation';
-import { FetchGroupsOperation } from '@/internal/operation/group/FetchGroupsOperation';
 import { FetchFriendsOperation } from '@/internal/operation/friend/FetchFriendsOperation';
-import { FetchGroupMembersOperation } from '@/internal/operation/group/FetchGroupMembersOperation';
-import { HeartbeatOperation } from '@/internal/operation/system/HeartbeatOperation';
-import { DownloadGroupImageOperation } from '@/internal/operation/highway/DownloadGroupImageOperation';
-import { DownloadPrivateImageOperation } from '@/internal/operation/highway/DownloadPrivateImageOperation';
-import { FetchHighwayUrlOperation } from '@/internal/operation/highway/FetchHighwayUrlOperation';
-import { UploadGroupImageOperation } from '@/internal/operation/highway/UploadGroupImageOperation';
-import { UploadPrivateImageOperation } from '@/internal/operation/highway/UploadPrivateImageOperation';
-import { FetchGroupNotifiesOperation } from '@/internal/operation/group/FetchGroupNotifiesOperation';
 import { FetchUserInfoOperation } from '@/internal/operation/friend/FetchUserInfoOperation';
-import { SetMemberSpecialTitleOperation } from '@/internal/operation/group/SetMemberSpecialTitleOperation';
-import { SendGrayTipPokeOperation } from '@/internal/operation/message/SendGrayTipPokeOperation';
-import { SetMemberCardOperation } from '@/internal/operation/group/SetMemberCardOperation';
-import { AddGroupReactionOperation } from '@/internal/operation/group/AddGroupReactionOperation';
-import { RemoveGroupReactionOperation } from '@/internal/operation/group/RemoveGroupReactionOperation';
-import { RecallFriendMessageOperation } from '@/internal/operation/message/RecallFriendMessageOperation';
-import { RecallGroupMessageOperation } from '@/internal/operation/message/RecallGroupMessageOperation';
-import { LeaveGroupOperation } from '@/internal/operation/group/LeaveGroupOperation';
-import { DownloadGroupRecordOperation } from '@/internal/operation/highway/DownloadGroupRecordOperation';
-import { DownloadPrivateRecordOperation } from '@/internal/operation/highway/DownloadPrivateRecordOperation';
-import { DownloadVideoOperation } from '@/internal/operation/highway/DownloadVideoOperation';
-import { FetchFaceDetailsOperation } from '@/internal/operation/message/FetchFaceDetailsOperation';
-import { UploadGroupRecordOperation } from '@/internal/operation/highway/UploadGroupRecordOperation';
-import { UploadPrivateRecordOperation } from '@/internal/operation/highway/UploadPrivateRecordOperation';
-import { DownloadLongMessageOperation } from '@/internal/operation/message/DownloadLongMessageOperation';
-import { UploadLongMessageOperation } from '@/internal/operation/message/UploadLongMessageOperation';
-import { MuteMemberOperation } from '@/internal/operation/group/MuteMemberOperation';
-import { MuteAllMembersOperation } from '@/internal/operation/group/MuteAllMembersOperation';
 import { HandleFriendRequestOperation } from '@/internal/operation/friend/HandleFriendRequestOperation';
-import { KickMemberOperation } from '@/internal/operation/group/KickMemberOperation';
-import { SetMemberAdminOperation } from '@/internal/operation/group/SetMemberAdminOperation';
+import { SendProfileLikeOperation } from '@/internal/operation/friend/SendProfileLikeOperation';
+import { AddGroupReactionOperation } from '@/internal/operation/group/AddGroupReactionOperation';
 import { FetchGroupFilteredNotifiesOperation } from '@/internal/operation/group/FetchGroupFilteredNotifies';
+import { FetchGroupMembersOperation } from '@/internal/operation/group/FetchGroupMembersOperation';
+import { FetchGroupNotifiesOperation } from '@/internal/operation/group/FetchGroupNotifiesOperation';
+import { FetchGroupsOperation } from '@/internal/operation/group/FetchGroupsOperation';
 import { HandleGroupFilteredRequestOperation } from '@/internal/operation/group/HandleGroupFilteredRequestOperation';
 import { HandleGroupRequestOperation } from '@/internal/operation/group/HandleGroupRequestOperation';
-import { BotOfflineOperation } from '@/internal/operation/system/BotOfflineOperation';
+import { KickMemberOperation } from '@/internal/operation/group/KickMemberOperation';
+import { LeaveGroupOperation } from '@/internal/operation/group/LeaveGroupOperation';
+import { MuteAllMembersOperation } from '@/internal/operation/group/MuteAllMembersOperation';
+import { MuteMemberOperation } from '@/internal/operation/group/MuteMemberOperation';
+import { RemoveGroupReactionOperation } from '@/internal/operation/group/RemoveGroupReactionOperation';
 import { SetGroupNameOperation } from '@/internal/operation/group/SetGroupNameOperation';
-import { SendProfileLikeOperation } from '@/internal/operation/friend/SendProfileLikeOperation';
+import { SetMemberAdminOperation } from '@/internal/operation/group/SetMemberAdminOperation';
+import { SetMemberCardOperation } from '@/internal/operation/group/SetMemberCardOperation';
+import { SetMemberSpecialTitleOperation } from '@/internal/operation/group/SetMemberSpecialTitleOperation';
+import { DownloadGroupImageOperation } from '@/internal/operation/highway/DownloadGroupImageOperation';
+import { DownloadGroupRecordOperation } from '@/internal/operation/highway/DownloadGroupRecordOperation';
+import { DownloadPrivateImageOperation } from '@/internal/operation/highway/DownloadPrivateImageOperation';
+import { DownloadPrivateRecordOperation } from '@/internal/operation/highway/DownloadPrivateRecordOperation';
+import { DownloadVideoOperation } from '@/internal/operation/highway/DownloadVideoOperation';
+import { FetchHighwayUrlOperation } from '@/internal/operation/highway/FetchHighwayUrlOperation';
+import { UploadGroupImageOperation } from '@/internal/operation/highway/UploadGroupImageOperation';
+import { UploadGroupRecordOperation } from '@/internal/operation/highway/UploadGroupRecordOperation';
+import { UploadPrivateImageOperation } from '@/internal/operation/highway/UploadPrivateImageOperation';
+import { UploadPrivateRecordOperation } from '@/internal/operation/highway/UploadPrivateRecordOperation';
+import { DownloadLongMessageOperation } from '@/internal/operation/message/DownloadLongMessageOperation';
+import { FetchFaceDetailsOperation } from '@/internal/operation/message/FetchFaceDetailsOperation';
+import { RecallFriendMessageOperation } from '@/internal/operation/message/RecallFriendMessageOperation';
+import { RecallGroupMessageOperation } from '@/internal/operation/message/RecallGroupMessageOperation';
+import { SendGrayTipPokeOperation } from '@/internal/operation/message/SendGrayTipPokeOperation';
+import { SendMessageOperation } from '@/internal/operation/message/SendMessageOperation';
+import { UploadLongMessageOperation } from '@/internal/operation/message/UploadLongMessageOperation';
+import { OperationCollection } from '@/internal/operation/OperationBase';
+import { BotOfflineOperation } from '@/internal/operation/system/BotOfflineOperation';
+import { BotOnlineOperation } from '@/internal/operation/system/BotOnlineOperation';
+import { FetchQrCodeOperation } from '@/internal/operation/system/FetchQrCodeOperation';
+import { HeartbeatOperation } from '@/internal/operation/system/HeartbeatOperation';
+import { KeyExchangeOperation } from '@/internal/operation/system/KeyExchangeOperation';
+import { NTEasyLoginOperation } from '@/internal/operation/system/NTEasyLoginOperation';
+import { QueryQrCodeResultOperation } from '@/internal/operation/system/QueryQrCodeResultOperation';
+import { WtLoginOperation } from '@/internal/operation/system/WtLoginOperation';
 import { DecreaseType, IncreaseType } from '@/internal/packet/message/notify/GroupMemberChange';
+import { Ecdh } from '@/internal/util/crypto/ecdh';
+import EventEmitter from 'node:events';
 
 /**
  * The internal context of the bot
@@ -137,7 +137,7 @@ export class BotContext {
     eventsDX = new EventEmitter<{
         friendRequest: [number, string, string, string]; // fromUin, fromUid, message, via
         friendPoke: [number, number, string, string, string?]; // fromUin, toUin, actionStr, actionImgUrl, suffix,
-        friendRecall: [string, number, string] // fromUid, clientSequence, tip
+        friendRecall: [string, number, string]; // fromUid, clientSequence, tip
 
         groupJoinRequest: [number, string]; // groupUin, memberUid
         groupInvitedJoinRequest: [number, string, string]; // groupUin, targetUid, invitorUid

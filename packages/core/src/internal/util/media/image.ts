@@ -1,7 +1,8 @@
 import { PicFormat } from '@/internal/packet/oidb/media/FileInfo';
 import { getGeneralMetadata, MediaGeneralMetadata } from '@/internal/util/media/common';
-import imageSize from 'image-size';
-import { imageType } from 'image-size/dist/types';
+import imageSize, { type types } from 'image-size';
+
+type imageType = (typeof types)[number];
 
 export type SupportedPicFormat = 'png' | 'jpg' | 'gif' | 'webp' | 'bmp' | 'tiff';
 

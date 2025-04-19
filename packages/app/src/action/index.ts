@@ -28,7 +28,7 @@ export function defineAction<T extends z.ZodType>(
     endpoint: string,
     validator: T,
     handler: (ctx: OneBotApp, payload: z.output<T>) => OneBotGeneralResponse | Promise<OneBotGeneralResponse>,
-    alias?: string[]
+    alias?: string[],
 ): OneBotAction {
     return { endpoint, alias, validator, handler };
 }
@@ -58,14 +58,16 @@ export class ActionCollection {
                 return Failed(
                     400,
                     'Invalid payload',
-                    encodeZodIssues(parsedPayload.error.issues)
+                    encodeZodIssues(parsedPayload.error.issues),
                 );
             }
             return await action.handler(this.ctx, parsedPayload.data);
         } catch (e) {
-            this.ctx.logger.warn(`Error while handling action ${endpoint}: ${
-                e instanceof Error ? e.message + '\n' + e.stack : String(e)
-            }`);
+            this.ctx.logger.warn(
+                `Error while handling action ${endpoint}: ${
+                    e instanceof Error ? e.message + '\n' + e.stack : String(e)
+                }`,
+            );
             if (e instanceof z.ZodError) {
                 return Failed(400, 'Invalid payload', encodeZodIssues(e.issues));
             }

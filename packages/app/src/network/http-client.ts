@@ -14,8 +14,8 @@ export class OneBotHttpClientAdapter extends OneBotNetworkAdapter<HttpClientAdap
     constructor(app: OneBotApp, config: HttpClientAdapterConfig, id: string) {
         super(app, config, 'HttpClient', id);
         const xSelfId = '' + this.app.bot.uin;
-        this.buildHeaders = config.signatureSecret
-            ? (body) => {
+        this.buildHeaders = config.signatureSecret ?
+            (body) => {
                 const hmac = createHmac('sha256', config.signatureSecret!);
                 hmac.update(body);
                 const signature = hmac.digest('hex');
@@ -24,8 +24,8 @@ export class OneBotHttpClientAdapter extends OneBotNetworkAdapter<HttpClientAdap
                     'X-Self-ID': xSelfId,
                     'X-Signature': `sha1=${signature}`,
                 };
-            }
-            : () => ({
+            } :
+            () => ({
                 'Content-Type': 'application/json',
                 'X-Self-ID': xSelfId,
             });

@@ -1,11 +1,11 @@
-import { Bot, ctx, identityService, log } from '@/index';
 import { BotContact, BotGroupInvitedJoinRequest, BotGroupJoinRequest, BotGroupMember, ReactionType } from '@/entity';
+import { Bot, ctx, identityService, log } from '@/index';
+import { GroupMessage } from '@/internal/message/incoming';
+import { OutgoingGroupMessage } from '@/internal/message/outgoing';
+import { IncreaseType } from '@/internal/packet/message/notify/GroupMemberChange';
 import { DispatchedMessage, GroupMessageBuilder, type rawMessage } from '@/message';
 import { BotCacheService } from '@/util';
 import EventEmitter from 'node:events';
-import { OutgoingGroupMessage } from '@/internal/message/outgoing';
-import { GroupMessage } from '@/internal/message/incoming';
-import { IncreaseType } from '@/internal/packet/message/notify/GroupMemberChange';
 
 interface BotGroupDataBinding {
     uin: number;
@@ -33,23 +33,23 @@ export const eventsGDX = Symbol('Group internal events');
 
 export class BotGroup extends BotContact<BotGroupDataBinding> {
     [eventsGDX]: EventEmitter<{
-        message:                [BotGroupMessage];
-        joinRequest:            [BotGroupJoinRequest];
-        invitedJoinRequest:     [BotGroupInvitedJoinRequest];
-        adminChange:            [BotGroupMember, boolean]; // member, isPromote
-        memberIncrease:         [BotGroupMember, IncreaseType, BotGroupMember?]; // member, operator
-        memberLeave:            [number]; // uin
-        memberCardChange:       [BotGroupMember, string, string]; // member, oldCard, newCard
-        memberKick:             [number, BotGroupMember?]; // uin, operator
-        mute:                   [BotGroupMember, BotGroupMember, number]; // member, operator, duration
-        unmute:                 [BotGroupMember, BotGroupMember]; // member, operator
-        muteAll:                [BotGroupMember, boolean]; // operator, isSet
-        poke:                   [BotGroupMember, BotGroupMember, string, string, string?];
-                                // sender, receiver, actionStr, actionImgUrl, suffix
-        essenceMessageChange:   [number, BotGroupMember, boolean]; // sequence, operator, isAdd
-        recall:                 [number, string, BotGroupMember]; // clientSequence, tip, operator
-        reaction:               [number, BotGroupMember, string, boolean, number];
-                                // sequence, member, reactionCode, isAdd, count
+        message: [BotGroupMessage];
+        joinRequest: [BotGroupJoinRequest];
+        invitedJoinRequest: [BotGroupInvitedJoinRequest];
+        adminChange: [BotGroupMember, boolean]; // member, isPromote
+        memberIncrease: [BotGroupMember, IncreaseType, BotGroupMember?]; // member, operator
+        memberLeave: [number]; // uin
+        memberCardChange: [BotGroupMember, string, string]; // member, oldCard, newCard
+        memberKick: [number, BotGroupMember?]; // uin, operator
+        mute: [BotGroupMember, BotGroupMember, number]; // member, operator, duration
+        unmute: [BotGroupMember, BotGroupMember]; // member, operator
+        muteAll: [BotGroupMember, boolean]; // operator, isSet
+        poke: [BotGroupMember, BotGroupMember, string, string, string?];
+        // sender, receiver, actionStr, actionImgUrl, suffix
+        essenceMessageChange: [number, BotGroupMember, boolean]; // sequence, operator, isAdd
+        recall: [number, string, BotGroupMember]; // clientSequence, tip, operator
+        reaction: [number, BotGroupMember, string, boolean, number];
+        // sequence, member, reactionCode, isAdd, count
     }> = new EventEmitter();
 
     private clientSequence = 100000;
@@ -149,18 +149,18 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
      * @param buildMsg Use this function to add segments to the message
      * @returns The message sequence number and timestamp
      */
-    async sendMsg(buildMsg: (b: GroupMessageBuilder) => void | Promise<void>): Promise<BotGroupSendMsgRef> {
+    async sendMsg(buildMsg: (b: GroupMessageBuilder) => void): Promise<BotGroupSendMsgRef> {
         this.bot[log].emit('trace', this.moduleName, 'Send message');
         const builder = new GroupMessageBuilder(this.uin, this.bot);
         await buildMsg(builder);
-        const message = builder.build(this.clientSequence++);
-        const sendResult = await this.bot[ctx].ops.call('sendMessage', builder.build(this.clientSequence++));
+        const message = await builder.build(this.clientSequence++);
+        const sendResult = await this.bot[ctx].ops.call('sendMessage', message);
         return {
             ...sendResult,
             ...message,
             recall: async () => {
                 await this.bot[ctx].ops.call('recallGroupMessage', this.uin, sendResult.sequence);
-            }
+            },
         };
     }
 
@@ -298,7 +298,15 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
     /**
      * Listen to poke events in this group
      */
-    onPoke(listener: (sender: BotGroupMember, receiver: BotGroupMember, actionStr: string, actionImgUrl: string, suffix?: string) => void) {
+    onPoke(
+        listener: (
+            sender: BotGroupMember,
+            receiver: BotGroupMember,
+            actionStr: string,
+            actionImgUrl: string,
+            suffix?: string,
+        ) => void,
+    ) {
         this[eventsGDX].on('poke', listener);
     }
 
@@ -319,7 +327,15 @@ export class BotGroup extends BotContact<BotGroupDataBinding> {
     /**
      * Listen to reaction events in this group
      */
-    onReaction(listener: (sequence: number, member: BotGroupMember, reactionCode: string, isAdd: boolean, count: number) => void) {
+    onReaction(
+        listener: (
+            sequence: number,
+            member: BotGroupMember,
+            reactionCode: string,
+            isAdd: boolean,
+            count: number,
+        ) => void,
+    ) {
         this[eventsGDX].on('reaction', listener);
     }
 }

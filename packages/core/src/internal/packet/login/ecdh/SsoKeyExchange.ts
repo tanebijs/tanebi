@@ -1,5 +1,5 @@
-import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 import { Tlv, TlvScalarField, TlvVariableField } from '@/internal/util/binary/tlv';
+import { ProtoField, ProtoMessage, ScalarType } from '@tanebijs/protobuf';
 
 export const SsoKeyExchange = ProtoMessage.of({
     publicKey: ProtoField(1, ScalarType.BYTES),

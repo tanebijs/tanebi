@@ -1,4 +1,4 @@
-import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
+import { ProtoField, ProtoMessage, ScalarType } from '@tanebijs/protobuf';
 
 export const FileUploadExt = ProtoMessage.of({
     unknown1: ProtoField(1, ScalarType.INT32),
@@ -30,13 +30,18 @@ export const FileUploadExt = ProtoMessage.of({
             fileName: ProtoField(100, ScalarType.STRING),
         })),
         host: ProtoField(500, () => ({
-            hosts: ProtoField(200, () => ({
-                url: ProtoField(1, () => ({
-                    unknown: ProtoField(1, ScalarType.INT32),
-                    host: ProtoField(2, ScalarType.STRING),
-                })),
-                port: ProtoField(2, ScalarType.UINT32),
-            }), false, true),
+            hosts: ProtoField(
+                200,
+                () => ({
+                    url: ProtoField(1, () => ({
+                        unknown: ProtoField(1, ScalarType.INT32),
+                        host: ProtoField(2, ScalarType.STRING),
+                    })),
+                    port: ProtoField(2, ScalarType.UINT32),
+                }),
+                false,
+                true,
+            ),
         })),
     })),
     unknown200: ProtoField(200, ScalarType.INT32),

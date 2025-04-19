@@ -3,7 +3,7 @@ import { MentionExtra, MentionType } from '@/internal/packet/message/element/Tex
 
 export const mentionBuilder = defineOutgoing(
     'mention',
-    (segment: { name: string, uin: number, uid: string }) => ({
+    (segment: { name: string; uin: number; uid: string; }) => ({
         text: {
             str: segment.name,
             pbReserve: MentionExtra.encode({
@@ -12,6 +12,6 @@ export const mentionBuilder = defineOutgoing(
                 field5: 0,
                 uid: segment.uid,
             }),
-        }
-    })
+        },
+    }),
 );

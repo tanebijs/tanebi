@@ -7,9 +7,9 @@ import { randomInt } from 'crypto';
 
 export type OutgoingForwardedMessage = OutgoingPrivateMessage & {
     nick: string;
-}
+};
 
-export function buildForwarded(msg: OutgoingForwardedMessage):InferProtoModelInput<typeof PushMsgBody.fields> {
+export function buildForwarded(msg: OutgoingForwardedMessage): InferProtoModelInput<typeof PushMsgBody.fields> {
     const avatarUrl = `https://q.qlogo.cn/headimg_dl?dst_uin=${msg.targetUin}&spec=640&img_type=jpg`;
     return {
         responseHead: {
@@ -31,8 +31,8 @@ export function buildForwarded(msg: OutgoingForwardedMessage):InferProtoModelInp
                 field3: 2,
                 unknownBase64: avatarUrl,
                 avatar: avatarUrl,
-            }
+            },
         },
-        body: { richText: { elements: buildElements(msg).map((element) => MessageElement.encode(element)) } }
+        body: { richText: { elements: buildElements(msg).map((element) => MessageElement.encode(element)) } },
     };
 }

@@ -7,4 +7,3 @@ export interface SignResult {
     token: Buffer;
     extra: Buffer;
 }
-

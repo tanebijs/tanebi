@@ -1,6 +1,6 @@
 import { ExtBizInfo } from '@/internal/packet/oidb/media/ExtBizInfo';
 import { IndexNode } from '@/internal/packet/oidb/media/IndexNode';
-import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
+import { ProtoField, ProtoMessage, ScalarType } from '@tanebijs/protobuf';
 
 export const MsgInfo = ProtoMessage.of({
     msgInfoBody: ProtoField(1, () => MsgInfoBody.fields, false, true),
@@ -28,15 +28,12 @@ export const PicUrlExtInfo = ProtoMessage.of({
     thumbParameter: ProtoField(3, ScalarType.STRING, true, false),
 });
 
-export const VideoInfo = ProtoMessage.of({
-});
+export const VideoInfo = ProtoMessage.of({});
 
 export const VideoExtInfo = ProtoMessage.of({
     videoCodecFormat: ProtoField(1, ScalarType.UINT32, false, false),
 });
 
-export const AudioInfo = ProtoMessage.of({
-});
+export const AudioInfo = ProtoMessage.of({});
 
-export const HashSum = ProtoMessage.of({
-});
+export const HashSum = ProtoMessage.of({});

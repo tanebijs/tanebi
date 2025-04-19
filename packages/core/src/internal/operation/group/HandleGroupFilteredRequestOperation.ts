@@ -11,7 +11,7 @@ export const HandleGroupFilteredRequestOperation = defineOperation(
         sequence: bigint,
         eventType: GroupNotifyType,
         operation: GroupRequestOperation,
-        message: string
+        message: string,
     ) => HandleGroupFilteredRequest.encode({
         operation,
         body: {

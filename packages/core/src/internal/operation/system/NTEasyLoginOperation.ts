@@ -15,7 +15,7 @@ export type NTEasyLoginResult = {
         sign: Buffer;
         cookies: string;
     };
-}
+};
 
 export const NTEasyLoginOperation = defineOperation(
     'ntEasyLogin',
@@ -34,7 +34,7 @@ export const NTEasyLoginOperation = defineOperation(
                 unusual: {
                     sign: response.body!.unusual!.sig!,
                     cookies: response.header.cookie!.cookie!,
-                }
+                },
             };
         } else {
             return {
@@ -46,5 +46,5 @@ export const NTEasyLoginOperation = defineOperation(
                 sessionDate: new Date(),
             };
         }
-    }
+    },
 );

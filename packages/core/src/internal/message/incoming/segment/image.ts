@@ -5,12 +5,12 @@ import { MsgInfo } from '@/internal/packet/oidb/media/MsgInfo';
 import { InferProtoModel } from '@tanebijs/protobuf';
 
 export interface ImageSegment {
-    indexNode?: InferProtoModel<typeof IndexNode.fields>,
-    url?: string,
-    width: number,
-    height: number,
-    subType: ImageSubType,
-    summary: string,
+    indexNode?: InferProtoModel<typeof IndexNode.fields>;
+    url?: string;
+    width: number;
+    height: number;
+    subType: ImageSubType;
+    summary: string;
 }
 
 const ntImageUrlBase = 'https://multimedia.nt.qq.com.cn';
@@ -26,9 +26,9 @@ export const imageCommonParser = defineIncoming(
     'image',
     (element): ImageSegment | undefined => {
         if (
-            element.serviceType === 48
-            && (element.businessType === 20 || element.businessType === 10)
-            && element.pbElement
+            element.serviceType === 48 &&
+            (element.businessType === 20 || element.businessType === 10) &&
+            element.pbElement
         ) {
             const msgInfo = MsgInfo.decode(element.pbElement);
             if (msgInfo.msgInfoBody.length > 0) {
@@ -38,7 +38,7 @@ export const imageCommonParser = defineIncoming(
                     width: msgInfoBody.index?.info?.width ?? 0,
                     height: msgInfoBody.index?.info?.height ?? 0,
                     subType: msgInfo.extBizInfo?.pic?.bizType ?? ImageSubType.Picture,
-                    summary: msgInfo.extBizInfo?.pic?.textSummary || '[图片]'
+                    summary: msgInfo.extBizInfo?.pic?.textSummary || '[图片]',
                 };
             }
         }
@@ -68,7 +68,7 @@ export const imageNotOnlineParser = defineIncoming(
                 };
             }
         }
-    }
+    },
 );
 
 export const imageCustomFaceParser = defineIncoming(
@@ -94,7 +94,7 @@ export const imageCustomFaceParser = defineIncoming(
                 };
             }
         }
-    }
+    },
 );
 
 function parseSubTypeFromOldData(element: InferProtoModel<typeof CustomFaceElement.fields>['oldData']) {

@@ -9,7 +9,7 @@ export class BotIdentityService {
     async resolveUid(uin: number, groupUin?: number) {
         const uid = this.uin2uid.get(uin);
         if (uid) return uid;
-        
+
         this.bot[log].emit('trace', 'BotIdentityService', `Cache miss, resolving Uin ${uin} to Uid`);
         if (groupUin) {
             await (await this.bot.getGroup(groupUin))?.getMembers(true);
@@ -18,8 +18,11 @@ export class BotIdentityService {
         }
         const result = this.uin2uid.get(uin);
         if (!result) {
-            this.bot[log].emit('warning', 'BotIdentityService', `Failed to resolve Uin ${uin} to Uid` +
-                (groupUin ? ` in group ${groupUin}` : '')
+            this.bot[log].emit(
+                'warning',
+                'BotIdentityService',
+                `Failed to resolve Uin ${uin} to Uid` +
+                    (groupUin ? ` in group ${groupUin}` : ''),
             );
         }
         return result;
@@ -28,7 +31,7 @@ export class BotIdentityService {
     async resolveUin(uid: string, groupUin?: number) {
         const fromCache = this.uid2uin.get(uid);
         if (fromCache) return fromCache;
-        
+
         this.bot[log].emit('trace', 'BotIdentityService', `Cache miss, resolving Uid ${uid} to Uin`);
         if (groupUin) {
             await (await this.bot.getGroup(groupUin))?.getMembers(true);
@@ -47,8 +50,11 @@ export class BotIdentityService {
             return fromRemote;
         }
 
-        this.bot[log].emit('warning', 'BotIdentityService', `Failed to resolve Uid ${uid} to Uin` + 
-            (groupUin ? ` in group ${groupUin}` : '')
+        this.bot[log].emit(
+            'warning',
+            'BotIdentityService',
+            `Failed to resolve Uid ${uid} to Uin` +
+                (groupUin ? ` in group ${groupUin}` : ''),
         );
     }
 }

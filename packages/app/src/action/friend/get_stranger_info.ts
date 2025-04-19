@@ -1,7 +1,7 @@
-import { FetchUserInfoKey, UserInfoGender } from 'tanebi';
 import { defineAction, Ok } from '@app/action';
 import { zOneBotInputBoolean, zOneBotInputUin } from '@app/common/types';
 import { OneBotGender, OneBotStranger } from '@app/entity/user';
+import { FetchUserInfoKey, UserInfoGender } from 'tanebi';
 import { z } from 'zod';
 
 export const get_stranger_info = defineAction(
@@ -23,13 +23,15 @@ export const get_stranger_info = defineAction(
             user_id: stranger.uin,
             qid: stranger.qid,
             nickname: stranger.nickname ?? '' + stranger.uin,
-            sex: stranger.gender === UserInfoGender.Male ? OneBotGender.Male
-                : stranger.gender === UserInfoGender.Female ? OneBotGender.Female
-                    : OneBotGender.Unknown,
+            sex: stranger.gender === UserInfoGender.Male ?
+                OneBotGender.Male :
+                stranger.gender === UserInfoGender.Female ?
+                OneBotGender.Female :
+                OneBotGender.Unknown,
             age: stranger.age ?? 0,
             level: stranger.level ?? 0,
             sign: stranger.signature ?? '',
         });
     },
-    ['get_user_info', 'get_friend_info']
+    ['get_user_info', 'get_friend_info'],
 );

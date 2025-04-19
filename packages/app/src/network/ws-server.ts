@@ -1,16 +1,16 @@
-import { WebSocketServerAdapterConfig } from '@app/common/config';
-import { OneBotApp } from '@app/index';
-import { OneBotNetworkAdapter } from '@app/network';
-import { Context, Hono } from 'hono';
-import { HttpBindings, serve } from '@hono/node-server';
-import { createNodeWebSocket } from '@hono/node-ws';
-import { Server } from 'node:http';
-import { WSContext, WSEvents } from 'hono/ws';
 import { Failed } from '@app/action';
+import { get_status } from '@app/action/system/get_status';
+import { WebSocketServerAdapterConfig } from '@app/common/config';
 import { zWebSocketInputData } from '@app/common/types';
 import { OneBotEvent } from '@app/event';
 import { OneBotHeartbeatEvent, OneBotLifecycleEvent } from '@app/event/meta';
-import { get_status } from '@app/action/system/get_status';
+import { OneBotApp } from '@app/index';
+import { OneBotNetworkAdapter } from '@app/network';
+import { HttpBindings, serve } from '@hono/node-server';
+import { createNodeWebSocket } from '@hono/node-ws';
+import { Context, Hono } from 'hono';
+import { WSContext, WSEvents } from 'hono/ws';
+import { Server } from 'node:http';
 
 export class OneBotWebSocketServerAdapter extends OneBotNetworkAdapter<WebSocketServerAdapterConfig> {
     readonly honoApp;
@@ -21,7 +21,7 @@ export class OneBotWebSocketServerAdapter extends OneBotNetworkAdapter<WebSocket
 
     constructor(app: OneBotApp, config: WebSocketServerAdapterConfig, id: string) {
         super(app, config, 'WsServer', id);
-        this.honoApp = new Hono<{ Bindings: HttpBindings }>();
+        this.honoApp = new Hono<{ Bindings: HttpBindings; }>();
         const nodeWebSocket = createNodeWebSocket({ app: this.honoApp });
         const upgradeWebSocket = nodeWebSocket.upgradeWebSocket;
         this.injectWebSocket = nodeWebSocket.injectWebSocket;
@@ -38,13 +38,13 @@ export class OneBotWebSocketServerAdapter extends OneBotNetworkAdapter<WebSocket
                 } else {
                     inputToken = c.req.query('access_token');
                 }
-    
+
                 if (!inputToken) {
                     this.logger.warn(`${c.env.incoming.socket.remoteAddress} -> ${c.req.path} (Unauthorized)`);
                     c.status(401);
                     return c.json(Failed(401, 'Access token is missing'));
                 }
-    
+
                 if (inputToken !== config.accessToken) {
                     this.logger.warn(`${c.env.incoming.socket.remoteAddress} -> ${c.req.path} (Forbidden)`);
                     c.status(403);
@@ -71,23 +71,24 @@ export class OneBotWebSocketServerAdapter extends OneBotNetworkAdapter<WebSocket
                 const start = Date.now();
                 const callResult = await this.app.actions.handleAction(action, params);
                 const end = Date.now();
-                this.logger.info(`${ip} -> /${action} (${callResult.retcode === 0 ? 'OK' : callResult.retcode} ${end - start}ms)`);
+                this.logger.info(
+                    `${ip} -> /${action} (${callResult.retcode === 0 ? 'OK' : callResult.retcode} ${end - start}ms)`,
+                );
                 ws.send(
                     JSON.stringify({
                         status: callResult.status,
-                        retcode:
-                            callResult.retcode >= 400 && callResult.retcode < 500
-                                ? 1000 + callResult.retcode
-                                : callResult.retcode,
+                        retcode: callResult.retcode >= 400 && callResult.retcode < 500 ?
+                            1000 + callResult.retcode :
+                            callResult.retcode,
                         data: callResult.data,
                         echo: echo,
-                    })
+                    }),
                 );
             };
 
         this.honoApp.get(
             '/api',
-            upgradeWebSocket((c: Context<{ Bindings: HttpBindings }>) => {
+            upgradeWebSocket((c: Context<{ Bindings: HttpBindings; }>) => {
                 return {
                     onOpen: () => {
                         this.logger.info(`${c.env.incoming.socket.remoteAddress} -> /api (Open)`);
@@ -97,12 +98,12 @@ export class OneBotWebSocketServerAdapter extends OneBotNetworkAdapter<WebSocket
                         this.logger.info(`${c.env.incoming.socket.remoteAddress} -> /api (Closed)`);
                     },
                 };
-            })
+            }),
         );
 
         this.honoApp.get(
             '/event',
-            upgradeWebSocket((c: Context<{ Bindings: HttpBindings }>) => {
+            upgradeWebSocket((c: Context<{ Bindings: HttpBindings; }>) => {
                 return {
                     onOpen: (_, ws) => {
                         this.eventPushClients.set(ws, c.env.incoming.socket.remoteAddress!);
@@ -114,12 +115,12 @@ export class OneBotWebSocketServerAdapter extends OneBotNetworkAdapter<WebSocket
                         this.logger.info(`${c.env.incoming.socket.remoteAddress} -> /event (Closed)`);
                     },
                 };
-            })
+            }),
         );
 
         this.honoApp.get(
             '/', // both API and Event features
-            upgradeWebSocket((c: Context<{ Bindings: HttpBindings }>) => {
+            upgradeWebSocket((c: Context<{ Bindings: HttpBindings; }>) => {
                 return {
                     onOpen: (_, ws) => {
                         this.eventPushClients.set(ws, c.env.incoming.socket.remoteAddress!);
@@ -132,7 +133,7 @@ export class OneBotWebSocketServerAdapter extends OneBotNetworkAdapter<WebSocket
                         this.logger.info(`${c.env.incoming.socket.remoteAddress} -> / (Closed)`);
                     },
                 };
-            })
+            }),
         );
     }
 
@@ -148,7 +149,7 @@ export class OneBotWebSocketServerAdapter extends OneBotNetworkAdapter<WebSocket
                 const heartbeatEvent = new OneBotHeartbeatEvent(
                     this.app,
                     get_status.handler(this.app, {}),
-                                        this.adapterConfig.heartbeatInterval!,
+                    this.adapterConfig.heartbeatInterval!,
                 );
                 this.emitEvent(heartbeatEvent);
             }, this.adapterConfig.heartbeatInterval);

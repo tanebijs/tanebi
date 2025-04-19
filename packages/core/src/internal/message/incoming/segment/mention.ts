@@ -10,5 +10,5 @@ export const mentionParser = defineIncoming(
                 uin: element.attr6Buf.readUInt32BE(7),
             };
         }
-    }
+    },
 );

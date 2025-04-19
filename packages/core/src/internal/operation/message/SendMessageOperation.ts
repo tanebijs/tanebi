@@ -1,6 +1,6 @@
+import { buildPbSendMsg, OutgoingMessage } from '@/internal/message/outgoing';
 import { defineOperation } from '@/internal/operation/OperationBase';
 import { PbSendMsgResponse } from '@/internal/packet/message/PbSendMsg';
-import { buildPbSendMsg, OutgoingMessage } from '@/internal/message/outgoing';
 
 export const SendMessageOperation = defineOperation(
     'sendMessage',
@@ -16,5 +16,5 @@ export const SendMessageOperation = defineOperation(
                 timestamp: response.timestamp1,
             };
         }
-    }
+    },
 );

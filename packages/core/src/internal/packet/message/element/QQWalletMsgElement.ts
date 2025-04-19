@@ -1,29 +1,34 @@
-import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
+import { ProtoField, ProtoMessage, ScalarType } from '@tanebijs/protobuf';
 
 export const QQWalletMsgElement = ProtoMessage.of({
-    type: ProtoField(1, () => ({
-        sendUin: ProtoField(1, ScalarType.UINT64, false, false),
-        sender: ProtoField(2, () => QQWalletAioElem.fields, true, false),
-        receiver: ProtoField(3, () => QQWalletAioElem.fields, true, false),
-        channelId: ProtoField(4, ScalarType.INT32, false, false),
-        templateId: ProtoField(5, ScalarType.INT32, false, false),
-        resend: ProtoField(6, ScalarType.UINT32, false, false),
-        msgPriority: ProtoField(7, ScalarType.UINT32, false, false),
-        redType: ProtoField(8, ScalarType.INT32, false, false),
-        billNo: ProtoField(9, ScalarType.BYTES, true, false),
-        authKey: ProtoField(10, ScalarType.BYTES, true, false),
-        sessionType: ProtoField(11, ScalarType.INT32, false, false),
-        msgType: ProtoField(12, ScalarType.INT32, false, false),
-        envelOpeId: ProtoField(13, ScalarType.INT32, false, false),
-        name: ProtoField(14, ScalarType.BYTES, true, false),
-        confType: ProtoField(15, ScalarType.INT32, false, false),
-        msgFrom: ProtoField(16, ScalarType.INT32, false, false),
-        pcBody: ProtoField(17, ScalarType.BYTES, true, false),
-        index: ProtoField(18, ScalarType.BYTES, true, false),
-        redChannel: ProtoField(19, ScalarType.UINT32, false, false),
-        grapUin: ProtoField(20, ScalarType.UINT64, false, true),
-        pbReserve: ProtoField(21, ScalarType.BYTES, true, false),
-    }), true, false),
+    type: ProtoField(
+        1,
+        () => ({
+            sendUin: ProtoField(1, ScalarType.UINT64, false, false),
+            sender: ProtoField(2, () => QQWalletAioElem.fields, true, false),
+            receiver: ProtoField(3, () => QQWalletAioElem.fields, true, false),
+            channelId: ProtoField(4, ScalarType.INT32, false, false),
+            templateId: ProtoField(5, ScalarType.INT32, false, false),
+            resend: ProtoField(6, ScalarType.UINT32, false, false),
+            msgPriority: ProtoField(7, ScalarType.UINT32, false, false),
+            redType: ProtoField(8, ScalarType.INT32, false, false),
+            billNo: ProtoField(9, ScalarType.BYTES, true, false),
+            authKey: ProtoField(10, ScalarType.BYTES, true, false),
+            sessionType: ProtoField(11, ScalarType.INT32, false, false),
+            msgType: ProtoField(12, ScalarType.INT32, false, false),
+            envelOpeId: ProtoField(13, ScalarType.INT32, false, false),
+            name: ProtoField(14, ScalarType.BYTES, true, false),
+            confType: ProtoField(15, ScalarType.INT32, false, false),
+            msgFrom: ProtoField(16, ScalarType.INT32, false, false),
+            pcBody: ProtoField(17, ScalarType.BYTES, true, false),
+            index: ProtoField(18, ScalarType.BYTES, true, false),
+            redChannel: ProtoField(19, ScalarType.UINT32, false, false),
+            grapUin: ProtoField(20, ScalarType.UINT64, false, true),
+            pbReserve: ProtoField(21, ScalarType.BYTES, true, false),
+        }),
+        true,
+        false,
+    ),
 });
 
 export const QQWalletAioElem = ProtoMessage.of({

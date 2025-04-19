@@ -38,34 +38,42 @@ export class OneBotGroupRequestEvent extends OneBotRequestEvent {
 
 export function installRequestEventHandler(ctx: OneBotApp) {
     ctx.bot.onFriendRequest((req) => {
-        ctx.dispatchEvent(new OneBotFriendRequestEvent(
-            ctx,
-            req.fromUid,
-            req.fromUin,
-            req.message,
-        ));
+        ctx.dispatchEvent(
+            new OneBotFriendRequestEvent(
+                ctx,
+                req.fromUid,
+                req.fromUin,
+                req.message,
+            ),
+        );
     });
 
     ctx.bot.onGroupJoinRequest((_, req) => {
-        ctx.dispatchEvent(new OneBotGroupRequestEvent(
-            ctx,
-            req.isFiltered ? `FilteredJoin#${req.groupUin}#${req.sequence}` : `Join#${req.groupUin}#${req.sequence}`,
-            req.groupUin,
-            req.requestUin,
-            'add',
-            req.comment,
-        ));
+        ctx.dispatchEvent(
+            new OneBotGroupRequestEvent(
+                ctx,
+                req.isFiltered ?
+                    `FilteredJoin#${req.groupUin}#${req.sequence}` :
+                    `Join#${req.groupUin}#${req.sequence}`,
+                req.groupUin,
+                req.requestUin,
+                'add',
+                req.comment,
+            ),
+        );
     });
 
     ctx.bot.onGroupInvitedJoinRequest((_, req) => {
-        ctx.dispatchEvent(new OneBotGroupRequestEvent(
-            ctx,
-            `Invite#${req.groupUin}#${req.sequence}`,
-            req.groupUin,
-            req.targetUin,
-            'invite',
-            '',
-            req.invitor.uin,
-        ));
+        ctx.dispatchEvent(
+            new OneBotGroupRequestEvent(
+                ctx,
+                `Invite#${req.groupUin}#${req.sequence}`,
+                req.groupUin,
+                req.targetUin,
+                'invite',
+                '',
+                req.invitor.uin,
+            ),
+        );
     });
 }

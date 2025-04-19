@@ -1,5 +1,5 @@
-import { Bot, ctx, log } from '@/index';
 import { BotEntity, BotGroup } from '@/entity';
+import { Bot, ctx, log } from '@/index';
 import { GroupMemberPermission } from '@/internal/packet/oidb/0xfe7_3';
 
 interface BotGroupMemberDataBinding {
@@ -77,7 +77,8 @@ export class BotGroupMember extends BotEntity<BotGroupMemberDataBinding> {
         this.bot[log].emit('trace', this.moduleName, `Set admin to ${isAdmin}`);
         await this.bot[ctx].ops.call('setMemberAdmin', this.group.uin, this.uid, isAdmin);
         this.data.permission = isAdmin ?
-            GroupMemberPermission.Admin : GroupMemberPermission.Member;
+            GroupMemberPermission.Admin :
+            GroupMemberPermission.Member;
     }
 
     /**
@@ -138,7 +139,6 @@ export class BotGroupMember extends BotEntity<BotGroupMemberDataBinding> {
      */
     async kick(acceptSubsequentRequests: boolean = true, reason: string = '') {
         this.bot[log].emit('trace', this.moduleName, 'Kick');
-        await this.bot[ctx].ops.call('kickMember',
-            this.group.uin, this.uid, acceptSubsequentRequests, reason);
+        await this.bot[ctx].ops.call('kickMember', this.group.uin, this.uid, acceptSubsequentRequests, reason);
     }
 }

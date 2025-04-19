@@ -1,9 +1,14 @@
-import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
+import { ProtoField, ProtoMessage, ScalarType } from '@tanebijs/protobuf';
 
 export const GeneralGrayTip = ProtoMessage.of({
     bizType: ProtoField(1, ScalarType.UINT32),
-    templateParams: ProtoField(7, () => ({
-        key: ProtoField(1, ScalarType.STRING),
-        value: ProtoField(2, ScalarType.STRING),
-    }), false, true),
+    templateParams: ProtoField(
+        7,
+        () => ({
+            key: ProtoField(1, ScalarType.STRING),
+            value: ProtoField(2, ScalarType.STRING),
+        }),
+        false,
+        true,
+    ),
 });

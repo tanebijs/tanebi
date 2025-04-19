@@ -1,5 +1,5 @@
-import { decodeTlv, Deserialized, encodeTlv, TlvPacketSchema } from '@/internal/util/binary/tlv/serialize';
 import { PackedTlvSchema, packTlv, PackTlvInput, TlvTag, unpackTlv } from '@/internal/util/binary/tlv/pack';
+import { decodeTlv, Deserialized, encodeTlv, TlvPacketSchema } from '@/internal/util/binary/tlv/serialize';
 
 export class Tlv<const T extends TlvPacketSchema, const Tag extends TlvTag | undefined> {
     private constructor(
@@ -11,7 +11,7 @@ export class Tlv<const T extends TlvPacketSchema, const Tag extends TlvTag | und
     static tagged<T extends TlvPacketSchema, Tag extends TlvTag>(schema: T, tag: Tag) {
         return new Tlv(schema, tag);
     }
-    
+
     static plain<T extends TlvPacketSchema>(schema: T) {
         return new Tlv(schema, undefined);
     }
@@ -41,8 +41,8 @@ export class PackedTlv<const T extends PackedTlvSchema> {
             packet => ({
                 tag: packet.tag,
                 schema: packet.schema,
-            })),
-        ) as PackedTlv<{ [K in keyof C]: { tag: ExtractTag<C[K]>, schema: ExtractSchema<C[K]> } }>;
+            }),
+        )) as PackedTlv<{ [K in keyof C]: { tag: ExtractTag<C[K]>; schema: ExtractSchema<C[K]>; }; }>;
     }
 
     pack(data: PackTlvInput<T>) {

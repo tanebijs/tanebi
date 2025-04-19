@@ -33,9 +33,7 @@ export interface Keystore {
          */
         tgt: Buffer;
 
-
         sessionDate: Date;
-
 
         /**
          * 24 bytes
@@ -45,7 +43,6 @@ export interface Keystore {
         qrString?: string;
 
         qrUrl?: string;
-
 
         exchangeKey?: Buffer;
 
@@ -60,7 +57,6 @@ export interface Keystore {
         newDeviceVerifyUrl?: string;
 
         captcha?: [string, string, string];
-
 
         tempPassword?: Buffer;
 

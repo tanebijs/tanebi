@@ -1,3 +1,8 @@
+import { resolveOneBotFile } from '@app/common/download';
+import { convert } from '@app/common/silk';
+import { OneBotApp } from '@app/index';
+import { OneBotInputMessage } from '@app/message';
+import { MessageStoreType, OutgoingMessageStore } from '@app/storage/types';
 import {
     AbstractMessageBuilder,
     BotContact,
@@ -7,19 +12,14 @@ import {
     MessageType,
     PrivateMessageBuilder,
 } from 'tanebi';
-import { resolveOneBotFile } from '@app/common/download';
-import { OneBotApp } from '@app/index';
-import { OneBotInputMessage } from '@app/message';
-import { MessageStoreType, OutgoingMessageStore } from '@app/storage/types';
-import { PushMsgBody } from '@/internal/packet/message/PushMsg';
-import { PbSendMsg } from '@/internal/packet/message/PbSendMsg';
-import { convert } from '@app/common/silk';
+import { PbSendMsg } from 'tanebi/internal/packet/message/PbSendMsg';
+import { PushMsgBody } from 'tanebi/internal/packet/message/PushMsg';
 
 export async function transformSendMessage(
     ctx: OneBotApp,
     contact: BotContact,
     b: AbstractMessageBuilder,
-    segments: OneBotInputMessage['message']
+    segments: OneBotInputMessage['message'],
 ) {
     for (const segment of segments) {
         if (segment.type === 'text') {

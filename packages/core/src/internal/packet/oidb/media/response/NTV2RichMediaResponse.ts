@@ -7,7 +7,7 @@ import { MultiMediaRespHead } from '@/internal/packet/oidb/media/response/MultiM
 import { UploadCompletedResp } from '@/internal/packet/oidb/media/response/UploadCompletedResp';
 import { UploadKeyRenewalResp } from '@/internal/packet/oidb/media/response/UploadKeyRenewalResp';
 import { UploadResp } from '@/internal/packet/oidb/media/response/UploadResp';
-import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
+import { ProtoField, ProtoMessage, ScalarType } from '@tanebijs/protobuf';
 
 export const NTV2RichMediaResponse = ProtoMessage.of({
     respHead: ProtoField(1, () => MultiMediaRespHead.fields, true, false),
@@ -22,10 +22,10 @@ export const NTV2RichMediaResponse = ProtoMessage.of({
     extension: ProtoField(99, ScalarType.BYTES, true, false),
 });
 
-export function NTV2RichMediaResponseOf<T extends 
-    Exclude<keyof typeof NTV2RichMediaResponse.fields, 'respHead' | 'extension'>
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
->(_type: T) {
+export function NTV2RichMediaResponseOf<
+    T extends Exclude<keyof typeof NTV2RichMediaResponse.fields, 'respHead' | 'extension'>,
+> // eslint-disable-next-line @typescript-eslint/no-unused-vars
+(_type: T) {
     return NTV2RichMediaResponse.fields as ({
         [K in T | 'respHead' | 'extension']: typeof NTV2RichMediaResponse.fields[K];
     });

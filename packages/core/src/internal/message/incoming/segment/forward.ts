@@ -16,9 +16,9 @@ const forwardXmlSchema = z.object({
             title: z.array(z.object({
                 '@color': z.string(),
                 '#text': z.string(),
-            }))
-        })
-    })
+            })),
+        }),
+    }),
 });
 
 export const forwardParser = defineIncoming(
@@ -36,5 +36,5 @@ export const forwardParser = defineIncoming(
                     .map(title => title['#text']),
             };
         }
-    }
+    },
 );

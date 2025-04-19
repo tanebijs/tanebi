@@ -4,7 +4,10 @@ export const zPositiveInteger = z.number().int().positive();
 export const zInputPositiveInteger = z.union([zPositiveInteger, z.string().transform(Number).pipe(zPositiveInteger)]);
 
 export const zNonNegativeInteger = z.number().int().nonnegative();
-export const zInputNonNegativeInteger = z.union([zNonNegativeInteger, z.string().transform(Number).pipe(zNonNegativeInteger)]);
+export const zInputNonNegativeInteger = z.union([
+    zNonNegativeInteger,
+    z.string().transform(Number).pipe(zNonNegativeInteger),
+]);
 
 export const zUin = zPositiveInteger;
 export const zOneBotInputUin = zInputPositiveInteger;
@@ -41,5 +44,5 @@ export const zOneBotInputBoolean = z.union([
 export const zWebSocketInputData = z.object({
     action: z.string(),
     params: z.unknown(),
-    echo: z.string(), 
+    echo: z.string(),
 });

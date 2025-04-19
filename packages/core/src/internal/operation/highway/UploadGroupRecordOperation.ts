@@ -16,7 +16,7 @@ export const UploadGroupRecordOperation = defineOperation(
             reqHead: {
                 common: {
                     requestId: 1,
-                    command: 100
+                    command: 100,
                 },
                 scene: {
                     requestType: 2,
@@ -25,8 +25,8 @@ export const UploadGroupRecordOperation = defineOperation(
                     groupExt: { groupUin },
                 },
                 client: {
-                    agentType: 2
-                }
+                    agentType: 2,
+                },
             },
             upload: {
                 uploadInfo: [
@@ -42,7 +42,7 @@ export const UploadGroupRecordOperation = defineOperation(
                             },
                             time: duration,
                         },
-                    }
+                    },
                 ],
                 tryFastUploadCompleted: true,
                 srvSendMsg: false,
@@ -52,10 +52,10 @@ export const UploadGroupRecordOperation = defineOperation(
                     ptt: {
                         bytesPbReserve,
                         bytesGeneralFlags,
-                    }
+                    },
                 },
                 noNeedCompatMsg: false,
-            }
+            },
         });
     },
     (ctx, payload) => UploadGroupRecordResponse.decodeBodyOrThrow(payload),

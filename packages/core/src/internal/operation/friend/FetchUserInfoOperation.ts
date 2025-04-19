@@ -1,6 +1,11 @@
 import { defineOperation } from '@/internal/operation/OperationBase';
 import { UserInfoAvatar, UserInfoBusiness, UserInfoGender } from '@/internal/packet/common/UserInfo';
-import { FetchUserInfoByUid, FetchUserInfoByUin, FetchUserInfoKey, FetchUserInfoResponse } from '@/internal/packet/oidb/0xfe1_2';
+import {
+    FetchUserInfoByUid,
+    FetchUserInfoByUin,
+    FetchUserInfoKey,
+    FetchUserInfoResponse,
+} from '@/internal/packet/oidb/0xfe1_2';
 
 export type EnumToStringKey = {
     [FetchUserInfoKey.Avatar]: 'avatar';
@@ -15,7 +20,7 @@ export type EnumToStringKey = {
     [FetchUserInfoKey.RegisterTime]: 'registerTime';
     [FetchUserInfoKey.Age]: 'age';
     [FetchUserInfoKey.Qid]: 'qid';
-}
+};
 
 export interface FetchUserInfoGeneralReturn {
     uin: number;
@@ -69,7 +74,8 @@ export const FetchUserInfoOperation = defineOperation(
             uin: response.uin,
             nickname: bytesProps.get(FetchUserInfoKey.Nickname)?.toString(),
             avatar: bytesProps.has(FetchUserInfoKey.Avatar) ?
-                UserInfoAvatar.decode(bytesProps.get(FetchUserInfoKey.Avatar)!).url + '640' : undefined,
+                UserInfoAvatar.decode(bytesProps.get(FetchUserInfoKey.Avatar)!).url + '640' :
+                undefined,
             city: bytesProps.get(FetchUserInfoKey.City)?.toString(),
             country: bytesProps.get(FetchUserInfoKey.Country)?.toString(),
             school: bytesProps.get(FetchUserInfoKey.School)?.toString(),
@@ -87,8 +93,8 @@ export const FetchUserInfoOperation = defineOperation(
                         level: b.level,
                         isPro: b.isPro,
                         icon: b.icon1 ?? b.icon2 ?? '',
-                    }))
-                : undefined,
+                    })) :
+                undefined,
         };
     },
 );

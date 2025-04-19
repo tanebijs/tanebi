@@ -4,7 +4,7 @@ import { deflateSync } from 'node:zlib';
 
 export const forwardBuilder = defineOutgoing(
     'forward',
-    (segment: { resId: string, preview: string[], count: number }) => {
+    (segment: { resId: string; preview: string[]; count: number; }) => {
         const fileId = randomUUID();
         const lightAppCompressed = deflateSync(JSON.stringify({
             app: 'com.tencent.multimsg',
@@ -27,7 +27,7 @@ export const forwardBuilder = defineOutgoing(
                     source: '聊天记录',
                     summary: `查看${segment.count}条转发消息`,
                     uniseq: fileId,
-                }
+                },
             },
             prompt: '[聊天记录]',
             ver: '0.0.0.5',
@@ -39,7 +39,7 @@ export const forwardBuilder = defineOutgoing(
                     Buffer.from([0x01]),
                     lightAppCompressed,
                 ]),
-            }
+            },
         };
-    }
+    },
 );

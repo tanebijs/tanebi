@@ -1,6 +1,6 @@
 import { defineEvent } from '@/internal/event/EventBase';
-import { PushMsg, PushMsgBody, PushMsgType } from '@/internal/packet/message/PushMsg';
 import { parsePushMsgBody } from '@/internal/message/incoming';
+import { PushMsg, PushMsgBody, PushMsgType } from '@/internal/packet/message/PushMsg';
 
 export const MessagePushEvent = defineEvent(
     'messagePush',
@@ -10,10 +10,12 @@ export const MessagePushEvent = defineEvent(
         const pushMsgBody = PushMsgBody.decode(pushMsg.message);
         const type = pushMsgBody.contentHead.type as PushMsgType;
 
-        if (type === PushMsgType.PrivateMessage
-            || type === PushMsgType.GroupMessage
-            || type === PushMsgType.TempMessage
-            || type === PushMsgType.PrivateRecordMessage) {
+        if (
+            type === PushMsgType.PrivateMessage ||
+            type === PushMsgType.GroupMessage ||
+            type === PushMsgType.TempMessage ||
+            type === PushMsgType.PrivateRecordMessage
+        ) {
             return parsePushMsgBody(pushMsg.message);
         } else if (type === PushMsgType.PrivateFileMessage) {
             // TODO: parse private file

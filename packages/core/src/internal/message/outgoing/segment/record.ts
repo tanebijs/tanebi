@@ -5,14 +5,14 @@ import { InferProtoModelInput } from '@tanebijs/protobuf';
 export const recordBuilder = defineOutgoing(
     'record',
     (segment: {
-        msgInfo: InferProtoModelInput<typeof MsgInfo.fields>,
+        msgInfo: InferProtoModelInput<typeof MsgInfo.fields>;
     }) => {
         return {
             common: {
                 serviceType: 48,
                 pbElement: MsgInfo.encode(segment.msgInfo),
                 businessType: 22,
-            }
+            },
         };
-    }
+    },
 );

@@ -1,21 +1,21 @@
-import { PackedTlv, Tlv, TlvScalarField, TlvVariableField } from '@/internal/util/binary/tlv';
-import { TlvLogin0x106 } from '@/internal/packet/login/wtlogin/login/0x106';
-import { TlvLogin0x144 } from '@/internal/packet/login/wtlogin/login/0x144';
-import { TlvLogin0x116 } from '@/internal/packet/login/wtlogin/login/0x116';
-import { TlvLogin0x142 } from '@/internal/packet/login/wtlogin/login/0x142';
-import { TlvLogin0x145 } from '@/internal/packet/login/wtlogin/login/0x145';
 import { TlvLogin0x018 } from '@/internal/packet/login/wtlogin/login/0x018';
+import { TlvLogin0x100 } from '@/internal/packet/login/wtlogin/login/0x100';
+import { TlvLogin0x106 } from '@/internal/packet/login/wtlogin/login/0x106';
+import { TlvLogin0x107 } from '@/internal/packet/login/wtlogin/login/0x107';
+import { TlvLogin0x116 } from '@/internal/packet/login/wtlogin/login/0x116';
+import { TlvLogin0x119 } from '@/internal/packet/login/wtlogin/login/0x119';
 import { TlvLogin0x141 } from '@/internal/packet/login/wtlogin/login/0x141';
+import { TlvLogin0x142 } from '@/internal/packet/login/wtlogin/login/0x142';
+import { TlvLogin0x144 } from '@/internal/packet/login/wtlogin/login/0x144';
+import { TlvLogin0x145 } from '@/internal/packet/login/wtlogin/login/0x145';
+import { TlvLogin0x146 } from '@/internal/packet/login/wtlogin/login/0x146';
+import { TlvLogin0x166 } from '@/internal/packet/login/wtlogin/login/0x166';
+import { TlvLogin0x16a } from '@/internal/packet/login/wtlogin/login/0x16a';
 import { TlvLogin0x177 } from '@/internal/packet/login/wtlogin/login/0x177';
 import { TlvLogin0x191 } from '@/internal/packet/login/wtlogin/login/0x191';
-import { TlvLogin0x100 } from '@/internal/packet/login/wtlogin/login/0x100';
-import { TlvLogin0x107 } from '@/internal/packet/login/wtlogin/login/0x107';
 import { TlvLogin0x318 } from '@/internal/packet/login/wtlogin/login/0x318';
-import { TlvLogin0x16a } from '@/internal/packet/login/wtlogin/login/0x16a';
-import { TlvLogin0x166 } from '@/internal/packet/login/wtlogin/login/0x166';
 import { TlvLogin0x521 } from '@/internal/packet/login/wtlogin/login/0x521';
-import { TlvLogin0x119 } from '@/internal/packet/login/wtlogin/login/0x119';
-import { TlvLogin0x146 } from '@/internal/packet/login/wtlogin/login/0x146';
+import { PackedTlv, Tlv, TlvScalarField, TlvVariableField } from '@/internal/util/binary/tlv';
 
 export const Login = PackedTlv.fromCollection([
     TlvLogin0x106,

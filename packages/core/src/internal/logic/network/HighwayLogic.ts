@@ -24,7 +24,7 @@ function oidbIPv4ToHighway(ip: InferProtoModelInput<typeof IPv4.fields>) {
             isEnable: true,
             ip: int32ip2str(ip.outIP ?? 0),
         },
-        port: ip.outPort!
+        port: ip.outPort!,
     };
 }
 
@@ -47,8 +47,9 @@ export class HighwayLogic extends LogicBase {
     ) {
         await this.upload(
             messageType === MessageType.PrivateMessage ? 1003 : 1004,
-            image, imageMeta.md5,
-            this.buildExtendInfo(uploadResp, imageMeta.sha1)
+            image,
+            imageMeta.md5,
+            this.buildExtendInfo(uploadResp, imageMeta.sha1),
         );
     }
 
@@ -58,8 +59,10 @@ export class HighwayLogic extends LogicBase {
         uploadResp: InferProtoModelInput<typeof NTV2RichMediaResponse.fields>,
     ) {
         await this.upload(
-            1008, record, recordMeta.md5,
-            this.buildExtendInfo(uploadResp, recordMeta.sha1)
+            1008,
+            record,
+            recordMeta.md5,
+            this.buildExtendInfo(uploadResp, recordMeta.sha1),
         );
     }
 
@@ -74,12 +77,18 @@ export class HighwayLogic extends LogicBase {
             msgInfoBody: uploadResp.upload?.msgInfo?.msgInfoBody,
             blockSize: maxBlockSize,
             hash: {
-                fileSha1: [sha1]
-            }
+                fileSha1: [sha1],
+            },
         });
     }
 
-    private buildDataUpTrans(cmd: number, data: Buffer, md5: Buffer, extendInfo: Buffer, timeout: number = 1200): HighwayTrans {
+    private buildDataUpTrans(
+        cmd: number,
+        data: Buffer,
+        md5: Buffer,
+        extendInfo: Buffer,
+        timeout: number = 1200,
+    ): HighwayTrans {
         return {
             uin: this.ctx.keystore.uin.toString(),
             cmd: cmd,
@@ -132,8 +141,7 @@ abstract class AbstractHighwaySession {
         return new Promise<void>((_, reject) => {
             setTimeout(() => {
                 reject(new Error(`[Highway] timeout after ${this.trans.timeout}s`));
-            }, (this.trans.timeout ?? Infinity) * 1000
-            );
+            }, (this.trans.timeout ?? Infinity) * 1000);
         });
     }
 
@@ -165,7 +173,7 @@ abstract class AbstractHighwaySession {
             msgLoginSigHead: {
                 uint32LoginSigType: 8,
                 appId: 1600001604,
-            }
+            },
         });
     }
 
@@ -231,7 +239,10 @@ class HighwayTcpSession extends AbstractHighwaySession {
                     reject(new Error(`TCP Upload failed (code=${rsp.errorCode})`));
                 }
                 // const percent = ((Number(rsp.msgSegHead?.dataOffset) + Number(rsp.msgSegHead?.dataLength)) / Number(rsp.msgSegHead?.filesize)).toFixed(2);
-                if (Number(rsp.msgSegHead?.dataOffset) + Number(rsp.msgSegHead?.dataLength) >= Number(rsp.msgSegHead?.filesize)) {
+                if (
+                    Number(rsp.msgSegHead?.dataOffset) + Number(rsp.msgSegHead?.dataLength) >=
+                        Number(rsp.msgSegHead?.filesize)
+                ) {
                     socket.end();
                     resolve();
                 }
@@ -241,7 +252,7 @@ class HighwayTcpSession extends AbstractHighwaySession {
                     socket.end();
                     reject(new Error('Upload aborted due to timeout'));
                 }
-                const [head, ] = unpackFrame(chunk);
+                const [head] = unpackFrame(chunk);
                 handleRspHeader(head);
             });
             socket.on('close', () => {
@@ -298,9 +309,11 @@ class HighwayHttpSession extends AbstractHighwaySession {
         const payload = this.buildPicUpHead(offset, block.length, chunkMd5);
         const frame = packFrame(payload, block);
 
-        const resp = await this.httpPostHighwayContent(frame,
-            `http://${this.trans.server}:${this.trans.port}/cgi-bin/httpconn?htcmd=0x6FF0087&uin=${this.trans.uin}`);
-        const [head, ] = unpackFrame(resp);
+        const resp = await this.httpPostHighwayContent(
+            frame,
+            `http://${this.trans.server}:${this.trans.port}/cgi-bin/httpconn?htcmd=0x6FF0087&uin=${this.trans.uin}`,
+        );
+        const [head] = unpackFrame(resp);
 
         const headData = RespDataHighwayHead.decode(head);
         if (headData.errorCode !== 0) throw new Error(`HTTP Upload failed with code ${headData.errorCode}`);
@@ -310,7 +323,8 @@ class HighwayHttpSession extends AbstractHighwaySession {
         return new Promise((resolve, reject) => {
             try {
                 const req = request(
-                    serverURL, {
+                    serverURL,
+                    {
                         method: 'POST',
                         headers: {
                             'Connection': 'keep-alive',
@@ -327,7 +341,7 @@ class HighwayHttpSession extends AbstractHighwaySession {
                         res.on('end', () => {
                             resolve(Buffer.concat(data));
                         });
-                    }
+                    },
                 );
                 req.on('error', (error: Error) => {
                     reject(error);

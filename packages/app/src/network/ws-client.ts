@@ -41,18 +41,17 @@ export class OneBotWebSocketClientAdapter extends OneBotNetworkAdapter<WebSocket
                 const callResult = await this.app.actions.handleAction(action, params);
                 const end = Date.now();
                 this.logger.info(
-                    `/${action} (${callResult.retcode === 0 ? 'OK' : callResult.retcode} ${end - start}ms)`
+                    `/${action} (${callResult.retcode === 0 ? 'OK' : callResult.retcode} ${end - start}ms)`,
                 );
                 this.websocket?.send(
                     JSON.stringify({
                         status: callResult.status,
-                        retcode:
-                            callResult.retcode >= 400 && callResult.retcode < 500
-                                ? 1000 + callResult.retcode
-                                : callResult.retcode,
+                        retcode: callResult.retcode >= 400 && callResult.retcode < 500 ?
+                            1000 + callResult.retcode :
+                            callResult.retcode,
                         data: callResult.data,
                         echo: echo,
-                    })
+                    }),
                 );
             });
             this.websocket.on('close', () => {
@@ -69,7 +68,7 @@ export class OneBotWebSocketClientAdapter extends OneBotNetworkAdapter<WebSocket
                     const heartbeatEvent = new OneBotHeartbeatEvent(
                         this.app,
                         get_status.handler(this.app, {}),
-                                this.adapterConfig.heartbeatInterval!,
+                        this.adapterConfig.heartbeatInterval!,
                     );
                     this.emitEvent(heartbeatEvent);
                 }, this.adapterConfig.heartbeatInterval);

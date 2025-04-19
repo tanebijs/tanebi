@@ -20,5 +20,5 @@ export const set_group_special_title = defineAction(
         }
         await member.setSpecialTitle(payload.special_title);
         return Ok();
-    }
+    },
 );

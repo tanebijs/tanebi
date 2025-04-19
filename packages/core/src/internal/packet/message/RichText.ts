@@ -1,7 +1,7 @@
-import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
 import { Attribute } from '@/internal/packet/message/Attribute';
 import { NotOnlineFile } from '@/internal/packet/message/NotOnlineFile';
 import { Ptt } from '@/internal/packet/message/Ptt';
+import { ProtoField, ProtoMessage, ScalarType } from '@tanebijs/protobuf';
 
 export const RichText = ProtoMessage.of({
     attribute: ProtoField(1, () => Attribute.fields, true),

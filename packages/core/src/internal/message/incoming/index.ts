@@ -1,16 +1,20 @@
-import { PushMsgBody, PushMsgType } from '@/internal/packet/message/PushMsg';
 import { MessageType } from '@/internal/message';
 import { IncomingSegmentCollection } from '@/internal/message/incoming/segment-base';
-import { imageCommonParser, imageNotOnlineParser, imageCustomFaceParser } from '@/internal/message/incoming/segment/image';
-import { mentionParser } from '@/internal/message/incoming/segment/mention';
-import { textParser } from '@/internal/message/incoming/segment/text';
-import { InferProtoModel } from '@tanebijs/protobuf';
-import { lightAppParser } from '@/internal/message/incoming/segment/light-app';
-import { recordParser } from '@/internal/message/incoming/segment/record';
-import { videoParser } from '@/internal/message/incoming/segment/video';
 import { faceCommonParser, faceOldFaceParser } from '@/internal/message/incoming/segment/face';
 import { forwardParser } from '@/internal/message/incoming/segment/forward';
+import {
+    imageCommonParser,
+    imageCustomFaceParser,
+    imageNotOnlineParser,
+} from '@/internal/message/incoming/segment/image';
+import { lightAppParser } from '@/internal/message/incoming/segment/light-app';
+import { mentionParser } from '@/internal/message/incoming/segment/mention';
+import { recordParser } from '@/internal/message/incoming/segment/record';
+import { textParser } from '@/internal/message/incoming/segment/text';
+import { videoParser } from '@/internal/message/incoming/segment/video';
 import { MessageElement } from '@/internal/packet/message/MessageElement';
+import { PushMsgBody, PushMsgType } from '@/internal/packet/message/PushMsg';
+import { InferProtoModel } from '@tanebijs/protobuf';
 
 const incomingSegments = new IncomingSegmentCollection([
     textParser,
@@ -27,7 +31,7 @@ const incomingSegments = new IncomingSegmentCollection([
 ]);
 
 export type IncomingSegment = Exclude<ReturnType<typeof incomingSegments.parse>, undefined>;
-export type IncomingSegmentOf<T extends IncomingSegment['type']> = Extract<IncomingSegment, { type: T }>;
+export type IncomingSegmentOf<T extends IncomingSegment['type']> = Extract<IncomingSegment, { type: T; }>;
 
 export const blob = Symbol('Raw PushMsgBody');
 export const rawElems = Symbol('Raw elements');
@@ -63,7 +67,7 @@ export interface GroupMessage extends MessageBase {
         card?: string;
         level?: number;
         specialTitle?: string;
-    }
+    };
 }
 
 export type IncomingMessage = PrivateMessage | GroupMessage;
@@ -74,12 +78,13 @@ export function parsePushMsgBody(raw: Buffer): IncomingMessage {
     if (pushMsgBody.body?.richText?.elements) {
         const elementsDecoded = pushMsgBody.body.richText.elements.map((element) => MessageElement.decode(element));
         for (const element of elementsDecoded) {
-            const previous = result.segments.length === 0 ? undefined :
+            const previous = result.segments.length === 0 ?
+                undefined :
                 result.segments[result.segments.length - 1];
 
             if (!result.repliedSequence && element.srcMsg) {
-                result.repliedSequence = element.srcMsg.pbReserve?.friendSequence // for private message
-                    ?? element.srcMsg.origSeqs?.[0]; // for group message
+                result.repliedSequence = element.srcMsg.pbReserve?.friendSequence ?? // for private message
+                    element.srcMsg.origSeqs?.[0]; // for group message
                 continue;
             }
 
@@ -95,9 +100,9 @@ export function parsePushMsgBody(raw: Buffer): IncomingMessage {
             const parsed = incomingSegments.parse(element);
             if (parsed) {
                 if (
-                    previous?.type === 'face'
-                    && parsed.type === 'text'
-                    && previous.isInLargeCategory
+                    previous?.type === 'face' &&
+                    parsed.type === 'text' &&
+                    previous.isInLargeCategory
                 ) continue; // Skip fallback text for large face
                 result.segments.push(parsed);
             }

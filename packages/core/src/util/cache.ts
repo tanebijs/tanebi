@@ -1,10 +1,10 @@
-import { Bot, log } from '@/index';
 import { BotEntity } from '@/entity';
+import { Bot, log } from '@/index';
 import { Mutex } from 'async-mutex';
 
 type ExtractDataBinding<V> = V extends BotEntity<infer U> ? U : never;
 
-export class BotCacheService<K, V extends BotEntity<unknown>>{
+export class BotCacheService<K, V extends BotEntity<unknown>> {
     private readonly mutex = new Mutex();
     private map = new Map<K, V>();
     private updating: boolean = false;
@@ -17,8 +17,8 @@ export class BotCacheService<K, V extends BotEntity<unknown>>{
     }
 
     async get(key: K, forceUpdate = false) {
-        if (!this.map.has(key) || forceUpdate) {     
-            this.bot[log].emit('trace', 'BotCacheService', 'Cache miss, update requested');                                            
+        if (!this.map.has(key) || forceUpdate) {
+            this.bot[log].emit('trace', 'BotCacheService', 'Cache miss, update requested');
             await this.update();
         }
         return this.map.get(key);

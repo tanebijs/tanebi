@@ -10,30 +10,34 @@ import { SmartBuffer } from 'smart-buffer';
 export const QueryQrCodeResultSubCommand = 0x12;
 
 export type QueryQrCodeResultCallResult = {
-    confirmed: true,
-    tempPassword: Buffer,
-    noPicSig: Buffer,
-    tgtgtKey: Buffer,
+    confirmed: true;
+    tempPassword: Buffer;
+    noPicSig: Buffer;
+    tgtgtKey: Buffer;
 } | {
-    confirmed: false,
-    state: TransEmp12_QrCodeState,
-}
+    confirmed: false;
+    state: TransEmp12_QrCodeState;
+};
 
 export const QueryQrCodeResultOperation = defineOperation(
     'queryQrCodeResult',
     'wtlogin.trans_emp',
-    (ctx) => ctx.wtLoginLogic.buildWtLoginPacket(
-        'wtlogin.trans_emp',
-        ctx.wtLoginLogic.buildTransEmpBody(QueryQrCodeResultSubCommand, new SmartBuffer()
-            .writeUInt32BE(ctx.appInfo.AppId)
-            .writeUInt16BE(ctx.keystore.session.qrSign!.length)
-            .writeBuffer(ctx.keystore.session.qrSign!)
-            .writeBigUInt64BE(BigInt(ctx.keystore.uin))
-            .writeUInt32BE(0)
-            .writeUInt8(0)
-            .writeUInt8(0x03)
-            .toBuffer()
-        )),
+    (ctx) =>
+        ctx.wtLoginLogic.buildWtLoginPacket(
+            'wtlogin.trans_emp',
+            ctx.wtLoginLogic.buildTransEmpBody(
+                QueryQrCodeResultSubCommand,
+                new SmartBuffer()
+                    .writeUInt32BE(ctx.appInfo.AppId)
+                    .writeUInt16BE(ctx.keystore.session.qrSign!.length)
+                    .writeBuffer(ctx.keystore.session.qrSign!)
+                    .writeBigUInt64BE(BigInt(ctx.keystore.uin))
+                    .writeUInt32BE(0)
+                    .writeUInt8(0)
+                    .writeUInt8(0x03)
+                    .toBuffer(),
+            ),
+        ),
     (ctx, payload): QueryQrCodeResultCallResult => {
         const resolvedWtLogin = ctx.wtLoginLogic.decodeWtLoginPacket(payload);
         if (resolvedWtLogin.commandId !== 2066) {
@@ -59,5 +63,5 @@ export const QueryQrCodeResultOperation = defineOperation(
                 state: transEmp12.qrCodeState,
             };
         }
-    }
+    },
 );

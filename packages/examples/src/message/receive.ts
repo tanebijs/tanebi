@@ -6,6 +6,10 @@ bot.onPrivateMessage((friend, msg) => {
 });
 
 bot.onGroupMessage((group, sender, msg) => {
-    console.log(`${group.name} (${group.uin}) ::: ${sender.card || sender.nickname} (${sender.uin}) [seq=${msg.sequence}; replied=${msg.repliedSequence}]`);
+    console.log(
+        `${group.name} (${group.uin}) ::: ${
+            sender.card || sender.nickname
+        } (${sender.uin}) [seq=${msg.sequence}; replied=${msg.repliedSequence}]`,
+    );
     console.log('>>> ' + msg.content.toPreviewString());
 });

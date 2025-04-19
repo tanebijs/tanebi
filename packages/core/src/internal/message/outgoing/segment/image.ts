@@ -7,9 +7,9 @@ import { InferProtoModelInput } from '@tanebijs/protobuf';
 export const imageBuilder = defineOutgoing(
     'image',
     (segment: {
-        msgInfo: InferProtoModelInput<typeof MsgInfo.fields>,
-        compatImage?: InferProtoModelInput<typeof NotOnlineImageElement.fields>,
-        compatFace?: InferProtoModelInput<typeof CustomFaceElement.fields>,
+        msgInfo: InferProtoModelInput<typeof MsgInfo.fields>;
+        compatImage?: InferProtoModelInput<typeof NotOnlineImageElement.fields>;
+        compatFace?: InferProtoModelInput<typeof CustomFaceElement.fields>;
     }) => {
         return [
             {
@@ -21,8 +21,8 @@ export const imageBuilder = defineOutgoing(
                     serviceType: 48,
                     pbElement: MsgInfo.encode(segment.msgInfo),
                     businessType: 20,
-                }
-            }
+                },
+            },
         ];
-    }
+    },
 );

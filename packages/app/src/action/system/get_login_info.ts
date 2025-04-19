@@ -9,5 +9,5 @@ export const get_login_info = defineAction(
             user_id: ctx.bot.uin,
             nickname: ctx.bot.name,
         });
-    }
+    },
 );

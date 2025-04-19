@@ -3,7 +3,7 @@ import { InferProtoModelInput, ProtoMessage, ProtoModel } from '@tanebijs/protob
 
 export class OidbSvcContract<const T extends ProtoModel> {
     private readonly bodyProto: ProtoMessage<T>;
-    
+
     constructor(
         public readonly command: number,
         public readonly subCommand: number,
@@ -36,7 +36,11 @@ export class OidbSvcContract<const T extends ProtoModel> {
     decodeBodyOrThrow(data: Buffer) {
         const decoded = this.tryDecode(data);
         if (decoded.errorCode !== 0 || !decoded.body) {
-            throw new Error(`Failed to decode OidbSvcTrpcTcp0x${this.command.toString(16)}_${this.subCommand} response (${decoded.errorCode}): ${decoded.errorMsg}`);
+            throw new Error(
+                `Failed to decode OidbSvcTrpcTcp0x${
+                    this.command.toString(16)
+                }_${this.subCommand} response (${decoded.errorCode}): ${decoded.errorMsg}`,
+            );
         }
         return decoded.body;
     }

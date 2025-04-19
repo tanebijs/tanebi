@@ -17,7 +17,7 @@ export type Operation<
 };
 
 type OperationArray = Readonly<Array<Operation<string, any, any>>>;
-type OperationMap<T extends OperationArray> = { [Op in T[number] as Op['name']]: Op };
+type OperationMap<T extends OperationArray> = { [Op in T[number] as Op['name']]: Op; };
 type ExtractRestArgs<T> = T extends [BotContext, ...infer B] ? B : never;
 
 export function defineOperation<
@@ -38,7 +38,7 @@ export function defineOperation<
     command: string,
     build: Operation<Name, Args>['build'],
     parse?: Operation<Name, Args>['parse'],
-): Operation<Name, Args>
+): Operation<Name, Args>;
 export function defineOperation<
     Name extends string,
     Args extends unknown[] = [],
@@ -51,12 +51,17 @@ export function defineOperation<
 ): Operation<Name, Args, Ret> {
     if (parse) {
         return {
-            name, command, build, parse,
+            name,
+            command,
+            build,
+            parse,
             postOnly: false,
         };
     } else {
         return {
-            name, command, build,
+            name,
+            command,
+            build,
             parse: () => undefined as Ret,
             postOnly: true,
         };
@@ -70,7 +75,7 @@ export class OperationCollection<const T extends OperationArray> {
 
     constructor(
         public ctx: BotContext,
-        operations: T
+        operations: T,
     ) {
         // @ts-ignore
         this.operationMap = Object.fromEntries(operations.map(action => [action.name, action]));
@@ -78,19 +83,26 @@ export class OperationCollection<const T extends OperationArray> {
 
     async call<const OpName extends keyof OperationMap<T>>(
         name: OpName,
-        ...args: ExtractRestArgs<Parameters<
+        ...args: ExtractRestArgs<
+            Parameters<
+                // @ts-ignore
+                OperationMap<T>[OpName]['build']
+            >
+        >
+    ): Promise<
+        ReturnType<
             // @ts-ignore
-            OperationMap<T>[OpName]['build']>>
-    ): Promise<ReturnType<
-        // @ts-ignore
-        OperationMap<T>[OpName]['parse']>> {
+            OperationMap<T>[OpName]['parse']
+        >
+    > {
         const action = this.operationMap[name] as Operation<string, unknown[]>;
         const buf = action.build(this.ctx, ...args);
         if (action.postOnly) {
             await this.ctx.ssoLogic.postSsoPacket(action.command, buf, await this.nextSeq());
             return undefined as ReturnType<
-            // @ts-ignore
-            OperationMap<T>[OpName]['parse']>;
+                // @ts-ignore
+                OperationMap<T>[OpName]['parse']
+            >;
         } else {
             const seq = await this.nextSeq();
             const retPacket = await this.ctx.ssoLogic
@@ -99,7 +111,9 @@ export class OperationCollection<const T extends OperationArray> {
             if ('body' in retPacket) {
                 return action.parse(this.ctx, retPacket.body) as any;
             } else {
-                throw new Error(`Action call failed (cmd=${action.command} seq=${seq} retcode=${retPacket.retcode}): ${retPacket.extra}`);
+                throw new Error(
+                    `Action call failed (cmd=${action.command} seq=${seq} retcode=${retPacket.retcode}): ${retPacket.extra}`,
+                );
             }
         }
     }

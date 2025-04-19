@@ -1,23 +1,23 @@
-import { IncomingMessage, IncomingSegmentOf } from '@/internal/message/incoming';
-import { BotMsgForwardBubble, BotMsgImage, BotMsgLightApp, BotMsgType, BotMsgVideo } from '.';
 import { Bot, ctx } from '@/index';
 import { MessageType } from '@/internal/message';
+import { IncomingMessage, IncomingSegmentOf } from '@/internal/message/incoming';
+import { BotMsgForwardBubble, BotMsgImage, BotMsgLightApp, BotMsgType, BotMsgVideo } from '.';
 
 export type ForwardedMessageBody = {
-    type: 'bubble',
-    content: BotMsgForwardBubble,
+    type: 'bubble';
+    content: BotMsgForwardBubble;
 } | {
-    type: 'image',
-    content: BotMsgImage,
+    type: 'image';
+    content: BotMsgImage;
 } | {
-    type: 'video',
-    content: BotMsgVideo,
+    type: 'video';
+    content: BotMsgVideo;
 } | {
-    type: 'forward',
-    content: BotMsgForwardPack,
+    type: 'forward';
+    content: BotMsgForwardPack;
 } | {
-    type: 'lightApp',
-    content: BotMsgLightApp,
+    type: 'lightApp';
+    content: BotMsgLightApp;
 };
 
 export type ForwardedMessage = ForwardedMessageBody & {
@@ -48,7 +48,7 @@ export class BotMsgForwardPack implements BotMsgType {
     private async build(incoming: IncomingMessage): Promise<ForwardedMessageBody | undefined> {
         const segments = incoming.segments;
         const firstSegment = segments[0];
-    
+
         if (segments.length === 1) {
             if (firstSegment.type === 'image') {
                 return {
@@ -56,21 +56,21 @@ export class BotMsgForwardPack implements BotMsgType {
                     content: await BotMsgImage.createForward(firstSegment, this.messageType, this.bot),
                 };
             }
-    
+
             if (firstSegment.type === 'video') {
                 return {
                     type: 'video',
                     content: await BotMsgVideo.createForward(firstSegment, this.messageType, this.bot),
                 };
             }
-    
+
             if (firstSegment.type === 'forward') {
                 return {
                     type: 'forward',
                     content: new BotMsgForwardPack(this.messageType, incoming.senderUid!, firstSegment, this.bot),
                 };
             }
-    
+
             if (firstSegment.type === 'lightApp') {
                 return {
                     type: 'lightApp',
@@ -78,12 +78,12 @@ export class BotMsgForwardPack implements BotMsgType {
                 };
             }
         }
-    
+
         if (
-            firstSegment.type === 'text'
-            || firstSegment.type === 'face'
-            || firstSegment.type === 'mention'
-            || firstSegment.type === 'image'
+            firstSegment.type === 'text' ||
+            firstSegment.type === 'face' ||
+            firstSegment.type === 'mention' ||
+            firstSegment.type === 'image'
         ) {
             return {
                 type: 'bubble',
@@ -94,19 +94,20 @@ export class BotMsgForwardPack implements BotMsgType {
 
     async download(): Promise<ForwardedMessage[]> {
         return await this.bot[ctx].ops.call('downloadLongMessage', this.senderUid, this.segment.resId)
-            .then(result => Promise
-                .all(result.map(async msg => {
-                    const build = await this.build(msg);
-                    if (build) {
-                        return {
-                            ...build,
-                            senderUin: msg.senderUin,
-                            senderName: msg.senderName,
-                        };
-                    }
-                    return undefined;
-                }))
-                .then(result => result.filter(e => e !== undefined))
+            .then(result =>
+                Promise
+                    .all(result.map(async msg => {
+                        const build = await this.build(msg);
+                        if (build) {
+                            return {
+                                ...build,
+                                senderUin: msg.senderUin,
+                                senderName: msg.senderName,
+                            };
+                        }
+                        return undefined;
+                    }))
+                    .then(result => result.filter(e => e !== undefined))
             );
     }
 

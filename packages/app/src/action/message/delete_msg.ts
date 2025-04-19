@@ -1,9 +1,9 @@
-import { ctx as internalCtx, MessageType } from 'tanebi';
 import { defineAction, Failed, Ok } from '@app/action';
 import { zOneBotInputMessageId } from '@app/common/types';
-import { z } from 'zod';
 import { MessageStoreType, OutgoingMessageStore } from '@app/storage/types';
-import { PbSendMsg } from '@/internal/packet/message/PbSendMsg';
+import { ctx as internalCtx, MessageType } from 'tanebi';
+import { PbSendMsg } from 'tanebi/internal/packet/message/PbSendMsg';
+import { z } from 'zod';
 
 export const delete_msg = defineAction(
     'delete_msg',
@@ -30,11 +30,11 @@ export const delete_msg = defineAction(
                 pbSendMsg.clientSequence!,
                 pbSendMsg.random ?? 0,
                 message.createdAt,
-                message.sequence
+                message.sequence,
             );
         } else { // GroupMessage
             await ctx.bot[internalCtx].ops.call('recallGroupMessage', message.peerUin, message.sequence);
         }
         return Ok();
-    }
+    },
 );

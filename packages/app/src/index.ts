@@ -1,12 +1,65 @@
 #!/usr/bin/env node
 
+import { ActionCollection } from '@app/action';
+import { can_send_image } from '@app/action/ability/can_send_image';
+import { can_send_record } from '@app/action/ability/can_send_record';
+import { get_friend_list } from '@app/action/friend/get_friend_list';
+import { get_stranger_info } from '@app/action/friend/get_stranger_info';
+import { send_like } from '@app/action/friend/send_like';
+import { set_friend_add_request } from '@app/action/friend/set_friend_add_request';
+import { get_group_info } from '@app/action/group/get_group_info';
+import { get_group_list } from '@app/action/group/get_group_list';
+import { get_group_member_info } from '@app/action/group/get_group_member_info';
+import { get_group_member_list } from '@app/action/group/get_group_member_list';
+import { set_group_add_request } from '@app/action/group/set_group_add_request';
+import { set_group_admin } from '@app/action/group/set_group_admin';
+import { set_group_ban } from '@app/action/group/set_group_ban';
+import { set_group_card } from '@app/action/group/set_group_card';
+import { set_group_kick } from '@app/action/group/set_group_kick';
+import { set_group_leave } from '@app/action/group/set_group_leave';
+import { set_group_name } from '@app/action/group/set_group_name';
+import { set_group_special_title } from '@app/action/group/set_group_special_title';
+import { set_group_whole_ban } from '@app/action/group/set_group_whole_ban';
+import { delete_msg } from '@app/action/message/delete_msg';
+import { get_forward_msg } from '@app/action/message/get_forward_msg';
+import { get_msg } from '@app/action/message/get_msg';
+import { get_msg_count } from '@app/action/message/get_msg_count';
+import { send_forward_msg } from '@app/action/message/send_forward_msg';
+import { send_group_forward_msg } from '@app/action/message/send_group_forward_msg';
+import { send_group_msg } from '@app/action/message/send_group_msg';
+import { send_msg } from '@app/action/message/send_msg';
+import { send_poke } from '@app/action/message/send_poke';
+import { send_private_forward_msg } from '@app/action/message/send_private_forward_msg';
+import { send_private_msg } from '@app/action/message/send_private_msg';
+import { get_login_info } from '@app/action/system/get_login_info';
+import { get_status } from '@app/action/system/get_status';
+import { get_version_info } from '@app/action/system/get_version_info';
+import { Config, exampleConfig, zConfig } from '@app/common/config';
+import { installLogger } from '@app/common/log';
+import { defaultProfile, zProfile } from '@app/common/profile';
+import { NTSilkBinding } from '@app/common/silk';
+import { OneBotEvent } from '@app/event';
+import { installNoticeEventHandler } from '@app/event/notice';
+import { installRequestEventHandler } from '@app/event/request';
+import { installMessageHandler } from '@app/message/dispatch';
+import { OneBotNetworkAdapter } from '@app/network';
+import { OneBotHttpClientAdapter } from '@app/network/http-client';
+import { OneBotHttpServerAdapter } from '@app/network/http-server';
+import { OneBotWebSocketClientAdapter } from '@app/network/ws-client';
+import { OneBotWebSocketServerAdapter } from '@app/network/ws-server';
+import { AbstractStorage } from '@app/storage';
+import { DatabaseStorage } from '@app/storage/database';
+import { MemoryStorage } from '@app/storage/memory';
+import chalk from 'chalk';
+import fs from 'node:fs';
+import path from 'node:path';
 import {
     Bot,
     deserializeDeviceInfo,
     deserializeKeystore,
     DeviceInfo,
     fetchAppInfoFromSignUrl,
-    Keystore, 
+    Keystore,
     newDeviceInfo,
     newKeystore,
     serializeDeviceInfo,
@@ -14,60 +67,7 @@ import {
     UrlSignProvider,
 } from 'tanebi';
 import { generate, QRErrorCorrectLevel } from 'ts-qrcode-terminal';
-import fs from 'node:fs';
-import path from 'node:path';
-import { Config, exampleConfig, zConfig } from '@app/common/config';
-import { ActionCollection } from '@app/action';
-import { OneBotNetworkAdapter } from '@app/network';
-import { OneBotHttpServerAdapter } from '@app/network/http-server';
-import { OneBotHttpClientAdapter } from '@app/network/http-client';
-import { OneBotWebSocketServerAdapter } from '@app/network/ws-server';
-import { OneBotWebSocketClientAdapter } from '@app/network/ws-client';
 import winston, { format, transports } from 'winston';
-import chalk from 'chalk';
-import { installLogger } from '@app/common/log';
-import { installMessageHandler } from '@app/message/dispatch';
-import { installNoticeEventHandler } from '@app/event/notice';
-import { installRequestEventHandler } from '@app/event/request';
-import { defaultProfile, zProfile } from '@app/common/profile';
-import { AbstractStorage } from '@app/storage';
-import { DatabaseStorage } from '@app/storage/database';
-import { MemoryStorage } from '@app/storage/memory';
-import { NTSilkBinding } from '@app/common/silk';
-import { send_msg } from '@app/action/message/send_msg';
-import { send_group_msg } from '@app/action/message/send_group_msg';
-import { send_private_msg } from '@app/action/message/send_private_msg';
-import { send_poke } from '@app/action/message/send_poke';
-import { delete_msg } from '@app/action/message/delete_msg';
-import { get_msg } from '@app/action/message/get_msg';
-import { send_forward_msg } from '@app/action/message/send_forward_msg';
-import { send_group_forward_msg } from '@app/action/message/send_group_forward_msg';
-import { send_private_forward_msg } from '@app/action/message/send_private_forward_msg';
-import { OneBotEvent } from '@app/event';
-import { get_forward_msg } from '@app/action/message/get_forward_msg';
-import { can_send_image } from '@app/action/ability/can_send_image';
-import { can_send_record } from '@app/action/ability/can_send_record';
-import { set_group_kick } from '@app/action/group/set_group_kick';
-import { set_group_ban } from '@app/action/group/set_group_ban';
-import { set_group_whole_ban } from '@app/action/group/set_group_whole_ban';
-import { get_msg_count } from '@app/action/message/get_msg_count';
-import { set_group_admin } from '@app/action/group/set_group_admin';
-import { set_group_card } from '@app/action/group/set_group_card';
-import { set_group_leave } from '@app/action/group/set_group_leave';
-import { set_group_special_title } from '@app/action/group/set_group_special_title';
-import { get_login_info } from '@app/action/system/get_login_info';
-import { get_stranger_info } from '@app/action/friend/get_stranger_info';
-import { get_friend_list } from '@app/action/friend/get_friend_list';
-import { get_group_list } from '@app/action/group/get_group_list';
-import { get_group_info } from '@app/action/group/get_group_info';
-import { get_group_member_list } from '@app/action/group/get_group_member_list';
-import { get_group_member_info } from '@app/action/group/get_group_member_info';
-import { set_group_name } from '@app/action/group/set_group_name';
-import { send_like } from '@app/action/friend/send_like';
-import { get_status } from '@app/action/system/get_status';
-import { get_version_info } from '@app/action/system/get_version_info';
-import { set_friend_add_request } from '@app/action/friend/set_friend_add_request';
-import { set_group_add_request } from '@app/action/group/set_group_add_request';
 
 export class OneBotApp {
     readonly projectDir = path.resolve(import.meta.dirname, '..');
@@ -119,7 +119,7 @@ export class OneBotApp {
         readonly isFirstRun: boolean,
         readonly bot: Bot,
         readonly ntSilkBinding: NTSilkBinding | null,
-        readonly config: Config
+        readonly config: Config,
     ) {
         const logDir = path.join(userDataDir, 'logs');
         if (!fs.existsSync(logDir)) {
@@ -136,9 +136,9 @@ export class OneBotApp {
                         format.timestamp(),
                         format.printf(
                             ({ timestamp, level, message, ...meta }) =>
-                                `${timestamp} [${level}] [${meta.module ?? 'Bot'}] ${message}`
+                                `${timestamp} [${level}] [${meta.module ?? 'Bot'}] ${message}`,
                         ),
-                        format.uncolorize()
+                        format.uncolorize(),
                     ),
                 }),
                 new transports.Console({
@@ -148,8 +148,8 @@ export class OneBotApp {
                         format.colorize(),
                         format.printf(
                             ({ timestamp, level, message, ...meta }) =>
-                                `${timestamp} ${level} ${chalk.magentaBright(meta.module ?? 'Bot')} ${message}`
-                        )
+                                `${timestamp} ${level} ${chalk.magentaBright(meta.module ?? 'Bot')} ${message}`,
+                        ),
                     ),
                 }),
             ],
@@ -213,7 +213,9 @@ export class OneBotApp {
             }
         });
         if (errorIndexes.length > 0) {
-            this.logger.error(`Failed to dispatch event to ${errorIndexes.length} adapter(s): ${errorIndexes.join(', ')}`);
+            this.logger.error(
+                `Failed to dispatch event to ${errorIndexes.length} adapter(s): ${errorIndexes.join(', ')}`,
+            );
         }
     }
 
@@ -270,7 +272,7 @@ export class OneBotApp {
             fs.mkdirSync(userDataDir);
         }
 
-        //#region Bot Initialization
+        // #region Bot Initialization
         const deviceInfoPath = path.join(userDataDir, 'deviceInfo.json');
         const keystorePath = path.join(userDataDir, 'keystore.json');
 
@@ -299,9 +301,9 @@ export class OneBotApp {
         bot.onKeystoreChange((keystore) => {
             fs.writeFileSync(keystorePath, JSON.stringify(serializeKeystore(keystore)));
         });
-        //#endregion
+        // #endregion
 
-        //#region NTSilk Initialization
+        // #region NTSilk Initialization
         const ntSilkPath = path.join(baseDir, '__ntsilk');
         if (!fs.existsSync(ntSilkPath)) {
             fs.mkdirSync(ntSilkPath);
@@ -314,14 +316,14 @@ export class OneBotApp {
                 console.warn('Failed to create NTSilk binding:', e);
             }
         }
-        //#endregion
+        // #endregion
 
         return new OneBotApp(
             userDataDir,
             isFirstRun,
             bot,
             ntSilkBinding,
-            config
+            config,
         );
     }
 }
@@ -329,7 +331,7 @@ export class OneBotApp {
 async function main() {
     const app = await OneBotApp.create('data');
     await app.start();
-    
+
     let sigIntTriggered = false;
     process.on('SIGINT', () => {
         if (sigIntTriggered) {

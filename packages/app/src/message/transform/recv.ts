@@ -23,7 +23,7 @@ export async function transformRecvMessage(
             type: 'reply',
             data: {
                 id: repliedId,
-            }
+            },
         });
     }
     return segments;

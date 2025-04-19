@@ -1,4 +1,4 @@
-import { ProtoMessage, ProtoField, ScalarType } from '@tanebijs/protobuf';
+import { ProtoField, ProtoMessage, ScalarType } from '@tanebijs/protobuf';
 
 export const FetchHighwayUrl = ProtoMessage.of({
     body: ProtoField(0x501, () => ({
@@ -20,14 +20,24 @@ export const FetchHighwayUrlResponse = ProtoMessage.of({
     body: ProtoField(0x501, () => ({
         sigSession: ProtoField(1, ScalarType.BYTES),
         sessionKey: ProtoField(2, ScalarType.BYTES),
-        serverInfos: ProtoField(3, () => ({
-            serviceType: ProtoField(1, ScalarType.UINT32),
-            serverAddrs: ProtoField(2, () => ({
-                type: ProtoField(1, ScalarType.UINT32),
-                ip: ProtoField(2, ScalarType.FIXED32),
-                port: ProtoField(3, ScalarType.UINT32),
-                area: ProtoField(4, ScalarType.UINT32),
-            }), false, true),
-        }), false, true),
+        serverInfos: ProtoField(
+            3,
+            () => ({
+                serviceType: ProtoField(1, ScalarType.UINT32),
+                serverAddrs: ProtoField(
+                    2,
+                    () => ({
+                        type: ProtoField(1, ScalarType.UINT32),
+                        ip: ProtoField(2, ScalarType.FIXED32),
+                        port: ProtoField(3, ScalarType.UINT32),
+                        area: ProtoField(4, ScalarType.UINT32),
+                    }),
+                    false,
+                    true,
+                ),
+            }),
+            false,
+            true,
+        ),
     })),
 });

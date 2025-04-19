@@ -45,18 +45,23 @@ export const FetchFriendsOperation = defineOperation(
             nextUin: response.next?.uin,
             friends: response.friends.map(friendRaw => {
                 const additionalProps = friendRaw.additional.find(
-                    additional => additional.type === 1)?.layer1?.properties;
+                    additional => additional.type === 1,
+                )?.layer1?.properties;
                 return {
                     uin: friendRaw.uin,
                     uid: friendRaw.uid,
                     nickname: additionalProps?.find(
-                        prop => prop.code === FetchFriendsQueryField.Nickname)?.value,
+                        prop => prop.code === FetchFriendsQueryField.Nickname,
+                    )?.value,
                     remark: additionalProps?.find(
-                        prop => prop.code === FetchFriendsQueryField.Remark)?.value,
+                        prop => prop.code === FetchFriendsQueryField.Remark,
+                    )?.value,
                     signature: additionalProps?.find(
-                        prop => prop.code === FetchFriendsQueryField.Signature)?.value,
+                        prop => prop.code === FetchFriendsQueryField.Signature,
+                    )?.value,
                     qid: additionalProps?.find(
-                        prop => prop.code === FetchFriendsQueryField.QID)?.value,
+                        prop => prop.code === FetchFriendsQueryField.QID,
+                    )?.value,
                     category: friendRaw.category,
                 };
             }),

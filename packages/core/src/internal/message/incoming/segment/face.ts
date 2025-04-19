@@ -12,11 +12,13 @@ export const faceOldFaceParser = defineIncoming(
     'face',
     'face',
     (element): FaceSegment | undefined => {
-        if (element.old) return {
-            faceId: element.index ?? 0,
-            isInLargeCategory: false,
-        };
-    }
+        if (element.old) {
+            return {
+                faceId: element.index ?? 0,
+                isInLargeCategory: false,
+            };
+        }
+    },
 );
 
 export const faceCommonParser = defineIncoming(
@@ -40,5 +42,5 @@ export const faceCommonParser = defineIncoming(
                 };
             }
         }
-    }
+    },
 );

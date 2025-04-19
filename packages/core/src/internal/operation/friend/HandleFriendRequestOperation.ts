@@ -4,8 +4,9 @@ import { FriendRequestOperation, HandleFriendRequest } from '@/internal/packet/o
 export const HandleFriendRequestOperation = defineOperation(
     'handleFriendRequest',
     'OidbSvcTrpcTcp.0xb5d_44',
-    (ctx, isAccept: boolean, uid: string) => HandleFriendRequest.encode({
-        operation: isAccept ? FriendRequestOperation.Accept : FriendRequestOperation.Reject,
-        uid,
-    }),
+    (ctx, isAccept: boolean, uid: string) =>
+        HandleFriendRequest.encode({
+            operation: isAccept ? FriendRequestOperation.Accept : FriendRequestOperation.Reject,
+            uid,
+        }),
 );
