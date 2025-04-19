@@ -1,11 +1,11 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "outDir": "lib",
-    "paths": {
-      "@app/*": ["./src/*"],
-      "@/*": ["../core/src/*"],
-    }
-  },
-  "include": ["src"]
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@app/*": ["src/*"]
+        }
+    },
+    "include": ["src/**/*"],
+    "references": [{ "path": "../core/tsconfig.json" }]
 }

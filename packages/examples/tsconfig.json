@@ -1,11 +1,5 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "outDir": "out",
-    "declaration": false,
-    "paths": {
-      "@/*": ["../core/src/*"]
-    }
-  },
-  "include": ["src"]
+    "extends": "../../tsconfig.base.json",
+    "include": ["src/**/*"],
+    "references": [{ "path": "../core/tsconfig.json" }]
 }

@@ -1,33 +1,42 @@
 {
-  "name": "tanebi",
-  "version": "0.2.1",
-  "description": "NTQQ Node.js Protocol Implementation",
-  "keywords": [
-    "qq",
-    "oicq"
-  ],
-  "files": [
-    "dist"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/tanebijs/tanebi.git"
-  },
-  "license": "GPL-3.0-or-later",
-  "author": "Young",
-  "type": "module",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsup",
-    "prepack": "npm run build"
-  },
-  "dependencies": {
-    "@tanebijs/protobuf": "^0.0.1",
-    "async-mutex": "^0.5.0",
-    "fast-xml-parser": "^5.0.8",
-    "image-size": "^2.0.0",
-    "smart-buffer": "^4.2.0",
-    "zod": "^3.24.2"
-  }
+    "name": "tanebi",
+    "version": "0.2.1",
+    "description": "NTQQ Node.js Protocol Implementation",
+    "license": "GPL-3.0-or-later",
+    "author": "Young",
+    "keywords": [
+        "qq",
+        "oicq"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/tanebijs/tanebi.git"
+    },
+    "type": "module",
+    "exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "types": "./src/index.ts"
+        },
+        "./*": {
+            "import": "./dist/*.js",
+            "types": "./src/*.ts"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "node swc-build.mjs",
+        "dts": "tsc --project tsconfig.json --declaration --emitDeclarationOnly --outdir dist",
+        "lint": ""
+    },
+    "dependencies": {
+        "@tanebijs/protobuf": "^0.0.1",
+        "async-mutex": "^0.5.0",
+        "fast-xml-parser": "^5.2.0",
+        "image-size": "^2.0.2",
+        "smart-buffer": "^4.2.0",
+        "zod": "^3.24.3"
+    }
 }

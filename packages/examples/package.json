@@ -1,15 +1,15 @@
 {
-  "name": "@tanebijs/examples",
-  "type": "module",
-  "version": "0.0.1",
-  "description": "Examples of tanebi",
-  "private": true,
-  "scripts": {
-    "build": "tsc"
-  },
-  "dependencies": {
-    "tanebi": "workspace:*"
-  },
-  "author": "Young",
-  "license": "GPL-3.0-only"
+    "private": true,
+    "name": "@tanebijs/examples",
+    "version": "0.0.1",
+    "description": "Examples of tanebi",
+    "type": "module",
+    "scripts": {
+        "build": "node swc-build.mjs"
+    },
+    "dependencies": {
+        "tanebi": "workspace:*"
+    },
+    "author": "Young",
+    "license": "GPL-3.0-only"
 }
