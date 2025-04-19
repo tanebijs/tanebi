@@ -1,0 +1,7 @@
+{
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "dprint.path": "node_modules/.bin/dprint",
+    "[typescript]": {
+        "editor.defaultFormatter": "dprint.dprint"
+    },
+}
