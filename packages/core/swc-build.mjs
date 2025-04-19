@@ -2,9 +2,11 @@ import { transformFile } from "@swc/core";
 import fg from "fast-glob";
 import fs from "fs-extra";
 
+const buildPath = "lib";
+
 /** @type {(path: string) => Promise<void>} */
 const $delete = async (path) => {
-    if (await fs.exists("dist")) {
+    if (await fs.exists(path)) {
         await fs.rm(path, { recursive: true });
     }
 };
@@ -34,14 +36,14 @@ const transfrom = async (file) => {
 
 /** @type {(result: { file: string; output: import("@swc/core").Output }) => Promise<void>} */
 const save = async (result) => {
-    const dist = result.file.replace(/^src/, "dist").replace(/ts$/, "js");
+    const dist = result.file.replace(/^src/, buildPath).replace(/ts$/, "js");
 
     await fs.outputFile(dist, result.output.code);
 };
 
 console.time("swc build");
 
-await $delete("dist");
+await $delete(buildPath);
 await Promise.all((await Promise.all((await fg.glob("src/**/*.ts")).map(transfrom))).map(save));
 
 console.timeEnd("swc build");

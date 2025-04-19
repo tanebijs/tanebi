@@ -1,11 +1,18 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
-        "baseUrl": ".",
+        "rootDir": "./src",
         "composite": true,
+        "outDir": "types",
+        "declaration": true,
+        "emitDeclarationOnly": true,
         "paths": {
-            "@/*": ["src/*"]
+            "@/*": ["./src/*"]
         }
     },
-    "include": ["src/**/*"]
+    "include": ["src/**/*"],
+    "tsc-alias": {
+        "resolveFullPaths": true,
+        "fileExtensions": [".d.ts"]
+    }
 }

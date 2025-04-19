@@ -15,20 +15,35 @@
     "type": "module",
     "exports": {
         ".": {
-            "import": "./dist/index.js",
+            "import": "./lib/index.js",
             "types": "./src/index.ts"
         },
         "./*": {
-            "import": "./dist/*.js",
+            "import": "./lib/*.js",
             "types": "./src/*.ts"
+        }
+    },
+    "publishConfig": {
+        "exports": {
+            ".": {
+                "import": "./lib/index.js",
+                "types": "./types/index.d.ts"
+            },
+            "./*": {
+                "import": "./lib/*.js",
+                "types": "./types/*.d.ts"
+            }
         }
     },
     "files": [
         "dist"
     ],
     "scripts": {
-        "build": "node swc-build.mjs",
-        "dts": "tsc --project tsconfig.json --declaration --emitDeclarationOnly --outdir dist"
+        "lib": "node swc-build.mjs",
+        "dts": "tsc && tsc-alias",
+        "build:dev": "pnpm run lib",
+        "build": "pnpm run lib && pnpm run dts",
+        "prepack": "pnpm run build"
     },
     "dependencies": {
         "@tanebijs/protobuf": "^0.0.1",
@@ -37,5 +52,8 @@
         "image-size": "^2.0.2",
         "smart-buffer": "^4.2.0",
         "zod": "^3.24.3"
+    },
+    "devDependencies": {
+        "tsc-alias": "^1.8.15"
     }
 }

@@ -110,6 +110,7 @@ lib-commonjs/
 lib-shim/
 dist/
 dist-storybook/
+types/
 
 # Heft temporary files
 .cache/

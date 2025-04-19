@@ -1,4 +1,4 @@
-import { BotEntity } from '@/entity';
+import { BotEntity } from '@/entity/BotEntity';
 import { Bot } from '@/index';
 import { OutgoingSegment, OutgoingSegmentOf } from '@/internal/message/outgoing';
 
