@@ -17,15 +17,15 @@ async function getResponse(
     return await fetch(url, { headers, signal });
 }
 
-export async function download(url: string, timeout?: number, headers?: Record<string, string>) {
+export async function download(url: string, timeoutSec?: number, headers?: Record<string, string>) {
     let timeoutReference: NodeJS.Timeout | undefined;
     let signal: AbortSignal | undefined;
-    if (timeout) {
+    if (timeoutSec) {
         const controller = new AbortController();
         signal = controller.signal;
         timeoutReference = setTimeout(() => {
             controller.abort();
-        }, timeout);
+        }, timeoutSec * 1000);
     }
     let resp = await getResponse(url, headers, false, signal);
     if (resp.status === 403 && !headers) {
@@ -52,7 +52,7 @@ export async function resolveOneBotFile(ctx: OneBotApp, file: SendResourceGenera
             return Buffer.from(bytes); // TODO: add proxy support
         } catch (e) {
             if (e instanceof Error && e.message === 'This operation was aborted') {
-                throw new Error(`Download timeout (exceeded ${file.timeout}ms)`);
+                throw new Error(`Download timeout (exceeded ${file.timeout}s)`);
             } else {
                 throw e;
             }
