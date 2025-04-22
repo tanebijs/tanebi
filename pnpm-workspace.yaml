@@ -1,4 +1,7 @@
 packages:
   - packages/*
+
 onlyBuiltDependencies:
+  - '@swc/core'
   - dprint
+  - esbuild
